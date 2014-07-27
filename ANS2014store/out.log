@@ -1,0 +1,1486 @@
+   
+
+  Values loaded for special Adamscase :  2.3
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  1.00       scatrat(2):  0.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         : 10.00       lamc      :  0.10
+
+radMC,radWood             100 of     10000 realz       tot:   0.13 time/est:   0.13/  13.15 min
+radMC,radWood             200 of     10000 realz       tot:   0.24 time/est:   0.24/  11.91 min
+radMC,radWood             300 of     10000 realz       tot:   0.37 time/est:   0.37/  12.17 min
+radMC,radWood             400 of     10000 realz       tot:   0.47 time/est:   0.47/  11.79 min
+radMC,radWood             500 of     10000 realz       tot:   0.60 time/est:   0.60/  11.99 min
+radMC,radWood             600 of     10000 realz       tot:   0.73 time/est:   0.73/  12.10 min
+radMC,radWood             700 of     10000 realz       tot:   0.84 time/est:   0.84/  11.95 min
+radMC,radWood             800 of     10000 realz       tot:   0.95 time/est:   0.95/  11.85 min
+radMC,radWood             900 of     10000 realz       tot:   1.06 time/est:   1.06/  11.75 min
+radMC,radWood            1000 of     10000 realz       tot:   1.20 time/est:   1.20/  11.98 min
+radMC,radWood            1100 of     10000 realz       tot:   1.33 time/est:   1.32/  12.04 min
+radMC,radWood            1200 of     10000 realz       tot:   1.44 time/est:   1.44/  12.00 min
+radMC,radWood            1300 of     10000 realz       tot:   1.55 time/est:   1.55/  11.92 min
+radMC,radWood            1400 of     10000 realz       tot:   1.68 time/est:   1.68/  11.96 min
+radMC,radWood            1500 of     10000 realz       tot:   1.80 time/est:   1.79/  11.96 min
+radMC,radWood            1600 of     10000 realz       tot:   1.92 time/est:   1.92/  11.97 min
+radMC,radWood            1700 of     10000 realz       tot:   2.03 time/est:   2.03/  11.96 min
+radMC,radWood            1800 of     10000 realz       tot:   2.18 time/est:   2.18/  12.09 min
+radMC,radWood            1900 of     10000 realz       tot:   2.30 time/est:   2.30/  12.08 min
+radMC,radWood            2000 of     10000 realz       tot:   2.42 time/est:   2.42/  12.09 min
+radMC,radWood            2100 of     10000 realz       tot:   2.54 time/est:   2.54/  12.09 min
+radMC,radWood            2200 of     10000 realz       tot:   2.66 time/est:   2.66/  12.08 min
+radMC,radWood            2300 of     10000 realz       tot:   2.79 time/est:   2.78/  12.11 min
+radMC,radWood            2400 of     10000 realz       tot:   2.91 time/est:   2.90/  12.10 min
+radMC,radWood            2500 of     10000 realz       tot:   3.03 time/est:   3.03/  12.13 min
+radMC,radWood            2600 of     10000 realz       tot:   3.16 time/est:   3.16/  12.17 min
+radMC,radWood            2700 of     10000 realz       tot:   3.29 time/est:   3.29/  12.19 min
+radMC,radWood            2800 of     10000 realz       tot:   3.42 time/est:   3.41/  12.20 min
+radMC,radWood            2900 of     10000 realz       tot:   3.56 time/est:   3.56/  12.28 min
+radMC,radWood            3000 of     10000 realz       tot:   3.70 time/est:   3.70/  12.33 min
+radMC,radWood            3100 of     10000 realz       tot:   3.83 time/est:   3.83/  12.34 min
+radMC,radWood            3200 of     10000 realz       tot:   3.95 time/est:   3.95/  12.35 min
+radMC,radWood            3300 of     10000 realz       tot:   4.10 time/est:   4.10/  12.42 min
+radMC,radWood            3400 of     10000 realz       tot:   4.24 time/est:   4.24/  12.46 min
+radMC,radWood            3500 of     10000 realz       tot:   4.36 time/est:   4.36/  12.46 min
+radMC,radWood            3600 of     10000 realz       tot:   4.48 time/est:   4.48/  12.44 min
+radMC,radWood            3700 of     10000 realz       tot:   4.60 time/est:   4.60/  12.42 min
+radMC,radWood            3800 of     10000 realz       tot:   4.72 time/est:   4.72/  12.43 min
+radMC,radWood            3900 of     10000 realz       tot:   4.87 time/est:   4.87/  12.48 min
+radMC,radWood            4000 of     10000 realz       tot:   4.98 time/est:   4.97/  12.44 min
+radMC,radWood            4100 of     10000 realz       tot:   5.10 time/est:   5.10/  12.43 min
+radMC,radWood            4200 of     10000 realz       tot:   5.21 time/est:   5.21/  12.41 min
+radMC,radWood            4300 of     10000 realz       tot:   5.34 time/est:   5.34/  12.42 min
+radMC,radWood            4400 of     10000 realz       tot:   5.46 time/est:   5.46/  12.40 min
+radMC,radWood            4500 of     10000 realz       tot:   5.61 time/est:   5.61/  12.46 min
+radMC,radWood            4600 of     10000 realz       tot:   5.73 time/est:   5.73/  12.46 min
+radMC,radWood            4700 of     10000 realz       tot:   5.85 time/est:   5.84/  12.43 min
+radMC,radWood            4800 of     10000 realz       tot:   5.98 time/est:   5.97/  12.45 min
+radMC,radWood            4900 of     10000 realz       tot:   6.10 time/est:   6.10/  12.45 min
+radMC,radWood            5000 of     10000 realz       tot:   6.23 time/est:   6.23/  12.46 min
+radMC,radWood            5100 of     10000 realz       tot:   6.35 time/est:   6.35/  12.45 min
+radMC,radWood            5200 of     10000 realz       tot:   6.48 time/est:   6.48/  12.46 min
+radMC,radWood            5300 of     10000 realz       tot:   6.60 time/est:   6.60/  12.45 min
+radMC,radWood            5400 of     10000 realz       tot:   6.73 time/est:   6.73/  12.45 min
+radMC,radWood            5500 of     10000 realz       tot:   6.86 time/est:   6.85/  12.46 min
+radMC,radWood            5600 of     10000 realz       tot:   6.98 time/est:   6.98/  12.46 min
+radMC,radWood            5700 of     10000 realz       tot:   7.08 time/est:   7.08/  12.42 min
+radMC,radWood            5800 of     10000 realz       tot:   7.21 time/est:   7.21/  12.43 min
+radMC,radWood            5900 of     10000 realz       tot:   7.33 time/est:   7.33/  12.43 min
+radMC,radWood            6000 of     10000 realz       tot:   7.44 time/est:   7.44/  12.40 min
+radMC,radWood            6100 of     10000 realz       tot:   7.57 time/est:   7.57/  12.41 min
+radMC,radWood            6200 of     10000 realz       tot:   7.69 time/est:   7.69/  12.40 min
+radMC,radWood            6300 of     10000 realz       tot:   7.79 time/est:   7.79/  12.37 min
+radMC,radWood            6400 of     10000 realz       tot:   7.92 time/est:   7.92/  12.37 min
+radMC,radWood            6500 of     10000 realz       tot:   8.06 time/est:   8.05/  12.39 min
+radMC,radWood            6600 of     10000 realz       tot:   8.19 time/est:   8.19/  12.40 min
+radMC,radWood            6700 of     10000 realz       tot:   8.32 time/est:   8.32/  12.42 min
+radMC,radWood            6800 of     10000 realz       tot:   8.45 time/est:   8.45/  12.42 min
+radMC,radWood            6900 of     10000 realz       tot:   8.58 time/est:   8.58/  12.44 min
+radMC,radWood            7000 of     10000 realz       tot:   8.71 time/est:   8.71/  12.44 min
+radMC,radWood            7100 of     10000 realz       tot:   8.83 time/est:   8.83/  12.43 min
+radMC,radWood            7200 of     10000 realz       tot:   8.95 time/est:   8.95/  12.43 min
+radMC,radWood            7300 of     10000 realz       tot:   9.06 time/est:   9.05/  12.40 min
+radMC,radWood            7400 of     10000 realz       tot:   9.20 time/est:   9.19/  12.42 min
+radMC,radWood            7500 of     10000 realz       tot:   9.31 time/est:   9.31/  12.41 min
+radMC,radWood            7600 of     10000 realz       tot:   9.42 time/est:   9.42/  12.40 min
+radMC,radWood            7700 of     10000 realz       tot:   9.54 time/est:   9.53/  12.38 min
+radMC,radWood            7800 of     10000 realz       tot:   9.66 time/est:   9.66/  12.39 min
+radMC,radWood            7900 of     10000 realz       tot:   9.78 time/est:   9.77/  12.37 min
+radMC,radWood            8000 of     10000 realz       tot:   9.89 time/est:   9.89/  12.36 min
+radMC,radWood            8100 of     10000 realz       tot:  10.01 time/est:  10.01/  12.36 min
+radMC,radWood            8200 of     10000 realz       tot:  10.14 time/est:  10.13/  12.36 min
+radMC,radWood            8300 of     10000 realz       tot:  10.26 time/est:  10.26/  12.36 min
+radMC,radWood            8400 of     10000 realz       tot:  10.38 time/est:  10.37/  12.35 min
+radMC,radWood            8500 of     10000 realz       tot:  10.50 time/est:  10.50/  12.35 min
+radMC,radWood            8600 of     10000 realz       tot:  10.62 time/est:  10.62/  12.34 min
+radMC,radWood            8700 of     10000 realz       tot:  10.76 time/est:  10.75/  12.36 min
+radMC,radWood            8800 of     10000 realz       tot:  10.87 time/est:  10.87/  12.35 min
+radMC,radWood            8900 of     10000 realz       tot:  11.00 time/est:  10.99/  12.35 min
+radMC,radWood            9000 of     10000 realz       tot:  11.12 time/est:  11.12/  12.35 min
+radMC,radWood            9100 of     10000 realz       tot:  11.23 time/est:  11.23/  12.34 min
+radMC,radWood            9200 of     10000 realz       tot:  11.35 time/est:  11.34/  12.33 min
+radMC,radWood            9300 of     10000 realz       tot:  11.48 time/est:  11.47/  12.34 min
+radMC,radWood            9400 of     10000 realz       tot:  11.59 time/est:  11.58/  12.32 min
+radMC,radWood            9500 of     10000 realz       tot:  11.71 time/est:  11.71/  12.32 min
+radMC,radWood            9600 of     10000 realz       tot:  11.84 time/est:  11.83/  12.33 min
+radMC,radWood            9700 of     10000 realz       tot:  11.96 time/est:  11.95/  12.32 min
+radMC,radWood            9800 of     10000 realz       tot:  12.06 time/est:  12.06/  12.30 min
+radMC,radWood            9900 of     10000 realz       tot:  12.20 time/est:  12.20/  12.32 min
+radMC,radWood           10000 of     10000 realz       tot:  12.31 time/est:  12.31/  12.31 min
+
+Start mat1:   0.8966+-  0.0030   mat2:   0.1034+-  0.0030
+      P(1):   0.9000             P(2):   0.1000
+
+Path  mat1:   0.9026+-  0.0028   mat2:   0.1087+-  0.0004
+    lam(1):   0.9900           lam(2):   0.1100
+
+  Values loaded for special Adamscase :  2.3
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  1.00       scatrat(2):  0.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         : 10.00       lamc      :  0.10
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr   
+reflection        :    0.08468 +-     0.06904 +-   0.8153175
+transmission      :    0.00171 +-     0.01219 +-   7.1359479
+absorption        :    0.91362
+ interactions     :  100.0 % accept   3.32 ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr   
+radWood reflec    :    0.08469 +-     0.06905 +-   0.8153205
+radWood transmit  :    0.00172 +-     0.01227 +-   7.1423733
+radWood absorb    :    0.91360 +-     0.07267 +-   0.0795458
+ interactions     :   -6.9 % accept   1.28 ac/p    ***** rj/p
+
+
+  total runtime:     12.31 min
+    genRealz   :      0.00 min     per:  0.01 %
+    radMC      :      0.70 min     per:  5.66 %
+    radWood    :     11.61 min     per: 94.30 %
+    other      :      0.00 min     per:  0.03 %
+   
+
+  Values loaded for special Adamscase :  2.3
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  1.00       scatrat(2):  0.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         : 10.00       lamc      :  0.10
+
+radMC,radWood             100 of     10000 realz       tot:   0.13 time/est:   0.13/  12.79 min
+radMC,radWood             200 of     10000 realz       tot:   0.23 time/est:   0.23/  11.63 min
+radMC,radWood             300 of     10000 realz       tot:   0.36 time/est:   0.36/  11.90 min
+radMC,radWood             400 of     10000 realz       tot:   0.46 time/est:   0.46/  11.58 min
+radMC,radWood             500 of     10000 realz       tot:   0.59 time/est:   0.59/  11.77 min
+radMC,radWood             600 of     10000 realz       tot:   0.71 time/est:   0.71/  11.89 min
+radMC,radWood             700 of     10000 realz       tot:   0.82 time/est:   0.82/  11.74 min
+radMC,radWood             800 of     10000 realz       tot:   0.93 time/est:   0.93/  11.65 min
+radMC,radWood             900 of     10000 realz       tot:   1.04 time/est:   1.04/  11.55 min
+radMC,radWood            1000 of     10000 realz       tot:   1.18 time/est:   1.18/  11.75 min
+radMC,radWood            1100 of     10000 realz       tot:   1.30 time/est:   1.30/  11.82 min
+radMC,radWood            1200 of     10000 realz       tot:   1.41 time/est:   1.41/  11.78 min
+radMC,radWood            1300 of     10000 realz       tot:   1.52 time/est:   1.52/  11.72 min
+radMC,radWood            1400 of     10000 realz       tot:   1.65 time/est:   1.65/  11.78 min
+radMC,radWood            1500 of     10000 realz       tot:   1.77 time/est:   1.77/  11.79 min
+radMC,radWood            1600 of     10000 realz       tot:   1.89 time/est:   1.89/  11.80 min
+radMC,radWood            1700 of     10000 realz       tot:   2.01 time/est:   2.01/  11.80 min
+radMC,radWood            1800 of     10000 realz       tot:   2.15 time/est:   2.15/  11.94 min
+radMC,radWood            1900 of     10000 realz       tot:   2.27 time/est:   2.27/  11.94 min
+radMC,radWood            2000 of     10000 realz       tot:   2.39 time/est:   2.39/  11.95 min
+radMC,radWood            2100 of     10000 realz       tot:   2.51 time/est:   2.51/  11.95 min
+radMC,radWood            2200 of     10000 realz       tot:   2.63 time/est:   2.63/  11.95 min
+radMC,radWood            2300 of     10000 realz       tot:   2.76 time/est:   2.76/  11.98 min
+radMC,radWood            2400 of     10000 realz       tot:   2.88 time/est:   2.87/  11.98 min
+radMC,radWood            2500 of     10000 realz       tot:   3.00 time/est:   3.00/  12.01 min
+radMC,radWood            2600 of     10000 realz       tot:   3.14 time/est:   3.13/  12.06 min
+radMC,radWood            2700 of     10000 realz       tot:   3.27 time/est:   3.26/  12.09 min
+radMC,radWood            2800 of     10000 realz       tot:   3.39 time/est:   3.39/  12.10 min
+radMC,radWood            2900 of     10000 realz       tot:   3.54 time/est:   3.54/  12.20 min
+radMC,radWood            3000 of     10000 realz       tot:   3.68 time/est:   3.68/  12.25 min
+radMC,radWood            3100 of     10000 realz       tot:   3.81 time/est:   3.80/  12.27 min
+radMC,radWood            3200 of     10000 realz       tot:   3.93 time/est:   3.93/  12.29 min
+radMC,radWood            3300 of     10000 realz       tot:   4.08 time/est:   4.08/  12.37 min
+radMC,radWood            3400 of     10000 realz       tot:   4.22 time/est:   4.22/  12.42 min
+radMC,radWood            3500 of     10000 realz       tot:   4.35 time/est:   4.35/  12.43 min
+radMC,radWood            3600 of     10000 realz       tot:   4.47 time/est:   4.47/  12.41 min
+radMC,radWood            3700 of     10000 realz       tot:   4.59 time/est:   4.59/  12.41 min
+radMC,radWood            3800 of     10000 realz       tot:   4.72 time/est:   4.72/  12.42 min
+radMC,radWood            3900 of     10000 realz       tot:   4.87 time/est:   4.86/  12.47 min
+radMC,radWood            4000 of     10000 realz       tot:   4.97 time/est:   4.97/  12.43 min
+radMC,radWood            4100 of     10000 realz       tot:   5.09 time/est:   5.09/  12.42 min
+radMC,radWood            4200 of     10000 realz       tot:   5.21 time/est:   5.21/  12.40 min
+radMC,radWood            4300 of     10000 realz       tot:   5.34 time/est:   5.34/  12.41 min
+radMC,radWood            4400 of     10000 realz       tot:   5.45 time/est:   5.45/  12.39 min
+radMC,radWood            4500 of     10000 realz       tot:   5.61 time/est:   5.60/  12.45 min
+radMC,radWood            4600 of     10000 realz       tot:   5.73 time/est:   5.73/  12.46 min
+radMC,radWood            4700 of     10000 realz       tot:   5.84 time/est:   5.84/  12.43 min
+radMC,radWood            4800 of     10000 realz       tot:   5.97 time/est:   5.97/  12.44 min
+radMC,radWood            4900 of     10000 realz       tot:   6.10 time/est:   6.10/  12.45 min
+radMC,radWood            5000 of     10000 realz       tot:   6.23 time/est:   6.23/  12.46 min
+radMC,radWood            5100 of     10000 realz       tot:   6.35 time/est:   6.35/  12.45 min
+radMC,radWood            5200 of     10000 realz       tot:   6.48 time/est:   6.48/  12.47 min
+radMC,radWood            5300 of     10000 realz       tot:   6.61 time/est:   6.61/  12.46 min
+radMC,radWood            5400 of     10000 realz       tot:   6.74 time/est:   6.73/  12.47 min
+radMC,radWood            5500 of     10000 realz       tot:   6.87 time/est:   6.86/  12.48 min
+radMC,radWood            5600 of     10000 realz       tot:   6.99 time/est:   6.99/  12.48 min
+radMC,radWood            5700 of     10000 realz       tot:   7.09 time/est:   7.09/  12.44 min
+radMC,radWood            5800 of     10000 realz       tot:   7.22 time/est:   7.22/  12.45 min
+radMC,radWood            5900 of     10000 realz       tot:   7.35 time/est:   7.35/  12.46 min
+radMC,radWood            6000 of     10000 realz       tot:   7.46 time/est:   7.46/  12.44 min
+radMC,radWood            6100 of     10000 realz       tot:   7.59 time/est:   7.59/  12.44 min
+radMC,radWood            6200 of     10000 realz       tot:   7.71 time/est:   7.71/  12.44 min
+radMC,radWood            6300 of     10000 realz       tot:   7.82 time/est:   7.82/  12.41 min
+radMC,radWood            6400 of     10000 realz       tot:   7.95 time/est:   7.95/  12.41 min
+radMC,radWood            6500 of     10000 realz       tot:   8.08 time/est:   8.08/  12.43 min
+radMC,radWood            6600 of     10000 realz       tot:   8.21 time/est:   8.21/  12.44 min
+radMC,radWood            6700 of     10000 realz       tot:   8.35 time/est:   8.35/  12.46 min
+radMC,radWood            6800 of     10000 realz       tot:   8.48 time/est:   8.47/  12.46 min
+radMC,radWood            6900 of     10000 realz       tot:   8.61 time/est:   8.61/  12.47 min
+radMC,radWood            7000 of     10000 realz       tot:   8.74 time/est:   8.74/  12.48 min
+radMC,radWood            7100 of     10000 realz       tot:   8.86 time/est:   8.85/  12.47 min
+radMC,radWood            7200 of     10000 realz       tot:   8.98 time/est:   8.97/  12.46 min
+radMC,radWood            7300 of     10000 realz       tot:   9.08 time/est:   9.08/  12.44 min
+radMC,radWood            7400 of     10000 realz       tot:   9.22 time/est:   9.22/  12.46 min
+radMC,radWood            7500 of     10000 realz       tot:   9.34 time/est:   9.34/  12.45 min
+radMC,radWood            7600 of     10000 realz       tot:   9.45 time/est:   9.45/  12.43 min
+radMC,radWood            7700 of     10000 realz       tot:   9.56 time/est:   9.56/  12.41 min
+radMC,radWood            7800 of     10000 realz       tot:   9.69 time/est:   9.69/  12.42 min
+radMC,radWood            7900 of     10000 realz       tot:   9.80 time/est:   9.80/  12.41 min
+radMC,radWood            8000 of     10000 realz       tot:   9.91 time/est:   9.91/  12.39 min
+radMC,radWood            8100 of     10000 realz       tot:  10.04 time/est:  10.04/  12.39 min
+radMC,radWood            8200 of     10000 realz       tot:  10.16 time/est:  10.16/  12.39 min
+radMC,radWood            8300 of     10000 realz       tot:  10.29 time/est:  10.29/  12.39 min
+radMC,radWood            8400 of     10000 realz       tot:  10.40 time/est:  10.40/  12.38 min
+radMC,radWood            8500 of     10000 realz       tot:  10.53 time/est:  10.53/  12.38 min
+radMC,radWood            8600 of     10000 realz       tot:  10.65 time/est:  10.65/  12.38 min
+radMC,radWood            8700 of     10000 realz       tot:  10.79 time/est:  10.79/  12.40 min
+radMC,radWood            8800 of     10000 realz       tot:  10.90 time/est:  10.90/  12.39 min
+radMC,radWood            8900 of     10000 realz       tot:  11.03 time/est:  11.03/  12.39 min
+radMC,radWood            9000 of     10000 realz       tot:  11.16 time/est:  11.15/  12.39 min
+radMC,radWood            9100 of     10000 realz       tot:  11.27 time/est:  11.27/  12.38 min
+radMC,radWood            9200 of     10000 realz       tot:  11.39 time/est:  11.38/  12.37 min
+radMC,radWood            9300 of     10000 realz       tot:  11.52 time/est:  11.51/  12.38 min
+radMC,radWood            9400 of     10000 realz       tot:  11.63 time/est:  11.63/  12.37 min
+radMC,radWood            9500 of     10000 realz       tot:  11.76 time/est:  11.75/  12.37 min
+radMC,radWood            9600 of     10000 realz       tot:  11.89 time/est:  11.88/  12.38 min
+radMC,radWood            9700 of     10000 realz       tot:  12.01 time/est:  12.00/  12.37 min
+radMC,radWood            9800 of     10000 realz       tot:  12.11 time/est:  12.11/  12.36 min
+radMC,radWood            9900 of     10000 realz       tot:  12.25 time/est:  12.25/  12.37 min
+radMC,radWood           10000 of     10000 realz       tot:  12.37 time/est:  12.36/  12.36 min
+
+Start mat1:   0.8966+-  0.0030   mat2:   0.1034+-  0.0030
+      P(1):   0.9000             P(2):   0.1000
+
+Path  mat1:   0.9026+-  0.0028   mat2:   0.1087+-  0.0004
+    lam(1):   0.9900           lam(2):   0.1100
+
+  Values loaded for special Adamscase :  2.3
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  1.00       scatrat(2):  0.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         : 10.00       lamc      :  0.10
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr   
+reflection        :    0.08468 +-     0.06904 +-   0.8153175
+transmission      :    0.00171 +-     0.01219 +-   7.1359479
+absorption        :    0.91362
+ interactions     :  100.0 % accept   3.32 ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr   
+radWood reflec    :    0.08469 +-     0.06905 +-   0.8153205
+radWood transmit  :    0.00172 +-     0.01227 +-   7.1423733
+radWood absorb    :    0.91360 +-     0.07267 +-   0.0795458
+ interactions     :   -6.9 % accept   1.28 ac/p    ***** rj/p
+
+
+  total runtime:     12.37 min
+    genRealz   :      0.00 min     per:  0.01 %
+    radMC      :      0.70 min     per:  5.66 %
+    radWood    :     11.66 min     per: 94.30 %
+    other      :      0.00 min     per:  0.03 %
+   
+
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.020000   sig(2)    :  0.030000
+    scatrat(1):  0.50       scatrat(2):  0.50
+    lam(1)    :  0.00       lam(2)    :  0.00
+    s         :  0.10       lamc      :  0.00
+
+  Finding apprx Gam vals for Eigenvalue calcs
+   Eigindx    apprx Gam vals      absdiff
+      1         0.020800000    0.000265660
+      2         0.041466667    0.000569575
+      3         0.062133333    0.000951102
+      4         0.082800000    0.001451844
+
+  Refining Gamma values for Eigenvalue calcs
+   Eigindx    apprx Gam vals      absdiff       refine lev     inttest=?1
+      1         0.020668411     .000000001      Level:  7      0.9999888   Ak:    4.4416805
+      2         0.041337055     .000000001      Level:  7      0.9999553   Ak:    4.4388756
+      3         0.062006161     .000000001      Level:  7      0.9999000   Ak:    4.4342125
+      4         0.082675959     .000000000      Level:  7      0.9998237   Ak:    4.4277084
+
+     Eigenvalues and their contributions
+   Eigindx       Eig vals        sqrt(Eig)
+      1         0.000000030    0.000172096     
+      2         0.000000030    0.000171986     
+      3         0.000000030    0.000171803     
+      4         0.000000029    0.000171547     
+   lamc:              0.001
+   TT  :            150.00000000
+
+radMC,KLres,radWood       100 of     10000 realz       tot:   0.13 time/est:   0.13/  12.53 min
+radMC,KLres,radWood       200 of     10000 realz       tot:   0.25 time/est:   0.25/  12.50 min
+radMC,KLres,radWood       300 of     10000 realz       tot:   0.38 time/est:   0.37/  12.50 min
+radMC,KLres,radWood       400 of     10000 realz       tot:   0.50 time/est:   0.50/  12.45 min
+radMC,KLres,radWood       500 of     10000 realz       tot:   0.62 time/est:   0.62/  12.39 min
+radMC,KLres,radWood       600 of     10000 realz       tot:   0.74 time/est:   0.74/  12.39 min
+radMC,KLres,radWood       700 of     10000 realz       tot:   0.87 time/est:   0.87/  12.39 min
+radMC,KLres,radWood       800 of     10000 realz       tot:   0.99 time/est:   0.99/  12.35 min
+radMC,KLres,radWood       900 of     10000 realz       tot:   1.11 time/est:   1.11/  12.32 min
+radMC,KLres,radWood      1000 of     10000 realz       tot:   1.23 time/est:   1.23/  12.34 min
+radMC,KLres,radWood      1100 of     10000 realz       tot:   1.36 time/est:   1.36/  12.34 min
+radMC,KLres,radWood      1200 of     10000 realz       tot:   1.48 time/est:   1.48/  12.33 min
+radMC,KLres,radWood      1300 of     10000 realz       tot:   1.60 time/est:   1.60/  12.34 min
+radMC,KLres,radWood      1400 of     10000 realz       tot:   1.72 time/est:   1.72/  12.31 min
+radMC,KLres,radWood      1500 of     10000 realz       tot:   1.85 time/est:   1.85/  12.30 min
+radMC,KLres,radWood      1600 of     10000 realz       tot:   1.97 time/est:   1.97/  12.29 min
+radMC,KLres,radWood      1700 of     10000 realz       tot:   2.09 time/est:   2.09/  12.30 min
+radMC,KLres,radWood      1800 of     10000 realz       tot:   2.21 time/est:   2.21/  12.29 min
+radMC,KLres,radWood      1900 of     10000 realz       tot:   2.34 time/est:   2.34/  12.30 min
+radMC,KLres,radWood      2000 of     10000 realz       tot:   2.46 time/est:   2.46/  12.30 min
+radMC,KLres,radWood      2100 of     10000 realz       tot:   2.59 time/est:   2.59/  12.32 min
+radMC,KLres,radWood      2200 of     10000 realz       tot:   2.71 time/est:   2.71/  12.30 min
+radMC,KLres,radWood      2300 of     10000 realz       tot:   2.83 time/est:   2.83/  12.31 min
+radMC,KLres,radWood      2400 of     10000 realz       tot:   2.96 time/est:   2.96/  12.32 min
+radMC,KLres,radWood      2500 of     10000 realz       tot:   3.08 time/est:   3.08/  12.32 min
+radMC,KLres,radWood      2600 of     10000 realz       tot:   3.20 time/est:   3.20/  12.31 min
+radMC,KLres,radWood      2700 of     10000 realz       tot:   3.32 time/est:   3.32/  12.31 min
+radMC,KLres,radWood      2800 of     10000 realz       tot:   3.44 time/est:   3.44/  12.30 min
+radMC,KLres,radWood      2900 of     10000 realz       tot:   3.57 time/est:   3.56/  12.29 min
+radMC,KLres,radWood      3000 of     10000 realz       tot:   3.69 time/est:   3.69/  12.28 min
+radMC,KLres,radWood      3100 of     10000 realz       tot:   3.81 time/est:   3.81/  12.28 min
+radMC,KLres,radWood      3200 of     10000 realz       tot:   3.93 time/est:   3.93/  12.28 min
+radMC,KLres,radWood      3300 of     10000 realz       tot:   4.06 time/est:   4.05/  12.28 min
+radMC,KLres,radWood      3400 of     10000 realz       tot:   4.18 time/est:   4.18/  12.28 min
+radMC,KLres,radWood      3500 of     10000 realz       tot:   4.30 time/est:   4.30/  12.28 min
+radMC,KLres,radWood      3600 of     10000 realz       tot:   4.42 time/est:   4.42/  12.28 min
+radMC,KLres,radWood      3700 of     10000 realz       tot:   4.55 time/est:   4.54/  12.28 min
+radMC,KLres,radWood      3800 of     10000 realz       tot:   4.67 time/est:   4.67/  12.29 min
+radMC,KLres,radWood      3900 of     10000 realz       tot:   4.79 time/est:   4.79/  12.28 min
+radMC,KLres,radWood      4000 of     10000 realz       tot:   4.91 time/est:   4.91/  12.28 min
+radMC,KLres,radWood      4100 of     10000 realz       tot:   5.04 time/est:   5.03/  12.28 min
+radMC,KLres,radWood      4200 of     10000 realz       tot:   5.16 time/est:   5.15/  12.27 min
+radMC,KLres,radWood      4300 of     10000 realz       tot:   5.28 time/est:   5.27/  12.27 min
+radMC,KLres,radWood      4400 of     10000 realz       tot:   5.40 time/est:   5.40/  12.26 min
+radMC,KLres,radWood      4500 of     10000 realz       tot:   5.52 time/est:   5.52/  12.26 min
+radMC,KLres,radWood      4600 of     10000 realz       tot:   5.64 time/est:   5.64/  12.27 min
+radMC,KLres,radWood      4700 of     10000 realz       tot:   5.76 time/est:   5.76/  12.26 min
+radMC,KLres,radWood      4800 of     10000 realz       tot:   5.88 time/est:   5.88/  12.26 min
+radMC,KLres,radWood      4900 of     10000 realz       tot:   6.01 time/est:   6.01/  12.26 min
+radMC,KLres,radWood      5000 of     10000 realz       tot:   6.13 time/est:   6.13/  12.26 min
+radMC,KLres,radWood      5100 of     10000 realz       tot:   6.25 time/est:   6.25/  12.26 min
+radMC,KLres,radWood      5200 of     10000 realz       tot:   6.38 time/est:   6.38/  12.26 min
+radMC,KLres,radWood      5300 of     10000 realz       tot:   6.50 time/est:   6.50/  12.27 min
+radMC,KLres,radWood      5400 of     10000 realz       tot:   6.63 time/est:   6.62/  12.27 min
+radMC,KLres,radWood      5500 of     10000 realz       tot:   6.75 time/est:   6.75/  12.27 min
+radMC,KLres,radWood      5600 of     10000 realz       tot:   6.87 time/est:   6.87/  12.26 min
+radMC,KLres,radWood      5700 of     10000 realz       tot:   6.99 time/est:   6.99/  12.27 min
+radMC,KLres,radWood      5800 of     10000 realz       tot:   7.12 time/est:   7.12/  12.27 min
+radMC,KLres,radWood      5900 of     10000 realz       tot:   7.25 time/est:   7.25/  12.28 min
+radMC,KLres,radWood      6000 of     10000 realz       tot:   7.37 time/est:   7.37/  12.29 min
+radMC,KLres,radWood      6100 of     10000 realz       tot:   7.50 time/est:   7.50/  12.30 min
+radMC,KLres,radWood      6200 of     10000 realz       tot:   7.62 time/est:   7.62/  12.29 min
+radMC,KLres,radWood      6300 of     10000 realz       tot:   7.75 time/est:   7.75/  12.29 min
+radMC,KLres,radWood      6400 of     10000 realz       tot:   7.87 time/est:   7.87/  12.29 min
+radMC,KLres,radWood      6500 of     10000 realz       tot:   7.99 time/est:   7.99/  12.29 min
+radMC,KLres,radWood      6600 of     10000 realz       tot:   8.11 time/est:   8.11/  12.29 min
+radMC,KLres,radWood      6700 of     10000 realz       tot:   8.23 time/est:   8.23/  12.28 min
+radMC,KLres,radWood      6800 of     10000 realz       tot:   8.35 time/est:   8.35/  12.28 min
+radMC,KLres,radWood      6900 of     10000 realz       tot:   8.47 time/est:   8.47/  12.28 min
+radMC,KLres,radWood      7000 of     10000 realz       tot:   8.60 time/est:   8.59/  12.28 min
+radMC,KLres,radWood      7100 of     10000 realz       tot:   8.72 time/est:   8.72/  12.28 min
+radMC,KLres,radWood      7200 of     10000 realz       tot:   8.84 time/est:   8.84/  12.28 min
+radMC,KLres,radWood      7300 of     10000 realz       tot:   8.97 time/est:   8.96/  12.28 min
+radMC,KLres,radWood      7400 of     10000 realz       tot:   9.09 time/est:   9.09/  12.28 min
+radMC,KLres,radWood      7500 of     10000 realz       tot:   9.21 time/est:   9.21/  12.28 min
+radMC,KLres,radWood      7600 of     10000 realz       tot:   9.34 time/est:   9.33/  12.28 min
+radMC,KLres,radWood      7700 of     10000 realz       tot:   9.46 time/est:   9.45/  12.28 min
+radMC,KLres,radWood      7800 of     10000 realz       tot:   9.58 time/est:   9.58/  12.28 min
+radMC,KLres,radWood      7900 of     10000 realz       tot:   9.70 time/est:   9.70/  12.27 min
+radMC,KLres,radWood      8000 of     10000 realz       tot:   9.82 time/est:   9.82/  12.27 min
+radMC,KLres,radWood      8100 of     10000 realz       tot:   9.94 time/est:   9.94/  12.27 min
+radMC,KLres,radWood      8200 of     10000 realz       tot:  10.06 time/est:  10.06/  12.27 min
+radMC,KLres,radWood      8300 of     10000 realz       tot:  10.18 time/est:  10.18/  12.27 min
+radMC,KLres,radWood      8400 of     10000 realz       tot:  10.31 time/est:  10.31/  12.27 min
+radMC,KLres,radWood      8500 of     10000 realz       tot:  10.43 time/est:  10.43/  12.27 min
+radMC,KLres,radWood      8600 of     10000 realz       tot:  10.55 time/est:  10.55/  12.26 min
+radMC,KLres,radWood      8700 of     10000 realz       tot:  10.67 time/est:  10.67/  12.26 min
+radMC,KLres,radWood      8800 of     10000 realz       tot:  10.80 time/est:  10.79/  12.26 min
+radMC,KLres,radWood      8900 of     10000 realz       tot:  10.92 time/est:  10.91/  12.26 min
+radMC,KLres,radWood      9000 of     10000 realz       tot:  11.04 time/est:  11.04/  12.26 min
+radMC,KLres,radWood      9100 of     10000 realz       tot:  11.16 time/est:  11.16/  12.26 min
+radMC,KLres,radWood      9200 of     10000 realz       tot:  11.28 time/est:  11.28/  12.26 min
+radMC,KLres,radWood      9300 of     10000 realz       tot:  11.41 time/est:  11.41/  12.26 min
+radMC,KLres,radWood      9400 of     10000 realz       tot:  11.53 time/est:  11.53/  12.27 min
+radMC,KLres,radWood      9500 of     10000 realz       tot:  11.66 time/est:  11.65/  12.27 min
+radMC,KLres,radWood      9600 of     10000 realz       tot:  11.78 time/est:  11.78/  12.27 min
+radMC,KLres,radWood      9700 of     10000 realz       tot:  11.90 time/est:  11.90/  12.27 min
+radMC,KLres,radWood      9800 of     10000 realz       tot:  12.03 time/est:  12.02/  12.27 min
+radMC,KLres,radWood      9900 of     10000 realz       tot:  12.15 time/est:  12.14/  12.27 min
+radMC,KLres,radWood     10000 of     10000 realz       tot:  12.27 time/est:  12.27/  12.27 min
+
+Start mat1:   0.6652+-  0.0047   mat2:   0.3348+-  0.0047
+      P(1):   0.6667             P(2):   0.3333
+
+Path  mat1:   0.0020+-  0.0000   mat2:   0.0010+-  0.0000
+    lam(1):   0.0020           lam(2):   0.0010
+
+totLength(1):         652.93    totLength(2):         330.79    tottotLength:         983.71
+expLength(1):         666.67    expLength(2):         333.33    exptotLength:        1000.00
+       CoAct:        0.00002
+       CoExp:        0.00002       CoPerdiff:           0.44 %
+
+
+  smallestxi:                -4.41123        largestxi:                 3.93396
+
+
+  curEig:  1   numRealz:      10000   probsum: 1.000   meanxi:   0.0079   varxi:   0.9737
+  curEig:  2   numRealz:      10000   probsum: 1.000   meanxi:  -0.0174   varxi:   1.0185
+  curEig:  3   numRealz:      10000   probsum: 1.000   meanxi:   0.0072   varxi:   0.9944
+  curEig:  4   numRealz:      10000   probsum: 1.000   meanxi:  -0.0099   varxi:   1.0058
+
+KLrec                     100 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     200 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     300 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     400 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     500 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     600 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     700 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     800 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                     900 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1000 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1100 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1200 of     10000 realz       tot:  12.27 time/est:   0.00/   0.02 min
+KLrec                    1300 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1400 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1500 of     10000 realz       tot:  12.27 time/est:   0.00/   0.02 min
+KLrec                    1600 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1700 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1800 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    1900 of     10000 realz       tot:  12.27 time/est:   0.00/   0.03 min
+KLrec                    2000 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2100 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2200 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2300 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2400 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2500 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2600 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2700 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2800 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    2900 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3000 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3100 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3200 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3300 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3400 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3500 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3600 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3700 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3800 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    3900 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4000 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4100 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4200 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4300 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4400 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4500 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4600 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4700 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4800 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    4900 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5000 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5100 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5200 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5300 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5400 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5500 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5600 of     10000 realz       tot:  12.28 time/est:   0.01/   0.03 min
+KLrec                    5700 of     10000 realz       tot:  12.28 time/est:   0.01/   0.02 min
+KLrec                    5800 of     10000 realz       tot:  12.28 time/est:   0.01/   0.02 min
+KLrec                    5900 of     10000 realz       tot:  12.28 time/est:   0.01/   0.02 min
+KLrec                    6000 of     10000 realz       tot:  12.29 time/est:   0.01/   0.02 min
+KLrec                    6100 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6200 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6300 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6400 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6500 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6600 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6700 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6800 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    6900 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7000 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7100 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7200 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7300 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7400 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7500 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7600 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7700 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7800 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    7900 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    8000 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8100 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8200 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8300 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8400 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    8500 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8600 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8700 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8800 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    8900 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    9000 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    9100 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    9200 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    9300 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    9400 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    9500 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                    9600 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    9700 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    9800 of     10000 realz       tot:  12.29 time/est:   0.02/   0.03 min
+KLrec                    9900 of     10000 realz       tot:  12.29 time/est:   0.02/   0.02 min
+KLrec                   10000 of     10000 realz       tot:  12.30 time/est:   0.03/   0.03 min
+  Total num reconstructed realz w/ neg value:            0
+
+KLWood                    100 of     10000 realz       tot:  12.30 time/est:   0.00/   0.30 min
+KLWood                    200 of     10000 realz       tot:  12.30 time/est:   0.01/   0.29 min
+KLWood                    300 of     10000 realz       tot:  12.30 time/est:   0.01/   0.29 min
+KLWood                    400 of     10000 realz       tot:  12.31 time/est:   0.01/   0.29 min
+KLWood                    500 of     10000 realz       tot:  12.31 time/est:   0.01/   0.29 min
+KLWood                    600 of     10000 realz       tot:  12.31 time/est:   0.02/   0.29 min
+KLWood                    700 of     10000 realz       tot:  12.32 time/est:   0.02/   0.29 min
+KLWood                    800 of     10000 realz       tot:  12.32 time/est:   0.02/   0.29 min
+KLWood                    900 of     10000 realz       tot:  12.32 time/est:   0.03/   0.29 min
+KLWood                   1000 of     10000 realz       tot:  12.32 time/est:   0.03/   0.29 min
+KLWood                   1100 of     10000 realz       tot:  12.33 time/est:   0.03/   0.29 min
+KLWood                   1200 of     10000 realz       tot:  12.33 time/est:   0.03/   0.29 min
+KLWood                   1300 of     10000 realz       tot:  12.33 time/est:   0.04/   0.29 min
+KLWood                   1400 of     10000 realz       tot:  12.34 time/est:   0.04/   0.29 min
+KLWood                   1500 of     10000 realz       tot:  12.34 time/est:   0.04/   0.29 min
+KLWood                   1600 of     10000 realz       tot:  12.34 time/est:   0.05/   0.29 min
+KLWood                   1700 of     10000 realz       tot:  12.34 time/est:   0.05/   0.29 min
+KLWood                   1800 of     10000 realz       tot:  12.35 time/est:   0.05/   0.29 min
+KLWood                   1900 of     10000 realz       tot:  12.35 time/est:   0.05/   0.29 min
+KLWood                   2000 of     10000 realz       tot:  12.35 time/est:   0.06/   0.29 min
+KLWood                   2100 of     10000 realz       tot:  12.36 time/est:   0.06/   0.29 min
+KLWood                   2200 of     10000 realz       tot:  12.36 time/est:   0.06/   0.29 min
+KLWood                   2300 of     10000 realz       tot:  12.36 time/est:   0.07/   0.29 min
+KLWood                   2400 of     10000 realz       tot:  12.36 time/est:   0.07/   0.29 min
+KLWood                   2500 of     10000 realz       tot:  12.37 time/est:   0.07/   0.29 min
+KLWood                   2600 of     10000 realz       tot:  12.37 time/est:   0.07/   0.29 min
+KLWood                   2700 of     10000 realz       tot:  12.37 time/est:   0.08/   0.29 min
+KLWood                   2800 of     10000 realz       tot:  12.38 time/est:   0.08/   0.29 min
+KLWood                   2900 of     10000 realz       tot:  12.38 time/est:   0.08/   0.29 min
+KLWood                   3000 of     10000 realz       tot:  12.38 time/est:   0.09/   0.29 min
+KLWood                   3100 of     10000 realz       tot:  12.38 time/est:   0.09/   0.29 min
+KLWood                   3200 of     10000 realz       tot:  12.39 time/est:   0.09/   0.29 min
+KLWood                   3300 of     10000 realz       tot:  12.39 time/est:   0.09/   0.29 min
+KLWood                   3400 of     10000 realz       tot:  12.39 time/est:   0.10/   0.29 min
+KLWood                   3500 of     10000 realz       tot:  12.40 time/est:   0.10/   0.29 min
+KLWood                   3600 of     10000 realz       tot:  12.40 time/est:   0.10/   0.29 min
+KLWood                   3700 of     10000 realz       tot:  12.40 time/est:   0.11/   0.29 min
+KLWood                   3800 of     10000 realz       tot:  12.41 time/est:   0.11/   0.29 min
+KLWood                   3900 of     10000 realz       tot:  12.41 time/est:   0.11/   0.29 min
+KLWood                   4000 of     10000 realz       tot:  12.41 time/est:   0.11/   0.29 min
+KLWood                   4100 of     10000 realz       tot:  12.41 time/est:   0.12/   0.29 min
+KLWood                   4200 of     10000 realz       tot:  12.42 time/est:   0.12/   0.29 min
+KLWood                   4300 of     10000 realz       tot:  12.42 time/est:   0.12/   0.29 min
+KLWood                   4400 of     10000 realz       tot:  12.42 time/est:   0.13/   0.29 min
+KLWood                   4500 of     10000 realz       tot:  12.43 time/est:   0.13/   0.29 min
+KLWood                   4600 of     10000 realz       tot:  12.43 time/est:   0.13/   0.29 min
+KLWood                   4700 of     10000 realz       tot:  12.43 time/est:   0.13/   0.29 min
+KLWood                   4800 of     10000 realz       tot:  12.43 time/est:   0.14/   0.29 min
+KLWood                   4900 of     10000 realz       tot:  12.44 time/est:   0.14/   0.29 min
+KLWood                   5000 of     10000 realz       tot:  12.44 time/est:   0.14/   0.29 min
+KLWood                   5100 of     10000 realz       tot:  12.44 time/est:   0.15/   0.29 min
+KLWood                   5200 of     10000 realz       tot:  12.45 time/est:   0.15/   0.29 min
+KLWood                   5300 of     10000 realz       tot:  12.45 time/est:   0.15/   0.29 min
+KLWood                   5400 of     10000 realz       tot:  12.45 time/est:   0.16/   0.29 min
+KLWood                   5500 of     10000 realz       tot:  12.45 time/est:   0.16/   0.29 min
+KLWood                   5600 of     10000 realz       tot:  12.46 time/est:   0.16/   0.29 min
+KLWood                   5700 of     10000 realz       tot:  12.46 time/est:   0.16/   0.29 min
+KLWood                   5800 of     10000 realz       tot:  12.46 time/est:   0.17/   0.29 min
+KLWood                   5900 of     10000 realz       tot:  12.47 time/est:   0.17/   0.29 min
+KLWood                   6000 of     10000 realz       tot:  12.47 time/est:   0.17/   0.29 min
+KLWood                   6100 of     10000 realz       tot:  12.47 time/est:   0.18/   0.29 min
+KLWood                   6200 of     10000 realz       tot:  12.47 time/est:   0.18/   0.29 min
+KLWood                   6300 of     10000 realz       tot:  12.48 time/est:   0.18/   0.29 min
+KLWood                   6400 of     10000 realz       tot:  12.48 time/est:   0.18/   0.29 min
+KLWood                   6500 of     10000 realz       tot:  12.48 time/est:   0.19/   0.29 min
+KLWood                   6600 of     10000 realz       tot:  12.49 time/est:   0.19/   0.29 min
+KLWood                   6700 of     10000 realz       tot:  12.49 time/est:   0.19/   0.29 min
+KLWood                   6800 of     10000 realz       tot:  12.49 time/est:   0.20/   0.29 min
+KLWood                   6900 of     10000 realz       tot:  12.49 time/est:   0.20/   0.29 min
+KLWood                   7000 of     10000 realz       tot:  12.50 time/est:   0.20/   0.29 min
+KLWood                   7100 of     10000 realz       tot:  12.50 time/est:   0.20/   0.29 min
+KLWood                   7200 of     10000 realz       tot:  12.50 time/est:   0.21/   0.29 min
+KLWood                   7300 of     10000 realz       tot:  12.51 time/est:   0.21/   0.29 min
+KLWood                   7400 of     10000 realz       tot:  12.51 time/est:   0.21/   0.29 min
+KLWood                   7500 of     10000 realz       tot:  12.51 time/est:   0.22/   0.29 min
+KLWood                   7600 of     10000 realz       tot:  12.51 time/est:   0.22/   0.29 min
+KLWood                   7700 of     10000 realz       tot:  12.52 time/est:   0.22/   0.29 min
+KLWood                   7800 of     10000 realz       tot:  12.52 time/est:   0.22/   0.29 min
+KLWood                   7900 of     10000 realz       tot:  12.52 time/est:   0.23/   0.29 min
+KLWood                   8000 of     10000 realz       tot:  12.53 time/est:   0.23/   0.29 min
+KLWood                   8100 of     10000 realz       tot:  12.53 time/est:   0.23/   0.29 min
+KLWood                   8200 of     10000 realz       tot:  12.53 time/est:   0.24/   0.29 min
+KLWood                   8300 of     10000 realz       tot:  12.53 time/est:   0.24/   0.29 min
+KLWood                   8400 of     10000 realz       tot:  12.54 time/est:   0.24/   0.29 min
+KLWood                   8500 of     10000 realz       tot:  12.54 time/est:   0.24/   0.29 min
+KLWood                   8600 of     10000 realz       tot:  12.54 time/est:   0.25/   0.29 min
+KLWood                   8700 of     10000 realz       tot:  12.55 time/est:   0.25/   0.29 min
+KLWood                   8800 of     10000 realz       tot:  12.55 time/est:   0.25/   0.29 min
+KLWood                   8900 of     10000 realz       tot:  12.55 time/est:   0.26/   0.29 min
+KLWood                   9000 of     10000 realz       tot:  12.56 time/est:   0.26/   0.29 min
+KLWood                   9100 of     10000 realz       tot:  12.56 time/est:   0.26/   0.29 min
+KLWood                   9200 of     10000 realz       tot:  12.56 time/est:   0.26/   0.29 min
+KLWood                   9300 of     10000 realz       tot:  12.56 time/est:   0.27/   0.29 min
+KLWood                   9400 of     10000 realz       tot:  12.57 time/est:   0.27/   0.29 min
+KLWood                   9500 of     10000 realz       tot:  12.57 time/est:   0.27/   0.29 min
+KLWood                   9600 of     10000 realz       tot:  12.57 time/est:   0.28/   0.29 min
+KLWood                   9700 of     10000 realz       tot:  12.58 time/est:   0.28/   0.29 min
+KLWood                   9800 of     10000 realz       tot:  12.58 time/est:   0.28/   0.29 min
+KLWood                   9900 of     10000 realz       tot:  12.58 time/est:   0.28/   0.29 min
+KLWood                  10000 of     10000 realz       tot:  12.59 time/est:   0.29/   0.29 min
+
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.020000   sig(2)    :  0.030000
+    scatrat(1):  0.50       scatrat(2):  0.50
+    lam(1)    :  0.00       lam(2)    :  0.00
+    s         :  0.10       lamc      :  0.00
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr   
+reflection        :    0.00115 +-     0.00034 +-   0.2967034
+transmission      :    0.99652 +-     0.00059 +-   0.0005951
+absorption        :    0.00233
+ interactions     :  100.0 % accept  ***** ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr   
+radWood reflec    :    0.00115 +-     0.00034 +-   0.2918879
+radWood transmit  :    0.99652 +-     0.00059 +-   0.0005944
+radWood absorb    :    0.00233 +-     0.00048 +-   0.2072630
+ interactions     :   99.9 % accept   1.00 ac/p     0.00 rj/p
+
+
+ --- Transport: KLWood ---
+                         mean           stdev         relerr   
+KLWood  reflec    :    0.00114 +-     0.00034 +-   0.2953107
+KLWood  transmit  :    0.99653 +-     0.00059 +-   0.0005942
+KLWood  absorb    :    0.00232 +-     0.00048 +-   0.2075449
+ interactions     :   99.9 % accept   1.00 ac/p     0.00 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00000%,                     0 /                10000
+  Neg samples :  0.00000%,                     0 /               542081
+  Neg area    : -0.00000%
+  Ave neg samp:         NaN   Ave pos samp:      0.0234
+  Max neg samp:      0.0000   Max pos samp:      0.0291
+
+  total runtime:     12.59 min
+    genRealz   :      0.00 min     per:  0.02 %
+    radMC      :     11.95 min     per: 94.97 %
+    radWood    :      0.30 min     per:  2.42 %
+    KLcol      :      0.01 min     per:  0.06 %
+    KLrec      :      0.03 min     per:  0.20 %
+    KLWood     :      0.29 min     per:  2.29 %
+    other      :      0.00 min     per:  0.04 %
+   
+
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.020000   sig(2)    :  0.030000
+    scatrat(1):  0.50       scatrat(2):  0.50
+    lam(1)    :  0.00       lam(2)    :  0.00
+    s         :  0.10       lamc      :  0.00
+
+  Finding apprx Gam vals for Eigenvalue calcs
+   Eigindx    apprx Gam vals      absdiff
+      1         0.020800000    0.000265660
+      2         0.041466667    0.000569575
+      3         0.062133333    0.000951102
+      4         0.082800000    0.001451844
+
+  Refining Gamma values for Eigenvalue calcs
+   Eigindx    apprx Gam vals      absdiff       refine lev     inttest=?1
+      1         0.020668411     .000000001      Level:  7      0.9999888   Ak:    4.4416805
+      2         0.041337055     .000000001      Level:  7      0.9999553   Ak:    4.4388756
+      3         0.062006161     .000000001      Level:  7      0.9999000   Ak:    4.4342125
+      4         0.082675959     .000000000      Level:  7      0.9998237   Ak:    4.4277084
+
+     Eigenvalues and their contributions
+   Eigindx       Eig vals        sqrt(Eig)
+      1         0.000000030    0.000172096     
+      2         0.000000030    0.000171986     
+      3         0.000000030    0.000171803     
+      4         0.000000029    0.000171547     
+   lamc:              0.001
+   TT  :            150.00000000
+
+radMC,KLres,radWood       100 of     10000 realz       tot:   0.12 time/est:   0.12/  12.34 min
+radMC,KLres,radWood       200 of     10000 realz       tot:   0.25 time/est:   0.25/  12.30 min
+radMC,KLres,radWood       300 of     10000 realz       tot:   0.37 time/est:   0.37/  12.29 min
+radMC,KLres,radWood       400 of     10000 realz       tot:   0.49 time/est:   0.49/  12.25 min
+radMC,KLres,radWood       500 of     10000 realz       tot:   0.61 time/est:   0.61/  12.19 min
+radMC,KLres,radWood       600 of     10000 realz       tot:   0.73 time/est:   0.73/  12.19 min
+radMC,KLres,radWood       700 of     10000 realz       tot:   0.85 time/est:   0.85/  12.21 min
+radMC,KLres,radWood       800 of     10000 realz       tot:   0.97 time/est:   0.97/  12.18 min
+radMC,KLres,radWood       900 of     10000 realz       tot:   1.10 time/est:   1.10/  12.17 min
+radMC,KLres,radWood      1000 of     10000 realz       tot:   1.22 time/est:   1.22/  12.20 min
+radMC,KLres,radWood      1100 of     10000 realz       tot:   1.34 time/est:   1.34/  12.20 min
+radMC,KLres,radWood      1200 of     10000 realz       tot:   1.46 time/est:   1.46/  12.19 min
+radMC,KLres,radWood      1300 of     10000 realz       tot:   1.59 time/est:   1.59/  12.20 min
+radMC,KLres,radWood      1400 of     10000 realz       tot:   1.71 time/est:   1.71/  12.18 min
+radMC,KLres,radWood      1500 of     10000 realz       tot:   1.83 time/est:   1.83/  12.18 min
+radMC,KLres,radWood      1600 of     10000 realz       tot:   1.95 time/est:   1.95/  12.18 min
+radMC,KLres,radWood      1700 of     10000 realz       tot:   2.07 time/est:   2.07/  12.19 min
+radMC,KLres,radWood      1800 of     10000 realz       tot:   2.19 time/est:   2.19/  12.19 min
+radMC,KLres,radWood      1900 of     10000 realz       tot:   2.32 time/est:   2.32/  12.20 min
+radMC,KLres,radWood      2000 of     10000 realz       tot:   2.44 time/est:   2.44/  12.20 min
+radMC,KLres,radWood      2100 of     10000 realz       tot:   2.57 time/est:   2.57/  12.22 min
+radMC,KLres,radWood      2200 of     10000 realz       tot:   2.69 time/est:   2.69/  12.21 min
+radMC,KLres,radWood      2300 of     10000 realz       tot:   2.81 time/est:   2.81/  12.22 min
+radMC,KLres,radWood      2400 of     10000 realz       tot:   2.94 time/est:   2.93/  12.23 min
+radMC,KLres,radWood      2500 of     10000 realz       tot:   3.06 time/est:   3.06/  12.23 min
+radMC,KLres,radWood      2600 of     10000 realz       tot:   3.18 time/est:   3.18/  12.22 min
+radMC,KLres,radWood      2700 of     10000 realz       tot:   3.30 time/est:   3.30/  12.22 min
+radMC,KLres,radWood      2800 of     10000 realz       tot:   3.42 time/est:   3.42/  12.21 min
+radMC,KLres,radWood      2900 of     10000 realz       tot:   3.54 time/est:   3.54/  12.21 min
+radMC,KLres,radWood      3000 of     10000 realz       tot:   3.66 time/est:   3.66/  12.21 min
+radMC,KLres,radWood      3100 of     10000 realz       tot:   3.79 time/est:   3.79/  12.21 min
+radMC,KLres,radWood      3200 of     10000 realz       tot:   3.91 time/est:   3.91/  12.23 min
+radMC,KLres,radWood      3300 of     10000 realz       tot:   4.04 time/est:   4.03/  12.23 min
+radMC,KLres,radWood      3400 of     10000 realz       tot:   4.16 time/est:   4.15/  12.22 min
+radMC,KLres,radWood      3500 of     10000 realz       tot:   4.28 time/est:   4.27/  12.21 min
+radMC,KLres,radWood      3600 of     10000 realz       tot:   4.40 time/est:   4.40/  12.22 min
+radMC,KLres,radWood      3700 of     10000 realz       tot:   4.52 time/est:   4.52/  12.21 min
+radMC,KLres,radWood      3800 of     10000 realz       tot:   4.64 time/est:   4.64/  12.21 min
+radMC,KLres,radWood      3900 of     10000 realz       tot:   4.76 time/est:   4.76/  12.21 min
+radMC,KLres,radWood      4000 of     10000 realz       tot:   4.88 time/est:   4.88/  12.21 min
+radMC,KLres,radWood      4100 of     10000 realz       tot:   5.01 time/est:   5.01/  12.21 min
+radMC,KLres,radWood      4200 of     10000 realz       tot:   5.13 time/est:   5.13/  12.20 min
+radMC,KLres,radWood      4300 of     10000 realz       tot:   5.25 time/est:   5.24/  12.20 min
+radMC,KLres,radWood      4400 of     10000 realz       tot:   5.37 time/est:   5.36/  12.19 min
+radMC,KLres,radWood      4500 of     10000 realz       tot:   5.49 time/est:   5.49/  12.19 min
+radMC,KLres,radWood      4600 of     10000 realz       tot:   5.61 time/est:   5.61/  12.19 min
+radMC,KLres,radWood      4700 of     10000 realz       tot:   5.73 time/est:   5.72/  12.18 min
+radMC,KLres,radWood      4800 of     10000 realz       tot:   5.85 time/est:   5.84/  12.17 min
+radMC,KLres,radWood      4900 of     10000 realz       tot:   5.97 time/est:   5.97/  12.17 min
+radMC,KLres,radWood      5000 of     10000 realz       tot:   6.09 time/est:   6.09/  12.17 min
+radMC,KLres,radWood      5100 of     10000 realz       tot:   6.21 time/est:   6.21/  12.17 min
+radMC,KLres,radWood      5200 of     10000 realz       tot:   6.33 time/est:   6.33/  12.18 min
+radMC,KLres,radWood      5300 of     10000 realz       tot:   6.45 time/est:   6.45/  12.17 min
+radMC,KLres,radWood      5400 of     10000 realz       tot:   6.58 time/est:   6.57/  12.17 min
+radMC,KLres,radWood      5500 of     10000 realz       tot:   6.70 time/est:   6.69/  12.17 min
+radMC,KLres,radWood      5600 of     10000 realz       tot:   6.82 time/est:   6.81/  12.17 min
+radMC,KLres,radWood      5700 of     10000 realz       tot:   6.94 time/est:   6.94/  12.17 min
+radMC,KLres,radWood      5800 of     10000 realz       tot:   7.06 time/est:   7.06/  12.16 min
+radMC,KLres,radWood      5900 of     10000 realz       tot:   7.18 time/est:   7.18/  12.17 min
+radMC,KLres,radWood      6000 of     10000 realz       tot:   7.30 time/est:   7.30/  12.17 min
+radMC,KLres,radWood      6100 of     10000 realz       tot:   7.43 time/est:   7.42/  12.17 min
+radMC,KLres,radWood      6200 of     10000 realz       tot:   7.55 time/est:   7.54/  12.17 min
+radMC,KLres,radWood      6300 of     10000 realz       tot:   7.67 time/est:   7.67/  12.17 min
+radMC,KLres,radWood      6400 of     10000 realz       tot:   7.79 time/est:   7.79/  12.17 min
+radMC,KLres,radWood      6500 of     10000 realz       tot:   7.92 time/est:   7.91/  12.17 min
+radMC,KLres,radWood      6600 of     10000 realz       tot:   8.04 time/est:   8.04/  12.17 min
+radMC,KLres,radWood      6700 of     10000 realz       tot:   8.16 time/est:   8.16/  12.18 min
+radMC,KLres,radWood      6800 of     10000 realz       tot:   8.28 time/est:   8.28/  12.18 min
+radMC,KLres,radWood      6900 of     10000 realz       tot:   8.41 time/est:   8.41/  12.18 min
+radMC,KLres,radWood      7000 of     10000 realz       tot:   8.53 time/est:   8.53/  12.19 min
+radMC,KLres,radWood      7100 of     10000 realz       tot:   8.66 time/est:   8.66/  12.20 min
+radMC,KLres,radWood      7200 of     10000 realz       tot:   8.78 time/est:   8.78/  12.20 min
+radMC,KLres,radWood      7300 of     10000 realz       tot:   8.91 time/est:   8.90/  12.20 min
+radMC,KLres,radWood      7400 of     10000 realz       tot:   9.03 time/est:   9.03/  12.20 min
+radMC,KLres,radWood      7500 of     10000 realz       tot:   9.15 time/est:   9.15/  12.20 min
+radMC,KLres,radWood      7600 of     10000 realz       tot:   9.27 time/est:   9.27/  12.20 min
+radMC,KLres,radWood      7700 of     10000 realz       tot:   9.39 time/est:   9.39/  12.20 min
+radMC,KLres,radWood      7800 of     10000 realz       tot:   9.51 time/est:   9.51/  12.19 min
+radMC,KLres,radWood      7900 of     10000 realz       tot:   9.63 time/est:   9.63/  12.19 min
+radMC,KLres,radWood      8000 of     10000 realz       tot:   9.76 time/est:   9.75/  12.19 min
+radMC,KLres,radWood      8100 of     10000 realz       tot:   9.88 time/est:   9.87/  12.19 min
+radMC,KLres,radWood      8200 of     10000 realz       tot:  10.00 time/est:   9.99/  12.19 min
+radMC,KLres,radWood      8300 of     10000 realz       tot:  10.12 time/est:  10.12/  12.19 min
+radMC,KLres,radWood      8400 of     10000 realz       tot:  10.24 time/est:  10.24/  12.19 min
+radMC,KLres,radWood      8500 of     10000 realz       tot:  10.36 time/est:  10.36/  12.18 min
+radMC,KLres,radWood      8600 of     10000 realz       tot:  10.48 time/est:  10.48/  12.18 min
+radMC,KLres,radWood      8700 of     10000 realz       tot:  10.60 time/est:  10.60/  12.18 min
+radMC,KLres,radWood      8800 of     10000 realz       tot:  10.73 time/est:  10.72/  12.18 min
+radMC,KLres,radWood      8900 of     10000 realz       tot:  10.85 time/est:  10.84/  12.18 min
+radMC,KLres,radWood      9000 of     10000 realz       tot:  10.97 time/est:  10.97/  12.18 min
+radMC,KLres,radWood      9100 of     10000 realz       tot:  11.09 time/est:  11.09/  12.18 min
+radMC,KLres,radWood      9200 of     10000 realz       tot:  11.21 time/est:  11.21/  12.18 min
+radMC,KLres,radWood      9300 of     10000 realz       tot:  11.34 time/est:  11.33/  12.19 min
+radMC,KLres,radWood      9400 of     10000 realz       tot:  11.46 time/est:  11.46/  12.19 min
+radMC,KLres,radWood      9500 of     10000 realz       tot:  11.58 time/est:  11.58/  12.19 min
+radMC,KLres,radWood      9600 of     10000 realz       tot:  11.70 time/est:  11.70/  12.19 min
+radMC,KLres,radWood      9700 of     10000 realz       tot:  11.83 time/est:  11.82/  12.19 min
+radMC,KLres,radWood      9800 of     10000 realz       tot:  11.95 time/est:  11.95/  12.19 min
+radMC,KLres,radWood      9900 of     10000 realz       tot:  12.07 time/est:  12.07/  12.19 min
+radMC,KLres,radWood     10000 of     10000 realz       tot:  12.19 time/est:  12.19/  12.19 min
+
+Start mat1:   0.6652+-  0.0047   mat2:   0.3348+-  0.0047
+      P(1):   0.6667             P(2):   0.3333
+
+Path  mat1:   0.0020+-  0.0000   mat2:   0.0010+-  0.0000
+    lam(1):   0.0020           lam(2):   0.0010
+
+totLength(1):         652.93    totLength(2):         330.79    tottotLength:         983.71
+expLength(1):         666.67    expLength(2):         333.33    exptotLength:        1000.00
+       CoAct:        0.00002
+       CoExp:        0.00002       CoPerdiff:           0.44 %
+
+
+  smallestxi:                -4.41123        largestxi:                 3.93396
+
+
+  curEig:  1   numRealz:      10000   probsum: 1.000   meanxi:   0.0079   varxi:   0.9737
+  curEig:  2   numRealz:      10000   probsum: 1.000   meanxi:  -0.0174   varxi:   1.0185
+  curEig:  3   numRealz:      10000   probsum: 1.000   meanxi:   0.0072   varxi:   0.9944
+  curEig:  4   numRealz:      10000   probsum: 1.000   meanxi:  -0.0099   varxi:   1.0058
+
+KLrec                     100 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                     200 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                     300 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                     400 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                     500 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                     600 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                     700 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                     800 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                     900 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1000 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1100 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1200 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1300 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1400 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1500 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1600 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1700 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1800 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    1900 of     10000 realz       tot:  12.20 time/est:   0.00/   0.03 min
+KLrec                    2000 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2100 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2200 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2300 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2400 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2500 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2600 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2700 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2800 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    2900 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3000 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3100 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3200 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3300 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3400 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3500 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3600 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3700 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3800 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    3900 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    4000 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    4100 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    4200 of     10000 realz       tot:  12.20 time/est:   0.01/   0.03 min
+KLrec                    4300 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    4400 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    4500 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    4600 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    4700 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    4800 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    4900 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5000 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5100 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5200 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5300 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5400 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5500 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5600 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5700 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5800 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    5900 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    6000 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    6100 of     10000 realz       tot:  12.21 time/est:   0.01/   0.02 min
+KLrec                    6200 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6300 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6400 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6500 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6600 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6700 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6800 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    6900 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7000 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7100 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7200 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7300 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7400 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7500 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7600 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7700 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7800 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    7900 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8000 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8100 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8200 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8300 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8400 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    8500 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    8600 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    8700 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    8800 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    8900 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9000 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9100 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9200 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9300 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9400 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9500 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9600 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9700 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9800 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                    9900 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+KLrec                   10000 of     10000 realz       tot:  12.22 time/est:   0.02/   0.02 min
+  Total num reconstructed realz w/ neg value:            0
+
+KLWood                    100 of     10000 realz       tot:  12.22 time/est:   0.00/   0.29 min
+KLWood                    200 of     10000 realz       tot:  12.22 time/est:   0.01/   0.29 min
+KLWood                    300 of     10000 realz       tot:  12.23 time/est:   0.01/   0.29 min
+KLWood                    400 of     10000 realz       tot:  12.23 time/est:   0.01/   0.29 min
+KLWood                    500 of     10000 realz       tot:  12.23 time/est:   0.01/   0.29 min
+KLWood                    600 of     10000 realz       tot:  12.24 time/est:   0.02/   0.29 min
+KLWood                    700 of     10000 realz       tot:  12.24 time/est:   0.02/   0.29 min
+KLWood                    800 of     10000 realz       tot:  12.24 time/est:   0.02/   0.29 min
+KLWood                    900 of     10000 realz       tot:  12.25 time/est:   0.03/   0.29 min
+KLWood                   1000 of     10000 realz       tot:  12.25 time/est:   0.03/   0.29 min
+KLWood                   1100 of     10000 realz       tot:  12.25 time/est:   0.03/   0.29 min
+KLWood                   1200 of     10000 realz       tot:  12.25 time/est:   0.03/   0.29 min
+KLWood                   1300 of     10000 realz       tot:  12.26 time/est:   0.04/   0.29 min
+KLWood                   1400 of     10000 realz       tot:  12.26 time/est:   0.04/   0.29 min
+KLWood                   1500 of     10000 realz       tot:  12.26 time/est:   0.04/   0.29 min
+KLWood                   1600 of     10000 realz       tot:  12.27 time/est:   0.05/   0.29 min
+KLWood                   1700 of     10000 realz       tot:  12.27 time/est:   0.05/   0.29 min
+KLWood                   1800 of     10000 realz       tot:  12.27 time/est:   0.05/   0.29 min
+KLWood                   1900 of     10000 realz       tot:  12.27 time/est:   0.05/   0.29 min
+KLWood                   2000 of     10000 realz       tot:  12.28 time/est:   0.06/   0.29 min
+KLWood                   2100 of     10000 realz       tot:  12.28 time/est:   0.06/   0.29 min
+KLWood                   2200 of     10000 realz       tot:  12.28 time/est:   0.06/   0.29 min
+KLWood                   2300 of     10000 realz       tot:  12.29 time/est:   0.07/   0.29 min
+KLWood                   2400 of     10000 realz       tot:  12.29 time/est:   0.07/   0.29 min
+KLWood                   2500 of     10000 realz       tot:  12.29 time/est:   0.07/   0.29 min
+KLWood                   2600 of     10000 realz       tot:  12.29 time/est:   0.07/   0.29 min
+KLWood                   2700 of     10000 realz       tot:  12.30 time/est:   0.08/   0.29 min
+KLWood                   2800 of     10000 realz       tot:  12.30 time/est:   0.08/   0.29 min
+KLWood                   2900 of     10000 realz       tot:  12.30 time/est:   0.08/   0.29 min
+KLWood                   3000 of     10000 realz       tot:  12.31 time/est:   0.09/   0.29 min
+KLWood                   3100 of     10000 realz       tot:  12.31 time/est:   0.09/   0.29 min
+KLWood                   3200 of     10000 realz       tot:  12.31 time/est:   0.09/   0.29 min
+KLWood                   3300 of     10000 realz       tot:  12.31 time/est:   0.09/   0.29 min
+KLWood                   3400 of     10000 realz       tot:  12.32 time/est:   0.10/   0.29 min
+KLWood                   3500 of     10000 realz       tot:  12.32 time/est:   0.10/   0.29 min
+KLWood                   3600 of     10000 realz       tot:  12.32 time/est:   0.10/   0.29 min
+KLWood                   3700 of     10000 realz       tot:  12.33 time/est:   0.11/   0.29 min
+KLWood                   3800 of     10000 realz       tot:  12.33 time/est:   0.11/   0.29 min
+KLWood                   3900 of     10000 realz       tot:  12.33 time/est:   0.11/   0.29 min
+KLWood                   4000 of     10000 realz       tot:  12.33 time/est:   0.11/   0.29 min
+KLWood                   4100 of     10000 realz       tot:  12.34 time/est:   0.12/   0.29 min
+KLWood                   4200 of     10000 realz       tot:  12.34 time/est:   0.12/   0.29 min
+KLWood                   4300 of     10000 realz       tot:  12.34 time/est:   0.12/   0.29 min
+KLWood                   4400 of     10000 realz       tot:  12.35 time/est:   0.13/   0.29 min
+KLWood                   4500 of     10000 realz       tot:  12.35 time/est:   0.13/   0.29 min
+KLWood                   4600 of     10000 realz       tot:  12.35 time/est:   0.13/   0.29 min
+KLWood                   4700 of     10000 realz       tot:  12.35 time/est:   0.13/   0.29 min
+KLWood                   4800 of     10000 realz       tot:  12.36 time/est:   0.14/   0.29 min
+KLWood                   4900 of     10000 realz       tot:  12.36 time/est:   0.14/   0.29 min
+KLWood                   5000 of     10000 realz       tot:  12.36 time/est:   0.14/   0.29 min
+KLWood                   5100 of     10000 realz       tot:  12.37 time/est:   0.15/   0.29 min
+KLWood                   5200 of     10000 realz       tot:  12.37 time/est:   0.15/   0.29 min
+KLWood                   5300 of     10000 realz       tot:  12.37 time/est:   0.15/   0.29 min
+KLWood                   5400 of     10000 realz       tot:  12.37 time/est:   0.16/   0.29 min
+KLWood                   5500 of     10000 realz       tot:  12.38 time/est:   0.16/   0.29 min
+KLWood                   5600 of     10000 realz       tot:  12.38 time/est:   0.16/   0.29 min
+KLWood                   5700 of     10000 realz       tot:  12.38 time/est:   0.16/   0.29 min
+KLWood                   5800 of     10000 realz       tot:  12.39 time/est:   0.17/   0.29 min
+KLWood                   5900 of     10000 realz       tot:  12.39 time/est:   0.17/   0.29 min
+KLWood                   6000 of     10000 realz       tot:  12.39 time/est:   0.17/   0.29 min
+KLWood                   6100 of     10000 realz       tot:  12.39 time/est:   0.17/   0.29 min
+KLWood                   6200 of     10000 realz       tot:  12.40 time/est:   0.18/   0.29 min
+KLWood                   6300 of     10000 realz       tot:  12.40 time/est:   0.18/   0.29 min
+KLWood                   6400 of     10000 realz       tot:  12.40 time/est:   0.18/   0.29 min
+KLWood                   6500 of     10000 realz       tot:  12.41 time/est:   0.19/   0.29 min
+KLWood                   6600 of     10000 realz       tot:  12.41 time/est:   0.19/   0.29 min
+KLWood                   6700 of     10000 realz       tot:  12.41 time/est:   0.19/   0.29 min
+KLWood                   6800 of     10000 realz       tot:  12.42 time/est:   0.20/   0.29 min
+KLWood                   6900 of     10000 realz       tot:  12.42 time/est:   0.20/   0.29 min
+KLWood                   7000 of     10000 realz       tot:  12.42 time/est:   0.20/   0.29 min
+KLWood                   7100 of     10000 realz       tot:  12.42 time/est:   0.20/   0.29 min
+KLWood                   7200 of     10000 realz       tot:  12.43 time/est:   0.21/   0.29 min
+KLWood                   7300 of     10000 realz       tot:  12.43 time/est:   0.21/   0.29 min
+KLWood                   7400 of     10000 realz       tot:  12.43 time/est:   0.21/   0.29 min
+KLWood                   7500 of     10000 realz       tot:  12.44 time/est:   0.21/   0.29 min
+KLWood                   7600 of     10000 realz       tot:  12.44 time/est:   0.22/   0.29 min
+KLWood                   7700 of     10000 realz       tot:  12.44 time/est:   0.22/   0.29 min
+KLWood                   7800 of     10000 realz       tot:  12.44 time/est:   0.22/   0.29 min
+KLWood                   7900 of     10000 realz       tot:  12.45 time/est:   0.23/   0.29 min
+KLWood                   8000 of     10000 realz       tot:  12.45 time/est:   0.23/   0.29 min
+KLWood                   8100 of     10000 realz       tot:  12.45 time/est:   0.23/   0.29 min
+KLWood                   8200 of     10000 realz       tot:  12.46 time/est:   0.24/   0.29 min
+KLWood                   8300 of     10000 realz       tot:  12.46 time/est:   0.24/   0.29 min
+KLWood                   8400 of     10000 realz       tot:  12.46 time/est:   0.24/   0.29 min
+KLWood                   8500 of     10000 realz       tot:  12.46 time/est:   0.24/   0.29 min
+KLWood                   8600 of     10000 realz       tot:  12.47 time/est:   0.25/   0.29 min
+KLWood                   8700 of     10000 realz       tot:  12.47 time/est:   0.25/   0.29 min
+KLWood                   8800 of     10000 realz       tot:  12.47 time/est:   0.25/   0.29 min
+KLWood                   8900 of     10000 realz       tot:  12.48 time/est:   0.26/   0.29 min
+KLWood                   9000 of     10000 realz       tot:  12.48 time/est:   0.26/   0.29 min
+KLWood                   9100 of     10000 realz       tot:  12.48 time/est:   0.26/   0.29 min
+KLWood                   9200 of     10000 realz       tot:  12.48 time/est:   0.26/   0.29 min
+KLWood                   9300 of     10000 realz       tot:  12.49 time/est:   0.27/   0.29 min
+KLWood                   9400 of     10000 realz       tot:  12.49 time/est:   0.27/   0.29 min
+KLWood                   9500 of     10000 realz       tot:  12.49 time/est:   0.27/   0.29 min
+KLWood                   9600 of     10000 realz       tot:  12.50 time/est:   0.28/   0.29 min
+KLWood                   9700 of     10000 realz       tot:  12.50 time/est:   0.28/   0.29 min
+KLWood                   9800 of     10000 realz       tot:  12.50 time/est:   0.28/   0.29 min
+KLWood                   9900 of     10000 realz       tot:  12.50 time/est:   0.28/   0.29 min
+KLWood                  10000 of     10000 realz       tot:  12.51 time/est:   0.29/   0.29 min
+
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.020000   sig(2)    :  0.030000
+    scatrat(1):  0.50       scatrat(2):  0.50
+    lam(1)    :  0.00       lam(2)    :  0.00
+    s         :  0.10       lamc      :  0.00
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr   
+reflection        :    0.00115 +-     0.00034 +-   0.2967034
+transmission      :    0.99652 +-     0.00059 +-   0.0005951
+absorption        :    0.00233
+ interactions     :  100.0 % accept  ***** ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr   
+radWood reflec    :    0.00115 +-     0.00034 +-   0.2918879
+radWood transmit  :    0.99652 +-     0.00059 +-   0.0005944
+radWood absorb    :    0.00233 +-     0.00048 +-   0.2072630
+ interactions     :   99.9 % accept   1.00 ac/p     0.00 rj/p
+
+
+ --- Transport: KLWood ---
+                         mean           stdev         relerr   
+KLWood  reflec    :    0.00114 +-     0.00034 +-   0.2953107
+KLWood  transmit  :    0.99653 +-     0.00059 +-   0.0005942
+KLWood  absorb    :    0.00232 +-     0.00048 +-   0.2075449
+ interactions     :   99.9 % accept   1.00 ac/p     0.00 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00000%,                     0 /                10000
+  Neg samples :  0.00000%,                     0 /               542081
+  Neg area    : -0.00000%
+  Ave neg samp:         NaN   Ave pos samp:      0.0234
+  Max neg samp:      0.0000   Max pos samp:      0.0291
+
+  total runtime:     12.51 min
+    genRealz   :      0.00 min     per:  0.02 %
+    radMC      :     11.88 min     per: 94.94 %
+    radWood    :      0.31 min     per:  2.44 %
+    KLcol      :      0.01 min     per:  0.06 %
+    KLrec      :      0.02 min     per:  0.20 %
+    KLWood     :      0.29 min     per:  2.30 %
+    other      :      0.01 min     per:  0.05 %
+   
+
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.020000   sig(2)    :  0.030000
+    scatrat(1):  0.50       scatrat(2):  0.50
+    lam(1)    :  0.00       lam(2)    :  0.00
+    s         :  0.10       lamc      :  0.00
+
+  Finding apprx Gam vals for Eigenvalue calcs
+   Eigindx    apprx Gam vals      absdiff
+      1         0.020800000    0.000265660
+      2         0.041466667    0.000569575
+      3         0.062133333    0.000951102
+      4         0.082800000    0.001451844
+
+  Refining Gamma values for Eigenvalue calcs
+   Eigindx    apprx Gam vals      absdiff       refine lev     inttest=?1
+      1         0.020668411     .000000001      Level:  7      0.9999888   Ak:    4.4416805
+      2         0.041337055     .000000001      Level:  7      0.9999553   Ak:    4.4388756
+      3         0.062006161     .000000001      Level:  7      0.9999000   Ak:    4.4342125
+      4         0.082675959     .000000000      Level:  7      0.9998237   Ak:    4.4277084
+
+     Eigenvalues and their contributions
+   Eigindx       Eig vals        sqrt(Eig)
+      1         0.000000030    0.000172096     
+      2         0.000000030    0.000171986     
+      3         0.000000030    0.000171803     
+      4         0.000000029    0.000171547     
+   lamc:              0.001
+   TT  :            150.00000000
+
+radMC,KLres,radWood       100 of     10000 realz       tot:   0.12 time/est:   0.12/  12.31 min
+radMC,KLres,radWood       200 of     10000 realz       tot:   0.25 time/est:   0.25/  12.28 min
+radMC,KLres,radWood       300 of     10000 realz       tot:   0.37 time/est:   0.37/  12.27 min
+radMC,KLres,radWood       400 of     10000 realz       tot:   0.49 time/est:   0.49/  12.23 min
+radMC,KLres,radWood       500 of     10000 realz       tot:   0.61 time/est:   0.61/  12.17 min
+radMC,KLres,radWood       600 of     10000 realz       tot:   0.73 time/est:   0.73/  12.18 min
+radMC,KLres,radWood       700 of     10000 realz       tot:   0.85 time/est:   0.85/  12.18 min
+radMC,KLres,radWood       800 of     10000 realz       tot:   0.97 time/est:   0.97/  12.14 min
+radMC,KLres,radWood       900 of     10000 realz       tot:   1.09 time/est:   1.09/  12.12 min
+radMC,KLres,radWood      1000 of     10000 realz       tot:   1.21 time/est:   1.21/  12.13 min
+radMC,KLres,radWood      1100 of     10000 realz       tot:   1.34 time/est:   1.33/  12.13 min
+radMC,KLres,radWood      1200 of     10000 realz       tot:   1.46 time/est:   1.45/  12.12 min
+radMC,KLres,radWood      1300 of     10000 realz       tot:   1.58 time/est:   1.58/  12.13 min
+radMC,KLres,radWood      1400 of     10000 realz       tot:   1.70 time/est:   1.69/  12.10 min
+radMC,KLres,radWood      1500 of     10000 realz       tot:   1.82 time/est:   1.81/  12.10 min
+radMC,KLres,radWood      1600 of     10000 realz       tot:   1.94 time/est:   1.93/  12.09 min
+radMC,KLres,radWood      1700 of     10000 realz       tot:   2.06 time/est:   2.06/  12.10 min
+radMC,KLres,radWood      1800 of     10000 realz       tot:   2.18 time/est:   2.18/  12.09 min
+radMC,KLres,radWood      1900 of     10000 realz       tot:   2.30 time/est:   2.30/  12.10 min
+radMC,KLres,radWood      2000 of     10000 realz       tot:   2.42 time/est:   2.42/  12.10 min
+radMC,KLres,radWood      2100 of     10000 realz       tot:   2.55 time/est:   2.55/  12.12 min
+radMC,KLres,radWood      2200 of     10000 realz       tot:   2.67 time/est:   2.66/  12.11 min
+radMC,KLres,radWood      2300 of     10000 realz       tot:   2.79 time/est:   2.79/  12.12 min
+radMC,KLres,radWood      2400 of     10000 realz       tot:   2.91 time/est:   2.91/  12.13 min
+radMC,KLres,radWood      2500 of     10000 realz       tot:   3.04 time/est:   3.03/  12.14 min
+radMC,KLres,radWood      2600 of     10000 realz       tot:   3.16 time/est:   3.15/  12.13 min
+radMC,KLres,radWood      2700 of     10000 realz       tot:   3.28 time/est:   3.28/  12.13 min
+radMC,KLres,radWood      2800 of     10000 realz       tot:   3.40 time/est:   3.40/  12.13 min
+radMC,KLres,radWood      2900 of     10000 realz       tot:   3.52 time/est:   3.52/  12.12 min
+radMC,KLres,radWood      3000 of     10000 realz       tot:   3.64 time/est:   3.64/  12.12 min
+radMC,KLres,radWood      3100 of     10000 realz       tot:   3.76 time/est:   3.76/  12.12 min
+radMC,KLres,radWood      3200 of     10000 realz       tot:   3.88 time/est:   3.88/  12.13 min
+radMC,KLres,radWood      3300 of     10000 realz       tot:   4.00 time/est:   4.00/  12.13 min
+radMC,KLres,radWood      3400 of     10000 realz       tot:   4.12 time/est:   4.12/  12.13 min
+radMC,KLres,radWood      3500 of     10000 realz       tot:   4.25 time/est:   4.24/  12.13 min
+radMC,KLres,radWood      3600 of     10000 realz       tot:   4.37 time/est:   4.37/  12.14 min
+radMC,KLres,radWood      3700 of     10000 realz       tot:   4.49 time/est:   4.49/  12.14 min
+radMC,KLres,radWood      3800 of     10000 realz       tot:   4.62 time/est:   4.61/  12.14 min
+radMC,KLres,radWood      3900 of     10000 realz       tot:   4.74 time/est:   4.74/  12.15 min
+radMC,KLres,radWood      4000 of     10000 realz       tot:   4.86 time/est:   4.86/  12.15 min
+radMC,KLres,radWood      4100 of     10000 realz       tot:   4.98 time/est:   4.98/  12.15 min
+radMC,KLres,radWood      4200 of     10000 realz       tot:   5.11 time/est:   5.10/  12.15 min
+radMC,KLres,radWood      4300 of     10000 realz       tot:   5.23 time/est:   5.23/  12.16 min
+radMC,KLres,radWood      4400 of     10000 realz       tot:   5.35 time/est:   5.35/  12.15 min
+radMC,KLres,radWood      4500 of     10000 realz       tot:   5.47 time/est:   5.47/  12.15 min
+radMC,KLres,radWood      4600 of     10000 realz       tot:   5.59 time/est:   5.59/  12.15 min
+radMC,KLres,radWood      4700 of     10000 realz       tot:   5.71 time/est:   5.71/  12.14 min
+radMC,KLres,radWood      4800 of     10000 realz       tot:   5.83 time/est:   5.83/  12.14 min
+radMC,KLres,radWood      4900 of     10000 realz       tot:   5.95 time/est:   5.95/  12.15 min
+radMC,KLres,radWood      5000 of     10000 realz       tot:   6.08 time/est:   6.07/  12.15 min
+radMC,KLres,radWood      5100 of     10000 realz       tot:   6.20 time/est:   6.20/  12.15 min
+radMC,KLres,radWood      5200 of     10000 realz       tot:   6.32 time/est:   6.32/  12.16 min
+radMC,KLres,radWood      5300 of     10000 realz       tot:   6.44 time/est:   6.44/  12.16 min
+radMC,KLres,radWood      5400 of     10000 realz       tot:   6.57 time/est:   6.56/  12.15 min
+radMC,KLres,radWood      5500 of     10000 realz       tot:   6.69 time/est:   6.68/  12.15 min
+radMC,KLres,radWood      5600 of     10000 realz       tot:   6.81 time/est:   6.80/  12.15 min
+radMC,KLres,radWood      5700 of     10000 realz       tot:   6.93 time/est:   6.92/  12.15 min
+radMC,KLres,radWood      5800 of     10000 realz       tot:   7.05 time/est:   7.04/  12.14 min
+radMC,KLres,radWood      5900 of     10000 realz       tot:   7.17 time/est:   7.17/  12.15 min
+radMC,KLres,radWood      6000 of     10000 realz       tot:   7.29 time/est:   7.29/  12.15 min
+radMC,KLres,radWood      6100 of     10000 realz       tot:   7.42 time/est:   7.41/  12.15 min
+radMC,KLres,radWood      6200 of     10000 realz       tot:   7.54 time/est:   7.53/  12.15 min
+radMC,KLres,radWood      6300 of     10000 realz       tot:   7.66 time/est:   7.66/  12.15 min
+radMC,KLres,radWood      6400 of     10000 realz       tot:   7.78 time/est:   7.78/  12.16 min
+radMC,KLres,radWood      6500 of     10000 realz       tot:   7.90 time/est:   7.90/  12.16 min
+radMC,KLres,radWood      6600 of     10000 realz       tot:   8.03 time/est:   8.02/  12.16 min
+radMC,KLres,radWood      6700 of     10000 realz       tot:   8.15 time/est:   8.15/  12.16 min
+radMC,KLres,radWood      6800 of     10000 realz       tot:   8.27 time/est:   8.27/  12.16 min
+radMC,KLres,radWood      6900 of     10000 realz       tot:   8.39 time/est:   8.39/  12.16 min
+radMC,KLres,radWood      7000 of     10000 realz       tot:   8.51 time/est:   8.51/  12.16 min
+radMC,KLres,radWood      7100 of     10000 realz       tot:   8.64 time/est:   8.64/  12.16 min
+radMC,KLres,radWood      7200 of     10000 realz       tot:   8.76 time/est:   8.76/  12.16 min
+radMC,KLres,radWood      7300 of     10000 realz       tot:   8.88 time/est:   8.88/  12.16 min
+radMC,KLres,radWood      7400 of     10000 realz       tot:   9.00 time/est:   9.00/  12.16 min
+radMC,KLres,radWood      7500 of     10000 realz       tot:   9.13 time/est:   9.12/  12.16 min
+radMC,KLres,radWood      7600 of     10000 realz       tot:   9.25 time/est:   9.25/  12.17 min
+radMC,KLres,radWood      7700 of     10000 realz       tot:   9.37 time/est:   9.37/  12.16 min
+radMC,KLres,radWood      7800 of     10000 realz       tot:   9.49 time/est:   9.49/  12.17 min
+radMC,KLres,radWood      7900 of     10000 realz       tot:   9.62 time/est:   9.61/  12.17 min
+radMC,KLres,radWood      8000 of     10000 realz       tot:   9.74 time/est:   9.74/  12.17 min
+radMC,KLres,radWood      8100 of     10000 realz       tot:   9.86 time/est:   9.86/  12.17 min
+radMC,KLres,radWood      8200 of     10000 realz       tot:   9.98 time/est:   9.98/  12.17 min
+radMC,KLres,radWood      8300 of     10000 realz       tot:  10.11 time/est:  10.11/  12.18 min
+radMC,KLres,radWood      8400 of     10000 realz       tot:  10.24 time/est:  10.23/  12.18 min
+radMC,KLres,radWood      8500 of     10000 realz       tot:  10.36 time/est:  10.36/  12.18 min
+radMC,KLres,radWood      8600 of     10000 realz       tot:  10.48 time/est:  10.48/  12.19 min
+radMC,KLres,radWood      8700 of     10000 realz       tot:  10.60 time/est:  10.60/  12.18 min
+radMC,KLres,radWood      8800 of     10000 realz       tot:  10.73 time/est:  10.72/  12.18 min
+radMC,KLres,radWood      8900 of     10000 realz       tot:  10.84 time/est:  10.84/  12.18 min
+radMC,KLres,radWood      9000 of     10000 realz       tot:  10.96 time/est:  10.96/  12.18 min
+radMC,KLres,radWood      9100 of     10000 realz       tot:  11.08 time/est:  11.08/  12.18 min
+radMC,KLres,radWood      9200 of     10000 realz       tot:  11.21 time/est:  11.20/  12.18 min
+radMC,KLres,radWood      9300 of     10000 realz       tot:  11.33 time/est:  11.32/  12.18 min
+radMC,KLres,radWood      9400 of     10000 realz       tot:  11.45 time/est:  11.45/  12.18 min
+radMC,KLres,radWood      9500 of     10000 realz       tot:  11.58 time/est:  11.57/  12.18 min
+radMC,KLres,radWood      9600 of     10000 realz       tot:  11.70 time/est:  11.69/  12.18 min
+radMC,KLres,radWood      9700 of     10000 realz       tot:  11.82 time/est:  11.82/  12.18 min
+radMC,KLres,radWood      9800 of     10000 realz       tot:  11.94 time/est:  11.94/  12.18 min
+radMC,KLres,radWood      9900 of     10000 realz       tot:  12.06 time/est:  12.06/  12.18 min
+radMC,KLres,radWood     10000 of     10000 realz       tot:  12.18 time/est:  12.18/  12.18 min
+
+Start mat1:   0.6652+-  0.0047   mat2:   0.3348+-  0.0047
+      P(1):   0.6667             P(2):   0.3333
+
+Path  mat1:   0.0020+-  0.0000   mat2:   0.0010+-  0.0000
+    lam(1):   0.0020           lam(2):   0.0010
+
+totLength(1):         652.93    totLength(2):         330.79    tottotLength:         983.71
+expLength(1):         666.67    expLength(2):         333.33    exptotLength:        1000.00
+       CoAct:        0.00002
+       CoExp:        0.00002       CoPerdiff:           0.44 %
+
+
+  smallestxi:                -4.41123        largestxi:                 3.93396
+
+
+  curEig:  1   numRealz:      10000   probsum: 1.000   meanxi:   0.0079   varxi:   0.9737
+  curEig:  2   numRealz:      10000   probsum: 1.000   meanxi:  -0.0174   varxi:   1.0185
+  curEig:  3   numRealz:      10000   probsum: 1.000   meanxi:   0.0072   varxi:   0.9944
+  curEig:  4   numRealz:      10000   probsum: 1.000   meanxi:  -0.0099   varxi:   1.0058
+
+KLrec                     100 of     10000 realz       tot:  12.18 time/est:   0.00/   0.03 min
+KLrec                     200 of     10000 realz       tot:  12.18 time/est:   0.00/   0.03 min
+KLrec                     300 of     10000 realz       tot:  12.18 time/est:   0.00/   0.02 min
+KLrec                     400 of     10000 realz       tot:  12.18 time/est:   0.00/   0.02 min
+KLrec                     500 of     10000 realz       tot:  12.18 time/est:   0.00/   0.03 min
+KLrec                     600 of     10000 realz       tot:  12.18 time/est:   0.00/   0.03 min
+KLrec                     700 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                     800 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                     900 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                    1000 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                    1100 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                    1200 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                    1300 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                    1400 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                    1500 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                    1600 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                    1700 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                    1800 of     10000 realz       tot:  12.19 time/est:   0.00/   0.03 min
+KLrec                    1900 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                    2000 of     10000 realz       tot:  12.19 time/est:   0.00/   0.02 min
+KLrec                    2100 of     10000 realz       tot:  12.19 time/est:   0.01/   0.03 min
+KLrec                    2200 of     10000 realz       tot:  12.19 time/est:   0.01/   0.03 min
+KLrec                    2300 of     10000 realz       tot:  12.19 time/est:   0.01/   0.03 min
+KLrec                    2400 of     10000 realz       tot:  12.19 time/est:   0.01/   0.03 min
+KLrec                    2500 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    2600 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    2700 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    2800 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    2900 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3000 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3100 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3200 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3300 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3400 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3500 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3600 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3700 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3800 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    3900 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4000 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4100 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4200 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4300 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4400 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4500 of     10000 realz       tot:  12.19 time/est:   0.01/   0.02 min
+KLrec                    4600 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    4700 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    4800 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    4900 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5000 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5100 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5200 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5300 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5400 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5500 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5600 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5700 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5800 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    5900 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    6000 of     10000 realz       tot:  12.20 time/est:   0.01/   0.02 min
+KLrec                    6100 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6200 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6300 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6400 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6500 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6600 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6700 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6800 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    6900 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7000 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7100 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7200 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7300 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7400 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7500 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7600 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7700 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7800 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    7900 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8000 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8100 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8200 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8300 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8400 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8500 of     10000 realz       tot:  12.20 time/est:   0.02/   0.02 min
+KLrec                    8600 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8700 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8800 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    8900 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9000 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9100 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9200 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9300 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9400 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9500 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9600 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9700 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9800 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                    9900 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+KLrec                   10000 of     10000 realz       tot:  12.21 time/est:   0.02/   0.02 min
+  Total num reconstructed realz w/ neg value:            0
+
+KLWood                    100 of     10000 realz       tot:  12.21 time/est:   0.00/   0.30 min
+KLWood                    200 of     10000 realz       tot:  12.21 time/est:   0.01/   0.29 min
+KLWood                    300 of     10000 realz       tot:  12.22 time/est:   0.01/   0.29 min
+KLWood                    400 of     10000 realz       tot:  12.22 time/est:   0.01/   0.29 min
+KLWood                    500 of     10000 realz       tot:  12.22 time/est:   0.01/   0.29 min
+KLWood                    600 of     10000 realz       tot:  12.23 time/est:   0.02/   0.29 min
+KLWood                    700 of     10000 realz       tot:  12.23 time/est:   0.02/   0.29 min
+KLWood                    800 of     10000 realz       tot:  12.23 time/est:   0.02/   0.29 min
+KLWood                    900 of     10000 realz       tot:  12.23 time/est:   0.03/   0.29 min
+KLWood                   1000 of     10000 realz       tot:  12.24 time/est:   0.03/   0.29 min
+KLWood                   1100 of     10000 realz       tot:  12.24 time/est:   0.03/   0.29 min
+KLWood                   1200 of     10000 realz       tot:  12.24 time/est:   0.03/   0.29 min
+KLWood                   1300 of     10000 realz       tot:  12.25 time/est:   0.04/   0.29 min
+KLWood                   1400 of     10000 realz       tot:  12.25 time/est:   0.04/   0.29 min
+KLWood                   1500 of     10000 realz       tot:  12.25 time/est:   0.04/   0.29 min
+KLWood                   1600 of     10000 realz       tot:  12.25 time/est:   0.05/   0.29 min
+KLWood                   1700 of     10000 realz       tot:  12.26 time/est:   0.05/   0.29 min
+KLWood                   1800 of     10000 realz       tot:  12.26 time/est:   0.05/   0.29 min
+KLWood                   1900 of     10000 realz       tot:  12.26 time/est:   0.05/   0.29 min
+KLWood                   2000 of     10000 realz       tot:  12.27 time/est:   0.06/   0.29 min
+KLWood                   2100 of     10000 realz       tot:  12.27 time/est:   0.06/   0.29 min
+KLWood                   2200 of     10000 realz       tot:  12.27 time/est:   0.06/   0.29 min
+KLWood                   2300 of     10000 realz       tot:  12.28 time/est:   0.07/   0.29 min
+KLWood                   2400 of     10000 realz       tot:  12.28 time/est:   0.07/   0.29 min
+KLWood                   2500 of     10000 realz       tot:  12.28 time/est:   0.07/   0.29 min
+KLWood                   2600 of     10000 realz       tot:  12.28 time/est:   0.07/   0.29 min
+KLWood                   2700 of     10000 realz       tot:  12.29 time/est:   0.08/   0.29 min
+KLWood                   2800 of     10000 realz       tot:  12.29 time/est:   0.08/   0.29 min
+KLWood                   2900 of     10000 realz       tot:  12.29 time/est:   0.08/   0.29 min
+KLWood                   3000 of     10000 realz       tot:  12.30 time/est:   0.09/   0.29 min
+KLWood                   3100 of     10000 realz       tot:  12.30 time/est:   0.09/   0.29 min
+KLWood                   3200 of     10000 realz       tot:  12.30 time/est:   0.09/   0.29 min
+KLWood                   3300 of     10000 realz       tot:  12.30 time/est:   0.09/   0.29 min
+KLWood                   3400 of     10000 realz       tot:  12.31 time/est:   0.10/   0.29 min
+KLWood                   3500 of     10000 realz       tot:  12.31 time/est:   0.10/   0.29 min
+KLWood                   3600 of     10000 realz       tot:  12.31 time/est:   0.10/   0.29 min
+KLWood                   3700 of     10000 realz       tot:  12.32 time/est:   0.11/   0.29 min
+KLWood                   3800 of     10000 realz       tot:  12.32 time/est:   0.11/   0.29 min
+KLWood                   3900 of     10000 realz       tot:  12.32 time/est:   0.11/   0.29 min
+KLWood                   4000 of     10000 realz       tot:  12.32 time/est:   0.11/   0.29 min
+KLWood                   4100 of     10000 realz       tot:  12.33 time/est:   0.12/   0.29 min
+KLWood                   4200 of     10000 realz       tot:  12.33 time/est:   0.12/   0.29 min
+KLWood                   4300 of     10000 realz       tot:  12.33 time/est:   0.12/   0.29 min
+KLWood                   4400 of     10000 realz       tot:  12.34 time/est:   0.13/   0.29 min
+KLWood                   4500 of     10000 realz       tot:  12.34 time/est:   0.13/   0.29 min
+KLWood                   4600 of     10000 realz       tot:  12.34 time/est:   0.13/   0.29 min
+KLWood                   4700 of     10000 realz       tot:  12.34 time/est:   0.13/   0.29 min
+KLWood                   4800 of     10000 realz       tot:  12.35 time/est:   0.14/   0.29 min
+KLWood                   4900 of     10000 realz       tot:  12.35 time/est:   0.14/   0.29 min
+KLWood                   5000 of     10000 realz       tot:  12.35 time/est:   0.14/   0.29 min
+KLWood                   5100 of     10000 realz       tot:  12.36 time/est:   0.15/   0.29 min
+KLWood                   5200 of     10000 realz       tot:  12.36 time/est:   0.15/   0.29 min
+KLWood                   5300 of     10000 realz       tot:  12.36 time/est:   0.15/   0.29 min
+KLWood                   5400 of     10000 realz       tot:  12.36 time/est:   0.15/   0.29 min
+KLWood                   5500 of     10000 realz       tot:  12.37 time/est:   0.16/   0.29 min
+KLWood                   5600 of     10000 realz       tot:  12.37 time/est:   0.16/   0.29 min
+KLWood                   5700 of     10000 realz       tot:  12.37 time/est:   0.16/   0.29 min
+KLWood                   5800 of     10000 realz       tot:  12.38 time/est:   0.17/   0.29 min
+KLWood                   5900 of     10000 realz       tot:  12.38 time/est:   0.17/   0.29 min
+KLWood                   6000 of     10000 realz       tot:  12.38 time/est:   0.17/   0.29 min
+KLWood                   6100 of     10000 realz       tot:  12.38 time/est:   0.17/   0.29 min
+KLWood                   6200 of     10000 realz       tot:  12.39 time/est:   0.18/   0.29 min
+KLWood                   6300 of     10000 realz       tot:  12.39 time/est:   0.18/   0.29 min
+KLWood                   6400 of     10000 realz       tot:  12.39 time/est:   0.18/   0.29 min
+KLWood                   6500 of     10000 realz       tot:  12.40 time/est:   0.19/   0.29 min
+KLWood                   6600 of     10000 realz       tot:  12.40 time/est:   0.19/   0.29 min
+KLWood                   6700 of     10000 realz       tot:  12.40 time/est:   0.19/   0.29 min
+KLWood                   6800 of     10000 realz       tot:  12.40 time/est:   0.20/   0.29 min
+KLWood                   6900 of     10000 realz       tot:  12.41 time/est:   0.20/   0.29 min
+KLWood                   7000 of     10000 realz       tot:  12.41 time/est:   0.20/   0.29 min
+KLWood                   7100 of     10000 realz       tot:  12.41 time/est:   0.20/   0.29 min
+KLWood                   7200 of     10000 realz       tot:  12.42 time/est:   0.21/   0.29 min
+KLWood                   7300 of     10000 realz       tot:  12.42 time/est:   0.21/   0.29 min
+KLWood                   7400 of     10000 realz       tot:  12.42 time/est:   0.21/   0.29 min
+KLWood                   7500 of     10000 realz       tot:  12.43 time/est:   0.22/   0.29 min
+KLWood                   7600 of     10000 realz       tot:  12.43 time/est:   0.22/   0.29 min
+KLWood                   7700 of     10000 realz       tot:  12.43 time/est:   0.22/   0.29 min
+KLWood                   7800 of     10000 realz       tot:  12.43 time/est:   0.22/   0.29 min
+KLWood                   7900 of     10000 realz       tot:  12.44 time/est:   0.23/   0.29 min
+KLWood                   8000 of     10000 realz       tot:  12.44 time/est:   0.23/   0.29 min
+KLWood                   8100 of     10000 realz       tot:  12.44 time/est:   0.23/   0.29 min
+KLWood                   8200 of     10000 realz       tot:  12.45 time/est:   0.24/   0.29 min
+KLWood                   8300 of     10000 realz       tot:  12.45 time/est:   0.24/   0.29 min
+KLWood                   8400 of     10000 realz       tot:  12.45 time/est:   0.24/   0.29 min
+KLWood                   8500 of     10000 realz       tot:  12.45 time/est:   0.24/   0.29 min
+KLWood                   8600 of     10000 realz       tot:  12.46 time/est:   0.25/   0.29 min
+KLWood                   8700 of     10000 realz       tot:  12.46 time/est:   0.25/   0.29 min
+KLWood                   8800 of     10000 realz       tot:  12.46 time/est:   0.25/   0.29 min
+KLWood                   8900 of     10000 realz       tot:  12.47 time/est:   0.26/   0.29 min
+KLWood                   9000 of     10000 realz       tot:  12.47 time/est:   0.26/   0.29 min
+KLWood                   9100 of     10000 realz       tot:  12.47 time/est:   0.26/   0.29 min
+KLWood                   9200 of     10000 realz       tot:  12.47 time/est:   0.26/   0.29 min
+KLWood                   9300 of     10000 realz       tot:  12.48 time/est:   0.27/   0.29 min
+KLWood                   9400 of     10000 realz       tot:  12.48 time/est:   0.27/   0.29 min
+KLWood                   9500 of     10000 realz       tot:  12.48 time/est:   0.27/   0.29 min
+KLWood                   9600 of     10000 realz       tot:  12.49 time/est:   0.28/   0.29 min
+KLWood                   9700 of     10000 realz       tot:  12.49 time/est:   0.28/   0.29 min
+KLWood                   9800 of     10000 realz       tot:  12.49 time/est:   0.28/   0.29 min
+KLWood                   9900 of     10000 realz       tot:  12.49 time/est:   0.28/   0.29 min
+KLWood                  10000 of     10000 realz       tot:  12.50 time/est:   0.29/   0.29 min
+
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.020000   sig(2)    :  0.030000
+    scatrat(1):  0.50       scatrat(2):  0.50
+    lam(1)    :  0.00       lam(2)    :  0.00
+    s         :  0.10       lamc      :  0.00
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr   
+reflection        :    0.00115 +-     0.00034 +-   0.2967034
+transmission      :    0.99652 +-     0.00059 +-   0.0005951
+absorption        :    0.00233
+ interactions     :  100.0 % accept  ***** ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr   
+radWood reflec    :    0.00115 +-     0.00034 +-   0.2918879
+radWood transmit  :    0.99652 +-     0.00059 +-   0.0005944
+radWood absorb    :    0.00233 +-     0.00048 +-   0.2072630
+ interactions     :   99.9 % accept   1.00 ac/p     0.00 rj/p
+
+
+ --- Transport: KLWood ---
+                         mean           stdev         relerr   
+KLWood  reflec    :    0.00114 +-     0.00034 +-   0.2953107
+KLWood  transmit  :    0.99653 +-     0.00059 +-   0.0005942
+KLWood  absorb    :    0.00232 +-     0.00048 +-   0.2075449
+ interactions     :   99.9 % accept   1.00 ac/p     0.00 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00000%,                     0 /                10000
+  Neg samples :  0.00000%,                     0 /               542081
+  Neg area    : -0.00000%
+  Ave neg samp:         NaN   Ave pos samp:      0.0234
+  Max neg samp:      0.0000   Max pos samp:      0.0291
+
+  total runtime:     12.50 min
+    genRealz   :      0.00 min     per:  0.02 %
+    radMC      :     11.86 min     per: 94.93 %
+    radWood    :      0.30 min     per:  2.43 %
+    KLcol      :      0.01 min     per:  0.06 %
+    KLrec      :      0.02 min     per:  0.20 %
+    KLWood     :      0.29 min     per:  2.30 %
+    other      :      0.01 min     per:  0.05 %

@@ -1,0 +1,3 @@
+zip -r stochastic *
+mv stochastic.zip ../../Documents/Research
+

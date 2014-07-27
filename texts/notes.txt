@@ -1,0 +1,70 @@
+
+!! Additional Notes on gen and xi caluclations
+!
+!  i = material segment
+!  j = realization number
+!  k = bin of xi values
+!
+!
+!  i         |  1  2  3  4  ...
+!  matLength | .2 .4 .6  1  ...
+!  matType   |  1  2  1  2  ...
+!    matType(i) corresponds to the region bounded by
+!    matLength(i-1) and matLength(i)
+!
+!
+!  k         |  1  2  3  4  ...
+!  binBounds | .3 .5 .7 .9  ...
+!  binCounts |  4  3  4  1  ...
+!    binCounts(k) corresponds to the regions bounded by
+!    binBounds(k) and binBounds(k+1)
+!
+
+
+
+!! Additional Notes on radtrans caluclations
+!
+! 8 cases of db determination: visual representation
+! case#, first seg, non-firstseg
+!
+! 1 >---|---|
+! 2 |--->---|
+! 3 |---<---|
+! 4 |---|---<
+! 5 |->-|---|
+! 6 |---|->-|
+! 7 |-<-|---|
+! 8 |---|-<-|
+!
+!
+!         lastint=li
+! li=1 esc         li=pos right
+! li=2 scat        li=neg left
+
+
+
+
+!! Notes for plotting radtrans
+!# plot reflection:    plot "transAdams_plot.txt" using 1:2:3 t 'Adams Set 2' w errorbars, "transAdams_plot.txt" using 1:7:6:8 t 'Adams Set 1' w boxxyerrorbars, "transout_results.txt" using 1:4:5 t 'Realization 1' w errorbars
+!# set title  "Reflection Values for Adams and Pomraning Cases"
+!# set xlabel "Index of Adams Case"
+!# set ylabel "Reflection (out of 1)"
+!# plot transmission:  plot "transAdams_plot.txt" using 1:4:5 t 'Adams Set 2' w errorbars, "transAdams_plot.txt" using 1:9:6:10 t 'Adams Set 1' w boxxyerrorbars, "transout_results.txt" using 1:6:7 t 'Realization 1' w errorbars
+!# set title  "Transmission Values for Adams and Pomraning Cases"
+!# set xlabel "Index of Adams Case"
+!# set ylabel "Transmission (out of 1)"
+
+
+
+
+!! Notes for plottingKLprocess
+! use this with XWin to plot:
+! plot "xiBins.txt" using 2:3 title 'Xi' with histep
+! plot "xiBins.txt" using 2:3 with histep, "xiBins.txt" using 2:4 with histep, "xiBins.txt" using 2:5 with histep, "xiBins.txt" using 2:6 with histep, "xiBins.txt" using 2:7 with histep
+
+! use this with XWin to plot:
+! plot "absdiffGam.txt" using 2:3 with histep
+! set yrange[-.1:100]
+
+! use this with XWin to plot:
+! plot "CoEff.txt" using 2:3 with points, "CoEff.txt" using 2:4 with points...

@@ -1,0 +1,143 @@
+   
+
+  Values loaded for special Adamscase :  2.3
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  1.00       scatrat(2):  0.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         : 10.00       lamc      :  0.10
+
+radMC,radWood             100 of     10000 realz       tot:   0.13 time/est:   0.13/  12.79 min
+radMC,radWood             200 of     10000 realz       tot:   0.23 time/est:   0.23/  11.63 min
+radMC,radWood             300 of     10000 realz       tot:   0.36 time/est:   0.36/  11.90 min
+radMC,radWood             400 of     10000 realz       tot:   0.46 time/est:   0.46/  11.58 min
+radMC,radWood             500 of     10000 realz       tot:   0.59 time/est:   0.59/  11.77 min
+radMC,radWood             600 of     10000 realz       tot:   0.71 time/est:   0.71/  11.89 min
+radMC,radWood             700 of     10000 realz       tot:   0.82 time/est:   0.82/  11.74 min
+radMC,radWood             800 of     10000 realz       tot:   0.93 time/est:   0.93/  11.65 min
+radMC,radWood             900 of     10000 realz       tot:   1.04 time/est:   1.04/  11.55 min
+radMC,radWood            1000 of     10000 realz       tot:   1.18 time/est:   1.18/  11.75 min
+radMC,radWood            1100 of     10000 realz       tot:   1.30 time/est:   1.30/  11.82 min
+radMC,radWood            1200 of     10000 realz       tot:   1.41 time/est:   1.41/  11.78 min
+radMC,radWood            1300 of     10000 realz       tot:   1.52 time/est:   1.52/  11.72 min
+radMC,radWood            1400 of     10000 realz       tot:   1.65 time/est:   1.65/  11.78 min
+radMC,radWood            1500 of     10000 realz       tot:   1.77 time/est:   1.77/  11.79 min
+radMC,radWood            1600 of     10000 realz       tot:   1.89 time/est:   1.89/  11.80 min
+radMC,radWood            1700 of     10000 realz       tot:   2.01 time/est:   2.01/  11.80 min
+radMC,radWood            1800 of     10000 realz       tot:   2.15 time/est:   2.15/  11.94 min
+radMC,radWood            1900 of     10000 realz       tot:   2.27 time/est:   2.27/  11.94 min
+radMC,radWood            2000 of     10000 realz       tot:   2.39 time/est:   2.39/  11.95 min
+radMC,radWood            2100 of     10000 realz       tot:   2.51 time/est:   2.51/  11.95 min
+radMC,radWood            2200 of     10000 realz       tot:   2.63 time/est:   2.63/  11.95 min
+radMC,radWood            2300 of     10000 realz       tot:   2.76 time/est:   2.76/  11.98 min
+radMC,radWood            2400 of     10000 realz       tot:   2.88 time/est:   2.87/  11.98 min
+radMC,radWood            2500 of     10000 realz       tot:   3.00 time/est:   3.00/  12.01 min
+radMC,radWood            2600 of     10000 realz       tot:   3.14 time/est:   3.13/  12.06 min
+radMC,radWood            2700 of     10000 realz       tot:   3.27 time/est:   3.26/  12.09 min
+radMC,radWood            2800 of     10000 realz       tot:   3.39 time/est:   3.39/  12.10 min
+radMC,radWood            2900 of     10000 realz       tot:   3.54 time/est:   3.54/  12.20 min
+radMC,radWood            3000 of     10000 realz       tot:   3.68 time/est:   3.68/  12.25 min
+radMC,radWood            3100 of     10000 realz       tot:   3.81 time/est:   3.80/  12.27 min
+radMC,radWood            3200 of     10000 realz       tot:   3.93 time/est:   3.93/  12.29 min
+radMC,radWood            3300 of     10000 realz       tot:   4.08 time/est:   4.08/  12.37 min
+radMC,radWood            3400 of     10000 realz       tot:   4.22 time/est:   4.22/  12.42 min
+radMC,radWood            3500 of     10000 realz       tot:   4.35 time/est:   4.35/  12.43 min
+radMC,radWood            3600 of     10000 realz       tot:   4.47 time/est:   4.47/  12.41 min
+radMC,radWood            3700 of     10000 realz       tot:   4.59 time/est:   4.59/  12.41 min
+radMC,radWood            3800 of     10000 realz       tot:   4.72 time/est:   4.72/  12.42 min
+radMC,radWood            3900 of     10000 realz       tot:   4.87 time/est:   4.86/  12.47 min
+radMC,radWood            4000 of     10000 realz       tot:   4.97 time/est:   4.97/  12.43 min
+radMC,radWood            4100 of     10000 realz       tot:   5.09 time/est:   5.09/  12.42 min
+radMC,radWood            4200 of     10000 realz       tot:   5.21 time/est:   5.21/  12.40 min
+radMC,radWood            4300 of     10000 realz       tot:   5.34 time/est:   5.34/  12.41 min
+radMC,radWood            4400 of     10000 realz       tot:   5.45 time/est:   5.45/  12.39 min
+radMC,radWood            4500 of     10000 realz       tot:   5.61 time/est:   5.60/  12.45 min
+radMC,radWood            4600 of     10000 realz       tot:   5.73 time/est:   5.73/  12.46 min
+radMC,radWood            4700 of     10000 realz       tot:   5.84 time/est:   5.84/  12.43 min
+radMC,radWood            4800 of     10000 realz       tot:   5.97 time/est:   5.97/  12.44 min
+radMC,radWood            4900 of     10000 realz       tot:   6.10 time/est:   6.10/  12.45 min
+radMC,radWood            5000 of     10000 realz       tot:   6.23 time/est:   6.23/  12.46 min
+radMC,radWood            5100 of     10000 realz       tot:   6.35 time/est:   6.35/  12.45 min
+radMC,radWood            5200 of     10000 realz       tot:   6.48 time/est:   6.48/  12.47 min
+radMC,radWood            5300 of     10000 realz       tot:   6.61 time/est:   6.61/  12.46 min
+radMC,radWood            5400 of     10000 realz       tot:   6.74 time/est:   6.73/  12.47 min
+radMC,radWood            5500 of     10000 realz       tot:   6.87 time/est:   6.86/  12.48 min
+radMC,radWood            5600 of     10000 realz       tot:   6.99 time/est:   6.99/  12.48 min
+radMC,radWood            5700 of     10000 realz       tot:   7.09 time/est:   7.09/  12.44 min
+radMC,radWood            5800 of     10000 realz       tot:   7.22 time/est:   7.22/  12.45 min
+radMC,radWood            5900 of     10000 realz       tot:   7.35 time/est:   7.35/  12.46 min
+radMC,radWood            6000 of     10000 realz       tot:   7.46 time/est:   7.46/  12.44 min
+radMC,radWood            6100 of     10000 realz       tot:   7.59 time/est:   7.59/  12.44 min
+radMC,radWood            6200 of     10000 realz       tot:   7.71 time/est:   7.71/  12.44 min
+radMC,radWood            6300 of     10000 realz       tot:   7.82 time/est:   7.82/  12.41 min
+radMC,radWood            6400 of     10000 realz       tot:   7.95 time/est:   7.95/  12.41 min
+radMC,radWood            6500 of     10000 realz       tot:   8.08 time/est:   8.08/  12.43 min
+radMC,radWood            6600 of     10000 realz       tot:   8.21 time/est:   8.21/  12.44 min
+radMC,radWood            6700 of     10000 realz       tot:   8.35 time/est:   8.35/  12.46 min
+radMC,radWood            6800 of     10000 realz       tot:   8.48 time/est:   8.47/  12.46 min
+radMC,radWood            6900 of     10000 realz       tot:   8.61 time/est:   8.61/  12.47 min
+radMC,radWood            7000 of     10000 realz       tot:   8.74 time/est:   8.74/  12.48 min
+radMC,radWood            7100 of     10000 realz       tot:   8.86 time/est:   8.85/  12.47 min
+radMC,radWood            7200 of     10000 realz       tot:   8.98 time/est:   8.97/  12.46 min
+radMC,radWood            7300 of     10000 realz       tot:   9.08 time/est:   9.08/  12.44 min
+radMC,radWood            7400 of     10000 realz       tot:   9.22 time/est:   9.22/  12.46 min
+radMC,radWood            7500 of     10000 realz       tot:   9.34 time/est:   9.34/  12.45 min
+radMC,radWood            7600 of     10000 realz       tot:   9.45 time/est:   9.45/  12.43 min
+radMC,radWood            7700 of     10000 realz       tot:   9.56 time/est:   9.56/  12.41 min
+radMC,radWood            7800 of     10000 realz       tot:   9.69 time/est:   9.69/  12.42 min
+radMC,radWood            7900 of     10000 realz       tot:   9.80 time/est:   9.80/  12.41 min
+radMC,radWood            8000 of     10000 realz       tot:   9.91 time/est:   9.91/  12.39 min
+radMC,radWood            8100 of     10000 realz       tot:  10.04 time/est:  10.04/  12.39 min
+radMC,radWood            8200 of     10000 realz       tot:  10.16 time/est:  10.16/  12.39 min
+radMC,radWood            8300 of     10000 realz       tot:  10.29 time/est:  10.29/  12.39 min
+radMC,radWood            8400 of     10000 realz       tot:  10.40 time/est:  10.40/  12.38 min
+radMC,radWood            8500 of     10000 realz       tot:  10.53 time/est:  10.53/  12.38 min
+radMC,radWood            8600 of     10000 realz       tot:  10.65 time/est:  10.65/  12.38 min
+radMC,radWood            8700 of     10000 realz       tot:  10.79 time/est:  10.79/  12.40 min
+radMC,radWood            8800 of     10000 realz       tot:  10.90 time/est:  10.90/  12.39 min
+radMC,radWood            8900 of     10000 realz       tot:  11.03 time/est:  11.03/  12.39 min
+radMC,radWood            9000 of     10000 realz       tot:  11.16 time/est:  11.15/  12.39 min
+radMC,radWood            9100 of     10000 realz       tot:  11.27 time/est:  11.27/  12.38 min
+radMC,radWood            9200 of     10000 realz       tot:  11.39 time/est:  11.38/  12.37 min
+radMC,radWood            9300 of     10000 realz       tot:  11.52 time/est:  11.51/  12.38 min
+radMC,radWood            9400 of     10000 realz       tot:  11.63 time/est:  11.63/  12.37 min
+radMC,radWood            9500 of     10000 realz       tot:  11.76 time/est:  11.75/  12.37 min
+radMC,radWood            9600 of     10000 realz       tot:  11.89 time/est:  11.88/  12.38 min
+radMC,radWood            9700 of     10000 realz       tot:  12.01 time/est:  12.00/  12.37 min
+radMC,radWood            9800 of     10000 realz       tot:  12.11 time/est:  12.11/  12.36 min
+radMC,radWood            9900 of     10000 realz       tot:  12.25 time/est:  12.25/  12.37 min
+radMC,radWood           10000 of     10000 realz       tot:  12.37 time/est:  12.36/  12.36 min
+
+Start mat1:   0.8966+-  0.0030   mat2:   0.1034+-  0.0030
+      P(1):   0.9000             P(2):   0.1000
+
+Path  mat1:   0.9026+-  0.0028   mat2:   0.1087+-  0.0004
+    lam(1):   0.9900           lam(2):   0.1100
+
+  Values loaded for special Adamscase :  2.3
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  1.00       scatrat(2):  0.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         : 10.00       lamc      :  0.10
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr   
+reflection        :    0.08468 +-     0.06904 +-   0.8153175
+transmission      :    0.00171 +-     0.01219 +-   7.1359479
+absorption        :    0.91362
+ interactions     :  100.0 % accept   3.32 ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr   
+radWood reflec    :    0.08469 +-     0.06905 +-   0.8153205
+radWood transmit  :    0.00172 +-     0.01227 +-   7.1423733
+radWood absorb    :    0.91360 +-     0.07267 +-   0.0795458
+ interactions     :   -6.9 % accept   1.28 ac/p    ***** rj/p
+
+
+  total runtime:     12.37 min
+    genRealz   :      0.00 min     per:  0.01 %
+    radMC      :      0.70 min     per:  5.66 %
+    radWood    :     11.66 min     per: 94.30 %
+    other      :      0.00 min     per:  0.03 %

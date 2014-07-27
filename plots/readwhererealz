@@ -1,0 +1,74 @@
+#!/bin/bash
+#############################################################################
+# This script seaches for occurances of desired realization number and prints
+# basic info on the lines in which the realization is found.
+#
+#
+#
+#############################################################################
+
+
+# inputs: reading and creating needed inputs
+VAL=$1
+PLOT=$2
+
+
+
+if [ -z "$VAL" -o -z "$PLOT" ]; then
+  echo
+  echo " -------------------------------------------------------------------------------------- "
+  echo "|  You need to enter the realization number you want to search for and whether to plot |"
+  echo "|  Script  usage:  ./readwhererealz # 'plot or noplot'                                 |"
+  echo "|  Example usage:       ./readwhererealz 3 plot                                        |"
+  echo " -------------------------------------------------------------------------------------- "
+  echo
+  exit 1
+fi
+
+
+
+
+
+
+
+NUMEIGS=`grep 'starting here' whererealz.txt | wc -l`  #read number of eigs
+NUMCOMM=`grep -o ',' whererealz.txt | wc -l`           #read number of commas
+let "NUMREALZ = $NUMCOMM / $NUMEIGS"                   #comma for each eig/realz combo
+#echo 'Read this many commas:' $NUMCOMM                #echo to troubleshoot
+#echo 'Calculated this many realizations:' $NUMREALZ
+#echo
+
+
+VAL2=' '$VAL','                              #set up variable for searching
+
+# usage: calculating and printing
+echo 'Realization searching for:' $VAL       #display parameters
+echo 'Number of eigs present   :' $NUMEIGS
+echo
+grep "$VAL2" whererealz.txt   #printing lines with realization of interest present
+echo
+
+
+
+for j in $(seq 1 $NUMEIGS);   #Display same things as above, but count realz in bins
+do
+  STRING=`grep "$VAL2" whererealz.txt | awk '//{i++}i=='$j'{print; exit}' | awk -F ":" '{print $1}'`
+  NUM=`grep "$VAL2" whererealz.txt | awk '//{i++}i=='$j'{print; exit}' | sed 's/[^,]//g' | awk '{ print length }'`
+  let "PERCENT = $NUM * 100 / $NUMREALZ"
+  echo "$STRING" '  Num in bin:' $NUM '/' $NUMREALZ '    ' $PERCENT '% of realz'
+done
+
+
+
+
+if [ "$PLOT" == plot ]; then  #if plot option selected, display plot with warning
+  echo
+  echo
+  echo "**  Please make sure this plot pairs up with this data!  Your last usage of the  **"
+  echo "**      code needs to have been with the \"noise\" subroutine turned on!!!!!       **"
+  echo
+  echo
+
+  export DISPLAY=":0"
+  gs xiBinsplot.ps
+fi

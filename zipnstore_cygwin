@@ -1,0 +1,2 @@
+zip -r stochastic *
+mv stochastic.zip ../Research/stochastic/archive_copy

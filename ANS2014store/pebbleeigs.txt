@@ -1,0 +1,189 @@
+     Eigenvalues, their contributions, and KL maintained variance
+   Eigindx       Eig vals        sqrt(Eig)       var maint
+      1         0.016021976    0.126577943       0.557336594
+      2         0.010603097    0.102971340       0.718463857
+      3         0.006498914    0.080615840       0.801365835
+      4         0.004080353    0.063877639       0.849290608
+      5         0.002703589    0.051996047       0.879607887
+      6         0.001889942    0.043473464       0.900195009
+      7         0.001382827    0.037186377       0.914964719
+      8         0.001050235    0.032407333       0.926024699
+      9         0.000822209    0.028674193       0.934592010
+     10         0.000659890    0.025688317       0.941411575
+     11         0.000540627    0.023251397       0.946962038
+     12         0.000450624    0.021227912       0.951563726
+     13         0.000381136    0.019522694       0.955438508
+     14         0.000326425    0.018067231       0.958744629
+     15         0.000282613    0.016811092       0.961597829
+     16         0.000247005    0.015716405       0.964084629
+     17         0.000217687    0.014754225       0.966270953
+     18         0.000193268    0.013902073       0.968207884
+     19         0.000172719    0.013142241       0.969935599
+     20         0.000155267    0.012460602       0.971486118
+     21         0.000140322    0.011845751       0.972885270
+     22         0.000127428    0.011288386       0.974154114
+     23         0.000116227    0.010780847       0.975309985
+     24         0.000106436    0.010316770       0.976367286
+     25         0.000097828    0.009890826       0.977338075
+   lamc:              0.368
+
+
+
+
+Independent cases here:
+
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr
+reflection        :    0.34252 +-     0.02822 +-   0.0823794
+transmission      :    0.50358 +-     0.05443 +-   0.1080944
+absorption        :    0.15390
+ interactions     :  100.0 % accept   3.89 ac/p     0.00 rj/p
+
+
+
+
+  These Two Dependent:
+ --- Transport: radtrans ---
+                         mean           stdev         relerr
+reflection        :    0.34202 +-     0.02800 +-   0.0818720
+transmission      :    0.50448 +-     0.05390 +-   0.1068486
+absorption        :    0.15349
+ interactions     :  100.0 % accept   3.89 ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr
+radWood reflec    :    0.34208 +-     0.02802 +-   0.0818970
+radWood transmit  :    0.50447 +-     0.05398 +-   0.1070089
+radWood absorb    :    0.15345 +-     0.02646 +-   0.1724684
+ interactions     :   80.0 % accept   2.47 ac/p     0.61 rj/p
+
+
+
+
+  These Three Dependent:
+ --- Transport: radtrans ---
+                         mean           stdev         relerr
+reflection        :    0.34215 +-     0.02791 +-   0.0815721
+transmission      :    0.50434 +-     0.05393 +-   0.1069307
+absorption        :    0.15352
+ interactions     :  100.0 % accept   3.88 ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr
+radWood reflec    :    0.34211 +-     0.02802 +-   0.0819019
+radWood transmit  :    0.50438 +-     0.05403 +-   0.1071204
+radWood absorb    :    0.15351 +-     0.02649 +-   0.1725896
+ interactions     :   80.0 % accept   2.47 ac/p     0.62 rj/p
+
+ --- Transport: KLWood ---
+                         mean           stdev         relerr
+KLWood  reflec    :    0.34250 +-     0.02771 +-   0.0809121
+KLWood  transmit  :    0.50368 +-     0.05375 +-   0.1067189
+KLWood  absorb    :    0.15382 +-     0.02652 +-   0.1724431
+ interactions     :   79.2 % accept   2.47 ac/p     0.65 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00170%,                    17 /                10000
+  Neg samples :  0.00015%,                 34749 /            227005148
+  Neg area    :  0.00001%
+  Ave neg samp:     -0.0377   Ave pos samp:      0.4787
+  Max neg samp:     -0.1202   Max pos samp:      1.1227
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --- Transport: radtrans ---
+                         mean           stdev         relerr
+reflection        :    0.40339 +-     0.03739 +-   0.0926860
+transmission      :    0.55981 +-     0.04410 +-   0.0787690
+absorption        :    0.03680
+ interactions     :  100.0 % accept   4.34 ac/p     0.00 rj/p
+ Radtrans results written over (texts/transout_results.txt)
+
+ --- Transport: radWood ---
+                         mean           stdev         relerr
+radWood reflec    :    0.40326 +-     0.03739 +-   0.0927185
+radWood transmit  :    0.55994 +-     0.04410 +-   0.0787537
+radWood absorb    :    0.03680 +-     0.00702 +-   0.1908321
+ interactions     :   80.0 % accept   2.74 ac/p     0.69 rj/p
+
+
+--- Transport: KLWood ---    Eigs=   3/   750    KLvar: 0.80
+                         mean           stdev         relerr
+KLWood  reflec    :    0.40288 +-     0.03777 +-   0.0937483
+KLWood  transmit  :    0.56042 +-     0.04453 +-   0.0794639
+KLWood  absorb    :    0.03670 +-     0.00708 +-   0.1929575
+ interactions     :   81.9 % accept   2.74 ac/p     0.60 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00020%,                     2 /                10000
+  Neg samples :  0.00002%,                  4910 /            237912713
+  Neg area    :  0.00000%
+  Ave neg samp:     -0.0121   Ave pos samp:      0.4728
+  Max neg samp:     -0.0232   Max pos samp:      1.0852
+
+--- Transport: KLWood ---    Eigs=   1/   750    KLvar: 0.56
+                         mean           stdev         relerr
+KLWood  reflec    :    0.40297 +-     0.03715 +-   0.0921830
+KLWood  transmit  :    0.56031 +-     0.04389 +-   0.0783279
+KLWood  absorb    :    0.03672 +-     0.00706 +-   0.1921197
+ interactions     :   88.3 % accept   2.74 ac/p     0.36 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00000%,                     0 /                10000
+  Neg samples :  0.00000%,                     0 /            213648839
+  Neg area    : -0.00000%
+  Ave neg samp:         NaN   Ave pos samp:      0.4709
+  Max neg samp:      0.0000   Max pos samp:      0.8658
+--- Transport: KLWood ---    Eigs=   5/   750    KLvar: 0.88
+                         mean           stdev         relerr
+KLWood  reflec    :    0.40291 +-     0.03734 +-   0.0926662
+KLWood  transmit  :    0.56037 +-     0.04405 +-   0.0786095
+KLWood  absorb    :    0.03673 +-     0.00703 +-   0.1914350
+ interactions     :   78.5 % accept   2.74 ac/p     0.75 rj/p
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.00290%,                    29 /                10000
+  Neg samples :  0.00024%,                 59347 /            252512589
+  Neg area    :  0.00002%
+  Ave neg samp:     -0.0314   Ave pos samp:      0.4730
+  Max neg samp:     -0.1034   Max pos samp:      1.1716

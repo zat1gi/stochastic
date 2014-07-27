@@ -1,0 +1,84 @@
+  !--- Adamscase and genRealz ---!
+  2.3,           Adamscase option, if==0, then user input for next three parameters
+  0.02,0.03       Sigma (cross-section) values
+  0.5,0.5,       Scattering Ratios
+  0.002,0.001,     Lambda (path-length) values
+  0.1,          s (slab thickness)
+
+  10000,          Number of realizations (numRealz)
+  1234,         Advance random see how far?
+
+  !--- KL research options ---!
+  no,           Perform KLresearch subroutines? ('yes' or 'no')
+  100,            Number of bins for xi
+  4,             Number of eigenvalues to calculate
+  200,            Number of x-pos values used to plot Eigenfunction
+  7,             Levels of refinement for eigenvalue solving
+  0,0,           binSmallBound,binLargeBound for xi, if==0, code choose
+  no,            Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
+
+  !--- KL reconstruct options ---!
+  no,          Perform KLreconstruct subroutines? ('yes' or 'no')
+  8,          Number of points to recreate Sig at, fixed point
+  30,          Number of points to plot Sig at, fixed xi (also neg check)
+  10000,           Number of realizations to construct from KL expansion
+  100,             How often prnt to screen when, every ___ realization (must<=previous entry)
+
+  !--- radtransMC options ---!
+  yes,            Perform radtransMC subroutines? ('yes' or 'no')
+  10000,          Number of particles to simulate on each realization
+  100,           How often to print to screen (num of realizations)
+  planar,           Choose 'rod' or 'planar' for geometry type
+  left,          Choose 'left' or 'intern' (for internal)
+  remove,        Choose to 'remove' old results and use new, or 'add' to existing results
+
+  !--- Woodcock options ---!
+  yes,           Woodcock sample on original realz? ('yes' or 'no')
+  no,           Woodcock sample on reconstructed realz? ('yes' or 'no')
+  yes,no        Allow negative cross sections? ('yes' or 'no'),Redistribute negs?
+
+
+  !!--All Plotting Option
+  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+
+  !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
+  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,          "preview" "plot" "noplot", for ensemble mat type in bin
+  cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux 
+  100,           Number of cells to plot flux/ensemble mat type over
+
+  !!--Plotting Eigenfunctions                [in sub KL_eigenvalue]
+  noplot,lines,#x,funcval,   "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  1,             Number of Eigs to plot Eigenfunction for (up to 4)
+  1,             Which Eigs to plot Eigenfunction for
+  
+  !!--Plotting Correlation contours          [in sub KL_eigenvalue]
+  noplot,both,    "preview" "plot" or "noplot","expect" "yield" or "both"
+  40,             Number of points in each dir to create grid at
+  
+  !!--Plotting xiBins                        [in sub KL_eval]
+  noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  nogauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
+  1,             Number of Eig/realz# combos to plot xi for (up to 4)
+  1,1000,          Which Eigs to plot xi for/how many realz to plot at
+  
+  !!--Plotting KLreconstructed realizations  [in sub KLreval]
+  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  4,             Number of realizations to plot (up to 4)
+  965,1,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
+  966,1,fxi
+  962,1,fxi
+  967,1,fxi
+
+  !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
+  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
+  3,             Number of realizations to plot (up to 3)
+  4,             Which realizations to plot
+  5,
+  6,
+
+  !!--Plotting Variance (Co)  [in sub KL_Cochart]
+  noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  1,             Number of Eig/type combos to plot (up to 4)
+  1,1            Which Eigenmode to plot/"1" for CoEffExp, "2" for CoEffAct
+  
