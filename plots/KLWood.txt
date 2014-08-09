@@ -1,2 +1,2 @@
  #Adamscase refl      refldev   trans     transdev  plot
- 0.02       0.3436    0.1529    0.5049    0.1666    0.08
+ 0.02       0.0107    0.0106    0.9668    0.0181    0.08

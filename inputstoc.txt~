@@ -1,10 +1,10 @@
   !--- genRealz ---!
   0,                   Adamscase option, if==0, then user input for next three parameters
-  0.1,0.9        Sigma cross section vals
-  0.5,0.5,       Scattering Ratios
-  0.002,0.0001,             Lambda path length vals
-  1.0,                 slab thickness
-  1000,                 Number of realizations
+  0.7969,0.3815        Sigma cross section vals
+  0.9071,0.9071,       Scattering Ratios
+  0.5,2.0,             Lambda path length vals
+  2.0,                 slab thickness
+  10000,                 Number of realizations
 
 
   !--- KL Shared Variables ---!
@@ -13,7 +13,7 @@
 
 
   !--- Transport Shared Variables ---!
-    20,               Number of bins for tran and refl profiles
+    80,               Number of bins for tran and refl profiles
 
 
   !-- radMC Specific Variables --!
@@ -24,24 +24,24 @@
 
   !-- radWood Specific Variables --!
     !!- Plot tran/refl current profiles
-    preview,             'plot', 'noplot', 'preview'
+    plot,             'plot', 'noplot', 'preview'
 
 
 
   !-- KLWood Specific Variables --!
     !!- Plot tran/refl current profiles
-    noplot,             'plot', 'noplot', 'preview'
+    preview,             'plot', 'noplot', 'preview'
 
 
 
 
 
 
-  200,         Advance random see how far?
+  200000,         Advance random see how far?
 
   !--- KL research options ---!
-  no,           Perform KLresearch subroutines? ('yes' or 'no')
-  200,            Number of bins for xi
+  yes,           Perform KLresearch subroutines? ('yes' or 'no')
+  400,            Number of bins for xi
   4,             Number of eigenvalues to calculate
   200,            Number of x-pos values used to plot Eigenfunction
   11,             Levels of refinement for eigenvalue solving
@@ -49,15 +49,15 @@
   no,            Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
 
   !--- KL reconstruct options ---!
-  no,          Perform KLreconstruct subroutines? ('yes' or 'no')
+  yes,          Perform KLreconstruct subroutines? ('yes' or 'no')
   8,          Number of points to recreate Sig at, fixed point
   30,          Number of points to plot Sig at, fixed xi (also neg check)
-  1000,           Number of realizations to construct from KL expansion
+  10000,           Number of realizations to construct from KL expansion
   10,             How often prnt to screen when, every ___ realization (must<=previous entry)
 
   !--- radtransMC options ---!
   yes,            Perform radtransMC subroutines? ('yes' or 'no')
-  100,          Number of particles to simulate on each realization
+  10,          Number of particles to simulate on each realization
   100,           How often to print to screen (num of realizations)
   planar,           Choose 'rod' or 'planar' for geometry type
   left,          Choose 'left' or 'intern' (for internal)
@@ -65,9 +65,9 @@
 
   !--- Woodcock options ---!
   yes,           Woodcock sample on original realz? ('yes' or 'no')
-  no,           Woodcock sample on reconstructed realz? ('yes' or 'no')
-  no,no        Allow negative cross sections? ('yes' or 'no'),Redistribute negs?
-  no, 0.0000001     Adjust mean of reconstruction?, Tolerance of adjustment
+  yes,           Woodcock sample on reconstructed realz? ('yes' or 'no')
+  yes,no        Allow negative cross sections? ('yes' or 'no'),Redistribute negs?
+  yes, 0.0000001     Adjust mean of reconstruction?, Tolerance of adjustment
 
 
   !!--All Plotting Option

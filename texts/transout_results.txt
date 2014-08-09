@@ -7,4 +7,4 @@
 # set xlabel "Index of Adams Case"
 # set ylabel "Transmission (out of 1)"
 #Adamscase#   #ofgeoms      #ofDarts  reflection     refldev        transmission   transdev       absorption     absdev         sig1           sig2           c1             c2             lam1           lam2           s
- 0.0         10000            10      0.3431200      0.0233370      0.5049300      0.0280775      0.1519500      0.0136656      0.7969000      0.3815000      0.9071000      0.9071000      0.5000000      2.0000000      2.0000000
+ 0.0          1000           100      0.0494000      0.0004647      0.8268300      0.0013642      0.1237700      0.0009626      0.1000000      0.9000000      0.5000000      0.5000000      0.0020000      0.0001000      1.0000000
