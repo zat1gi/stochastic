@@ -738,7 +738,7 @@ enddo
   !Heart of radtrans_resultplot, loads values to bin, and prints to generic text file
   !for each method
   use genRealzvars,         only: numRealz
-  use MCvars,               only: trprofile_binnum
+  use transport_sharedvars, only: trprofile_binnum
   real(8) :: reflect(:),transmit(:)
   real(8) :: smrefl,lgrefl,smtran,lgtran
 

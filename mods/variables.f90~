@@ -27,12 +27,26 @@ end module KLvars
 
 
 !--- Transport ---!
-module MCvars
+module transport_sharedvars
   implicit none
   !inputs
   integer :: trprofile_binnum                  ! number of bins for tran and refl profiles
-  character(7) :: radMCbinplot                 ! 'plot', 'noplot', 'preview'
-  character(7) :: radWoodbinplot               ! 'plot', 'noplot', 'preview'
-  character(7) :: KLWoodbinplot                ! 'plot', 'noplot', 'preview'
-end module MCvars
+end module transport_sharedvars
 
+module radMCvars !Traditional MC on original Markov realizations
+  implicit none
+  !inputs
+  character(7) :: radMCbinplot                 ! 'plot', 'noplot', 'preview'
+end module radMCvars
+
+module radWoodvars !Woodcock sampling on original Markov realizations
+  implicit none
+  !inputs
+  character(7) :: radWoodbinplot               ! 'plot', 'noplot', 'preview'
+end module radWoodvars
+
+module KLWoodvars  !Woodcock sampling on KL reconstructed realizations
+  implicit none
+  !inputs
+  character(7) :: KLWoodbinplot                ! 'plot', 'noplot', 'preview'
+end module KLWoodvars

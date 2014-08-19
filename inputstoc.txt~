@@ -18,13 +18,13 @@
 
   !-- radMC Specific Variables --!
     !!- Plot tran/refl current profiles
-    noplot,             'plot', 'noplot', 'preview'
+    plot,             'plot', 'noplot', 'preview'
 
 
 
   !-- radWood Specific Variables --!
     !!- Plot tran/refl current profiles
-    noplot,             'plot', 'noplot', 'preview'
+    preview,             'plot', 'noplot', 'preview'
 
 
 
@@ -57,14 +57,14 @@
 
   !--- radtransMC options ---!
   yes,            Perform radtransMC subroutines? ('yes' or 'no')
-  10,          Number of particles to simulate on each realization
+  100,          Number of particles to simulate on each realization
   100,           How often to print to screen (num of realizations)
   planar,           Choose 'rod' or 'planar' for geometry type
   left,          Choose 'left' or 'intern' (for internal)
   remove,        Choose to 'remove' old results and use new, or 'add' to existing results
 
   !--- Woodcock options ---!
-  no,           Woodcock sample on original realz? ('yes' or 'no')
+  yes,           Woodcock sample on original realz? ('yes' or 'no')
   no,           Woodcock sample on reconstructed realz? ('yes' or 'no')
   no,no        Allow negative cross sections? ('yes' or 'no'),Redistribute negs?
   no, 0.0000001     Adjust mean of reconstruction?, Tolerance of adjustment
