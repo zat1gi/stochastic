@@ -8,7 +8,7 @@
 
 
   !--- KL Shared Variables ---!
-  no,                 calc    KL variance at truncation, 'yes', 'no'
+  yes,                 calc    KL variance at truncation, 'yes', 'no'
   0.0001,           tol for KL variance at truncation
 
 

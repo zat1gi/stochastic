@@ -59,7 +59,7 @@ CONTAINS
 !print *,"about to find next point"
         xr = findnextpoint(j,numEigs,Eig,Ak,lamc,sigave,KLrxivals)
 !print *,"found next point: ",xr
-        areacont = KLrxi_integral(j,numEigs,Eig,Ak,lamc,sigave,KLrxivals,xl,xr)/KLrnumRealz/s
+        areacont = KLrxi_integral(j,numEigs,Eig,Ak,alpha,lamc,sigave,KLrxivals,xl,xr)/KLrnumRealz/s
 
         xmid = KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,(xr+xl)/2d0,KLrxivals)
         if(xmid>0d0) then

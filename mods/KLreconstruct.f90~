@@ -128,7 +128,7 @@ CONTAINS
   endif
 
   do i=1,KLrnumpoints(2)  !create realization
-    KLrxisig(i) = KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,KLrxi(i),KLrxivals)
+    KLrxisig(i) = KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,KLrxi(i),KLrxivals)
   enddo
 
 
@@ -202,7 +202,7 @@ CONTAINS
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
           KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),tnumEigs,Eig,&
-                                    Ak,lamc,sigave,KLrxi(i),KLrxivals)
+                                    Ak,alpha,lamc,sigave,KLrxi(i),KLrxivals)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
@@ -246,10 +246,10 @@ CONTAINS
 
   do i=1,numEigs
     minpos=(outerstep*(i-1))
-    minsig=KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,minpos,KLrxivals)
+    minsig=KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,minpos,KLrxivals)
     do k=2,nminnersteps
       xpos=(outerstep*(i-1)+innerstep*(k-1))
-      xsig= KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,xpos,KLrxivals)
+      xsig= KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,xpos,KLrxivals)
       if(xsig<minsig) then
         minsig=xsig
         minpos=xpos
@@ -263,7 +263,7 @@ CONTAINS
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
         if(xpos<0) xpos=0.0d0
         if(xpos>s) xpos=s
-        xsig= KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,xpos,KLrxivals)
+        xsig= KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,xpos,KLrxivals)
         if(xsig<minsig) then
           minsig=xsig
           minpos=xpos

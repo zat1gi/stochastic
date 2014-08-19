@@ -399,7 +399,7 @@ CONTAINS
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
-  use KLvars,        only: gam, alpha
+  use KLvar,        only: gam, alpha
   integer :: numEigs,numSlice,pltConumof,pltCowhich(:,:)
   real(8) :: P(2),sigave,lamc,avePath(2),totLength(2),CoExp
   real(8) :: Ak(:),Eig(:)

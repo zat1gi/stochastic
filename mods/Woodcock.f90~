@@ -180,7 +180,7 @@ if(print=='yes') print *,
                                  pfnumcells,plotflux,pltflux,j,mu,matType,matLength,nummatSegs)
       if(Wood=='rad') woodrat= radWood_actsig(position,matType,matLength,sig)&
                                /ceilsig
-      if(Wood=='KL')  woodrat= KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,position,KLrxivals)&
+      if(Wood=='KL')  woodrat= KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,position,KLrxivals)&
                                /ceilsig
       if(woodrat>1.0d0) then
         print *,"j: ",j,"  woodrat: ",woodrat
@@ -669,7 +669,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,xpos,KLrxivals)
+      xsig= KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,xpos,KLrxivals)
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -678,9 +678,9 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,xpos1,KLrxivals)
+      xsig1= KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,xpos1,KLrxivals)
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,numEigs,Eig,Ak,lamc,sigave,xpos2,KLrxivals)
+      xsig2= KLrxi_point(j,numEigs,Eig,Ak,alpha,lamc,sigave,xpos2,KLrxivals)
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1
