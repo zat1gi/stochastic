@@ -1,0 +1,2 @@
+git rm `find -type f -name "*~"`
+rm `find -type f -name "*~"`
