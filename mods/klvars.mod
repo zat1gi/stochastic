@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:980718edb18bc31216410f2abcf3b1da -- If you edit this, you'll get what you deserve.
+MD5:750d43a0b5c3606107d7b5e8303d2762 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -43,7 +43,11 @@ UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
 11 'varmain' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
+12 'xi' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (
+2 0 DEFERRED () () () ()) 0 () () () 0 0)
 )
 
 ('ak' 0 2 'alleig' 0 3 'allgam' 0 4 'alpha' 0 5 'eig' 0 6 'gam' 0 7
-'klvarcalc' 0 8 'klvarkept_tol' 0 9 'klvars' 0 10 'varmain' 0 11)
+'klvarcalc' 0 8 'klvarkept_tol' 0 9 'klvars' 0 10 'varmain' 0 11 'xi' 0
+12)

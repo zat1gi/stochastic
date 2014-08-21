@@ -13,7 +13,7 @@ CONTAINS
 
 
   subroutine KL_eigenvalue( numEigs,P,sigave,&
-                            levsrefEig,lamc,numSlice,xi,pltEigf,&
+                            levsrefEig,lamc,numSlice,pltEigf,&
                             pltEigfnumof,pltEigfwhich,KLrxivals,KLrnumRealz )
   !This subroutine: 1) calcaltes some initial values used here and later
   !2) Solves the transcendental equation which yields gamma
@@ -22,9 +22,9 @@ CONTAINS
   !5) Calculates variance maintained with # of eigvals if input specifies
   use genRealzvars, only: sig, lam, s, numRealz
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha,&
-                          Ak, Eig
+                          Ak, Eig, xi
   integer :: numEigs,levsrefEig,numSlice,KLrnumRealz
-  real(8),allocatable :: xi(:,:),KLrxivals(:,:)
+  real(8),allocatable :: KLrxivals(:,:)
   real(8) :: P(2),sigave,lamc
   character(7) :: pltEigf(4)
   integer :: pltEigfnumof
@@ -336,14 +336,14 @@ CONTAINS
 
 
 
-  subroutine KL_collect( nummatSegs,matLength,matType,j,xi,&
+  subroutine KL_collect( nummatSegs,matLength,matType,j,&
                          numEigs,sigave,lamc,totLength,&
                          time,ntime )
   use genRealzvars, only: sig, lam, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig
+  use KLvars,       only: gam, alpha, Ak, Eig, xi
   integer :: matType(:),j,numEigs,ntime,nummatSegs
   real(8) :: matLength(:),sigave,time(:),tt1,tt2
-  real(8) :: xi(:,:),lamc,totLength(2)
+  real(8) :: lamc,totLength(2)
 
   integer :: i,k,curEig,doloop
   real(8) :: xitermtot,xl,xr,sigma,xiterm
@@ -527,7 +527,7 @@ CONTAINS
 
 
 
-  subroutine KL_eval( xi,binSmallBound,binLargeBound,&
+  subroutine KL_eval( binSmallBound,binLargeBound,&
                       binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
                       pltxiBins,pltxiBinsgauss,binPDF,binSize,binBounds,&
                       mostinBin )
@@ -535,9 +535,10 @@ CONTAINS
   !input file and also makes a .txt file containing PDFs of xi values for 
   !each Eigenvalue calculated.
   use genRealzvars, only: numRealz
+  use KLvars, only: xi
   integer :: binNumof,numEigs,pltxiBinsnumof,mostinBin
   integer :: pltxiBinswhich(:,:)
-  real(8) :: xi(:,:),binSmallBound,binLargeBound
+  real(8) :: binSmallBound,binLargeBound
   real(8),allocatable :: binPDF(:,:),binper(:,:),binBounds(:)
   character(7) :: pltxiBins(4),pltxiBinsgauss
 
@@ -683,7 +684,7 @@ CONTAINS
 
 
 
-  subroutine KL_Noise( numEigs,binNumof,xi,binPDF,binBounds,&
+  subroutine KL_Noise( numEigs,binNumof,binPDF,binBounds,&
                        binSmallBound,binLargeBound,binSize,mostinBin,&
                        time,ntime )
   !This subroutine identifies the two largest peaks of a xi distribution,
@@ -692,8 +693,9 @@ CONTAINS
   !investigation.  Data printed is Eigs for each are out, and how far from
   !the nearest "largest peak", neg for below bottom, pos for above top.
   use genRealzvars, only: numRealz
+  use Klvars, only: xi
   integer :: numEigs,binNumof,mostinBin,ntime
-  real(8) :: xi(:,:),binPDF(:,:),binBounds(:),binSmallBound,binLargeBound
+  real(8) :: binPDF(:,:),binBounds(:),binSmallBound,binLargeBound
   real(8) :: binSize,time(:),tt1,tt2
 
   integer :: j,i,curEig,indofbin,w

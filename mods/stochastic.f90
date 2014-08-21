@@ -35,7 +35,7 @@ program stochastic
   !--- KLresearch variables (new) ---!
   integer      :: binNumof,numEigs,numSlice,levsrefEig,mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
-  real(8),allocatable :: xi(:,:),binPDF(:,:),binBounds(:)
+  real(8),allocatable :: binPDF(:,:),binBounds(:)
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   integer      :: pltxiBinsnumof,pltEigfnumof,pltConumof
   integer,allocatable :: pltEigfwhich(:),pltxiBinswhich(:,:),pltCowhich(:,:)
@@ -91,7 +91,7 @@ program stochastic
 
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( numEigs,P,sigave,&
-                           levsrefEig,lamc,numSlice,xi,pltEigf,&
+                           levsrefEig,lamc,numSlice,pltEigf,&
                            pltEigfnumof,pltEigfwhich,KLrxivals,KLrnumRealz )
   if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,numEigs,&
                            lamc,sigave,CoExp,P )
@@ -121,7 +121,7 @@ program stochastic
                            pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                            disthold )
-    if(KLres=='yes') call KL_collect( nummatSegs,matLength,matType,j,xi,&
+    if(KLres=='yes') call KL_collect( nummatSegs,matLength,matType,j,&
                            numEigs,sigave,lamc,totLength,&
                            time,ntime )
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
@@ -135,11 +135,11 @@ program stochastic
   if(KLres=='yes') call KL_Cochart( numEigs,numSlice,P,sigave,lamc,&
                            avePath,totLength,pltCo,pltConumof,&
                            pltCowhich,CoExp )
-  if(KLres=='yes') call KL_eval( xi,binSmallBound,binLargeBound,&
+  if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&
                            binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
                            pltxiBins,pltxiBinsgauss,binPDF,binSize,binBounds,&
                            mostinBin )
-  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,xi,binPDF,binBounds,&
+  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,binPDF,binBounds,&
                            binSmallBound,binLargeBound,binSize,mostinBin,time,ntime )
 
 
