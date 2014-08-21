@@ -35,7 +35,6 @@ program stochastic
   !--- KLresearch variables (new) ---!
   integer      :: binNumof,numEigs,numSlice,levsrefEig,mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
-  real(8),allocatable :: binBounds(:)
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   integer      :: pltxiBinsnumof,pltEigfnumof,pltConumof
   integer,allocatable :: pltEigfwhich(:),pltxiBinswhich(:,:),pltCowhich(:,:)
@@ -137,9 +136,9 @@ program stochastic
                            pltCowhich,CoExp )
   if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&
                            binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
-                           pltxiBins,pltxiBinsgauss,binSize,binBounds,&
+                           pltxiBins,pltxiBinsgauss,binSize,&
                            mostinBin )
-  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,binBounds,&
+  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,&
                            binSmallBound,binLargeBound,binSize,mostinBin,time,ntime )
 
 
