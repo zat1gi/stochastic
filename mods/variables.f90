@@ -21,7 +21,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
-!  real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
+  real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
 !  real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
 !  real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
 
