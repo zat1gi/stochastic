@@ -22,6 +22,9 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 
   integer, allocatable :: pltCowhich(:,:)      ! 
+  integer              :: pltxiBinsnumof       ! 
+  integer              :: pltEigfnumof         !
+  integer              :: pltConumof           !
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
