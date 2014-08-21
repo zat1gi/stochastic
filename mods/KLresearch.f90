@@ -12,7 +12,7 @@ CONTAINS
 
 
 
-  subroutine KL_eigenvalue( numEigs,P,sigave,&
+  subroutine KL_eigenvalue( P,sigave,&
                             levsrefEig,lamc,numSlice,pltEigf,&
                             KLrxivals,KLrnumRealz )
   !This subroutine: 1) calcaltes some initial values used here and later
@@ -22,8 +22,8 @@ CONTAINS
   !5) Calculates variance maintained with # of eigvals if input specifies
   use genRealzvars, only: sig, lam, s, numRealz
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha,&
-                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof
-  integer :: numEigs,levsrefEig,numSlice,KLrnumRealz
+                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs
+  integer :: levsrefEig,numSlice,KLrnumRealz
   real(8),allocatable :: KLrxivals(:,:)
   real(8) :: P(2),sigave,lamc
   character(7) :: pltEigf(4)
@@ -231,15 +231,15 @@ CONTAINS
 
 
 
-  subroutine KL_Correlation( Corropts,Corrnumpoints,numEigs,&
+  subroutine KL_Correlation( Corropts,Corrnumpoints,&
                              lamc,sigave,CoExp,P )
   !This subroutine calculates Correlation between two points in a
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s
-  use KLvars, only: alpha, Ak, Eig
-  integer :: Corrnumpoints,numEigs
+  use KLvars, only: alpha, Ak, Eig, numEigs
+  integer :: Corrnumpoints
   real(8) :: lamc,sigave,CoExp,P(2)
   character(7) :: Corropts(2)
 
@@ -335,11 +335,11 @@ CONTAINS
 
 
   subroutine KL_collect( nummatSegs,matLength,matType,j,&
-                         numEigs,sigave,lamc,totLength,&
+                         sigave,lamc,totLength,&
                          time,ntime )
   use genRealzvars, only: sig, lam, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, xi
-  integer :: matType(:),j,numEigs,ntime,nummatSegs
+  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs
+  integer :: matType(:),j,ntime,nummatSegs
   real(8) :: matLength(:),sigave,time(:),tt1,tt2
   real(8) :: lamc,totLength(2)
 
@@ -386,7 +386,7 @@ CONTAINS
 
 
 
-  subroutine KL_Cochart( numEigs,numSlice,P,sigave,lamc,&
+  subroutine KL_Cochart( numSlice,P,sigave,lamc,&
                          avePath,totLength,pltCo,&
                          CoExp )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
@@ -398,8 +398,8 @@ CONTAINS
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof
-  integer :: numEigs,numSlice
+  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs
+  integer :: numSlice
   real(8) :: P(2),sigave,lamc,avePath(2),totLength(2),CoExp
   character(7) :: pltCo(4)
 
@@ -526,15 +526,15 @@ CONTAINS
 
 
   subroutine KL_eval( binSmallBound,binLargeBound,&
-                      numEigs,&
                       pltxiBins,pltxiBinsgauss,binSize,&
                       mostinBin )
   !This subroutine puts xi values in bins.  It plots for those chosen in the 
   !input file and also makes a .txt file containing PDFs of xi values for 
   !each Eigenvalue calculated.
   use genRealzvars, only: numRealz
-  use KLvars, only: xi, binPDF, binBounds, pltxiBinswhich, pltxiBinsnumof, binNumof
-  integer :: numEigs,mostinBin
+  use KLvars, only: xi, binPDF, binBounds, pltxiBinswhich, pltxiBinsnumof, binNumof, &
+                    numEigs
+  integer :: mostinBin
   real(8) :: binSmallBound,binLargeBound
   real(8),allocatable :: binper(:,:)
   character(7) :: pltxiBins(4),pltxiBinsgauss
@@ -681,8 +681,7 @@ CONTAINS
 
 
 
-  subroutine KL_Noise( numEigs,&
-                       binSmallBound,binLargeBound,binSize,mostinBin,&
+  subroutine KL_Noise( binSmallBound,binLargeBound,binSize,mostinBin,&
                        time,ntime )
   !This subroutine identifies the two largest peaks of a xi distribution,
   !then uses the variable "xi" to print which realization/eigenmode combos
@@ -690,8 +689,8 @@ CONTAINS
   !investigation.  Data printed is Eigs for each are out, and how far from
   !the nearest "largest peak", neg for below bottom, pos for above top.
   use genRealzvars, only: numRealz
-  use Klvars, only: xi, binPDF, binBounds, binNumof
-  integer :: numEigs,mostinBin,ntime
+  use Klvars, only: xi, binPDF, binBounds, binNumof, numEigs
+  integer :: mostinBin,ntime
   real(8) :: binSmallBound,binLargeBound
   real(8) :: binSize,time(:),tt1,tt2
 

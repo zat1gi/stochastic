@@ -19,6 +19,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
   real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)
+  integer              :: numEigs              ! number of eigenmodes to calculate
 
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 
@@ -38,6 +39,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: AllEig(:)            ! many more Eigs than used, for variance kept calcs
   real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
   real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
+  integer              :: tnumEigs             ! temp numEigs, local use "KLreval", nice to get rid of
 
 end module KLvars
 

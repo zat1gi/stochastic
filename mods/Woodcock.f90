@@ -11,7 +11,7 @@ CONTAINS
 
 
   subroutine WoodcockMC( j,matType,matLength,nummatSegs,&
-                         time,ntime,numParts,lamc,Wood,numEigs,&
+                         time,ntime,numParts,lamc,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,KLrnumRealz,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,sigave,KLrxivals,rodOrplanar,&
@@ -20,10 +20,9 @@ CONTAINS
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
   use genRealzvars, only: sig, scatrat, lam, s, numRealz
-  use KLvars, only: alpha, Ak, Eig
+  use KLvars, only: alpha, Ak, Eig, numEigs
   integer :: j,nummatSegs,numParts,ntime,matType(:),pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
-  integer :: numEigs
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
   real(8),allocatable :: radWoodt(:),radWoodr(:),radWooda(:)
   real(8),allocatable :: KLWoodt(:), KLWoodr(:), KLWooda(:)
@@ -104,7 +103,7 @@ CONTAINS
   enddo
 
   if(Wood=='rad') call radWood_binmaxes(matLength,matType,nummatSegs,binmaxind,binmaxes,nbin,sig)
-  if(Wood=='KL')  call KLWood_binmaxes( j,numEigs,lamc,sigave,KLrxivals,&
+  if(Wood=='KL')  call KLWood_binmaxes( j,lamc,sigave,KLrxivals,&
                                         binmaxind,binmaxes,nbin)
 
   !create forward/backward motion max vectors
@@ -180,7 +179,7 @@ if(print=='yes') print *,
                                  pfnumcells,plotflux,pltflux,j,mu,matType,matLength,nummatSegs)
       if(Wood=='rad') woodrat= radWood_actsig(position,matType,matLength,sig)&
                                /ceilsig
-      if(Wood=='KL')  woodrat= KLrxi_point(j,numEigs,lamc,sigave,position,KLrxivals)&
+      if(Wood=='KL')  woodrat= KLrxi_point(j,lamc,sigave,position,KLrxivals)&
                                /ceilsig
       if(woodrat>1.0d0) then
         print *,"j: ",j,"  woodrat: ",woodrat
@@ -317,8 +316,9 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
                                  plotflux,pltflux,pfnumcells,fluxfaces,radWoodf,&
                                  fradWoodf,bradWoodf,P )
   use genRealzvars, only: Adamscase, numRealz
+  use KLvars, only: numEigs
   integer :: numParts,pfnumcells
-  integer :: radWood_rej(2),numEigs
+  integer :: radWood_rej(2)
   real(8) :: P(2)
   real(8) :: fluxfaces(:),radWoodf(:,:),radWoodt(:),radWoodr(:),radWooda(:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
@@ -457,11 +457,11 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   subroutine WoodcockKLoutstats( numParts,KLrnumRealz,KLWoodt,KLWoodr,&
                                  KLWooda,KLWood_rej,&
                                  plotflux,pltflux,pfnumcells,fluxfaces,KLWoodf,&
-                                 fKLWoodf,bKLWoodf,P,numEigs )
+                                 fKLWoodf,bKLWoodf,P )
   use genRealzvars, only: Adamscase
-  use KLvars,       only: KLvarcalc,varmain
+  use KLvars,       only: KLvarcalc, varmain, numEigs
   integer :: numParts,KLrnumRealz,pfnumcells
-  integer :: KLWood_rej(2),numEigs
+  integer :: KLWood_rej(2)
   real(8) :: P(2)
   real(8) :: fluxfaces(:),KLWoodf(:,:),KLWoodt(:),KLWoodr(:),KLWooda(:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
@@ -650,10 +650,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine KLWood_binmaxes( j,numEigs,lamc,sigave,KLrxivals,&
+  subroutine KLWood_binmaxes( j,lamc,sigave,KLrxivals,&
                               binmaxind,binmaxes,nbin)
-  use KLvars, only: alpha, Ak, Eig
-  integer :: j,numEigs,nbin
+  use KLvars, only: alpha, Ak, Eig, numEigs
+  integer :: j,nbin
   real(8) :: lamc,sigave,KLrxivals(:,:)
   real(8) :: binmaxind(:),binmaxes(:)
 
@@ -669,7 +669,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,numEigs,lamc,sigave,xpos,KLrxivals)
+      xsig= KLrxi_point(j,lamc,sigave,xpos,KLrxivals)
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -678,9 +678,9 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,numEigs,lamc,sigave,xpos1,KLrxivals)
+      xsig1= KLrxi_point(j,lamc,sigave,xpos1,KLrxivals)
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,numEigs,lamc,sigave,xpos2,KLrxivals)
+      xsig2= KLrxi_point(j,lamc,sigave,xpos2,KLrxivals)
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1
