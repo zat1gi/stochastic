@@ -35,7 +35,7 @@ program stochastic
   !--- KLresearch variables (new) ---!
   integer      :: binNumof,numEigs,numSlice,levsrefEig,mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
-  real(8),allocatable :: binPDF(:,:),binBounds(:)
+  real(8),allocatable :: binBounds(:)
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   integer      :: pltxiBinsnumof,pltEigfnumof,pltConumof
   integer,allocatable :: pltEigfwhich(:),pltxiBinswhich(:,:),pltCowhich(:,:)
@@ -137,9 +137,9 @@ program stochastic
                            pltCowhich,CoExp )
   if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&
                            binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
-                           pltxiBins,pltxiBinsgauss,binPDF,binSize,binBounds,&
+                           pltxiBins,pltxiBinsgauss,binSize,binBounds,&
                            mostinBin )
-  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,binPDF,binBounds,&
+  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,binBounds,&
                            binSmallBound,binLargeBound,binSize,mostinBin,time,ntime )
 
 
@@ -148,7 +148,7 @@ program stochastic
   if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,KLrnumpoints,s )
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( sigave,numEigs,lamc,KLrx,&
-                           binPDF,binNumof,KLrnumpoints,j,KLrnumRealz,&
+                           binNumof,KLrnumpoints,j,KLrnumRealz,&
                            KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
@@ -159,7 +159,7 @@ program stochastic
                            KLrnumRealz,KLrxivals )
   if(KLrec=='yes') call KLreval( KLrnumpoints,pltKLrrealznumof,pltKLrrealzarray,&
                            pltKLrrealz,KLrrandarray,lamc,&
-                           binPDF,binNumof,KLrx,numEigs,pltKLrrealzwhich,&
+                           binNumof,KLrx,numEigs,pltKLrrealzwhich,&
                            KLrsig,sigave,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                            KLrxivals,negcnt )
 

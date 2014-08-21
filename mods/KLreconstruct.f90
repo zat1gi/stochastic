@@ -46,7 +46,7 @@ CONTAINS
 
 
 
-  subroutine KLrgenrealz( sigave,numEigs,lamc,KLrx,binPDF,&
+  subroutine KLrgenrealz( sigave,numEigs,lamc,KLrx,&
                           binNumof,KLrnumpoints,j,KLrnumRealz,&
                           KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                           pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
@@ -55,14 +55,14 @@ CONTAINS
   !It reconstructs based upon the fixed point and fixed xi methods
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
   use genRealzvars, only: s
-  use KLvars,       only: gam, alpha, Ak, Eig
+  use KLvars,       only: gam, alpha, Ak, Eig, binPDF
   integer :: numEigs,binNumof,KLrnumpoints(2),j,KLrnumRealz,KLrprintat
   integer :: ntime,negcnt
   real(8) :: sigave,lamc,KLrx(:),KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
   character(7) :: pltKLrrealz(4)
   character(3) :: neg
   integer :: pltKLrrealznumof,pltKLrrealzwhich(:,:)
-  real(8),allocatable :: binPDF(:,:),KLrxisig(:)
+  real(8),allocatable :: KLrxisig(:)
   real(8),allocatable :: pltKLrrealzarray(:,:),KLrrandarray(:,:,:),KLrsig(:)
 
   integer :: i,curEig,w,u
@@ -151,18 +151,18 @@ CONTAINS
 
   subroutine KLreval( KLrnumpoints,pltKLrrealznumof,pltKLrrealzarray,&
                       pltKLrrealz,KLrrandarray,lamc,&
-                      binPDF,binNumof,KLrx,numEigs,pltKLrrealzwhich,&
+                      binNumof,KLrx,numEigs,pltKLrrealzwhich,&
                       KLrsig,sigave,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                       KLrxivals,negcnt )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use KLvars,      only: gam, alpha, Ak, Eig
+  use KLvars,      only: gam, alpha, Ak, Eig, binPDF
   character(7)  :: pltKLrrealz(4)
   integer :: pltKLrrealznumof,pltKLrrealzwhich(:,:),numEigs,binNumof
   integer :: KLrnumpoints(2),negcnt
   real(8) :: lamc,KLrrandarray(:,:,:),KLrx(:),KLrxi(:),sigave,KLrsig(:),KLrxisig(:)
   real(8) :: KLrxivals(:,:)
-  real(8),allocatable :: binPDF(:,:),pltKLrrealzarray(:,:)
+  real(8),allocatable :: pltKLrrealzarray(:,:)
   character(7) :: pltKLrrealzPointorXi(:)
 
   integer :: i,curEig,tnumEigs,m,KLrnumpts
