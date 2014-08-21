@@ -16,8 +16,9 @@ end module
 module KLvars  !"KLresearch" and "KLreconstruct"
   implicit none
   !inputs
-  character(3) :: KLvarcalc                    ! calculate amount of variance kept in eigs? 'yes' 'no
-  real(8) :: KLvarkept_tol                     ! tolerance of rel eig size for var calcs
+  character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
+  real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
+  integer              :: binNumof             ! number of bins (for xi?)
 
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 

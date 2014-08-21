@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  integer      :: binNumof,numEigs,numSlice,levsrefEig,mostinBin,Corrnumpoints
+  integer      :: numEigs,numSlice,levsrefEig,mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
@@ -57,7 +57,7 @@ program stochastic
 
   !!read and prepare parameters
   call cpu_time(t1)
-  call readinputstoc(      binNumof,numEigs,numSlice,levsrefEig,&
+  call readinputstoc(      numEigs,numSlice,levsrefEig,&
                            binSmallBound,binLargeBound,KLres,KLnoise,&
                            pltxiBins,&
                            pltxiBinsgauss,pltKLrrealzPointorXi,&
@@ -71,7 +71,7 @@ program stochastic
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      numEigs,&
-                           binNumof,KLrnumRealz,KLrprintat,&
+                           KLrnumRealz,KLrprintat,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltEigf,pltxiBins,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -133,10 +133,10 @@ program stochastic
                            avePath,totLength,pltCo,&
                            CoExp )
   if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&
-                           binNumof,numEigs,&
+                           numEigs,&
                            pltxiBins,pltxiBinsgauss,binSize,&
                            mostinBin )
-  if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,&
+  if(KLnoise=='yes') call KL_Noise( numEigs,&
                            binSmallBound,binLargeBound,binSize,mostinBin,time,ntime )
 
 
@@ -145,7 +145,7 @@ program stochastic
   if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,KLrnumpoints,s )
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( sigave,numEigs,lamc,KLrx,&
-                           binNumof,KLrnumpoints,j,KLrnumRealz,&
+                           KLrnumpoints,j,KLrnumRealz,&
                            KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
@@ -156,7 +156,7 @@ program stochastic
                            KLrnumRealz,KLrxivals )
   if(KLrec=='yes') call KLreval( KLrnumpoints,pltKLrrealznumof,pltKLrrealzarray,&
                            pltKLrrealz,KLrrandarray,lamc,&
-                           binNumof,KLrx,numEigs,pltKLrrealzwhich,&
+                           KLrx,numEigs,pltKLrrealzwhich,&
                            KLrsig,sigave,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                            KLrxivals,negcnt )
 
