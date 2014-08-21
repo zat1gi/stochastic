@@ -46,7 +46,7 @@ CONTAINS
 
 
 
-  subroutine KLrgenrealz( sigave,Eig,numEigs,lamc,KLrx,binPDF,&
+  subroutine KLrgenrealz( sigave,numEigs,lamc,KLrx,binPDF,&
                           binNumof,KLrnumpoints,j,KLrnumRealz,&
                           KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                           pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
@@ -55,10 +55,9 @@ CONTAINS
   !It reconstructs based upon the fixed point and fixed xi methods
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
   use genRealzvars, only: s
-  use KLvars,       only: gam, alpha, Ak
+  use KLvars,       only: gam, alpha, Ak, Eig
   integer :: numEigs,binNumof,KLrnumpoints(2),j,KLrnumRealz,KLrprintat
   integer :: ntime,negcnt
-  real(8), dimension(numEigs) :: Eig
   real(8) :: sigave,lamc,KLrx(:),KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
   character(7) :: pltKLrrealz(4)
   character(3) :: neg
@@ -120,7 +119,7 @@ CONTAINS
   enddo
 
   neg='no'
-  call KLr_negsearch( j,numEigs,Eig,lamc,sigave,KLrxivals,s,neg )
+  call KLr_negsearch( j,numEigs,lamc,sigave,KLrxivals,s,neg )
 
   if(neg=='yes') then  !counts the number of realz that contain a negative value
     negcnt=negcnt+1
@@ -128,7 +127,7 @@ CONTAINS
   endif
 
   do i=1,KLrnumpoints(2)  !create realization
-    KLrxisig(i) = KLrxi_point(j,numEigs,Eig,lamc,sigave,KLrxi(i),KLrxivals)
+    KLrxisig(i) = KLrxi_point(j,numEigs,lamc,sigave,KLrxi(i),KLrxivals)
   enddo
 
 
@@ -151,19 +150,18 @@ CONTAINS
 
 
   subroutine KLreval( KLrnumpoints,pltKLrrealznumof,pltKLrrealzarray,&
-                      pltKLrrealz,KLrrandarray,Eig,lamc,&
+                      pltKLrrealz,KLrrandarray,lamc,&
                       binPDF,binNumof,KLrx,numEigs,pltKLrrealzwhich,&
                       KLrsig,sigave,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                       KLrxivals,negcnt )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use KLvars,      only: gam, alpha, Ak
+  use KLvars,      only: gam, alpha, Ak, Eig
   character(7)  :: pltKLrrealz(4)
   integer :: pltKLrrealznumof,pltKLrrealzwhich(:,:),numEigs,binNumof
   integer :: KLrnumpoints(2),negcnt
   real(8) :: lamc,KLrrandarray(:,:,:),KLrx(:),KLrxi(:),sigave,KLrsig(:),KLrxisig(:)
   real(8) :: KLrxivals(:,:)
-  real(8),dimension(numEigs) :: Eig
   real(8),allocatable :: binPDF(:,:),pltKLrrealzarray(:,:)
   character(7) :: pltKLrrealzPointorXi(:)
 
@@ -201,7 +199,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),tnumEigs,Eig,&
+          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),tnumEigs,&
                                     lamc,sigave,KLrxi(i),KLrxivals)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
@@ -228,10 +226,10 @@ CONTAINS
 
 
 
-  subroutine KLr_negsearch( j,numEigs,Eig,lamc,sigave,KLrxivals,s,neg )
-  use KLvars, only: alpha, Ak
+  subroutine KLr_negsearch( j,numEigs,lamc,sigave,KLrxivals,s,neg )
+  use KLvars, only: alpha, Ak, Eig
   integer :: j,numEigs
-  real(8) :: Eig(:),lamc,sigave,KLrxivals(:,:),s
+  real(8) :: lamc,sigave,KLrxivals(:,:),s
   character(3) :: neg
 
   integer :: i,k,l
@@ -246,10 +244,10 @@ CONTAINS
 
   do i=1,numEigs
     minpos=(outerstep*(i-1))
-    minsig=KLrxi_point(j,numEigs,Eig,lamc,sigave,minpos,KLrxivals)
+    minsig=KLrxi_point(j,numEigs,lamc,sigave,minpos,KLrxivals)
     do k=2,nminnersteps
       xpos=(outerstep*(i-1)+innerstep*(k-1))
-      xsig= KLrxi_point(j,numEigs,Eig,lamc,sigave,xpos,KLrxivals)
+      xsig= KLrxi_point(j,numEigs,lamc,sigave,xpos,KLrxivals)
       if(xsig<minsig) then
         minsig=xsig
         minpos=xpos
@@ -263,7 +261,7 @@ CONTAINS
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
         if(xpos<0) xpos=0.0d0
         if(xpos>s) xpos=s
-        xsig= KLrxi_point(j,numEigs,Eig,lamc,sigave,xpos,KLrxivals)
+        xsig= KLrxi_point(j,numEigs,lamc,sigave,xpos,KLrxivals)
         if(xsig<minsig) then
           minsig=xsig
           minpos=xpos

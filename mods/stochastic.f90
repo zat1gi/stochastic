@@ -35,7 +35,7 @@ program stochastic
   !--- KLresearch variables (new) ---!
   integer      :: binNumof,numEigs,numSlice,levsrefEig,mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
-  real(8),allocatable :: Eig(:),xi(:,:),binPDF(:,:),binBounds(:)
+  real(8),allocatable :: xi(:,:),binPDF(:,:),binBounds(:)
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   integer      :: pltxiBinsnumof,pltEigfnumof,pltConumof
   integer,allocatable :: pltEigfwhich(:),pltxiBinswhich(:,:),pltCowhich(:,:)
@@ -90,10 +90,10 @@ program stochastic
   enddo
 
   !!genRealz, KLresearch, radtrans, radWood
-  if(KLres=='yes')   call KL_eigenvalue( numEigs,Eig,P,sigave,&
+  if(KLres=='yes')   call KL_eigenvalue( numEigs,P,sigave,&
                            levsrefEig,lamc,numSlice,xi,pltEigf,&
                            pltEigfnumof,pltEigfwhich,KLrxivals,KLrnumRealz )
-  if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,numEigs,Eig,&
+  if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,numEigs,&
                            lamc,sigave,CoExp,P )
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot(&
@@ -116,13 +116,13 @@ program stochastic
                            time,ntime,numParts,lamc,Wood,numEigs,&
                            radWoodt,radWoodr,radWooda,radWood_rej,KLrnumRealz,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
-                           KLWood_rej,Eig,sigave,KLrxivals,rodOrplanar,&
+                           KLWood_rej,sigave,KLrxivals,rodOrplanar,&
                            fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
                            pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                            disthold )
     if(KLres=='yes') call KL_collect( nummatSegs,matLength,matType,j,xi,&
-                           numEigs,sigave,Eig,lamc,totLength,&
+                           numEigs,sigave,lamc,totLength,&
                            time,ntime )
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
@@ -133,7 +133,7 @@ program stochastic
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( numEigs,numSlice,P,sigave,lamc,&
-                           Eig,avePath,totLength,pltCo,pltConumof,&
+                           avePath,totLength,pltCo,pltConumof,&
                            pltCowhich,CoExp )
   if(KLres=='yes') call KL_eval( xi,binSmallBound,binLargeBound,&
                            binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
@@ -147,7 +147,7 @@ program stochastic
   !!KLreconstructions
   if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,KLrnumpoints,s )
   do j=1,KLrnumRealz
-    if(KLrec=='yes') call KLrgenrealz( sigave,Eig,numEigs,lamc,KLrx,&
+    if(KLrec=='yes') call KLrgenrealz( sigave,numEigs,lamc,KLrx,&
                            binPDF,binNumof,KLrnumpoints,j,KLrnumRealz,&
                            KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
@@ -155,10 +155,10 @@ program stochastic
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
                            KLrnumRealz,t1)
   enddo
-  if(KLadjust=='yes') call KLadjustmean( sigave,Eig,numEigs,lamc,&
+  if(KLadjust=='yes') call KLadjustmean( sigave,numEigs,lamc,&
                            KLrnumRealz,KLrxivals )
   if(KLrec=='yes') call KLreval( KLrnumpoints,pltKLrrealznumof,pltKLrrealzarray,&
-                           pltKLrrealz,KLrrandarray,Eig,lamc,&
+                           pltKLrrealz,KLrrandarray,lamc,&
                            binPDF,binNumof,KLrx,numEigs,pltKLrrealzwhich,&
                            KLrsig,sigave,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                            KLrxivals,negcnt )
@@ -172,7 +172,7 @@ program stochastic
                          time,ntime,numParts,lamc,Wood,numEigs,&
                          radWoodt,radWoodr,radWooda,radWood_rej,KLrnumRealz,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
-                         KLWood_rej,Eig,sigave,KLrxivals,rodOrplanar,&
+                         KLWood_rej,sigave,KLrxivals,rodOrplanar,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
