@@ -14,7 +14,7 @@ CONTAINS
 
   subroutine KL_eigenvalue( numEigs,P,sigave,&
                             levsrefEig,lamc,numSlice,pltEigf,&
-                            pltEigfnumof,pltEigfwhich,KLrxivals,KLrnumRealz )
+                            pltEigfnumof,KLrxivals,KLrnumRealz )
   !This subroutine: 1) calcaltes some initial values used here and later
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
@@ -22,13 +22,12 @@ CONTAINS
   !5) Calculates variance maintained with # of eigvals if input specifies
   use genRealzvars, only: sig, lam, s, numRealz
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha,&
-                          Ak, Eig, xi
+                          Ak, Eig, xi, pltEigfwhich
   integer :: numEigs,levsrefEig,numSlice,KLrnumRealz
   real(8),allocatable :: KLrxivals(:,:)
   real(8) :: P(2),sigave,lamc
   character(7) :: pltEigf(4)
   integer :: pltEigfnumof
-  integer :: pltEigfwhich(:)
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: index,l,level,curEig,i,j
@@ -389,7 +388,7 @@ CONTAINS
 
 
   subroutine KL_Cochart( numEigs,numSlice,P,sigave,lamc,&
-                         avePath,totLength,pltCo,pltConumof,pltCowhich,&
+                         avePath,totLength,pltCo,pltConumof,&
                          CoExp )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
@@ -400,8 +399,8 @@ CONTAINS
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig
-  integer :: numEigs,numSlice,pltConumof,pltCowhich(:,:)
+  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich
+  integer :: numEigs,numSlice,pltConumof
   real(8) :: P(2),sigave,lamc,avePath(2),totLength(2),CoExp
   character(7) :: pltCo(4)
 
@@ -528,16 +527,15 @@ CONTAINS
 
 
   subroutine KL_eval( binSmallBound,binLargeBound,&
-                      binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
+                      binNumof,numEigs,pltxiBinsnumof,&
                       pltxiBins,pltxiBinsgauss,binSize,&
                       mostinBin )
   !This subroutine puts xi values in bins.  It plots for those chosen in the 
   !input file and also makes a .txt file containing PDFs of xi values for 
   !each Eigenvalue calculated.
   use genRealzvars, only: numRealz
-  use KLvars, only: xi, binPDF, binBounds
+  use KLvars, only: xi, binPDF, binBounds, pltxiBinswhich
   integer :: binNumof,numEigs,pltxiBinsnumof,mostinBin
-  integer :: pltxiBinswhich(:,:)
   real(8) :: binSmallBound,binLargeBound
   real(8),allocatable :: binper(:,:)
   character(7) :: pltxiBins(4),pltxiBinsgauss

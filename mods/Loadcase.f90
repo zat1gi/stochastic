@@ -81,24 +81,24 @@ CONTAINS
 
   subroutine readinputstoc( binNumof,numEigs,numSlice,levsrefEig,&
                             binSmallBound,binLargeBound,KLres,KLnoise,&
-                            pltxiBins,pltxiBinsnumof,pltxiBinswhich,&
+                            pltxiBins,pltxiBinsnumof,&
                             pltxiBinsgauss,pltKLrrealzPointorXi,&
-                            pltEigf,pltEigfnumof,pltEigfwhich,&
+                            pltEigf,pltEigfnumof,&
                             KLrnumpoints,KLrnumRealz,KLrprintat,KLrec,&
                             pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                            pltCo,pltConumof,pltCowhich,plotmatdxs,&
+                            pltCo,pltConumof,plotmatdxs,&
                             Corrnumpoints,Corropts,radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz
-  use KLvars,               only: KLvarcalc, KLvarkept_tol
+  use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
+                                  pltCowhich
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(7) :: pltEigf(4)                        !Plotting Eigf
   integer :: pltEigfnumof
-  integer,allocatable :: pltEigfwhich(:)
   integer :: binNumof,numEigs,numSlice,levsrefEig   !KL res opts
   real(8) :: binSmallBound,binLargeBound
   character(3) :: KLres,KLnoise
@@ -106,7 +106,6 @@ CONTAINS
   character(7) :: Corropts(2)
   character(7) :: pltxiBins(4),pltxiBinsgauss       !Plotting xiBins
   integer :: pltxiBinsnumof
-  integer,allocatable :: pltxiBinswhich(:,:)
   integer :: KLrnumpoints(2),KLrnumRealz,KLrprintat !KL rec opts
   character(3) :: KLrec
   character(7) :: pltKLrrealz(4)                    !Plotting KLrrealz
@@ -127,7 +126,6 @@ CONTAINS
   character(7) :: pltallopt                         !Plot all same opt
   character(7) :: pltCo(4)                            !Plot Co
   integer :: pltConumof
-  integer,allocatable :: pltCowhich(:,:)
 
   real(8)       :: dumreal
   character(20) :: dumchar !use this to "skip" a line
@@ -283,20 +281,20 @@ CONTAINS
 
 
 
-  subroutine testinputstoc( pltEigfnumof,pltEigfwhich,numEigs,pltxiBinsnumof,&
-                            pltxiBinswhich,binNumof,KLrnumRealz,KLrprintat,&
+  subroutine testinputstoc( pltEigfnumof,numEigs,pltxiBinsnumof,&
+                            binNumof,KLrnumRealz,KLrprintat,&
                             pltKLrrealznumof,pltKLrrealzwhich,pltEigf,pltxiBins,&
                             pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                            pltCo,pltConumof,pltCowhich,radMC,pltKLrrealzPointorXi,&
+                            pltCo,pltConumof,radMC,pltKLrrealzPointorXi,&
                             KLrnumpoints,KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
   use genRealzvars,      only: sig, scatrat, numRealz
+  use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich
   integer :: numEigs,binNumof
   integer :: KLrnumRealz,KLrprintat
   integer :: pltEigfnumof,pltxiBinsnumof,pltKLrrealznumof,pltgenrealznumof,pltConumof
-  integer :: pltEigfwhich(:),pltxiBinswhich(:,:),pltKLrrealzwhich(:,:),pltgenrealzwhich(:)
-  integer :: pltCowhich(:,:)
+  integer :: pltKLrrealzwhich(:,:),pltgenrealzwhich(:)
   integer :: trannprt
   integer :: fpointorxi(2),KLrnumpoints(2)
   character(6) :: sourceType

@@ -18,6 +18,10 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   !inputs
   character(3) :: KLvarcalc                    ! calculate amount of variance kept in eigs? 'yes' 'no
   real(8) :: KLvarkept_tol                     ! tolerance of rel eig size for var calcs
+
+  integer, allocatable :: pltEigfwhich(:)      ! 
+  integer, allocatable :: pltxiBinswhich(:,:)  ! 
+  integer, allocatable :: pltCowhich(:,:)      ! 
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
@@ -30,6 +34,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: AllEig(:)            ! many more Eigs than used, for variance kept calcs
   real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
   real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
+
 end module KLvars
 
 

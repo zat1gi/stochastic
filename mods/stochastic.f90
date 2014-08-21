@@ -37,7 +37,6 @@ program stochastic
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   integer      :: pltxiBinsnumof,pltEigfnumof,pltConumof
-  integer,allocatable :: pltEigfwhich(:),pltxiBinswhich(:,:),pltCowhich(:,:)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
   character(7) :: pltKLrrealz(4)
@@ -61,23 +60,23 @@ program stochastic
   call cpu_time(t1)
   call readinputstoc(      binNumof,numEigs,numSlice,levsrefEig,&
                            binSmallBound,binLargeBound,KLres,KLnoise,&
-                           pltxiBins,pltxiBinsnumof,pltxiBinswhich,&
+                           pltxiBins,pltxiBinsnumof,&
                            pltxiBinsgauss,pltKLrrealzPointorXi,&
-                           pltEigf,pltEigfnumof,pltEigfwhich,&
+                           pltEigf,pltEigfnumof,&
                            KLrnumpoints,KLrnumRealz,KLrprintat,KLrec,&
                            pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                           pltCo,pltConumof,pltCowhich,plotmatdxs,&
+                           pltCo,pltConumof,plotmatdxs,&
                            Corrnumpoints,Corropts,radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
-  call testinputstoc(      pltEigfnumof,pltEigfwhich,numEigs,pltxiBinsnumof,&
-                           pltxiBinswhich,binNumof,KLrnumRealz,KLrprintat,&
+  call testinputstoc(      pltEigfnumof,numEigs,pltxiBinsnumof,&
+                           binNumof,KLrnumRealz,KLrprintat,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltEigf,pltxiBins,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                           pltCo,pltConumof,pltCowhich,radMC,pltKLrrealzPointorXi,&
+                           pltCo,pltConumof,radMC,pltKLrrealzPointorXi,&
                            KLrnumpoints,KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
 
@@ -91,7 +90,7 @@ program stochastic
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( numEigs,P,sigave,&
                            levsrefEig,lamc,numSlice,pltEigf,&
-                           pltEigfnumof,pltEigfwhich,KLrxivals,KLrnumRealz )
+                           pltEigfnumof,KLrxivals,KLrnumRealz )
   if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,numEigs,&
                            lamc,sigave,CoExp,P )
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
@@ -133,9 +132,9 @@ program stochastic
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( numEigs,numSlice,P,sigave,lamc,&
                            avePath,totLength,pltCo,pltConumof,&
-                           pltCowhich,CoExp )
+                           CoExp )
   if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&
-                           binNumof,numEigs,pltxiBinsnumof,pltxiBinswhich,&
+                           binNumof,numEigs,pltxiBinsnumof,&
                            pltxiBins,pltxiBinsgauss,binSize,&
                            mostinBin )
   if(KLnoise=='yes') call KL_Noise( numEigs,binNumof,&
