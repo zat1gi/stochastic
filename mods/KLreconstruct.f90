@@ -9,14 +9,13 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLrcondition( KLrx,KLrxi,s )
+  subroutine KLrcondition( KLrxi,s )
   !This subroutine gets variables ready to reconstruct Sigma plots from the KL
   !expansion.  Specifically it creates a mesh based on selected frequency of 
   !sampling in x for a fixed point reconstruction, and then for a fixed xi
   !construction.
-  use KLvars, only: KLrnumpoints
+  use KLvars, only: KLrnumpoints, KLrx
   real(8) :: s
-  real(8),allocatable :: KLrx(:)
   real(8),allocatable :: KLrxi(:)
 
   integer :: i
@@ -46,8 +45,7 @@ CONTAINS
 
 
 
-  subroutine KLrgenrealz( lamc,KLrx,&
-                          j,&
+  subroutine KLrgenrealz( lamc,j,&
                           t1,time,ntime,&
                           pltKLrrealzarray,&
                           KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
@@ -57,10 +55,10 @@ CONTAINS
   use genRealzvars, only: s
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
-                          pltKLrrealznumof, pltKLrrealzwhich
+                          pltKLrrealznumof, pltKLrrealzwhich, KLrx
   integer :: j
   integer :: ntime
-  real(8) :: lamc,KLrx(:),KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
+  real(8) :: lamc,KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
   character(3) :: neg
   real(8),allocatable :: KLrxisig(:)
   real(8),allocatable :: pltKLrrealzarray(:,:),KLrrandarray(:,:,:),KLrsig(:)
@@ -151,15 +149,14 @@ CONTAINS
 
   subroutine KLreval( pltKLrrealzarray,&
                       KLrrandarray,lamc,&
-                      KLrx,&
                       KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                       KLrxivals )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
                          sigave, KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
-                         pltKLrrealzwhich
-  real(8) :: lamc,KLrrandarray(:,:,:),KLrx(:),KLrxi(:),KLrsig(:),KLrxisig(:)
+                         pltKLrrealzwhich, KLrx
+  real(8) :: lamc,KLrrandarray(:,:,:),KLrxi(:),KLrsig(:),KLrxisig(:)
   real(8) :: KLrxivals(:,:)
   real(8),allocatable :: pltKLrrealzarray(:,:)
   character(7) :: pltKLrrealzPointorXi(:)

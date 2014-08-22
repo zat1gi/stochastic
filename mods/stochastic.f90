@@ -35,7 +35,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  real(8),allocatable :: KLrx(:),KLrxi(:),pltKLrrealzarray(:,:),KLrxivals(:,:)
+  real(8),allocatable :: KLrxi(:),pltKLrrealzarray(:,:),KLrxivals(:,:)
   real(8),allocatable :: KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
   character(7),allocatable :: pltKLrrealzPointorXi(:)
   !--- Woodcock variables (new) ---!
@@ -122,10 +122,9 @@ program stochastic
 
 
   !!KLreconstructions
-  if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,s )
+  if(KLrec=='yes') call KLrcondition( KLrxi,s )
   do j=1,KLrnumRealz
-    if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
-                           j,&
+    if(KLrec=='yes') call KLrgenrealz( lamc,j,&
                            t1,time,ntime,&
                            pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
@@ -136,7 +135,6 @@ program stochastic
                            KLrxivals )
   if(KLrec=='yes') call KLreval( pltKLrrealzarray,&
                            KLrrandarray,lamc,&
-                           KLrx,&
                            KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                            KLrxivals )
 

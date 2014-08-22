@@ -41,7 +41,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: KLrnumpoints(2)      !
   character(7)         :: pltKLrrealz(4)       !
   integer              :: pltKLrrealznumof     !
-  integer,allocatable  :: pltKLrrealzwhich(:,:)!
+  integer, allocatable :: pltKLrrealzwhich(:,:)!
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
@@ -62,6 +62,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: binSize              !
   real(8)              :: CoExp                !
   integer              :: negcnt               ! tally of number of realizations that have gone neg
+  real(8), allocatable :: KLrx(:)              !
 
 end module KLvars
 
