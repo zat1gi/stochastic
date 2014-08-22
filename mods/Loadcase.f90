@@ -79,7 +79,7 @@ CONTAINS
 
 
 
-  subroutine readinputstoc( binSmallBound,binLargeBound,KLres,KLnoise,&
+  subroutine readinputstoc( binLargeBound,KLres,KLnoise,&
                             pltxiBins,&
                             pltxiBinsgauss,pltKLrrealzPointorXi,&
                             pltEigf,&
@@ -93,12 +93,12 @@ CONTAINS
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
-                                  numEigs, numSlice, levsrefEig, Corrnumpoints
+                                  numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(7) :: pltEigf(4)                        !Plotting Eigf
-  real(8) :: binSmallBound,binLargeBound
+  real(8) :: binLargeBound
   character(3) :: KLres,KLnoise
   character(7) :: Corropts(2)
   character(7) :: pltxiBins(4),pltxiBinsgauss       !Plotting xiBins
