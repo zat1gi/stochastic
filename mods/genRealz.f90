@@ -7,16 +7,15 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( matLength,&
-                      j,time,ntime,&
+  subroutine genReal( j,time,ntime,&
                       pltgenrealzwhich )
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
-                          pltgenrealz, matType
+                          pltgenrealz, matType, matLength
   integer :: j,ntime
   integer :: pltgenrealzwhich(:)
   real(8) :: tt1,tt2
-  real(8),allocatable :: time(:),matLength(:)
+  real(8),allocatable :: time(:)
 
   integer, parameter :: numArrSz = 5000 !temp var, don't know how long to make arrays yet
   integer :: i,firstloop,matType_temp(numArrSz)
@@ -206,13 +205,13 @@ CONTAINS
 
 
 
-  subroutine matdxs_collect( matdxs,j,matLength,fluxfaces,&
+  subroutine matdxs_collect( matdxs,j,fluxfaces,&
                             pfnumcells )
   !This subroutine collects how much of each material is in each segment defined by
   !fluxfaces.
-  use genRealzvars, only: numRealz, nummatSegs, matType
+  use genRealzvars, only: numRealz, nummatSegs, matType, matLength
   integer :: j,pfnumcells
-  real(8) :: matLength(:),fluxfaces(:)
+  real(8) :: fluxfaces(:)
   real(8),allocatable :: matdxs(:,:,:)
 
   integer :: i,f

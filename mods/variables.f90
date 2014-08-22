@@ -16,6 +16,7 @@ module genRealzvars
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
   real(8)              :: lamc                 ! "correlation length" for binary mixtures  
   integer, allocatable :: matType(:)           ! material type in cell
+  real(8), allocatable :: matLength(:)         ! material boundaries
 
   integer              :: largesti             !
   integer              :: numPath(2)           !

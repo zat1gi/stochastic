@@ -8,13 +8,13 @@ CONTAINS
   ! print statements in this module use # 300-399
 
   subroutine radtrans_MCsim( j,numParts,rodOrplanar,&
-             matLength,o,transmit,reflect,absorb,&
+             o,transmit,reflect,absorb,&
              initcur,time,ntime,radtrans_int,pfnumcells,fluxfaces,flux,&
              fflux,bflux,plotflux,pltflux,sourceType,s )
-  use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType
+  use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
   integer  :: j,numParts,o,ntime,radtrans_int
   integer  :: pfnumcells
-  real(8)  :: matLength(:),time(:),tt1,tt2,s
+  real(8)  :: time(:),tt1,tt2,s
   character(6) :: rodOrplanar,plotflux(2),sourceType
   real(8),allocatable :: transmit(:),reflect(:),absorb(:),initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
@@ -44,7 +44,7 @@ CONTAINS
       if(rodOrplanar=='planar') mu = isoboundmu()
     elseif( sourceType=='intern') then
       position = s * rang()
-      i        = internal_init_i(position,matLength,nummatSegs)
+      i        = internal_init_i(position,nummatSegs)
       mu       = merge(1.0d0,-1.0d0,rang()>0.5d0)
       if(rodOrplanar=='planar') mu = newmu()
     endif
@@ -64,7 +64,7 @@ CONTAINS
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
                                       pfnumcells,plotflux,pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     pfnumcells,plotflux,pltflux,j,mu,matLength)
+                                     pfnumcells,plotflux,pltflux,j,mu)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
@@ -72,7 +72,7 @@ CONTAINS
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
                                       pfnumcells,plotflux,pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     pfnumcells,plotflux,pltflux,j,mu,matLength)
+                                     pfnumcells,plotflux,pltflux,j,mu)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
           if(i==1)              exit
           i=i-1
@@ -82,7 +82,7 @@ CONTAINS
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,flux,&
                                     pfnumcells,plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matLength)
+                                   pfnumcells,plotflux,pltflux,j,mu)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
@@ -91,7 +91,7 @@ CONTAINS
                                     pfnumcells,plotflux,pltflux,j,mu)
                                 absorb(j)=absorb(j)+1.0d0 !absorb
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matLength)
+                                   pfnumcells,plotflux,pltflux,j,mu)
                                 exit
       endif
 
@@ -474,9 +474,10 @@ enddo
 
 
 
-  function internal_init_i( position,matLength,numArrSz )
+  function internal_init_i( position,numArrSz )
+  use genRealzvars, only: matLength
   integer :: numArrSz
-  real(8) :: position,matLength(:)
+  real(8) :: position
 
   integer :: i,internal_init_i
 
@@ -552,11 +553,11 @@ enddo
 
 
   subroutine col_fbflux( oldpos,newpos,fluxfaces,fflux,bflux,pfnumcells,plotflux,&
-                         pltflux,j,mu,matLength )
+                         pltflux,j,mu )
   !tallies flux contribution in each material withing fluxface bins 
-  use genRealzvars, only: matType
+  use genRealzvars, only: matType, matLength
   integer :: pfnumcells,j
-  real(8) :: oldpos,newpos,mu,absmu,matLength(:)
+  real(8) :: oldpos,newpos,mu,absmu
   real(8) :: fluxfaces(:),fflux(:,:),bflux(:,:) !fb for first and second material
   character(6) :: plotflux(2)
   character(7) :: pltflux(4)
