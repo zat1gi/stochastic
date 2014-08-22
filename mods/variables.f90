@@ -39,6 +39,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: pltEigfnumof         !
   integer              :: pltConumof           !
   integer              :: KLrnumpoints(2)      !
+  integer              :: negcnt               ! tally of number of realizations that have gone neg
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam

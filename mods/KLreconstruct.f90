@@ -48,7 +48,7 @@ CONTAINS
 
   subroutine KLrgenrealz( lamc,KLrx,&
                           j,&
-                          t1,pltKLrrealz,time,ntime,negcnt,&
+                          t1,pltKLrrealz,time,ntime,&
                           pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                           KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
   !This subroutine reconstructs realizations based upon the KL expansion
@@ -56,9 +56,9 @@ CONTAINS
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
   use genRealzvars, only: s
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
-                          KLrnumpoints, KLrnumRealz, KLrprintat
+                          KLrnumpoints, KLrnumRealz, KLrprintat, negcnt
   integer :: j
-  integer :: ntime,negcnt
+  integer :: ntime
   real(8) :: lamc,KLrx(:),KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
   character(7) :: pltKLrrealz(4)
   character(3) :: neg
@@ -154,14 +154,13 @@ CONTAINS
                       pltKLrrealz,KLrrandarray,lamc,&
                       KLrx,pltKLrrealzwhich,&
                       KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
-                      KLrxivals,negcnt )
+                      KLrxivals )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
-                         sigave, KLrnumpoints
+                         sigave, KLrnumpoints, negcnt
   character(7)  :: pltKLrrealz(4)
   integer :: pltKLrrealznumof,pltKLrrealzwhich(:,:)
-  integer :: negcnt
   real(8) :: lamc,KLrrandarray(:,:,:),KLrx(:),KLrxi(:),KLrsig(:),KLrxisig(:)
   real(8) :: KLrxivals(:,:)
   real(8),allocatable :: pltKLrrealzarray(:,:)

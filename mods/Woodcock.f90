@@ -600,9 +600,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine Woodnegstats( negcnt,numpnSamp,areapnSamp,distneg )
+  subroutine Woodnegstats( numpnSamp,areapnSamp,distneg )
   use genRealzvars, only: numRealz
-  integer :: negcnt,numpnSamp(2)
+  use KLvars, only: negcnt
+  integer :: numpnSamp(2)
   real(8) :: areapnSamp(4) !tot pos, tot neg, max pos, max neg
   character(3) :: distneg
 

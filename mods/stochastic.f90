@@ -35,7 +35,6 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  integer      :: negcnt
   character(7) :: pltKLrrealz(4)
   integer      :: pltKLrrealznumof
   integer,allocatable :: pltKLrrealzwhich(:,:)
@@ -132,7 +131,7 @@ program stochastic
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
                            j,&
-                           t1,pltKLrrealz,time,ntime,negcnt,&
+                           t1,pltKLrrealz,time,ntime,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
@@ -144,7 +143,7 @@ program stochastic
                            pltKLrrealz,KLrrandarray,lamc,&
                            KLrx,pltKLrrealzwhich,&
                            KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
-                           KLrxivals,negcnt )
+                           KLrxivals )
 
 
   !!radKL transport
@@ -182,8 +181,7 @@ program stochastic
   if(KLWood=='yes') call WoodcockKLoutstats( numParts,KLWoodt,KLWoodr,&
                            KLWooda,KLWood_rej,plotflux,pltflux,&
                            pfnumcells,fluxfaces,KLWoodf,fKLWoodf,bKLWoodf,P )
-  if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats( negcnt,&
-                           numpnSamp,areapnSamp,distneg )
+  if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats( numpnSamp,areapnSamp,distneg )
   if(pltflux(1)/='noplot') call plot_flux( plotflux,pltflux,radMC,radWood,KLWood )
   call radtrans_resultplot( reflect,transmit,radWoodt,radWoodr,KLWoodt,KLWoodr )!bin for radMC,radWood
 

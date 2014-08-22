@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/Woodcock.f90
-MD5:c29d1f11bd2302538f32d0b8d90ac689 -- If you edit this, you'll get what you deserve.
+MD5:f8e1eb5a27f407f308b9f57b16287b25 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -236,11 +236,11 @@ MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE ALWAYS_EXPLICIT) (UNKNOWN 0 0 0
 () 0 () () () 0 0)
 415 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ())
-416 0 (417 418 419 420) () 0 () () () 0 0)
-421 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+416 0 (417 418 419) () 0 () () () 0 0)
+420 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-422 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+421 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 8 'oldpos' '' '' 7 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
@@ -1142,17 +1142,15 @@ CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () () () 0 0)
 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0 EXPLICIT (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 0
 INTEGER ()) 0 '2')) 0 () () () 0 0)
-417 'negcnt' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-418 'numpnsamp' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+417 'numpnsamp' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-419 'areapnsamp' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+418 'areapnsamp' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '4')) 0 () () () 0 0)
-420 'distneg' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+419 'distneg' '' '' 416 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 0 CHARACTER ((CONSTANT (INTEGER 4 0
 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
 )
@@ -1177,4 +1175,4 @@ UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 0 CHARACTER ((CONSTANT (INTEGER 4 0
 309 'store_in_bins' 0 310 'time_report' 0 319 'timeman' 0 327 'transplot'
 0 328 'utilities' 0 331 'var_p' 0 332 'var_s' 0 336 'woodcock' 0 340
 'woodcockkloutstats' 0 341 'woodcockmc' 0 356 'woodcockmcoutstats' 0 400
-'woodnegstats' 0 415 'xl' 0 421 'xr' 0 422)
+'woodnegstats' 0 415 'xl' 0 420 'xr' 0 421)
