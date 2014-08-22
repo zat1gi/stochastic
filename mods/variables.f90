@@ -20,6 +20,7 @@ module genRealzvars
   real(8)              :: perFirstTally(2)     ! percentage of first material as mat1 or 2, bin mix
   real(8)              :: devFirstTally(2)     ! stdev of first material as mat1 or 2, bin mix
   real(8)              :: matFirstTally(2)=0   ! tally of first material as mat1 or 2, bin mix
+  real(8)              :: sumPath(2)           !
 
 end module
 
