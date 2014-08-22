@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  real(8)      :: totLength(2),binSize,CoExp
+  real(8)      :: binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
@@ -116,7 +116,7 @@ program stochastic
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                            disthold )
     if(KLres=='yes') call KL_collect( nummatSegs,matLength,matType,j,&
-                           lamc,totLength,time,ntime )
+                           lamc,time,ntime )
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
@@ -126,7 +126,7 @@ program stochastic
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( P,lamc,&
-                           avePath,totLength,pltCo,&
+                           avePath,pltCo,&
                            CoExp )
   if(KLres=='yes') call KL_eval( pltxiBins,pltxiBinsgauss,binSize )
   if(KLnoise=='yes') call KL_Noise( binSize,time,ntime )

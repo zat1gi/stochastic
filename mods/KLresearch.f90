@@ -335,13 +335,13 @@ CONTAINS
 
 
   subroutine KL_collect( nummatSegs,matLength,matType,j,&
-                         lamc,totLength,&
+                         lamc,&
                          time,ntime )
   use genRealzvars, only: sig, lam, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave
+  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave, totLength
   integer :: matType(:),j,ntime,nummatSegs
   real(8) :: matLength(:),time(:),tt1,tt2
-  real(8) :: lamc,totLength(2)
+  real(8) :: lamc
 
   integer :: i,k,curEig,doloop
   real(8) :: xitermtot,xl,xr,sigma,xiterm
@@ -387,7 +387,7 @@ CONTAINS
 
 
   subroutine KL_Cochart( P,lamc,&
-                         avePath,totLength,pltCo,&
+                         avePath,pltCo,&
                          CoExp )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
@@ -399,8 +399,8 @@ CONTAINS
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          sigave
-  real(8) :: P(2),lamc,avePath(2),totLength(2),CoExp
+                          sigave, totLength
+  real(8) :: P(2),lamc,avePath(2),CoExp
   character(7) :: pltCo(4)
 
   integer :: curCS,curEig,twice,check
