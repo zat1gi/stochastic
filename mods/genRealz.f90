@@ -7,14 +7,13 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( matLength,matType,matFirstTally,&
+  subroutine genReal( matLength,matType,&
                       sumPath,sqrPath,j,time,ntime,&
                       pltgenrealz,pltgenrealzwhich )
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
-                          nummatSegs, P
+                          nummatSegs, P, matFirstTally
   integer :: j,ntime
   integer :: pltgenrealzwhich(:)
-  real(8) :: matFirstTally(2)
   real(8) :: sumPath(2),sqrPath(2),tt1,tt2
   integer,allocatable :: matType(:)
   real(8),allocatable :: time(:),matLength(:)
@@ -132,13 +131,11 @@ CONTAINS
 
 
 
-  subroutine genReal_stats( matFirstTally,&
-             sumPath,sqrPath,avePath,devPath,&
+  subroutine genReal_stats( sumPath,sqrPath,avePath,devPath,&
              pltgenrealz,pltgenrealzwhich )
   use genRealzvars, only: sig, lam, numRealz, numPath, pltgenrealznumof, P, &
-                          perFirstTally, devFirstTally
+                          perFirstTally, devFirstTally, matFirstTally
   integer :: pltgenrealzwhich(:)
-  real(8) :: matFirstTally(2)
   real(8) :: sumPath(2),sqrPath(2),avePath(2),devPath(2)
   character(7) :: pltgenrealz(4)
 
