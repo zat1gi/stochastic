@@ -21,6 +21,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: binNumof             ! number of bins (for xi?)
   integer              :: numEigs              ! number of eigenmodes to calculate
   integer              :: numSlice             ! 
+  integer              :: levsrefEig           !
 
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 

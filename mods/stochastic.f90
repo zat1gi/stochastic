@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  integer      :: levsrefEig,mostinBin,Corrnumpoints
+  integer      :: mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
@@ -57,8 +57,7 @@ program stochastic
 
   !!read and prepare parameters
   call cpu_time(t1)
-  call readinputstoc(      levsrefEig,&
-                           binSmallBound,binLargeBound,KLres,KLnoise,&
+  call readinputstoc(      binSmallBound,binLargeBound,KLres,KLnoise,&
                            pltxiBins,&
                            pltxiBinsgauss,pltKLrrealzPointorXi,&
                            pltEigf,&
@@ -87,7 +86,7 @@ program stochastic
 
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( P,sigave,&
-                           levsrefEig,lamc,pltEigf,&
+                           lamc,pltEigf,&
                            KLrxivals,KLrnumRealz )
   if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,&
                            lamc,sigave,CoExp,P )
