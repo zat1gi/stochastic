@@ -152,7 +152,7 @@ CONTAINS
   !to plot the selected reconstructed realizations.
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
                          sigave, KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
-                         pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, pltKLrrealzarray
+                         pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray
   real(8) :: lamc,KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
   character(7) :: pltKLrrealzPointorXi(:)
 
@@ -218,7 +218,7 @@ CONTAINS
 
 
   subroutine KLr_negsearch( j,lamc,s,neg )
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
   integer :: j
   real(8) :: lamc,s
   character(3) :: neg

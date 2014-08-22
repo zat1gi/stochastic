@@ -21,7 +21,7 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s
-  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz, KLrxivals
+  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   real(8) :: lamc
 
   integer :: j,adjustiter
@@ -88,7 +88,7 @@ CONTAINS
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s
-  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz, KLrxivals
+  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   integer :: j
   real(8) :: lamc
 
@@ -126,7 +126,7 @@ CONTAINS
   function refinenextpoint(j,lamc,oldx,curx)
   !This function takes a range and zeroes in on transision in sign of cross section within tolerance
   use genRealzvars, only: s
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   integer :: j
   real(8) :: lamc,oldx,curx
 

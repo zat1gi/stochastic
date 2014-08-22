@@ -20,7 +20,7 @@ CONTAINS
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
   use genRealzvars, only: sig, scatrat, lam, s, numRealz
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   integer :: j,nummatSegs,numParts,ntime,matType(:),pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
@@ -650,7 +650,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
   subroutine KLWood_binmaxes( j,lamc,binmaxind,binmaxes,nbin)
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
   integer :: j,nbin
   real(8) :: lamc
   real(8) :: binmaxind(:),binmaxes(:)
