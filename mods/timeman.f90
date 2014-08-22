@@ -38,8 +38,9 @@ CONTAINS
 
 
 
-  subroutine KLr_time( time,ntime,j,KLrnumRealz,t1 )
-  integer :: ntime,j,KLrnumRealz
+  subroutine KLr_time( time,ntime,j,t1 )
+  use KLvars, only: KLrnumRealz
+  integer :: ntime,j
   real(8) :: time(:),t1
 
   real(8) :: timedone,esttime
@@ -53,8 +54,9 @@ CONTAINS
 
 
 
-  subroutine KLWood_time( time,ntime,j,KLrnumRealz,t1 )
-  integer :: ntime,j,KLrnumRealz
+  subroutine KLWood_time( time,ntime,j,t1 )
+  use KLvars, only: KLrnumRealz
+  integer :: ntime,j
   real(8) :: time(:),t1
 
   real(8) :: timedone,esttime

@@ -296,9 +296,10 @@ enddo
 
   subroutine initialize_fluxplot( pfnumcells,fluxfaces,flux,fflux,bflux,&
                                   plotflux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
-                                  KLrnumRealz,fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
+                                  fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   use genRealzvars, only: s, numRealz
-  integer :: pfnumcells,KLrnumRealz
+  use KLvars, only: KLrnumRealz
+  integer :: pfnumcells
   real(8),allocatable :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:),Woodf(:,:)
   real(8),allocatable :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: flux(:,:),fflux(:,:),bflux(:,:)

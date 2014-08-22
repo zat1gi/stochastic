@@ -10,6 +10,8 @@ program stochastic
   use KLreconstruct
   use KLmeanadjust
   use Woodcock
+
+  use KLvars, only: KLrnumRealz
   implicit none
   real(8) :: runtime,t1,t2,seeddum
   real(8),allocatable :: time(:) !genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
@@ -33,7 +35,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  integer      :: KLrnumRealz,KLrprintat,negcnt
+  integer      :: KLrprintat,negcnt
   character(7) :: pltKLrrealz(4)
   integer      :: pltKLrrealznumof
   integer,allocatable :: pltKLrrealzwhich(:,:)
@@ -55,7 +57,7 @@ program stochastic
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
                            pltKLrrealzPointorXi,&
-                           KLrnumRealz,KLrprintat,KLrec,&
+                           KLrprintat,KLrec,&
                            pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -63,7 +65,7 @@ program stochastic
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
-  call testinputstoc(      KLrnumRealz,KLrprintat,&
+  call testinputstoc(      KLrprintat,&
                            pltKLrrealznumof,pltKLrrealzwhich,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -81,13 +83,13 @@ program stochastic
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( P,&
                            lamc,&
-                           KLrxivals,KLrnumRealz )
+                           KLrxivals )
   if(KLres=='yes')   call KL_Correlation( lamc,P )
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot(&
                            pfnumcells,fluxfaces,flux,fflux,bflux,&
                            plotflux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
-                           KLrnumRealz,fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
+                           fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
     call genReal(          P,matLength,matType,matFirstTally,&
                            numPath,sumPath,sqrPath,largesti,j,time,ntime,&
@@ -102,7 +104,7 @@ program stochastic
     if(radWood=='yes') Wood='rad'
     if(radWood=='yes') call WoodcockMC( j,matType,matLength,nummatSegs,&
                            time,ntime,numParts,lamc,Wood,&
-                           radWoodt,radWoodr,radWooda,radWood_rej,KLrnumRealz,&
+                           radWoodt,radWoodr,radWooda,radWood_rej,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                            KLWood_rej,KLrxivals,rodOrplanar,&
                            fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
@@ -130,15 +132,15 @@ program stochastic
   if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,s )
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
-                           j,KLrnumRealz,&
+                           j,&
                            KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
-                           KLrnumRealz,t1)
+                           t1)
   enddo
   if(KLadjust=='yes') call KLadjustmean( lamc,&
-                           KLrnumRealz,KLrxivals )
+                           KLrxivals )
   if(KLrec=='yes') call KLreval( pltKLrrealznumof,pltKLrrealzarray,&
                            pltKLrrealz,KLrrandarray,lamc,&
                            KLrx,pltKLrrealzwhich,&
@@ -152,7 +154,7 @@ program stochastic
     if(KLWood=='yes') Wood='KL'
     if(KLWood=='yes') call WoodcockMC( j,matType,matLength,nummatSegs,&
                          time,ntime,numParts,lamc,Wood,&
-                         radWoodt,radWoodr,radWooda,radWood_rej,KLrnumRealz,&
+                         radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,KLrxivals,rodOrplanar,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
@@ -160,7 +162,7 @@ program stochastic
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
     if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( time,ntime,j,&
-                           KLrnumRealz,t1)
+                           t1)
   enddo
 
 !  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( &
@@ -178,7 +180,7 @@ program stochastic
   if(radWood=='yes') call WoodcockMCoutstats( numParts,radWoodt,radWoodr,&
                            radWooda,radWood_rej,plotflux,pltflux,&
                            pfnumcells,fluxfaces,radWoodf,fradWoodf,bradWoodf,P )
-  if(KLWood=='yes') call WoodcockKLoutstats( numParts,KLrnumRealz,KLWoodt,KLWoodr,&
+  if(KLWood=='yes') call WoodcockKLoutstats( numParts,KLWoodt,KLWoodr,&
                            KLWooda,KLWood_rej,plotflux,pltflux,&
                            pfnumcells,fluxfaces,KLWoodf,fKLWoodf,bKLWoodf,P )
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats( negcnt,&

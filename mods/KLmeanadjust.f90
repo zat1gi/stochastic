@@ -17,13 +17,12 @@ CONTAINS
   ! print statements in this module use # 500-599
 
   subroutine KLadjustmean( lamc,&
-                           KLrnumRealz,KLrxivals )
+                           KLrxivals )
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s
-  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave
-  integer :: KLrnumRealz
+  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   real(8) :: lamc
   real(8) :: KLrxivals(:,:)
 
@@ -91,8 +90,8 @@ CONTAINS
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s
-  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave
-  integer :: j,KLrnumRealz
+  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
+  integer :: j
   real(8) :: lamc
   real(8) :: KLrxivals(:,:)
 
@@ -130,8 +129,8 @@ CONTAINS
   function refinenextpoint(j,lamc,KLrxivals,oldx,curx)
   !This function takes a range and zeroes in on transision in sign of cross section within tolerance
   use genRealzvars, only: s
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
-  integer :: j,KLrnumRealz
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
+  integer :: j
   real(8) :: lamc,oldx,curx
   real(8) :: KLrxivals(:,:)
 

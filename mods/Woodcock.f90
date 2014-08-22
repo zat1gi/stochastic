@@ -12,7 +12,7 @@ CONTAINS
 
   subroutine WoodcockMC( j,matType,matLength,nummatSegs,&
                          time,ntime,numParts,lamc,Wood,&
-                         radWoodt,radWoodr,radWooda,radWood_rej,KLrnumRealz,&
+                         radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,KLrxivals,rodOrplanar,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
@@ -20,7 +20,7 @@ CONTAINS
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
   use genRealzvars, only: sig, scatrat, lam, s, numRealz
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   integer :: j,nummatSegs,numParts,ntime,matType(:),pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
@@ -31,7 +31,6 @@ CONTAINS
   real(8) :: KLrxivals(:,:)
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
-  integer :: KLrnumRealz
   character(3) :: Wood,allowneg,distneg
   character(6) :: rodOrplanar,plotflux(2),sourceType
   character(7) :: pltflux(4)
@@ -454,13 +453,13 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockKLoutstats( numParts,KLrnumRealz,KLWoodt,KLWoodr,&
+  subroutine WoodcockKLoutstats( numParts,KLWoodt,KLWoodr,&
                                  KLWooda,KLWood_rej,&
                                  plotflux,pltflux,pfnumcells,fluxfaces,KLWoodf,&
                                  fKLWoodf,bKLWoodf,P )
   use genRealzvars, only: Adamscase
-  use KLvars,       only: KLvarcalc, varmain, numEigs
-  integer :: numParts,KLrnumRealz,pfnumcells
+  use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
+  integer :: numParts,pfnumcells
   integer :: KLWood_rej(2)
   real(8) :: P(2)
   real(8) :: fluxfaces(:),KLWoodf(:,:),KLWoodt(:),KLWoodr(:),KLWooda(:)
