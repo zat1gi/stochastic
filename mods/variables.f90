@@ -26,6 +26,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: binLargeBound        !
 
   character(7)         :: pltxiBins(4)         !
+  character(7)         :: pltxiBinsgauss       !
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 
   integer, allocatable :: pltCowhich(:,:)      ! 
