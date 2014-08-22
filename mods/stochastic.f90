@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  integer      :: numSlice,levsrefEig,mostinBin,Corrnumpoints
+  integer      :: levsrefEig,mostinBin,Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
@@ -57,7 +57,7 @@ program stochastic
 
   !!read and prepare parameters
   call cpu_time(t1)
-  call readinputstoc(      numSlice,levsrefEig,&
+  call readinputstoc(      levsrefEig,&
                            binSmallBound,binLargeBound,KLres,KLnoise,&
                            pltxiBins,&
                            pltxiBinsgauss,pltKLrrealzPointorXi,&
@@ -87,7 +87,7 @@ program stochastic
 
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( P,sigave,&
-                           levsrefEig,lamc,numSlice,pltEigf,&
+                           levsrefEig,lamc,pltEigf,&
                            KLrxivals,KLrnumRealz )
   if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,&
                            lamc,sigave,CoExp,P )
@@ -127,7 +127,7 @@ program stochastic
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
-  if(KLres=='yes') call KL_Cochart( numSlice,P,sigave,lamc,&
+  if(KLres=='yes') call KL_Cochart( P,sigave,lamc,&
                            avePath,totLength,pltCo,&
                            CoExp )
   if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&

@@ -20,6 +20,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)
   integer              :: numEigs              ! number of eigenmodes to calculate
+  integer              :: numSlice             ! 
 
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 

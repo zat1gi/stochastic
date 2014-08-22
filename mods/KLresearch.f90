@@ -13,7 +13,7 @@ CONTAINS
 
 
   subroutine KL_eigenvalue( P,sigave,&
-                            levsrefEig,lamc,numSlice,pltEigf,&
+                            levsrefEig,lamc,pltEigf,&
                             KLrxivals,KLrnumRealz )
   !This subroutine: 1) calcaltes some initial values used here and later
   !2) Solves the transcendental equation which yields gamma
@@ -22,8 +22,8 @@ CONTAINS
   !5) Calculates variance maintained with # of eigvals if input specifies
   use genRealzvars, only: sig, lam, s, numRealz
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha,&
-                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs
-  integer :: levsrefEig,numSlice,KLrnumRealz
+                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice
+  integer :: levsrefEig,KLrnumRealz
   real(8),allocatable :: KLrxivals(:,:)
   real(8) :: P(2),sigave,lamc
   character(7) :: pltEigf(4)
@@ -386,7 +386,7 @@ CONTAINS
 
 
 
-  subroutine KL_Cochart( numSlice,P,sigave,lamc,&
+  subroutine KL_Cochart( P,sigave,lamc,&
                          avePath,totLength,pltCo,&
                          CoExp )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
@@ -398,8 +398,7 @@ CONTAINS
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs
-  integer :: numSlice
+  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice
   real(8) :: P(2),sigave,lamc,avePath(2),totLength(2),CoExp
   character(7) :: pltCo(4)
 
