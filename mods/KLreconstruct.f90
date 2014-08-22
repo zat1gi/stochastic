@@ -9,14 +9,13 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLrcondition( KLrxi,s )
+  subroutine KLrcondition( s )
   !This subroutine gets variables ready to reconstruct Sigma plots from the KL
   !expansion.  Specifically it creates a mesh based on selected frequency of 
   !sampling in x for a fixed point reconstruction, and then for a fixed xi
   !construction.
-  use KLvars, only: KLrnumpoints, KLrx
+  use KLvars, only: KLrnumpoints, KLrx, KLrxi
   real(8) :: s
-  real(8),allocatable :: KLrxi(:)
 
   integer :: i
   real(8) :: KLrxstepsize
@@ -48,17 +47,17 @@ CONTAINS
   subroutine KLrgenrealz( lamc,j,&
                           t1,time,ntime,&
                           pltKLrrealzarray,&
-                          KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
+                          KLrrandarray,KLrsig,KLrxisig,KLrxivals )
   !This subroutine reconstructs realizations based upon the KL expansion
   !It reconstructs based upon the fixed point and fixed xi methods
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
   use genRealzvars, only: s
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
-                          pltKLrrealznumof, pltKLrrealzwhich, KLrx
+                          pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi
   integer :: j
   integer :: ntime
-  real(8) :: lamc,KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
+  real(8) :: lamc,t1,time(:),tt1,tt2,KLrxivals(:,:)
   character(3) :: neg
   real(8),allocatable :: KLrxisig(:)
   real(8),allocatable :: pltKLrrealzarray(:,:),KLrrandarray(:,:,:),KLrsig(:)
@@ -149,14 +148,14 @@ CONTAINS
 
   subroutine KLreval( pltKLrrealzarray,&
                       KLrrandarray,lamc,&
-                      KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
+                      KLrsig,pltKLrrealzPointorXi,KLrxisig,&
                       KLrxivals )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
                          sigave, KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
-                         pltKLrrealzwhich, KLrx
-  real(8) :: lamc,KLrrandarray(:,:,:),KLrxi(:),KLrsig(:),KLrxisig(:)
+                         pltKLrrealzwhich, KLrx, KLrxi
+  real(8) :: lamc,KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
   real(8) :: KLrxivals(:,:)
   real(8),allocatable :: pltKLrrealzarray(:,:)
   character(7) :: pltKLrrealzPointorXi(:)

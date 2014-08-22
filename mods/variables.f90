@@ -63,6 +63,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: CoExp                !
   integer              :: negcnt               ! tally of number of realizations that have gone neg
   real(8), allocatable :: KLrx(:)              !
+  real(8), allocatable :: KLrxi(:)             !
 
 end module KLvars
 
