@@ -10,6 +10,7 @@ module genRealzvars
   integer :: numRealz                          ! number of realz to create
   
   integer              :: pltgenrealznumof     !
+  character(7)         :: pltgenrealz(4)       !
   !non inputs
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
   real(8)              :: lamc                 ! "correlation length" for binary mixtures  
@@ -22,8 +23,6 @@ module genRealzvars
   real(8)              :: matFirstTally(2)=0   ! tally of first material as mat1 or 2, bin mix
   real(8)              :: sumPath(2)           ! (consider making these guys local)
   real(8)              :: sqrPath(2)           !
-!  real(8)              :: avePath(2)           !
-!  real(8)              :: devPath(2)           !
 
 end module
 

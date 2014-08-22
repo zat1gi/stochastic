@@ -9,15 +9,15 @@ CONTAINS
 
   subroutine genReal( matLength,matType,&
                       j,time,ntime,&
-                      pltgenrealz,pltgenrealzwhich )
+                      pltgenrealzwhich )
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
-                          nummatSegs, P, matFirstTally, sumPath, sqrPath
+                          nummatSegs, P, matFirstTally, sumPath, sqrPath, &
+                          pltgenrealz
   integer :: j,ntime
   integer :: pltgenrealzwhich(:)
   real(8) :: tt1,tt2
   integer,allocatable :: matType(:)
   real(8),allocatable :: time(:),matLength(:)
-  character(7) :: pltgenrealz(4)
 
   integer, parameter :: numArrSz = 5000 !temp var, don't know how long to make arrays yet
   integer :: i,firstloop,matType_temp(numArrSz)
@@ -131,12 +131,11 @@ CONTAINS
 
 
 
-  subroutine genReal_stats( pltgenrealz,pltgenrealzwhich )
+  subroutine genReal_stats( pltgenrealzwhich )
   use genRealzvars, only: sig, lam, numRealz, numPath, pltgenrealznumof, P, &
                           perFirstTally, devFirstTally, matFirstTally, sumPath, &
-                          sqrPath
+                          sqrPath, pltgenrealz
   integer :: pltgenrealzwhich(:)
-  character(7) :: pltgenrealz(4)
 
   real(8) :: upperbound,lowerbound,avePath(2),devPath(2)
 

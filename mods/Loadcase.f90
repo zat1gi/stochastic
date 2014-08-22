@@ -81,11 +81,12 @@ CONTAINS
   subroutine readinputstoc( KLres,KLnoise,&
                             KLrec,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
-                            pltgenrealz,pltgenrealzwhich,&
+                            pltgenrealzwhich,&
                             plotmatdxs,&
                             radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
-  use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof
+  use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
+                                  pltgenrealz
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -105,7 +106,6 @@ CONTAINS
   character(6) :: plotflux(2)
   character(7) :: pltflux(4),plotmatdxs
 
-  character(7) :: pltgenrealz(4)                    !Plotting genrealz
   integer,allocatable :: pltgenrealzwhich(:)
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -264,11 +264,11 @@ CONTAINS
 
 
   subroutine testinputstoc( trannprt,KLres,KLrec,radWood,&
-                            pltgenrealz,pltgenrealzwhich,&
+                            pltgenrealzwhich,&
                             radMC,&
                             KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
-  use genRealzvars,      only: sig, scatrat, numRealz, pltgenrealznumof
+  use genRealzvars,      only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
@@ -277,7 +277,7 @@ CONTAINS
   integer :: trannprt
   integer :: fpointorxi(2)
   character(6) :: sourceType
-  character(7) :: pltgenrealz(4),pltflux(4)
+  character(7) :: pltflux(4)
   character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood,allowneg,distneg
 
   integer :: i

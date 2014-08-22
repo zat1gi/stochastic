@@ -20,7 +20,7 @@ program stochastic
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
-  character(7) :: pltgenrealz(4),plotmatdxs
+  character(7) :: plotmatdxs
   integer,allocatable :: matType(:),pltgenrealzwhich(:)
   real(8),allocatable :: matLength(:),matdxs(:,:,:)
   !--- radtransMC variables (new) ---!
@@ -48,13 +48,13 @@ program stochastic
   call readinputstoc(      KLres,KLnoise,&
                            KLrec,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
-                           pltgenrealz,pltgenrealzwhich,&
+                           pltgenrealzwhich,&
                            plotmatdxs,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      trannprt,KLres,KLrec,radWood,&
-                           pltgenrealz,pltgenrealzwhich,&
+                           pltgenrealzwhich,&
                            radMC,&
                            KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
@@ -77,7 +77,7 @@ program stochastic
   do j=1,numRealz
     call genReal(          matLength,matType,&
                            j,time,ntime,&
-                           pltgenrealz,pltgenrealzwhich )
+                           pltgenrealzwhich )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( matdxs,&
                            j,matLength,matType,fluxfaces,pfnumcells )
     if(radMC=='yes') call radtrans_MCsim( j,numParts,&
@@ -100,7 +100,7 @@ program stochastic
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
-  call genReal_stats(      pltgenrealz,pltgenrealzwhich )
+  call genReal_stats(      pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart

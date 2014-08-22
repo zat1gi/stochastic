@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:a9f8d170d9252b67aef40ebb55e4579f -- If you edit this, you'll get what you deserve.
+MD5:57b764cc55ab553252d408c2f9f7f1a4 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -59,25 +59,30 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-15 'pltgenrealznumof' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
+15 'pltgenrealz' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
+UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (CHARACTER 1 0 0 0
+CHARACTER ((CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '7'))) 0 0 () (1 0
+EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
+INTEGER 4 0 0 0 INTEGER ()) 0 '4')) 0 () () () 0 0)
+16 'pltgenrealznumof' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0
 () () 0 () () () 0 0)
-16 's' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+17 's' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-17 'scatrat' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+18 'scatrat' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-18 'sig' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+19 'sig' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-19 'sqrpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+20 'sqrpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-20 'sumpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+21 'sumpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
@@ -86,5 +91,5 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 ('__convert_i4_r8' 0 2 'adamscase' 0 3 'devfirsttally' 0 4 'genrealzvars'
 0 5 'lam' 0 6 'lamc' 0 7 'largesti' 0 8 'matfirsttally' 0 9 'nummatsegs'
 0 10 'numpath' 0 11 'numrealz' 0 12 'p' 0 13 'perfirsttally' 0 14
-'pltgenrealznumof' 0 15 's' 0 16 'scatrat' 0 17 'sig' 0 18 'sqrpath' 0
-19 'sumpath' 0 20)
+'pltgenrealz' 0 15 'pltgenrealznumof' 0 16 's' 0 17 'scatrat' 0 18 'sig'
+0 19 'sqrpath' 0 20 'sumpath' 0 21)
