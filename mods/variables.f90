@@ -67,6 +67,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLrxivals(:,:)       !
   real(8), allocatable :: pltKLrrealzarray(:,:)!
   real(8), allocatable :: KLrrandarray(:,:,:)  !
+  real(8), allocatable :: KLrsig(:)            !
 
 end module KLvars
 
