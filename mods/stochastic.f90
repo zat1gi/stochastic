@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  character(7) :: pltEigf(4),pltCo(4),Corropts(2)
+  character(7) :: pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
   character(7) :: pltKLrrealz(4)
@@ -57,7 +57,6 @@ program stochastic
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
                            pltKLrrealzPointorXi,&
-                           pltEigf,&
                            KLrnumpoints,KLrnumRealz,KLrprintat,KLrec,&
                            pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
@@ -67,7 +66,7 @@ program stochastic
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      KLrnumRealz,KLrprintat,&
-                           pltKLrrealznumof,pltKLrrealzwhich,pltEigf,&
+                           pltKLrrealznumof,pltKLrrealzwhich,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            pltCo,radMC,pltKLrrealzPointorXi,&
@@ -83,7 +82,7 @@ program stochastic
 
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( P,&
-                           lamc,pltEigf,&
+                           lamc,&
                            KLrxivals,KLrnumRealz )
   if(KLres=='yes')   call KL_Correlation( Corropts,&
                            lamc,P )
