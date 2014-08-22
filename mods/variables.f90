@@ -36,6 +36,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
 
+  integer              :: mostinBin            !
   real(8), allocatable :: binPDF(:,:)          ! 
   real(8), allocatable :: binBounds(:)         !
   real(8), allocatable :: AllEig(:)            ! many more Eigs than used, for variance kept calcs

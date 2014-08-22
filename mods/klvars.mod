@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:cf119943f5105920e5b29d8e420509e9 -- If you edit this, you'll get what you deserve.
+MD5:4af08d2ba5b29df0d7864977dcb40de2 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -52,44 +52,47 @@ UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
 14 'levsrefeig' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-15 'numeigs' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+15 'mostinbin' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-16 'numslice' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+16 'numeigs' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-17 'pltconumof' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+17 'numslice' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-18 'pltcowhich' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+18 'pltconumof' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
+() 0 0)
+19 'pltcowhich' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (INTEGER 4 0 0 0
 INTEGER ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-19 'plteigfnumof' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+20 'plteigfnumof' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-20 'plteigfwhich' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+21 'plteigfwhich' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (INTEGER 4 0 0 0
 INTEGER ()) 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-21 'pltxibinsnumof' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+22 'pltxibinsnumof' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-22 'pltxibinswhich' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+23 'pltxibinswhich' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (INTEGER 4 0 0 0
 INTEGER ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-23 'tnumeigs' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+24 'tnumeigs' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-24 'varmain' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+25 'varmain' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-25 'xi' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+26 'xi' 'klvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (
 2 0 DEFERRED () () () ()) 0 () () () 0 0)
 )
 
 ('ak' 0 2 'alleig' 0 3 'allgam' 0 4 'alpha' 0 5 'binbounds' 0 6 'binnumof'
 0 7 'binpdf' 0 8 'eig' 0 9 'gam' 0 10 'klvarcalc' 0 11 'klvarkept_tol' 0
-12 'klvars' 0 13 'levsrefeig' 0 14 'numeigs' 0 15 'numslice' 0 16
-'pltconumof' 0 17 'pltcowhich' 0 18 'plteigfnumof' 0 19 'plteigfwhich' 0
-20 'pltxibinsnumof' 0 21 'pltxibinswhich' 0 22 'tnumeigs' 0 23 'varmain'
-0 24 'xi' 0 25)
+12 'klvars' 0 13 'levsrefeig' 0 14 'mostinbin' 0 15 'numeigs' 0 16
+'numslice' 0 17 'pltconumof' 0 18 'pltcowhich' 0 19 'plteigfnumof' 0 20
+'plteigfwhich' 0 21 'pltxibinsnumof' 0 22 'pltxibinswhich' 0 23 'tnumeigs'
+0 24 'varmain' 0 25 'xi' 0 26)

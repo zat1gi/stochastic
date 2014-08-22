@@ -525,15 +525,13 @@ CONTAINS
 
 
   subroutine KL_eval( binSmallBound,binLargeBound,&
-                      pltxiBins,pltxiBinsgauss,binSize,&
-                      mostinBin )
+                      pltxiBins,pltxiBinsgauss,binSize )
   !This subroutine puts xi values in bins.  It plots for those chosen in the 
   !input file and also makes a .txt file containing PDFs of xi values for 
   !each Eigenvalue calculated.
   use genRealzvars, only: numRealz
   use KLvars, only: xi, binPDF, binBounds, pltxiBinswhich, pltxiBinsnumof, binNumof, &
-                    numEigs
-  integer :: mostinBin
+                    numEigs, mostinBin
   real(8) :: binSmallBound,binLargeBound
   real(8),allocatable :: binper(:,:)
   character(7) :: pltxiBins(4),pltxiBinsgauss
@@ -680,7 +678,7 @@ CONTAINS
 
 
 
-  subroutine KL_Noise( binSmallBound,binLargeBound,binSize,mostinBin,&
+  subroutine KL_Noise( binSmallBound,binLargeBound,binSize,&
                        time,ntime )
   !This subroutine identifies the two largest peaks of a xi distribution,
   !then uses the variable "xi" to print which realization/eigenmode combos
@@ -688,8 +686,8 @@ CONTAINS
   !investigation.  Data printed is Eigs for each are out, and how far from
   !the nearest "largest peak", neg for below bottom, pos for above top.
   use genRealzvars, only: numRealz
-  use Klvars, only: xi, binPDF, binBounds, binNumof, numEigs
-  integer :: mostinBin,ntime
+  use Klvars, only: xi, binPDF, binBounds, binNumof, numEigs, mostinBin
+  integer :: ntime
   real(8) :: binSmallBound,binLargeBound
   real(8) :: binSize,time(:),tt1,tt2
 

@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  integer      :: mostinBin,Corrnumpoints
+  integer      :: Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
@@ -130,9 +130,8 @@ program stochastic
                            avePath,totLength,pltCo,&
                            CoExp )
   if(KLres=='yes') call KL_eval( binSmallBound,binLargeBound,&
-                           pltxiBins,pltxiBinsgauss,binSize,&
-                           mostinBin )
-  if(KLnoise=='yes') call KL_Noise( binSmallBound,binLargeBound,binSize,mostinBin,time,ntime )
+                           pltxiBins,pltxiBinsgauss,binSize )
+  if(KLnoise=='yes') call KL_Noise( binSmallBound,binLargeBound,binSize,time,ntime )
 
 
 
