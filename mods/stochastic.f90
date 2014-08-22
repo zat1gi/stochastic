@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  real(8)      :: binSize,CoExp
+  real(8)      :: CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
@@ -128,8 +128,8 @@ program stochastic
   if(KLres=='yes') call KL_Cochart( P,lamc,&
                            avePath,pltCo,&
                            CoExp )
-  if(KLres=='yes') call KL_eval( pltxiBins,pltxiBinsgauss,binSize )
-  if(KLnoise=='yes') call KL_Noise( binSize,time,ntime )
+  if(KLres=='yes') call KL_eval( pltxiBins,pltxiBinsgauss )
+  if(KLnoise=='yes') call KL_Noise( time,ntime )
 
 
 
