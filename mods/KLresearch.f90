@@ -231,15 +231,14 @@ CONTAINS
 
 
 
-  subroutine KL_Correlation( Corropts,Corrnumpoints,&
+  subroutine KL_Correlation( Corropts,&
                              lamc,sigave,CoExp,P )
   !This subroutine calculates Correlation between two points in a
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s
-  use KLvars, only: alpha, Ak, Eig, numEigs
-  integer :: Corrnumpoints
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints
   real(8) :: lamc,sigave,CoExp,P(2)
   character(7) :: Corropts(2)
 

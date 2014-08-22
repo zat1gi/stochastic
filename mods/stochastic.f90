@@ -33,7 +33,6 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  integer      :: Corrnumpoints
   real(8)      :: binSmallBound,binLargeBound,sigave,totLength(2),binSize,CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
@@ -66,7 +65,7 @@ program stochastic
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            pltCo,plotmatdxs,&
-                           Corrnumpoints,Corropts,radWood,KLWood,allowneg,&
+                           Corropts,radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      KLrnumRealz,KLrprintat,&
@@ -88,7 +87,7 @@ program stochastic
   if(KLres=='yes')   call KL_eigenvalue( P,sigave,&
                            lamc,pltEigf,&
                            KLrxivals,KLrnumRealz )
-  if(KLres=='yes')   call KL_Correlation( Corropts,Corrnumpoints,&
+  if(KLres=='yes')   call KL_Correlation( Corropts,&
                            lamc,sigave,CoExp,P )
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot(&
