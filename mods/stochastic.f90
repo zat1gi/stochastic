@@ -20,7 +20,7 @@ program stochastic
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
-  real(8) :: perFirstTally(2),devFirstTally(2),lamc
+  real(8) :: devFirstTally(2),lamc
   real(8) :: matFirstTally(2)=0,sumPath(2),sqrPath(2),avePath(2),devPath(2)
   character(7) :: pltgenrealz(4),plotmatdxs
   integer,allocatable :: matType(:),pltgenrealzwhich(:)
@@ -102,7 +102,7 @@ program stochastic
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
-  call genReal_stats(      matFirstTally,perFirstTally,devFirstTally,&
+  call genReal_stats(      matFirstTally,devFirstTally,&
                            sumPath,sqrPath,avePath,devPath,&
                            pltgenrealz,pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&

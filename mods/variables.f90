@@ -16,6 +16,7 @@ module genRealzvars
   integer              :: largesti             !
   integer              :: numPath(2)           !
   integer              :: nummatSegs           ! number of material segments in realz (rid, use size?)
+  real(8)              :: perFirstTally(2)     !
 
 end module
 
