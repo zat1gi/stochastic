@@ -42,7 +42,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   character(7)         :: pltKLrrealz(4)       !
   integer              :: pltKLrrealznumof     !
   integer, allocatable :: pltKLrrealzwhich(:,:)!
-  character(7),allocatable :: pltKLrrealzPointorXi(:) !
+  character(7),allocatable :: pltKLrrealzPointorXi(:) ! which type of reconstruction, pt or xi based?
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam

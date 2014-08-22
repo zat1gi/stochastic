@@ -9,13 +9,13 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLrcondition( s )
+  subroutine KLrcondition
   !This subroutine gets variables ready to reconstruct Sigma plots from the KL
   !expansion.  Specifically it creates a mesh based on selected frequency of 
   !sampling in x for a fixed point reconstruction, and then for a fixed xi
   !construction.
+  use genRealzvars , only: s
   use KLvars, only: KLrnumpoints, KLrx, KLrxi
-  real(8) :: s
 
   integer :: i
   real(8) :: KLrxstepsize

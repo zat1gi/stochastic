@@ -116,7 +116,7 @@ program stochastic
 
 
   !!KLreconstructions
-  if(KLrec=='yes') call KLrcondition( s )
+  if(KLrec=='yes') call KLrcondition
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( lamc,j,&
                            t1,time,ntime )
