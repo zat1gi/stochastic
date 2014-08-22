@@ -23,6 +23,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: numSlice             ! 
   integer              :: levsrefEig           !
   real(8)              :: binSmallBound        !
+  real(8)              :: binLargeBound        !
 
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 
