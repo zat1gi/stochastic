@@ -29,6 +29,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   character(7)         :: pltxiBinsgauss       !
   character(7)         :: pltEigf(4)           !
   character(7)         :: pltCo(4)             !
+  character(7)         :: Corropts(2)          !
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 
   integer, allocatable :: pltCowhich(:,:)      ! 

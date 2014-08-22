@@ -86,18 +86,18 @@ CONTAINS
                             numParts,trannprt,radMC,rodOrplanar,results,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                             plotmatdxs,&
-                            Corropts,radWood,KLWood,allowneg,&
+                            radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
-                                  binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo
+                                  binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
+                                  Corropts
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLres,KLnoise
-  character(7) :: Corropts(2)
   integer :: KLrnumpoints(2),KLrnumRealz,KLrprintat !KL rec opts
   character(3) :: KLrec
   character(7) :: pltKLrrealz(4)                    !Plotting KLrrealz
