@@ -33,7 +33,6 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  real(8)      :: CoExp
   character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
@@ -88,7 +87,7 @@ program stochastic
                            lamc,pltEigf,&
                            KLrxivals,KLrnumRealz )
   if(KLres=='yes')   call KL_Correlation( Corropts,&
-                           lamc,CoExp,P )
+                           lamc,P )
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot(&
                            pfnumcells,fluxfaces,flux,fflux,bflux,&
@@ -126,8 +125,7 @@ program stochastic
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( P,lamc,&
-                           avePath,pltCo,&
-                           CoExp )
+                           avePath,pltCo )
   if(KLres=='yes') call KL_eval( pltxiBins,pltxiBinsgauss )
   if(KLnoise=='yes') call KL_Noise( time,ntime )
 

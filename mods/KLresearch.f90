@@ -233,14 +233,14 @@ CONTAINS
 
 
   subroutine KL_Correlation( Corropts,&
-                             lamc,CoExp,P )
+                             lamc,P )
   !This subroutine calculates Correlation between two points in a
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave
-  real(8) :: lamc,CoExp,P(2)
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp
+  real(8) :: lamc,P(2)
   character(7) :: Corropts(2)
 
   integer :: x,y,curEig
@@ -387,8 +387,7 @@ CONTAINS
 
 
   subroutine KL_Cochart( P,lamc,&
-                         avePath,pltCo,&
-                         CoExp )
+                         avePath,pltCo )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
   !eigenmodes.  The ratio will thus always be less than 1.  The close to 1 the ratio
@@ -399,8 +398,8 @@ CONTAINS
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          sigave, totLength
-  real(8) :: P(2),lamc,avePath(2),CoExp
+                          sigave, totLength, CoExp
+  real(8) :: P(2),lamc,avePath(2)
   character(7) :: pltCo(4)
 
   integer :: curCS,curEig,twice,check

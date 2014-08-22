@@ -49,6 +49,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: tnumEigs             ! temp numEigs, local use "KLreval", nice to get rid of
   real(8)              :: totLength(2)         !
   real(8)              :: binSize              !
+  real(8)              :: CoExp                !
 
 end module KLvars
 
