@@ -20,7 +20,6 @@ program stochastic
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
-  real(8),allocatable :: matdxs(:,:,:)
   !--- radtransMC variables (new) ---!
   integer      :: numParts,trannprt,o,radtrans_int,pfnumcells
   character(6) :: rodOrplanar,results,sourceType,plotflux(2)
@@ -71,7 +70,7 @@ program stochastic
                            fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
     call genReal(          j,time,ntime )
-    if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( matdxs,&
+    if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
                            j,fluxfaces,pfnumcells )
     if(radMC=='yes') call radtrans_MCsim( j,numParts,&
                            rodOrplanar,o,transmit,&
@@ -93,7 +92,7 @@ program stochastic
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
   call genReal_stats
-  if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
+  if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( &
                            fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart
   if(KLres=='yes') call KL_eval
