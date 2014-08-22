@@ -35,7 +35,6 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  integer      :: pltKLrrealznumof
   integer,allocatable :: pltKLrrealzwhich(:,:)
   real(8),allocatable :: KLrx(:),KLrxi(:),pltKLrrealzarray(:,:),KLrxivals(:,:)
   real(8),allocatable :: KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
@@ -56,14 +55,14 @@ program stochastic
   call readinputstoc(      KLres,KLnoise,&
                            pltKLrrealzPointorXi,&
                            KLrec,&
-                           pltKLrrealznumof,pltKLrrealzwhich,&
+                           pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            plotmatdxs,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
-  call testinputstoc(      pltKLrrealznumof,pltKLrrealzwhich,&
+  call testinputstoc(      pltKLrrealzwhich,&
                            trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            radMC,pltKLrrealzPointorXi,&
@@ -131,14 +130,14 @@ program stochastic
     if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
                            j,&
                            t1,time,ntime,&
-                           pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
+                           pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
                            t1)
   enddo
   if(KLadjust=='yes') call KLadjustmean( lamc,&
                            KLrxivals )
-  if(KLrec=='yes') call KLreval( pltKLrrealznumof,pltKLrrealzarray,&
+  if(KLrec=='yes') call KLreval( pltKLrrealzarray,&
                            KLrrandarray,lamc,&
                            KLrx,pltKLrrealzwhich,&
                            KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&

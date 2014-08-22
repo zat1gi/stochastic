@@ -40,6 +40,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: pltConumof           !
   integer              :: KLrnumpoints(2)      !
   character(7)         :: pltKLrrealz(4)       !
+  integer              :: pltKLrrealznumof     !
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
