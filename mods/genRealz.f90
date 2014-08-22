@@ -9,10 +9,11 @@ CONTAINS
 
   subroutine genReal( P,matLength,matType,matFirstTally,&
                       sumPath,sqrPath,j,time,ntime,&
-                      pltgenrealz,pltgenrealzwhich,nummatSegs )
-  use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof
+                      pltgenrealz,pltgenrealzwhich )
+  use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
+                          nummatSegs
   integer :: j,ntime
-  integer :: pltgenrealzwhich(:),nummatSegs
+  integer :: pltgenrealzwhich(:)
   real(8) :: P(2),matFirstTally(2)
   real(8) :: sumPath(2),sqrPath(2),tt1,tt2
   integer,allocatable :: matType(:)
@@ -211,11 +212,11 @@ CONTAINS
 
 
   subroutine matdxs_collect( matdxs,j,matLength,matType,fluxfaces,&
-                            pfnumcells,nummatSegs )
+                            pfnumcells )
   !This subroutine collects how much of each material is in each segment defined by
   !fluxfaces.
-  use genRealzvars, only: numRealz
-  integer :: j,matType(:),pfnumcells,nummatSegs
+  use genRealzvars, only: numRealz, nummatSegs
+  integer :: j,matType(:),pfnumcells
   real(8) :: matLength(:),fluxfaces(:)
   real(8),allocatable :: matdxs(:,:,:)
 

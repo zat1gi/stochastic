@@ -13,6 +13,7 @@ module genRealzvars
   !non inputs
   integer              :: largesti             !
   integer              :: numPath(2)           !
+  integer              :: nummatSegs           ! number of material segments in realz (rid, use size?)
 
 end module
 

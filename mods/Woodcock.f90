@@ -10,7 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,matType,matLength,nummatSegs,&
+  subroutine WoodcockMC( j,matType,matLength,&
                          time,ntime,numParts,lamc,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
@@ -19,9 +19,9 @@ CONTAINS
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
-  use genRealzvars, only: sig, scatrat, lam, s, numRealz
+  use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  integer :: j,nummatSegs,numParts,ntime,matType(:),pfnumcells
+  integer :: j,numParts,ntime,matType(:),pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
   real(8),allocatable :: radWoodt(:),radWoodr(:),radWooda(:)
@@ -101,8 +101,7 @@ CONTAINS
   enddo
 
   if(Wood=='rad') call radWood_binmaxes(matLength,matType,nummatSegs,binmaxind,binmaxes,nbin,sig)
-  if(Wood=='KL')  call KLWood_binmaxes( j,lamc,&
-                                        binmaxind,binmaxes,nbin)
+  if(Wood=='KL')  call KLWood_binmaxes( j,lamc,binmaxind,binmaxes,nbin)
 
   !create forward/backward motion max vectors
   bbinmax(1)=binmaxes(1)
@@ -156,7 +155,7 @@ if(print=='yes') print *,
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,fluxfaces,Woodf,&
                                     pfnumcells,plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,s,fluxfaces,fWoodf,bWoodf,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength,nummatSegs)
+                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
 
         if(print=='yes') print *,"                      tally transmit"
         exit
@@ -166,7 +165,7 @@ if(print=='yes') print *,
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,fluxfaces,Woodf,&
                                     pfnumcells,plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fluxfaces,fWoodf,bWoodf,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength,nummatSegs)
+                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
         if(print=='yes') print *,"                      tally reflect"
         exit
       endif
@@ -174,7 +173,7 @@ if(print=='yes') print *,
       if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,Woodf,&
                                   pfnumcells,plotflux,pltflux,j,mu)
       if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fWoodf,bWoodf,&
-                                 pfnumcells,plotflux,pltflux,j,mu,matType,matLength,nummatSegs)
+                                 pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
       if(Wood=='rad') woodrat= radWood_actsig(position,matType,matLength,sig)&
                                /ceilsig
       if(Wood=='KL')  woodrat= KLrxi_point(j,lamc,position)&
