@@ -22,8 +22,8 @@ module genRealzvars
   real(8)              :: matFirstTally(2)=0   ! tally of first material as mat1 or 2, bin mix
   real(8)              :: sumPath(2)           ! (consider making these guys local)
   real(8)              :: sqrPath(2)           !
-  real(8)              :: avePath(2)           !
-  real(8)              :: devPath(2)           !
+!  real(8)              :: avePath(2)           !
+!  real(8)              :: devPath(2)           !
 
 end module
 

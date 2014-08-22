@@ -134,11 +134,11 @@ CONTAINS
   subroutine genReal_stats( pltgenrealz,pltgenrealzwhich )
   use genRealzvars, only: sig, lam, numRealz, numPath, pltgenrealznumof, P, &
                           perFirstTally, devFirstTally, matFirstTally, sumPath, &
-                          sqrPath, avePath, devPath
+                          sqrPath
   integer :: pltgenrealzwhich(:)
   character(7) :: pltgenrealz(4)
 
-  real(8) :: upperbound,lowerbound
+  real(8) :: upperbound,lowerbound,avePath(2),devPath(2)
 
   210 format("Start mat1: ",f8.4,"+-",f8.4,"   mat2: ",f8.4,"+-",f8.4)
   211 format("      P(1): ",f8.4,"             P(2): ",f8.4 )
