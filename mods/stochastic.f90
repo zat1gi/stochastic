@@ -20,7 +20,7 @@ program stochastic
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
-  real(8) :: sqrPath(2),avePath(2),devPath(2)
+  real(8) :: avePath(2),devPath(2)
   character(7) :: pltgenrealz(4),plotmatdxs
   integer,allocatable :: matType(:),pltgenrealzwhich(:)
   real(8),allocatable :: matLength(:),matdxs(:,:,:)
@@ -77,7 +77,7 @@ program stochastic
                            fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
     call genReal(          matLength,matType,&
-                           sqrPath,j,time,ntime,&
+                           j,time,ntime,&
                            pltgenrealz,pltgenrealzwhich )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( matdxs,&
                            j,matLength,matType,fluxfaces,pfnumcells )
@@ -101,7 +101,7 @@ program stochastic
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
-  call genReal_stats(      sqrPath,avePath,devPath,&
+  call genReal_stats(      avePath,devPath,&
                            pltgenrealz,pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )

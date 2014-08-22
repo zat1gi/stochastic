@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:319f4bc81318d11f2a52fe33298d026f -- If you edit this, you'll get what you deserve.
+MD5:a9f8d170d9252b67aef40ebb55e4579f -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -73,7 +73,11 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-19 'sumpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+19 'sqrpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
+EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
+INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
+20 'sumpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
@@ -82,5 +86,5 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 ('__convert_i4_r8' 0 2 'adamscase' 0 3 'devfirsttally' 0 4 'genrealzvars'
 0 5 'lam' 0 6 'lamc' 0 7 'largesti' 0 8 'matfirsttally' 0 9 'nummatsegs'
 0 10 'numpath' 0 11 'numrealz' 0 12 'p' 0 13 'perfirsttally' 0 14
-'pltgenrealznumof' 0 15 's' 0 16 'scatrat' 0 17 'sig' 0 18 'sumpath' 0
-19)
+'pltgenrealznumof' 0 15 's' 0 16 'scatrat' 0 17 'sig' 0 18 'sqrpath' 0
+19 'sumpath' 0 20)
