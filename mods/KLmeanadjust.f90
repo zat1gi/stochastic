@@ -16,13 +16,12 @@ module KLmeanadjust
 CONTAINS
   ! print statements in this module use # 500-599
 
-  subroutine KLadjustmean( lamc )
+  subroutine KLadjustmean
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s
   use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  real(8) :: lamc
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
@@ -31,7 +30,7 @@ CONTAINS
   intsigave = 0d0
   do j=1,KLrnumRealz
     intsigave = intsigave + &
-                KLrxi_integral(j,lamc,0d0,s)/KLrnumRealz/s
+                KLrxi_integral(j,0d0,s)/KLrnumRealz/s
   enddo
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
   write(*,500) sigave,intsigave,abs(sigave-intsigave)/sigave
@@ -50,15 +49,15 @@ CONTAINS
     print *,"Beginning mean adjustment iteration ",adjustiter
     do j=1,KLrnumRealz
 !print *,"adjusting realization: ",j
-      xr = KLrxi_point(j,lamc,0d0)
+      xr = KLrxi_point(j,0d0)
       xl = 0d0
       do
 !print *,"about to find next point"
-        xr = findnextpoint(j,lamc)
+        xr = findnextpoint(j)
 !print *,"found next point: ",xr
-        areacont = KLrxi_integral(j,lamc,xl,xr)/KLrnumRealz/s
+        areacont = KLrxi_integral(j,xl,xr)/KLrnumRealz/s
 
-        xmid = KLrxi_point(j,lamc,(xr+xl)/2d0)
+        xmid = KLrxi_point(j,(xr+xl)/2d0)
         if(xmid>0d0) then
           aveposarea = aveposarea + areacont
           perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
@@ -84,29 +83,28 @@ CONTAINS
 
 
 
-  function findnextpoint(j,lamc)
+  function findnextpoint(j)
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s
   use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   integer :: j
-  real(8) :: lamc
 
   real(8) :: findnextpoint
   real(8) :: curx,oldx,curs,olds !position, then sigma value
 
   curx = xl
-  curs = KLrxi_point(j,lamc,curx)
+  curs = KLrxi_point(j,curx)
 !print *,"outside: curx: ",curx,"  step: ",step
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
-    curs = KLrxi_point(j,lamc,curx)
+    curs = KLrxi_point(j,curx)
 !print *,"inside1: curx: ",curx,"  step: ",step
     if(curs*olds<0d0) then
-      curx = refinenextpoint(j,lamc,oldx,curx)
+      curx = refinenextpoint(j,oldx,curx)
 !print *,"inside2: curx: ",curx,"  step: ",step
       exit
     elseif(curx>=s) then
@@ -123,24 +121,24 @@ CONTAINS
 
 
 
-  function refinenextpoint(j,lamc,oldx,curx)
+  function refinenextpoint(j,oldx,curx)
   !This function takes a range and zeroes in on transision in sign of cross section within tolerance
   use genRealzvars, only: s
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   integer :: j
-  real(8) :: lamc,oldx,curx
+  real(8) :: oldx,curx
 
   real(8) :: refinenextpoint,stepsign,curs,olds,curstep
 
   stepsign = -1d0
   curstep = step
-  curs = KLrxi_point(j,lamc,curx)
+  curs = KLrxi_point(j,curx)
   do
     curstep = curstep/2d0
     oldx = curx
     olds = curs
     curx = curx + curstep*stepsign
-    curs = KLrxi_point(j,lamc,curx)
+    curs = KLrxi_point(j,curx)
 
     if(abs(curs)<stol) then
       refinenextpoint = curx
@@ -169,11 +167,12 @@ CONTAINS
 
 
 
-  function KLrxi_point(j,lamc,xpos)
+  function KLrxi_point(j,xpos)
   ! Evaluates KL reconstructed realizations at a given point
+  use genRealzvars, only: lamc
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
   integer :: j
-  real(8) :: lamc,xpos
+  real(8) :: xpos
   real(8) :: KLrxi_point
 
   integer :: curEig
@@ -201,11 +200,12 @@ CONTAINS
 
 
 
-  function KLrxi_integral(j,lamc,xl,xr)
+  function KLrxi_integral(j,xl,xr)
   ! This function integrates on KL reconstructed realizations from xl to xr
+  use genRealzvars, only: lamc
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
   integer :: j
-  real(8) :: lamc,xl,xr
+  real(8) :: xl,xr
   real(8) :: KLrxi_integral
 
   integer :: curEig

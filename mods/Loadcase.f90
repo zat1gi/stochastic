@@ -53,9 +53,8 @@ CONTAINS
 
 
 
-  subroutine Acase_print( lamc )
-  use genRealzvars, only: Adamscase, sig, lam, scatrat, s
-    real(8) :: lamc
+  subroutine Acase_print
+  use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc
 
     lamc = lam(1)*lam(2)/(lam(1)+lam(2))
 

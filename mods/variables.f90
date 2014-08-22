@@ -11,12 +11,14 @@ module genRealzvars
   
   integer              :: pltgenrealznumof     !
   !non inputs
-  real(8)              :: P(2)                 !
-  
+  real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
+  real(8)              :: lamc                 ! "correlation length" for binary mixtures  
+
   integer              :: largesti             !
   integer              :: numPath(2)           !
   integer              :: nummatSegs           ! number of material segments in realz (rid, use size?)
   real(8)              :: perFirstTally(2)     !
+  real(8)              :: devFirstTally(2)     !
 
 end module
 
