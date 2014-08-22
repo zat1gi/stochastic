@@ -524,15 +524,16 @@ CONTAINS
 
 
 
-  subroutine KL_eval( pltxiBins,pltxiBinsgauss )
+  subroutine KL_eval( pltxiBinsgauss )
   !This subroutine puts xi values in bins.  It plots for those chosen in the 
   !input file and also makes a .txt file containing PDFs of xi values for 
   !each Eigenvalue calculated.
   use genRealzvars, only: numRealz
   use KLvars, only: xi, binPDF, binBounds, pltxiBinswhich, pltxiBinsnumof, binNumof, &
-                    numEigs, mostinBin, binSmallBound, binLargeBound, binSize
+                    numEigs, mostinBin, binSmallBound, binLargeBound, binSize, pltxiBins!, &
+                    
   real(8),allocatable :: binper(:,:)
-  character(7) :: pltxiBins(4),pltxiBinsgauss
+  character(7) :: pltxiBinsgauss
 
   integer :: k,j,i,binCounts(binNumof,numEigs+1),curEig,tnumRealz
   real(8) :: smallestxi,largestxi,xiOneD(numRealz)

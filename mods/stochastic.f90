@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  character(7) :: pltxiBins(4),pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
+  character(7) :: pltxiBinsgauss,pltEigf(4),pltCo(4),Corropts(2)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
   character(7) :: pltKLrrealz(4)
@@ -56,7 +56,6 @@ program stochastic
   !!read and prepare parameters
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
-                           pltxiBins,&
                            pltxiBinsgauss,pltKLrrealzPointorXi,&
                            pltEigf,&
                            KLrnumpoints,KLrnumRealz,KLrprintat,KLrec,&
@@ -68,7 +67,7 @@ program stochastic
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      KLrnumRealz,KLrprintat,&
-                           pltKLrrealznumof,pltKLrrealzwhich,pltEigf,pltxiBins,&
+                           pltKLrrealznumof,pltKLrrealzwhich,pltEigf,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            pltCo,radMC,pltKLrrealzPointorXi,&
@@ -126,7 +125,7 @@ program stochastic
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( P,lamc,&
                            avePath,pltCo )
-  if(KLres=='yes') call KL_eval( pltxiBins,pltxiBinsgauss )
+  if(KLres=='yes') call KL_eval( pltxiBinsgauss )
   if(KLnoise=='yes') call KL_Noise( time,ntime )
 
 

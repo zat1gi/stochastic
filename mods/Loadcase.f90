@@ -80,7 +80,6 @@ CONTAINS
 
 
   subroutine readinputstoc( KLres,KLnoise,&
-                            pltxiBins,&
                             pltxiBinsgauss,pltKLrrealzPointorXi,&
                             pltEigf,&
                             KLrnumpoints,KLrnumRealz,KLrprintat,KLrec,&
@@ -94,14 +93,14 @@ CONTAINS
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
-                                  binLargeBound
+                                  binLargeBound, pltxiBins
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(7) :: pltEigf(4)                        !Plotting Eigf
   character(3) :: KLres,KLnoise
   character(7) :: Corropts(2)
-  character(7) :: pltxiBins(4),pltxiBinsgauss       !Plotting xiBins
+  character(7) :: pltxiBinsgauss       !Plotting xiBins
   integer :: KLrnumpoints(2),KLrnumRealz,KLrprintat !KL rec opts
   character(3) :: KLrec
   character(7) :: pltKLrrealz(4)                    !Plotting KLrrealz
@@ -277,7 +276,7 @@ CONTAINS
 
 
   subroutine testinputstoc( KLrnumRealz,KLrprintat,&
-                            pltKLrrealznumof,pltKLrrealzwhich,pltEigf,pltxiBins,&
+                            pltKLrrealznumof,pltKLrrealzwhich,pltEigf,&
                             pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                             pltCo,radMC,pltKLrrealzPointorXi,&
@@ -285,14 +284,14 @@ CONTAINS
                             sourceType,allowneg,distneg )
   use genRealzvars,      only: sig, scatrat, numRealz
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
-                    pltConumof, binNumof, numEigs
+                    pltConumof, binNumof, numEigs, pltxiBins
   integer :: KLrnumRealz,KLrprintat
   integer :: pltKLrrealznumof,pltgenrealznumof
   integer :: pltKLrrealzwhich(:,:),pltgenrealzwhich(:)
   integer :: trannprt
   integer :: fpointorxi(2),KLrnumpoints(2)
   character(6) :: sourceType
-  character(7) :: pltEigf(4),pltxiBins(4),pltKLrrealz(4),pltgenrealz(4),pltCo(4),pltflux(4)
+  character(7) :: pltEigf(4),pltKLrrealz(4),pltgenrealz(4),pltCo(4),pltflux(4)
   character(7) :: pltKLrrealzPointorXi(:)
   character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood,allowneg,distneg
 
