@@ -80,7 +80,6 @@ CONTAINS
 
 
   subroutine readinputstoc( KLres,KLnoise,&
-                            pltKLrrealzPointorXi,&
                             KLrec,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -93,13 +92,12 @@ CONTAINS
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
-                                  pltKLrrealznumof, pltKLrrealzwhich
+                                  pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLres,KLnoise
   character(3) :: KLrec
-  character(7),allocatable :: pltKLrrealzPointorXi(:)
   integer :: numParts,trannprt                      !radtransMC opts
   character(3) :: radMC
   character(6) :: rodOrplanar,results,sourceType
@@ -269,20 +267,20 @@ CONTAINS
 
   subroutine testinputstoc( trannprt,KLres,KLrec,radWood,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                            radMC,pltKLrrealzPointorXi,&
+                            radMC,&
                             KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
   use genRealzvars,      only: sig, scatrat, numRealz
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
-                    KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich
+                    KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
+                    pltKLrrealzPointorXi
   integer :: pltgenrealznumof
   integer :: pltgenrealzwhich(:)
   integer :: trannprt
   integer :: fpointorxi(2)
   character(6) :: sourceType
   character(7) :: pltgenrealz(4),pltflux(4)
-  character(7) :: pltKLrrealzPointorXi(:)
   character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood,allowneg,distneg
 
   integer :: i

@@ -34,8 +34,6 @@ program stochastic
   real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
-  !--- KLreconstruct variables (new) ---!
-  character(7),allocatable :: pltKLrrealzPointorXi(:)
   !--- Woodcock variables (new) ---!
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2), numpnSamp(2)
   real(8) ::                                 disthold,areapnSamp(4)
@@ -50,7 +48,6 @@ program stochastic
   !!read and prepare parameters
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
-                           pltKLrrealzPointorXi,&
                            KLrec,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -60,7 +57,7 @@ program stochastic
 
   call testinputstoc(      trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                           radMC,pltKLrrealzPointorXi,&
+                           radMC,&
                            KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
 
@@ -127,8 +124,7 @@ program stochastic
                            t1)
   enddo
   if(KLadjust=='yes') call KLadjustmean( lamc )
-  if(KLrec=='yes') call KLreval( lamc,&
-                           pltKLrrealzPointorXi )
+  if(KLrec=='yes') call KLreval( lamc )
 
 
   !!radKL transport

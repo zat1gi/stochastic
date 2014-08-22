@@ -143,16 +143,14 @@ CONTAINS
 
 
 
-  subroutine KLreval( lamc,&
-                      pltKLrrealzPointorXi )
+  subroutine KLreval( lamc )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
                          sigave, KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
-                         KLrsig, KLrxisig
+                         KLrsig, KLrxisig, pltKLrrealzPointorXi
   real(8) :: lamc
-  character(7) :: pltKLrrealzPointorXi(:)
 
   integer :: i,curEig,m,KLrnumpts
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
