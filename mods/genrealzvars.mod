@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:ba149c74fcff5efc339bb09fdb9b91c7 -- If you edit this, you'll get what you deserve.
+MD5:2c09c7e324942455bc94b86d94415df3 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -24,20 +24,23 @@ UNKNOWN-PROC UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () ()
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-5 'numrealz' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+5 'largesti' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-6 's' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+6 'numrealz' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
+() 0 0)
+7 's' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-7 'scatrat' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+8 'scatrat' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-8 'sig' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+9 'sig' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 )
 
-('adamscase' 0 2 'genrealzvars' 0 3 'lam' 0 4 'numrealz' 0 5 's' 0 6
-'scatrat' 0 7 'sig' 0 8)
+('adamscase' 0 2 'genrealzvars' 0 3 'lam' 0 4 'largesti' 0 5 'numrealz'
+0 6 's' 0 7 'scatrat' 0 8 'sig' 0 9)

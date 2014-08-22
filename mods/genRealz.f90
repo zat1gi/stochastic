@@ -8,10 +8,10 @@ CONTAINS
 
 
   subroutine genReal( P,matLength,matType,matFirstTally,&
-                      numPath,sumPath,sqrPath,largesti,j,time,ntime,&
+                      numPath,sumPath,sqrPath,j,time,ntime,&
                       pltgenrealz,pltgenrealznumof,pltgenrealzwhich,nummatSegs )
-  use genRealzvars, only: sig, lam, s
-  integer :: numPath(2),j,largesti,ntime
+  use genRealzvars, only: sig, lam, s, largesti
+  integer :: numPath(2),j,ntime
   integer :: pltgenrealznumof,pltgenrealzwhich(:),nummatSegs
   real(8) :: P(2),matFirstTally(2)
   real(8) :: sumPath(2),sqrPath(2),tt1,tt2
