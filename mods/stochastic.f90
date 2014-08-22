@@ -35,7 +35,6 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  real(8),allocatable :: KLrxisig(:)
   character(7),allocatable :: pltKLrrealzPointorXi(:)
   !--- Woodcock variables (new) ---!
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2), numpnSamp(2)
@@ -123,14 +122,13 @@ program stochastic
   if(KLrec=='yes') call KLrcondition( s )
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( lamc,j,&
-                           t1,time,ntime,&
-                           KLrxisig )
+                           t1,time,ntime )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
                            t1)
   enddo
   if(KLadjust=='yes') call KLadjustmean( lamc )
   if(KLrec=='yes') call KLreval( lamc,&
-                           pltKLrrealzPointorXi,KLrxisig )
+                           pltKLrrealzPointorXi )
 
 
   !!radKL transport
