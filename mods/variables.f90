@@ -12,6 +12,7 @@ module genRealzvars
   integer              :: pltgenrealznumof     !
   character(7)         :: pltgenrealz(4)       !
   character(7)         :: plotmatdxs           !
+  integer, allocatable :: pltgenrealzwhich(:)  !
   !non inputs
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
   real(8)              :: lamc                 ! "correlation length" for binary mixtures  

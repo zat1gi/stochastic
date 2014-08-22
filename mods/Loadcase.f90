@@ -81,11 +81,10 @@ CONTAINS
   subroutine readinputstoc( KLres,KLnoise,&
                             KLrec,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
-                            pltgenrealzwhich,&
                             radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
-                                  pltgenrealz, plotmatdxs
+                                  pltgenrealz, plotmatdxs, pltgenrealzwhich
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -105,7 +104,6 @@ CONTAINS
   character(6) :: plotflux(2)
   character(7) :: pltflux(4)
 
-  integer,allocatable :: pltgenrealzwhich(:)
   character(7) :: pltallopt                         !Plot all same opt
 
   real(8)       :: dumreal
@@ -263,16 +261,15 @@ CONTAINS
 
 
   subroutine testinputstoc( trannprt,KLres,KLrec,radWood,&
-                            pltgenrealzwhich,&
                             radMC,&
                             KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
-  use genRealzvars,      only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz
+  use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
+                          pltgenrealzwhich
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi
-  integer :: pltgenrealzwhich(:)
   integer :: trannprt
   integer :: fpointorxi(2)
   character(6) :: sourceType
