@@ -374,7 +374,7 @@ CONTAINS
 
 
 
-  subroutine KL_Cochart( avePath )
+  subroutine KL_Cochart
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
   !eigenmodes.  The ratio will thus always be less than 1.  The close to 1 the ratio
@@ -386,7 +386,6 @@ CONTAINS
   use genRealzvars, only: sig, s, numRealz, P, lamc
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           sigave, totLength, CoExp, pltCo
-  real(8) :: avePath(2)
 
   integer :: curCS,curEig,twice,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
