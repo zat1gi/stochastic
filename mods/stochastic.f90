@@ -11,7 +11,7 @@ program stochastic
   use KLmeanadjust
   use Woodcock
 
-  use KLvars, only: KLrnumRealz
+  use KLvars, only: KLrnumRealz, KLrprintat
   implicit none
   real(8) :: runtime,t1,t2,seeddum
   real(8),allocatable :: time(:) !genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
@@ -35,7 +35,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  integer      :: KLrprintat,negcnt
+  integer      :: negcnt
   character(7) :: pltKLrrealz(4)
   integer      :: pltKLrrealznumof
   integer,allocatable :: pltKLrrealzwhich(:,:)
@@ -57,7 +57,7 @@ program stochastic
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
                            pltKLrrealzPointorXi,&
-                           KLrprintat,KLrec,&
+                           KLrec,&
                            pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -65,8 +65,7 @@ program stochastic
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
-  call testinputstoc(      KLrprintat,&
-                           pltKLrrealznumof,pltKLrrealzwhich,&
+  call testinputstoc(      pltKLrrealznumof,pltKLrrealzwhich,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            radMC,pltKLrrealzPointorXi,&
@@ -133,7 +132,7 @@ program stochastic
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
                            j,&
-                           KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
+                           t1,pltKLrrealz,time,ntime,negcnt,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&

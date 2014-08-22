@@ -48,7 +48,7 @@ CONTAINS
 
   subroutine KLrgenrealz( lamc,KLrx,&
                           j,&
-                          KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
+                          t1,pltKLrrealz,time,ntime,negcnt,&
                           pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                           KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
   !This subroutine reconstructs realizations based upon the KL expansion
@@ -56,8 +56,8 @@ CONTAINS
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
   use genRealzvars, only: s
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
-                          KLrnumpoints, KLrnumRealz
-  integer :: j,KLrprintat
+                          KLrnumpoints, KLrnumRealz, KLrprintat
+  integer :: j
   integer :: ntime,negcnt
   real(8) :: lamc,KLrx(:),KLrxi(:),t1,time(:),tt1,tt2,KLrxivals(:,:)
   character(7) :: pltKLrrealz(4)
