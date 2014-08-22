@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLresearch variables (new) ---!
-  character(7) :: pltCo(4),Corropts(2)
+  character(7) :: Corropts(2)
   !--- KLreconstruct variables (new) ---!
   integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
   character(7) :: pltKLrrealz(4)
@@ -61,7 +61,7 @@ program stochastic
                            pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                           pltCo,plotmatdxs,&
+                           plotmatdxs,&
                            Corropts,radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
@@ -69,7 +69,7 @@ program stochastic
                            pltKLrrealznumof,pltKLrrealzwhich,&
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                           pltCo,radMC,pltKLrrealzPointorXi,&
+                           radMC,pltKLrrealzPointorXi,&
                            KLrnumpoints,KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
 
@@ -123,7 +123,7 @@ program stochastic
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( P,lamc,&
-                           avePath,pltCo )
+                           avePath )
   if(KLres=='yes') call KL_eval
   if(KLnoise=='yes') call KL_Noise( time,ntime )
 

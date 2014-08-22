@@ -85,14 +85,14 @@ CONTAINS
                             pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                            pltCo,plotmatdxs,&
+                            plotmatdxs,&
                             Corropts,radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
-                                  binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf
+                                  binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
@@ -116,7 +116,6 @@ CONTAINS
   integer :: pltgenrealznumof
   integer,allocatable :: pltgenrealzwhich(:)
   character(7) :: pltallopt                         !Plot all same opt
-  character(7) :: pltCo(4)                            !Plot Co
 
   real(8)       :: dumreal
   character(20) :: dumchar !use this to "skip" a line
@@ -276,19 +275,19 @@ CONTAINS
                             pltKLrrealznumof,pltKLrrealzwhich,&
                             pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                             pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
-                            pltCo,radMC,pltKLrrealzPointorXi,&
+                            radMC,pltKLrrealzPointorXi,&
                             KLrnumpoints,KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
   use genRealzvars,      only: sig, scatrat, numRealz
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
-                    pltConumof, binNumof, numEigs, pltxiBins, pltEigf
+                    pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo
   integer :: KLrnumRealz,KLrprintat
   integer :: pltKLrrealznumof,pltgenrealznumof
   integer :: pltKLrrealzwhich(:,:),pltgenrealzwhich(:)
   integer :: trannprt
   integer :: fpointorxi(2),KLrnumpoints(2)
   character(6) :: sourceType
-  character(7) :: pltKLrrealz(4),pltgenrealz(4),pltCo(4),pltflux(4)
+  character(7) :: pltKLrrealz(4),pltgenrealz(4),pltflux(4)
   character(7) :: pltKLrrealzPointorXi(:)
   character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood,allowneg,distneg
 
