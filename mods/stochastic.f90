@@ -35,7 +35,6 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  integer,allocatable :: pltKLrrealzwhich(:,:)
   real(8),allocatable :: KLrx(:),KLrxi(:),pltKLrrealzarray(:,:),KLrxivals(:,:)
   real(8),allocatable :: KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
   character(7),allocatable :: pltKLrrealzPointorXi(:)
@@ -55,15 +54,13 @@ program stochastic
   call readinputstoc(      KLres,KLnoise,&
                            pltKLrrealzPointorXi,&
                            KLrec,&
-                           pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            plotmatdxs,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
-  call testinputstoc(      pltKLrrealzwhich,&
-                           trannprt,KLres,KLrec,radWood,&
+  call testinputstoc(      trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            radMC,pltKLrrealzPointorXi,&
                            KLnoise,KLWood,pltflux,&
@@ -130,7 +127,7 @@ program stochastic
     if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
                            j,&
                            t1,time,ntime,&
-                           pltKLrrealzwhich,pltKLrrealzarray,&
+                           pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
                            t1)
@@ -139,7 +136,7 @@ program stochastic
                            KLrxivals )
   if(KLrec=='yes') call KLreval( pltKLrrealzarray,&
                            KLrrandarray,lamc,&
-                           KLrx,pltKLrrealzwhich,&
+                           KLrx,&
                            KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&
                            KLrxivals )
 
