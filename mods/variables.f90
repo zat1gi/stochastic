@@ -10,6 +10,7 @@ module genRealzvars
   integer :: numRealz                          ! number of realz to create
   !non inputs
   integer              :: largesti             !
+  integer              :: numPath(2)           !
 
 end module
 

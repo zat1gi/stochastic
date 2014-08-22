@@ -19,7 +19,7 @@ program stochastic
   integer, parameter :: ntime = 7
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
-  integer :: i,j,numPath(2),pltgenrealznumof,nummatSegs
+  integer :: i,j,pltgenrealznumof,nummatSegs
   real(8) :: P(2),perFirstTally(2),devFirstTally(2),lamc
   real(8) :: matFirstTally(2)=0,sumPath(2),sqrPath(2),avePath(2),devPath(2)
   character(7) :: pltgenrealz(4),plotmatdxs
@@ -79,7 +79,7 @@ program stochastic
                            fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
     call genReal(          P,matLength,matType,matFirstTally,&
-                           numPath,sumPath,sqrPath,j,time,ntime,&
+                           sumPath,sqrPath,j,time,ntime,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,nummatSegs )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( matdxs,&
                            j,matLength,matType,fluxfaces,pfnumcells,nummatSegs )
@@ -104,7 +104,7 @@ program stochastic
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
   call genReal_stats(      matFirstTally,perFirstTally,devFirstTally,&
-                           P,numPath,sumPath,sqrPath,avePath,devPath,&
+                           P,sumPath,sqrPath,avePath,devPath,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
