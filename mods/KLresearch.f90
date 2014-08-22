@@ -12,7 +12,7 @@ CONTAINS
 
 
 
-  subroutine KL_eigenvalue( P,sigave,&
+  subroutine KL_eigenvalue( P,&
                             lamc,pltEigf,&
                             KLrxivals,KLrnumRealz )
   !This subroutine: 1) calcaltes some initial values used here and later
@@ -21,11 +21,12 @@ CONTAINS
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates variance maintained with # of eigvals if input specifies
   use genRealzvars, only: sig, lam, s, numRealz
-  use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha,&
-                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, levsrefEig
+  use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
+                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
+                          levsrefEig, sigave
   integer :: KLrnumRealz
   real(8),allocatable :: KLrxivals(:,:)
-  real(8) :: P(2),sigave,lamc
+  real(8) :: P(2),lamc
   character(7) :: pltEigf(4)
 
   real(8) :: stepGam=0 !if 0 code chooses
@@ -232,14 +233,14 @@ CONTAINS
 
 
   subroutine KL_Correlation( Corropts,&
-                             lamc,sigave,CoExp,P )
+                             lamc,CoExp,P )
   !This subroutine calculates Correlation between two points in a
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints
-  real(8) :: lamc,sigave,CoExp,P(2)
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave
+  real(8) :: lamc,CoExp,P(2)
   character(7) :: Corropts(2)
 
   integer :: x,y,curEig
@@ -334,12 +335,12 @@ CONTAINS
 
 
   subroutine KL_collect( nummatSegs,matLength,matType,j,&
-                         sigave,lamc,totLength,&
+                         lamc,totLength,&
                          time,ntime )
   use genRealzvars, only: sig, lam, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs
+  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave
   integer :: matType(:),j,ntime,nummatSegs
-  real(8) :: matLength(:),sigave,time(:),tt1,tt2
+  real(8) :: matLength(:),time(:),tt1,tt2
   real(8) :: lamc,totLength(2)
 
   integer :: i,k,curEig,doloop
@@ -385,7 +386,7 @@ CONTAINS
 
 
 
-  subroutine KL_Cochart( P,sigave,lamc,&
+  subroutine KL_Cochart( P,lamc,&
                          avePath,totLength,pltCo,&
                          CoExp )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
@@ -397,8 +398,9 @@ CONTAINS
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice
-  real(8) :: P(2),sigave,lamc,avePath(2),totLength(2),CoExp
+  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
+                          sigave
+  real(8) :: P(2),lamc,avePath(2),totLength(2),CoExp
   character(7) :: pltCo(4)
 
   integer :: curCS,curEig,twice,check

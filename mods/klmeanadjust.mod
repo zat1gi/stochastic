@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/KLmeanadjust.f90
-MD5:1076d3b08219d199d3e31196a7bb371e -- If you edit this, you'll get what you deserve.
+MD5:6be64bf1fece4a473230c5eba0f81c92 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -31,47 +31,47 @@ MODULE-PROC DECL UNKNOWN 0 0 FUNCTION) (REAL 8 0 0 0 REAL ()) 12 0 (13
 14 15 16 17) () 11 () () () 0 0)
 18 'findnextpoint' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0
-REAL ()) 19 0 (20 21 22 23) () 18 () () () 0 0)
-24 'kladjust' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+REAL ()) 19 0 (20 21 22) () 18 () () () 0 0)
+23 'kladjust' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
-25 'kladjustmean' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
+24 'kladjustmean' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE ALWAYS_EXPLICIT) (UNKNOWN 0 0 0
-0 UNKNOWN ()) 26 0 (27 28 29 30) () 0 () () () 0 0)
-31 'klmeanadjust' 'klmeanadjust' '' 1 ((MODULE UNKNOWN-INTENT
+0 UNKNOWN ()) 25 0 (26 27 28) () 0 () () () 0 0)
+29 'klmeanadjust' 'klmeanadjust' '' 1 ((MODULE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () ()
 0 () () () 0 0)
-32 'klrxi_integral' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
+30 'klrxi_integral' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0
-REAL ()) 33 0 (34 35 36 37 38 39) () 32 () () () 0 0)
-40 'klrxi_point' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
+REAL ()) 31 0 (32 33 34 35 36) () 30 () () () 0 0)
+37 'klrxi_point' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0
-REAL ()) 41 0 (42 43 44 45 46) () 40 () () () 0 0)
-47 'meanadjust' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
+REAL ()) 38 0 (39 40 41 42) () 37 () () () 0 0)
+43 'meanadjust' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () ()
 0 () () () 0 0)
-48 'meanadjust_tol' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
+44 'meanadjust_tol' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () ()
 0 () () () 0 0)
-49 'pernegdomain' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
+45 'pernegdomain' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () ()
 0 () () () 0 0)
-50 'perposdomain' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
+46 'perposdomain' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () ()
 0 () () () 0 0)
-51 'refinenextpoint' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
+47 'refinenextpoint' 'klmeanadjust' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0
-REAL ()) 52 0 (53 54 55 56 57 58) () 51 () () () 0 0)
-59 'step' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+REAL ()) 48 0 (49 50 51 52 53) () 47 () () () 0 0)
+54 'step' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-60 'stol' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+55 'stol' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-61 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+56 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-62 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+57 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 7 'ak' '' '' 6 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
@@ -96,66 +96,56 @@ UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 21 'lamc' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-22 'sigave' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-23 'klrxivals' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+22 'klrxivals' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (2 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () () () 0 0)
-27 'sigave' '' '' 26 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+26 'lamc' '' '' 25 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-28 'lamc' '' '' 26 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-29 'klrnumrealz' '' '' 26 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+27 'klrnumrealz' '' '' 25 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-30 'klrxivals' '' '' 26 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+28 'klrxivals' '' '' 25 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (2 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () () () 0 0)
-34 'j' '' '' 33 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
+32 'j' '' '' 31 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-35 'lamc' '' '' 33 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+33 'lamc' '' '' 31 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-36 'sigave' '' '' 33 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-37 'klrxivals' '' '' 33 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+34 'klrxivals' '' '' 31 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (2 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () () () 0 0)
-38 'xl' '' '' 33 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+35 'xl' '' '' 31 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-39 'xr' '' '' 33 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+36 'xr' '' '' 31 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-42 'j' '' '' 41 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
+39 'j' '' '' 38 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-43 'lamc' '' '' 41 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+40 'lamc' '' '' 38 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-44 'sigave' '' '' 41 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+41 'xpos' '' '' 38 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-45 'xpos' '' '' 41 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-46 'klrxivals' '' '' 41 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+42 'klrxivals' '' '' 38 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (2 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () () () 0 0)
-53 'j' '' '' 52 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
+49 'j' '' '' 48 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-54 'lamc' '' '' 52 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+50 'lamc' '' '' 48 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-55 'sigave' '' '' 52 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-56 'klrxivals' '' '' 52 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+51 'klrxivals' '' '' 48 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (2 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () () () 0 0)
-57 'oldx' '' '' 52 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+52 'oldx' '' '' 48 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-58 'curx' '' '' 52 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+53 'curx' '' '' 48 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('__convert_r4_r8' 0 2 'avenegarea' 0 3 'aveposarea' 0 4 'eigfunc' 0 5
-'eigfuncint' 0 11 'findnextpoint' 0 18 'kladjust' 0 24 'kladjustmean' 0
-25 'klmeanadjust' 0 31 'klrxi_integral' 0 32 'klrxi_point' 0 40
-'meanadjust' 0 47 'meanadjust_tol' 0 48 'pernegdomain' 0 49 'perposdomain'
-0 50 'refinenextpoint' 0 51 'step' 0 59 'stol' 0 60 'xl' 0 61 'xr' 0 62)
+'eigfuncint' 0 11 'findnextpoint' 0 18 'kladjust' 0 23 'kladjustmean' 0
+24 'klmeanadjust' 0 29 'klrxi_integral' 0 30 'klrxi_point' 0 37
+'meanadjust' 0 43 'meanadjust_tol' 0 44 'pernegdomain' 0 45 'perposdomain'
+0 46 'refinenextpoint' 0 47 'step' 0 54 'stol' 0 55 'xl' 0 56 'xr' 0 57)

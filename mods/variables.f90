@@ -37,6 +37,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
   real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
+  real(8)              :: sigave               ! weighted average sigma value for binary mixtures
 
   integer              :: mostinBin            !
   integer              :: Corrnumpoints        !
