@@ -14,13 +14,13 @@ CONTAINS
                          time,ntime,numParts,lamc,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
-                         KLWood_rej,KLrxivals,rodOrplanar,&
+                         KLWood_rej,rodOrplanar,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
   use genRealzvars, only: sig, scatrat, lam, s, numRealz
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz, KLrxivals
   integer :: j,nummatSegs,numParts,ntime,matType(:),pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
@@ -28,7 +28,6 @@ CONTAINS
   real(8),allocatable :: KLWoodt(:), KLWoodr(:), KLWooda(:)
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
   real(8) :: matLength(:),time(:),lamc,areapnSamp(4),disthold
-  real(8) :: KLrxivals(:,:)
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   character(3) :: Wood,allowneg,distneg
@@ -102,7 +101,7 @@ CONTAINS
   enddo
 
   if(Wood=='rad') call radWood_binmaxes(matLength,matType,nummatSegs,binmaxind,binmaxes,nbin,sig)
-  if(Wood=='KL')  call KLWood_binmaxes( j,lamc,KLrxivals,&
+  if(Wood=='KL')  call KLWood_binmaxes( j,lamc,&
                                         binmaxind,binmaxes,nbin)
 
   !create forward/backward motion max vectors
@@ -178,7 +177,7 @@ if(print=='yes') print *,
                                  pfnumcells,plotflux,pltflux,j,mu,matType,matLength,nummatSegs)
       if(Wood=='rad') woodrat= radWood_actsig(position,matType,matLength,sig)&
                                /ceilsig
-      if(Wood=='KL')  woodrat= KLrxi_point(j,lamc,position,KLrxivals)&
+      if(Wood=='KL')  woodrat= KLrxi_point(j,lamc,position)&
                                /ceilsig
       if(woodrat>1.0d0) then
         print *,"j: ",j,"  woodrat: ",woodrat
@@ -650,11 +649,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine KLWood_binmaxes( j,lamc,KLrxivals,&
-                              binmaxind,binmaxes,nbin)
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
+  subroutine KLWood_binmaxes( j,lamc,binmaxind,binmaxes,nbin)
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
   integer :: j,nbin
-  real(8) :: lamc,KLrxivals(:,:)
+  real(8) :: lamc
   real(8) :: binmaxind(:),binmaxes(:)
 
   integer :: i,k
@@ -669,7 +667,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,lamc,xpos,KLrxivals)
+      xsig= KLrxi_point(j,lamc,xpos)
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -678,9 +676,9 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,lamc,xpos1,KLrxivals)
+      xsig1= KLrxi_point(j,lamc,xpos1)
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,lamc,xpos2,KLrxivals)
+      xsig2= KLrxi_point(j,lamc,xpos2)
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1

@@ -13,8 +13,7 @@ CONTAINS
 
 
   subroutine KL_eigenvalue( P,&
-                            lamc,&
-                            KLrxivals )
+                            lamc )
   !This subroutine: 1) calcaltes some initial values used here and later
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
@@ -23,8 +22,7 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, numRealz
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
-                          levsrefEig, sigave, pltEigf, KLrnumRealz
-  real(8),allocatable :: KLrxivals(:,:)
+                          levsrefEig, sigave, pltEigf, KLrnumRealz, KLrxivals
   real(8) :: P(2),lamc
 
   real(8) :: stepGam=0 !if 0 code chooses

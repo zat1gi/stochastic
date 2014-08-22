@@ -64,6 +64,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: negcnt               ! tally of number of realizations that have gone neg
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !
+  real(8), allocatable :: KLrxivals(:,:)       !
 
 end module KLvars
 

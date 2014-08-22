@@ -47,17 +47,17 @@ CONTAINS
   subroutine KLrgenrealz( lamc,j,&
                           t1,time,ntime,&
                           pltKLrrealzarray,&
-                          KLrrandarray,KLrsig,KLrxisig,KLrxivals )
+                          KLrrandarray,KLrsig,KLrxisig )
   !This subroutine reconstructs realizations based upon the KL expansion
   !It reconstructs based upon the fixed point and fixed xi methods
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
   use genRealzvars, only: s
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
-                          pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi
+                          pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals
   integer :: j
   integer :: ntime
-  real(8) :: lamc,t1,time(:),tt1,tt2,KLrxivals(:,:)
+  real(8) :: lamc,t1,time(:),tt1,tt2
   character(3) :: neg
   real(8),allocatable :: KLrxisig(:)
   real(8),allocatable :: pltKLrrealzarray(:,:),KLrrandarray(:,:,:),KLrsig(:)
@@ -116,7 +116,7 @@ CONTAINS
   enddo
 
   neg='no'
-  call KLr_negsearch( j,lamc,KLrxivals,s,neg )
+  call KLr_negsearch( j,lamc,s,neg )
 
   if(neg=='yes') then  !counts the number of realz that contain a negative value
     negcnt=negcnt+1
@@ -124,7 +124,7 @@ CONTAINS
   endif
 
   do i=1,KLrnumpoints(2)  !create realization
-    KLrxisig(i) = KLrxi_point(j,lamc,KLrxi(i),KLrxivals)
+    KLrxisig(i) = KLrxi_point(j,lamc,KLrxi(i))
   enddo
 
 
@@ -148,15 +148,13 @@ CONTAINS
 
   subroutine KLreval( pltKLrrealzarray,&
                       KLrrandarray,lamc,&
-                      KLrsig,pltKLrrealzPointorXi,KLrxisig,&
-                      KLrxivals )
+                      KLrsig,pltKLrrealzPointorXi,KLrxisig )
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
                          sigave, KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
-                         pltKLrrealzwhich, KLrx, KLrxi
+                         pltKLrrealzwhich, KLrx, KLrxi, KLrxivals
   real(8) :: lamc,KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
-  real(8) :: KLrxivals(:,:)
   real(8),allocatable :: pltKLrrealzarray(:,:)
   character(7) :: pltKLrrealzPointorXi(:)
 
@@ -195,7 +193,7 @@ CONTAINS
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
           KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),&
-                                    lamc,KLrxi(i),KLrxivals)
+                                    lamc,KLrxi(i))
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
@@ -221,10 +219,10 @@ CONTAINS
 
 
 
-  subroutine KLr_negsearch( j,lamc,KLrxivals,s,neg )
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
+  subroutine KLr_negsearch( j,lamc,s,neg )
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
   integer :: j
-  real(8) :: lamc,KLrxivals(:,:),s
+  real(8) :: lamc,s
   character(3) :: neg
 
   integer :: i,k,l
@@ -239,10 +237,10 @@ CONTAINS
 
   do i=1,numEigs
     minpos=(outerstep*(i-1))
-    minsig=KLrxi_point(j,lamc,minpos,KLrxivals)
+    minsig=KLrxi_point(j,lamc,minpos)
     do k=2,nminnersteps
       xpos=(outerstep*(i-1)+innerstep*(k-1))
-      xsig= KLrxi_point(j,lamc,xpos,KLrxivals)
+      xsig= KLrxi_point(j,lamc,xpos)
       if(xsig<minsig) then
         minsig=xsig
         minpos=xpos
@@ -256,7 +254,7 @@ CONTAINS
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
         if(xpos<0) xpos=0.0d0
         if(xpos>s) xpos=s
-        xsig= KLrxi_point(j,lamc,xpos,KLrxivals)
+        xsig= KLrxi_point(j,lamc,xpos)
         if(xsig<minsig) then
           minsig=xsig
           minpos=xpos

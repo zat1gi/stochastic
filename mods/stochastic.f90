@@ -35,7 +35,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  real(8),allocatable :: pltKLrrealzarray(:,:),KLrxivals(:,:)
+  real(8),allocatable :: pltKLrrealzarray(:,:)
   real(8),allocatable :: KLrrandarray(:,:,:),KLrsig(:),KLrxisig(:)
   character(7),allocatable :: pltKLrrealzPointorXi(:)
   !--- Woodcock variables (new) ---!
@@ -75,8 +75,7 @@ program stochastic
 
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue( P,&
-                           lamc,&
-                           KLrxivals )
+                           lamc )
   if(KLres=='yes')   call KL_Correlation( lamc,P )
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot(&
@@ -99,7 +98,7 @@ program stochastic
                            time,ntime,numParts,lamc,Wood,&
                            radWoodt,radWoodr,radWooda,radWood_rej,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
-                           KLWood_rej,KLrxivals,rodOrplanar,&
+                           KLWood_rej,rodOrplanar,&
                            fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
                            pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
@@ -127,16 +126,14 @@ program stochastic
     if(KLrec=='yes') call KLrgenrealz( lamc,j,&
                            t1,time,ntime,&
                            pltKLrrealzarray,&
-                           KLrrandarray,KLrsig,KLrxisig,KLrxivals )
+                           KLrrandarray,KLrsig,KLrxisig )
     if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
                            t1)
   enddo
-  if(KLadjust=='yes') call KLadjustmean( lamc,&
-                           KLrxivals )
+  if(KLadjust=='yes') call KLadjustmean( lamc )
   if(KLrec=='yes') call KLreval( pltKLrrealzarray,&
                            KLrrandarray,lamc,&
-                           KLrsig,pltKLrrealzPointorXi,KLrxisig,&
-                           KLrxivals )
+                           KLrsig,pltKLrrealzPointorXi,KLrxisig )
 
 
   !!radKL transport
@@ -147,7 +144,7 @@ program stochastic
                          time,ntime,numParts,lamc,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
-                         KLWood_rej,KLrxivals,rodOrplanar,&
+                         KLWood_rej,rodOrplanar,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
