@@ -33,7 +33,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- KLreconstruct variables (new) ---!
-  integer      :: KLrnumpoints(2),KLrnumRealz,KLrprintat,negcnt
+  integer      :: KLrnumRealz,KLrprintat,negcnt
   character(7) :: pltKLrrealz(4)
   integer      :: pltKLrrealznumof
   integer,allocatable :: pltKLrrealzwhich(:,:)
@@ -55,7 +55,7 @@ program stochastic
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
                            pltKLrrealzPointorXi,&
-                           KLrnumpoints,KLrnumRealz,KLrprintat,KLrec,&
+                           KLrnumRealz,KLrprintat,KLrec,&
                            pltKLrrealz,pltKLrrealznumof,pltKLrrealzwhich,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
@@ -68,7 +68,7 @@ program stochastic
                            pltKLrrealz,trannprt,KLres,KLrec,radWood,&
                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
                            radMC,pltKLrrealzPointorXi,&
-                           KLrnumpoints,KLnoise,KLWood,pltflux,&
+                           KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
 
   call Acase_load
@@ -127,10 +127,10 @@ program stochastic
 
 
   !!KLreconstructions
-  if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,KLrnumpoints,s )
+  if(KLrec=='yes') call KLrcondition( KLrx,KLrxi,s )
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( lamc,KLrx,&
-                           KLrnumpoints,j,KLrnumRealz,&
+                           j,KLrnumRealz,&
                            KLrprintat,t1,pltKLrrealz,time,ntime,negcnt,&
                            pltKLrrealznumof,pltKLrrealzwhich,pltKLrrealzarray,&
                            KLrrandarray,KLrsig,KLrxisig,KLrxivals,KLrxi )
@@ -139,7 +139,7 @@ program stochastic
   enddo
   if(KLadjust=='yes') call KLadjustmean( lamc,&
                            KLrnumRealz,KLrxivals )
-  if(KLrec=='yes') call KLreval( KLrnumpoints,pltKLrrealznumof,pltKLrrealzarray,&
+  if(KLrec=='yes') call KLreval( pltKLrrealznumof,pltKLrrealzarray,&
                            pltKLrrealz,KLrrandarray,lamc,&
                            KLrx,pltKLrrealzwhich,&
                            KLrsig,pltKLrrealzPointorXi,KLrxi,KLrxisig,&

@@ -36,6 +36,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: pltxiBinsnumof       ! 
   integer              :: pltEigfnumof         !
   integer              :: pltConumof           !
+  integer              :: KLrnumpoints(2)      !
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
