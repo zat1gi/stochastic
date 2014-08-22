@@ -20,8 +20,7 @@ program stochastic
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
-  character(7) :: plotmatdxs
-  integer,allocatable :: matType(:),pltgenrealzwhich(:)
+  integer,allocatable :: pltgenrealzwhich(:)
   real(8),allocatable :: matLength(:),matdxs(:,:,:)
   !--- radtransMC variables (new) ---!
   integer      :: numParts,trannprt,o,radtrans_int,pfnumcells
@@ -49,7 +48,6 @@ program stochastic
                            KLrec,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
                            pltgenrealzwhich,&
-                           plotmatdxs,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
@@ -75,18 +73,18 @@ program stochastic
                            plotflux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
                            fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
-    call genReal(          matLength,matType,&
+    call genReal(          matLength,&
                            j,time,ntime,&
                            pltgenrealzwhich )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( matdxs,&
-                           j,matLength,matType,fluxfaces,pfnumcells )
+                           j,matLength,fluxfaces,pfnumcells )
     if(radMC=='yes') call radtrans_MCsim( j,numParts,&
-                           rodOrplanar,matLength,matType,o,transmit,&
+                           rodOrplanar,matLength,o,transmit,&
                            reflect,absorb,initcur,time,ntime,radtrans_int,&
                            pfnumcells,fluxfaces,flux,fflux,bflux,plotflux,pltflux,&
                            sourceType,s )
     if(radWood=='yes') Wood='rad'
-    if(radWood=='yes') call WoodcockMC( j,matType,matLength,&
+    if(radWood=='yes') call WoodcockMC( j,matLength,&
                            time,ntime,numParts,Wood,&
                            radWoodt,radWoodr,radWooda,radWood_rej,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
@@ -95,14 +93,14 @@ program stochastic
                            pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                            disthold )
-    if(KLres=='yes') call KL_collect( matLength,matType,j,&
+    if(KLres=='yes') call KL_collect( matLength,j,&
                            time,ntime )
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
                            ntime,radMC,KLres,radWood,j,trannprt,t1 )
   enddo
   call genReal_stats(      pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
-                           plotmatdxs,fluxfaces,pfnumcells )
+                           fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart
   if(KLres=='yes') call KL_eval
   if(KLnoise=='yes') call KL_Noise( time,ntime )
@@ -125,7 +123,7 @@ program stochastic
   do j=1,KLrnumRealz !for Woodcockreconstruct later
 
     if(KLWood=='yes') Wood='KL'
-    if(KLWood=='yes') call WoodcockMC( j,matType,matLength,&
+    if(KLWood=='yes') call WoodcockMC( j,matLength,&
                          time,ntime,numParts,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&

@@ -2,18 +2,20 @@
 module genRealzvars
   implicit none
   !inputs
-  real(8) :: Adamscase                         ! load special cases or no
-  real(8), dimension(2) :: sig                 ! cross sections
-  real(8), dimension(2) :: scatrat             ! scattering ratios
-  real(8), dimension(2) :: lam                 ! ave path lengths
-  real(8) :: s                                 ! slab thickness
-  integer :: numRealz                          ! number of realz to create
+  real(8)              :: Adamscase            ! load special cases or no
+  real(8),dimension(2) :: sig                  ! cross sections
+  real(8),dimension(2) :: scatrat              ! scattering ratios
+  real(8),dimension(2) :: lam                  ! ave path lengths
+  real(8)              :: s                    ! slab thickness
+  integer              :: numRealz             ! number of realz to create
   
   integer              :: pltgenrealznumof     !
   character(7)         :: pltgenrealz(4)       !
+  character(7)         :: plotmatdxs           !
   !non inputs
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
   real(8)              :: lamc                 ! "correlation length" for binary mixtures  
+  integer, allocatable :: matType(:)           ! material type in cell
 
   integer              :: largesti             !
   integer              :: numPath(2)           !

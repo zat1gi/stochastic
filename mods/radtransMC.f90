@@ -8,11 +8,11 @@ CONTAINS
   ! print statements in this module use # 300-399
 
   subroutine radtrans_MCsim( j,numParts,rodOrplanar,&
-             matLength,matType,o,transmit,reflect,absorb,&
+             matLength,o,transmit,reflect,absorb,&
              initcur,time,ntime,radtrans_int,pfnumcells,fluxfaces,flux,&
              fflux,bflux,plotflux,pltflux,sourceType,s )
-  use genRealzvars, only: sig, scatrat, numRealz, nummatSegs
-  integer  :: j,numParts,matType(:),o,ntime,radtrans_int
+  use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType
+  integer  :: j,numParts,o,ntime,radtrans_int
   integer  :: pfnumcells
   real(8)  :: matLength(:),time(:),tt1,tt2,s
   character(6) :: rodOrplanar,plotflux(2),sourceType
@@ -64,7 +64,7 @@ CONTAINS
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
                                       pfnumcells,plotflux,pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
+                                     pfnumcells,plotflux,pltflux,j,mu,matLength)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
@@ -72,7 +72,7 @@ CONTAINS
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
                                       pfnumcells,plotflux,pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
+                                     pfnumcells,plotflux,pltflux,j,mu,matLength)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
           if(i==1)              exit
           i=i-1
@@ -82,7 +82,7 @@ CONTAINS
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,flux,&
                                     pfnumcells,plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
+                                   pfnumcells,plotflux,pltflux,j,mu,matLength)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
@@ -91,7 +91,7 @@ CONTAINS
                                     pfnumcells,plotflux,pltflux,j,mu)
                                 absorb(j)=absorb(j)+1.0d0 !absorb
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
+                                   pfnumcells,plotflux,pltflux,j,mu,matLength)
                                 exit
       endif
 
@@ -552,9 +552,10 @@ enddo
 
 
   subroutine col_fbflux( oldpos,newpos,fluxfaces,fflux,bflux,pfnumcells,plotflux,&
-                         pltflux,j,mu,matType,matLength )
+                         pltflux,j,mu,matLength )
   !tallies flux contribution in each material withing fluxface bins 
-  integer :: pfnumcells,j,matType(:)
+  use genRealzvars, only: matType
+  integer :: pfnumcells,j
   real(8) :: oldpos,newpos,mu,absmu,matLength(:)
   real(8) :: fluxfaces(:),fflux(:,:),bflux(:,:) !fb for first and second material
   character(6) :: plotflux(2)

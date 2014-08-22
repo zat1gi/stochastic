@@ -10,7 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,matType,matLength,&
+  subroutine WoodcockMC( j,matLength,&
                          time,ntime,numParts,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
@@ -19,9 +19,10 @@ CONTAINS
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
-  use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc
+  use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
+                          matType
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  integer :: j,numParts,ntime,matType(:),pfnumcells
+  integer :: j,numParts,ntime,pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
   real(8),allocatable :: radWoodt(:),radWoodr(:),radWooda(:)
@@ -100,7 +101,7 @@ CONTAINS
     if(print=='yes') print *,"i:",i,"binmaxind(i):",binmaxind(i),"   nbin",nbin
   enddo
 
-  if(Wood=='rad') call radWood_binmaxes(matLength,matType,nummatSegs,binmaxind,binmaxes,nbin,sig)
+  if(Wood=='rad') call radWood_binmaxes(matLength,nummatSegs,binmaxind,binmaxes,nbin,sig)
   if(Wood=='KL')  call KLWood_binmaxes( j,binmaxind,binmaxes,nbin)
 
   !create forward/backward motion max vectors
@@ -155,7 +156,7 @@ if(print=='yes') print *,
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,fluxfaces,Woodf,&
                                     pfnumcells,plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,s,fluxfaces,fWoodf,bWoodf,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
+                                   pfnumcells,plotflux,pltflux,j,mu,matLength)
 
         if(print=='yes') print *,"                      tally transmit"
         exit
@@ -165,7 +166,7 @@ if(print=='yes') print *,
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,fluxfaces,Woodf,&
                                     pfnumcells,plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fluxfaces,fWoodf,bWoodf,&
-                                   pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
+                                   pfnumcells,plotflux,pltflux,j,mu,matLength)
         if(print=='yes') print *,"                      tally reflect"
         exit
       endif
@@ -173,8 +174,8 @@ if(print=='yes') print *,
       if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,Woodf,&
                                   pfnumcells,plotflux,pltflux,j,mu)
       if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fWoodf,bWoodf,&
-                                 pfnumcells,plotflux,pltflux,j,mu,matType,matLength)
-      if(Wood=='rad') woodrat= radWood_actsig(position,matType,matLength,sig)&
+                                 pfnumcells,plotflux,pltflux,j,mu,matLength)
+      if(Wood=='rad') woodrat= radWood_actsig(position,matLength,sig)&
                                /ceilsig
       if(Wood=='KL')  woodrat= KLrxi_point(j,position)&
                                /ceilsig
@@ -214,7 +215,7 @@ if(print=='yes') print *,
 
       Wood_rej(1)=Wood_rej(1)+1   !accept path
 
-      if(Wood=='rad') tscatrat=radWood_actscatrat(position,matType,matLength,scatrat)
+      if(Wood=='rad') tscatrat=radWood_actscatrat(position,matLength,scatrat)
       if(Wood=='KL')  tscatrat=scatrat(1)
       if(rang()<tscatrat) then !scat or absorb
         if(print=='yes') print *,"                      scatter (cycle)"
@@ -710,8 +711,8 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   end function ceilsigfunc
 
 
-  function radWood_actsig(position,matType,matLength,sig)
-  integer :: matType(:)
+  function radWood_actsig(position,matLength,sig)
+  use genRealzvars, only: matType
   real(8) :: position,matLength(:),sig(2),radWood_actsig
 
   integer :: i
@@ -728,8 +729,8 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   end function radWood_actsig
 
 
-  function radWood_actscatrat(position,matType,matLength,scatrat)
-  integer :: matType(:)
+  function radWood_actscatrat(position,matLength,scatrat)
+  use genRealzvars, only: matType
   real(8) :: position,matLength(:),scatrat(2),radWood_actscatrat
 
   integer :: i
@@ -746,9 +747,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   end function radWood_actscatrat
 
 
-  subroutine radWood_binmaxes(matLength,matType,numArrSz,binmaxind,binmaxes,nbin,sig)
+  subroutine radWood_binmaxes(matLength,numArrSz,binmaxind,binmaxes,nbin,sig)
   !subroutine starts to set up ceiling for WoodcockMC by mapping highest point in each bin
-  integer :: numArrSz,nbin,matType(:)
+  use genRealzvars, only: matType
+  integer :: numArrSz,nbin
   real(8) :: matLength(:),binmaxind(:),binmaxes(:),sig(2)
 
   integer :: i,k

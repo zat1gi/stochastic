@@ -325,10 +325,10 @@ CONTAINS
 
 
 
-  subroutine KL_collect( matLength,matType,j,time,ntime )
-  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc
+  subroutine KL_collect( matLength,j,time,ntime )
+  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType
   use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave, totLength
-  integer :: matType(:),j,ntime
+  integer :: j,ntime
   real(8) :: matLength(:),time(:),tt1,tt2
 
   integer :: i,k,curEig,doloop

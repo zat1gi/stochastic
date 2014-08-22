@@ -82,11 +82,10 @@ CONTAINS
                             KLrec,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
                             pltgenrealzwhich,&
-                            plotmatdxs,&
                             radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
-                                  pltgenrealz
+                                  pltgenrealz, plotmatdxs
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -104,7 +103,7 @@ CONTAINS
   character(3) :: radWood,KLWood,allowneg,distneg   !Woodcock opts
   integer :: pfnumcells                             !rad & Wood flux plotting
   character(6) :: plotflux(2)
-  character(7) :: pltflux(4),plotmatdxs
+  character(7) :: pltflux(4)
 
   integer,allocatable :: pltgenrealzwhich(:)
   character(7) :: pltallopt                         !Plot all same opt
