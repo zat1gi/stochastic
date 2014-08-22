@@ -311,12 +311,11 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   subroutine WoodcockMCoutstats( numParts,radWoodt,radWoodr,&
                                  radWooda,radWood_rej,&
                                  plotflux,pltflux,pfnumcells,fluxfaces,radWoodf,&
-                                 fradWoodf,bradWoodf,P )
-  use genRealzvars, only: Adamscase, numRealz
+                                 fradWoodf,bradWoodf )
+  use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
   integer :: numParts,pfnumcells
   integer :: radWood_rej(2)
-  real(8) :: P(2)
   real(8) :: fluxfaces(:),radWoodf(:,:),radWoodt(:),radWoodr(:),radWooda(:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
@@ -454,12 +453,11 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   subroutine WoodcockKLoutstats( numParts,KLWoodt,KLWoodr,&
                                  KLWooda,KLWood_rej,&
                                  plotflux,pltflux,pfnumcells,fluxfaces,KLWoodf,&
-                                 fKLWoodf,bKLWoodf,P )
-  use genRealzvars, only: Adamscase
+                                 fKLWoodf,bKLWoodf )
+  use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
   integer :: numParts,pfnumcells
   integer :: KLWood_rej(2)
-  real(8) :: P(2)
   real(8) :: fluxfaces(:),KLWoodf(:,:),KLWoodt(:),KLWoodr(:),KLWooda(:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)

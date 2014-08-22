@@ -20,7 +20,7 @@ CONTAINS
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   character(7) :: pltflux(4)
 
-  integer  :: i,p,z
+  integer  :: i,z
   real(8)  :: mu,db,dc,position,sc_ab,sigma
 
   call cpu_time(tt1)
@@ -114,12 +114,11 @@ CONTAINS
   subroutine radtrans_MCoutstats( reflect,transmit,absorb,initcur,numParts,&
              results,radtrans_int,&
              rodOrplanar,plotflux,pltflux,pfnumcells,flux,fluxfaces,fflux,&
-             bflux,P )
-  use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz
+             bflux )
+  use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
   integer :: numParts,radtrans_int,pfnumcells
   real(8) :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
-  real(8) :: P(2)
   character(6) :: rodOrplanar,results,plotflux(2)
   character(7) :: pltflux(4)
 

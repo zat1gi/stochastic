@@ -11,6 +11,8 @@ module genRealzvars
   
   integer              :: pltgenrealznumof     !
   !non inputs
+  real(8)              :: P(2)                 !
+  
   integer              :: largesti             !
   integer              :: numPath(2)           !
   integer              :: nummatSegs           ! number of material segments in realz (rid, use size?)

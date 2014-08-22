@@ -12,18 +12,17 @@ CONTAINS
 
 
 
-  subroutine KL_eigenvalue( P,&
-                            lamc )
-  !This subroutine: 1) calcaltes some initial values used here and later
+  subroutine KL_eigenvalue( lamc )
+  !This subroutine: 1) calculates some initial values used here and later
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates variance maintained with # of eigvals if input specifies
-  use genRealzvars, only: sig, lam, s, numRealz
+  use genRealzvars, only: sig, lam, s, numRealz, P
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
                           levsrefEig, sigave, pltEigf, KLrnumRealz, KLrxivals
-  real(8) :: P(2),lamc
+  real(8) :: lamc
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: index,l,level,curEig,i,j
@@ -228,14 +227,14 @@ CONTAINS
 
 
 
-  subroutine KL_Correlation( lamc,P )
+  subroutine KL_Correlation( lamc )
   !This subroutine calculates Correlation between two points in a
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: sig, s
+  use genRealzvars, only: sig, s, P
   use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp, Corropts
-  real(8) :: lamc,P(2)
+  real(8) :: lamc
 
   integer :: x,y,curEig
   real(8) :: stepsize,curx,cury,Eigfx,Eigfy
@@ -380,7 +379,7 @@ CONTAINS
 
 
 
-  subroutine KL_Cochart( P,lamc,&
+  subroutine KL_Cochart( lamc,&
                          avePath )
   !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
@@ -390,10 +389,10 @@ CONTAINS
   !probabilities.  Since the eigenvalue contains the variance, this baseline Co
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
-  use genRealzvars, only: sig, s, numRealz
+  use genRealzvars, only: sig, s, numRealz, P
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           sigave, totLength, CoExp, pltCo
-  real(8) :: P(2),lamc,avePath(2)
+  real(8) :: lamc,avePath(2)
 
   integer :: curCS,curEig,twice,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
