@@ -131,13 +131,11 @@ CONTAINS
 
 
 
-  subroutine genReal_stats( devPath,&
-             pltgenrealz,pltgenrealzwhich )
+  subroutine genReal_stats( pltgenrealz,pltgenrealzwhich )
   use genRealzvars, only: sig, lam, numRealz, numPath, pltgenrealznumof, P, &
                           perFirstTally, devFirstTally, matFirstTally, sumPath, &
-                          sqrPath, avePath
+                          sqrPath, avePath, devPath
   integer :: pltgenrealzwhich(:)
-  real(8) :: devPath(2)
   character(7) :: pltgenrealz(4)
 
   real(8) :: upperbound,lowerbound
