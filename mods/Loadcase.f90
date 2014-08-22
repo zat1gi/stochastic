@@ -82,11 +82,11 @@ CONTAINS
   subroutine readinputstoc( KLres,KLnoise,&
                             KLrec,&
                             numParts,trannprt,radMC,rodOrplanar,results,&
-                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
+                            pltgenrealz,pltgenrealzwhich,&
                             plotmatdxs,&
                             radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
-  use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz
+  use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -107,7 +107,6 @@ CONTAINS
   character(7) :: pltflux(4),plotmatdxs
 
   character(7) :: pltgenrealz(4)                    !Plotting genrealz
-  integer :: pltgenrealznumof
   integer,allocatable :: pltgenrealzwhich(:)
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -266,16 +265,15 @@ CONTAINS
 
 
   subroutine testinputstoc( trannprt,KLres,KLrec,radWood,&
-                            pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
+                            pltgenrealz,pltgenrealzwhich,&
                             radMC,&
                             KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
-  use genRealzvars,      only: sig, scatrat, numRealz
+  use genRealzvars,      only: sig, scatrat, numRealz, pltgenrealznumof
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi
-  integer :: pltgenrealznumof
   integer :: pltgenrealzwhich(:)
   integer :: trannprt
   integer :: fpointorxi(2)

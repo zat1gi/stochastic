@@ -8,6 +8,8 @@ module genRealzvars
   real(8), dimension(2) :: lam                 ! ave path lengths
   real(8) :: s                                 ! slab thickness
   integer :: numRealz                          ! number of realz to create
+  
+  integer              :: pltgenrealznumof     !
   !non inputs
   integer              :: largesti             !
   integer              :: numPath(2)           !

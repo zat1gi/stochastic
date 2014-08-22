@@ -9,10 +9,10 @@ CONTAINS
 
   subroutine genReal( P,matLength,matType,matFirstTally,&
                       sumPath,sqrPath,j,time,ntime,&
-                      pltgenrealz,pltgenrealznumof,pltgenrealzwhich,nummatSegs )
-  use genRealzvars, only: sig, lam, s, largesti, numPath
+                      pltgenrealz,pltgenrealzwhich,nummatSegs )
+  use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof
   integer :: j,ntime
-  integer :: pltgenrealznumof,pltgenrealzwhich(:),nummatSegs
+  integer :: pltgenrealzwhich(:),nummatSegs
   real(8) :: P(2),matFirstTally(2)
   real(8) :: sumPath(2),sqrPath(2),tt1,tt2
   integer,allocatable :: matType(:)
@@ -133,9 +133,9 @@ CONTAINS
 
   subroutine genReal_stats( matFirstTally,perFirstTally,devFirstTally,&
              P,sumPath,sqrPath,avePath,devPath,&
-             pltgenrealz,pltgenrealznumof,pltgenrealzwhich )
-  use genRealzvars, only: sig, lam, numRealz, numPath
-  integer :: pltgenrealznumof,pltgenrealzwhich(:)
+             pltgenrealz,pltgenrealzwhich )
+  use genRealzvars, only: sig, lam, numRealz, numPath, pltgenrealznumof
+  integer :: pltgenrealzwhich(:)
   real(8) :: matFirstTally(2),perFirstTally(2),devFirstTally(2),P(2)
   real(8) :: sumPath(2),sqrPath(2),avePath(2),devPath(2)
   character(7) :: pltgenrealz(4)

@@ -19,7 +19,7 @@ program stochastic
   integer, parameter :: ntime = 7
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
-  integer :: i,j,pltgenrealznumof,nummatSegs
+  integer :: i,j,nummatSegs
   real(8) :: P(2),perFirstTally(2),devFirstTally(2),lamc
   real(8) :: matFirstTally(2)=0,sumPath(2),sqrPath(2),avePath(2),devPath(2)
   character(7) :: pltgenrealz(4),plotmatdxs
@@ -50,13 +50,13 @@ program stochastic
   call readinputstoc(      KLres,KLnoise,&
                            KLrec,&
                            numParts,trannprt,radMC,rodOrplanar,results,&
-                           pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
+                           pltgenrealz,pltgenrealzwhich,&
                            plotmatdxs,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      trannprt,KLres,KLrec,radWood,&
-                           pltgenrealz,pltgenrealznumof,pltgenrealzwhich,&
+                           pltgenrealz,pltgenrealzwhich,&
                            radMC,&
                            KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
@@ -80,7 +80,7 @@ program stochastic
   do j=1,numRealz
     call genReal(          P,matLength,matType,matFirstTally,&
                            sumPath,sqrPath,j,time,ntime,&
-                           pltgenrealz,pltgenrealznumof,pltgenrealzwhich,nummatSegs )
+                           pltgenrealz,pltgenrealzwhich,nummatSegs )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( matdxs,&
                            j,matLength,matType,fluxfaces,pfnumcells,nummatSegs )
     if(radMC=='yes') call radtrans_MCsim( j,nummatSegs,numParts,&
@@ -105,7 +105,7 @@ program stochastic
   enddo
   call genReal_stats(      matFirstTally,perFirstTally,devFirstTally,&
                            P,sumPath,sqrPath,avePath,devPath,&
-                           pltgenrealz,pltgenrealznumof,pltgenrealzwhich )
+                           pltgenrealz,pltgenrealzwhich )
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( matdxs,&
                            plotmatdxs,fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart( P,lamc,&
