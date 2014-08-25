@@ -6,10 +6,11 @@ CONTAINS
 
 
 !! time tracking funcs and subs
-  subroutine radtrans_time( time,ntime,radMC,KLres,radWood,j,trannprt,t1 )
+  subroutine radtrans_time( radMC,KLres,radWood,j,trannprt,t1 )
+  use timevars, only: time
   use genRealzvars, only: numRealz
-  integer :: ntime,j,trannprt
-  real(8) :: time(:),t1
+  integer :: j,trannprt
+  real(8) :: t1
   character(3) :: radMC,KLres,radWood
 
   real(8) :: timedone,esttime
@@ -38,10 +39,11 @@ CONTAINS
 
 
 
-  subroutine KLr_time( time,ntime,j,t1 )
+  subroutine KLr_time( j,t1 )
+  use timevars, only: time
   use KLvars, only: KLrnumRealz
-  integer :: ntime,j
-  real(8) :: time(:),t1
+  integer :: j
+  real(8) :: t1
 
   real(8) :: timedone,esttime
   character(19) :: type='KLrec              '
@@ -54,10 +56,11 @@ CONTAINS
 
 
 
-  subroutine KLWood_time( time,ntime,j,t1 )
+  subroutine KLWood_time( j,t1 )
+  use timevars, only: time
   use KLvars, only: KLrnumRealz
-  integer :: ntime,j
-  real(8) :: time(:),t1
+  integer :: j
+  real(8) :: t1
 
   real(8) :: timedone,esttime
   character(19) :: type='KLWood              '

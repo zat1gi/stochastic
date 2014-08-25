@@ -7,13 +7,13 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( j,time,ntime )
+  subroutine genReal( j )
+  use timevars, only: time, ntime
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich
-  integer :: j,ntime
+  integer :: j
   real(8) :: tt1,tt2
-  real(8),allocatable :: time(:)
 
   integer, parameter :: numArrSz = 5000 !temp var, don't know how long to make arrays yet
   integer :: i,firstloop,matType_temp(numArrSz)

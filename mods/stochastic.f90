@@ -14,9 +14,7 @@ program stochastic
   use KLvars, only: KLrnumRealz, KLrprintat
   implicit none
   real(8) :: runtime,t1,t2,seeddum
-  real(8),allocatable :: time(:) !genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
   integer :: seed
-  integer, parameter :: ntime = 7
   character(3) :: KLres,KLrec,radMC,KLnoise,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
@@ -69,16 +67,16 @@ program stochastic
                            plotflux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
                            fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
-    call genReal(          j,time,ntime )
+    call genReal(          j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
                            j,fluxfaces,pfnumcells )
     if(radMC=='yes') call radtrans_MCsim( j,numParts,&
                            rodOrplanar,o,transmit,&
-                           reflect,absorb,initcur,time,ntime,radtrans_int,&
+                           reflect,absorb,initcur,radtrans_int,&
                            pfnumcells,fluxfaces,flux,fflux,bflux,plotflux,pltflux,&
                            sourceType,s )
     if(radWood=='yes') Wood='rad'
-    if(radWood=='yes') call WoodcockMC( j,time,ntime,numParts,Wood,&
+    if(radWood=='yes') call WoodcockMC( j,numParts,Wood,&
                            radWoodt,radWoodr,radWooda,radWood_rej,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                            KLWood_rej,rodOrplanar,&
@@ -86,17 +84,16 @@ program stochastic
                            pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                            disthold )
-    if(KLres=='yes') call KL_collect( j,&
-                           time,ntime )
-    if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( time,&
-                           ntime,radMC,KLres,radWood,j,trannprt,t1 )
+    if(KLres=='yes') call KL_collect( j )
+    if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( &
+                           radMC,KLres,radWood,j,trannprt,t1 )
   enddo
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( &
                            fluxfaces,pfnumcells )
   if(KLres=='yes') call KL_Cochart
   if(KLres=='yes') call KL_eval
-  if(KLnoise=='yes') call KL_Noise( time,ntime )
+  if(KLnoise=='yes') call KL_Noise
 
 
 
@@ -104,8 +101,8 @@ program stochastic
   if(KLrec=='yes') call KLrcondition
   do j=1,KLrnumRealz
     if(KLrec=='yes') call KLrgenrealz( j,&
-                           t1,time,ntime )
-    if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( time,ntime,j,&
+                           t1 )
+    if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( j,&
                            t1)
   enddo
   if(KLadjust=='yes') call KLadjustmean
@@ -117,7 +114,7 @@ program stochastic
 
     if(KLWood=='yes') Wood='KL'
     if(KLWood=='yes') call WoodcockMC( j,&
-                         time,ntime,numParts,Wood,&
+                         numParts,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,rodOrplanar,&
@@ -125,7 +122,7 @@ program stochastic
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
-    if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( time,ntime,j,&
+    if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j,&
                            t1)
   enddo
 
@@ -153,7 +150,7 @@ program stochastic
 
   write(*,*)
   call calc_time_p(        t1,t2,runtime )
-  call timereport(         runtime,time,ntime,KLres,KLrec,radMC,radWood,KLWood,&
+  call timereport(         runtime,KLres,KLrec,radMC,radWood,KLWood,&
                            KLnoise )
 
 end program stochastic

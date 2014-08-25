@@ -416,10 +416,10 @@ CONTAINS
 
 
 
-  subroutine timereport( runtime,time,ntime,KLres,KLrec,radMC,radWood,KLWood,&
+  subroutine timereport( runtime,KLres,KLrec,radMC,radWood,KLWood,&
                          KLnoise )
-  integer :: ntime
-  real(8) :: runtime,time(:)
+  use timevars, only: time, ntime
+  real(8) :: runtime
   character(3) :: KLres,KLrec,radMC,radWood,KLWood,KLnoise
 
   integer :: i

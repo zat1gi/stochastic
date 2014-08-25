@@ -45,18 +45,18 @@ CONTAINS
 
 
   subroutine KLrgenrealz( j,&
-                          t1,time,ntime )
+                          t1 )
   !This subroutine reconstructs realizations based upon the KL expansion
   !It reconstructs based upon the fixed point and fixed xi methods
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
+  use timevars, only: time
   use genRealzvars, only: s, lamc
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
   integer :: j
-  integer :: ntime
-  real(8) :: t1,time(:),tt1,tt2
+  real(8) :: t1,tt1,tt2
   character(3) :: neg
 
   integer :: i,curEig,w,u

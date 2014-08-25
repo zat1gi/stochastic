@@ -325,11 +325,12 @@ CONTAINS
 
 
 
-  subroutine KL_collect( j,time,ntime )
+  subroutine KL_collect( j )
+  use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength
   use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave, totLength
-  integer :: j,ntime
-  real(8) :: time(:),tt1,tt2
+  integer :: j
+  real(8) :: tt1,tt2
 
   integer :: i,k,curEig,doloop
   real(8) :: xitermtot,xl,xr,sigma,xiterm
@@ -661,17 +662,17 @@ CONTAINS
 
 
 
-  subroutine KL_Noise( time,ntime )
+  subroutine KL_Noise
   !This subroutine identifies the two largest peaks of a xi distribution,
   !then uses the variable "xi" to print which realization/eigenmode combos
   !yielded values outside of these two peaks... which were the "noise" under
   !investigation.  Data printed is Eigs for each are out, and how far from
   !the nearest "largest peak", neg for below bottom, pos for above top.
+  use timevars, only: time
   use genRealzvars, only: numRealz
   use Klvars, only: xi, binPDF, binBounds, binNumof, numEigs, mostinBin, &
                     binSmallBound, binLargeBound, binSize
-  integer :: ntime
-  real(8) :: time(:),tt1,tt2
+  real(8) :: tt1,tt2
 
   integer :: j,i,curEig,indofbin,w
   integer :: whererealz(numEigs,binNumof,mostinBin+1)

@@ -10,7 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,time,ntime,numParts,Wood,&
+  subroutine WoodcockMC( j,numParts,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,rodOrplanar,&
@@ -18,16 +18,17 @@ CONTAINS
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
+  use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  integer :: j,numParts,ntime,pfnumcells
+  integer :: j,numParts,pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
   real(8),allocatable :: radWoodt(:),radWoodr(:),radWooda(:)
   real(8),allocatable :: KLWoodt(:), KLWoodr(:), KLWooda(:)
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
-  real(8) :: time(:),areapnSamp(4),disthold
+  real(8) :: areapnSamp(4),disthold
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   character(3) :: Wood,allowneg,distneg

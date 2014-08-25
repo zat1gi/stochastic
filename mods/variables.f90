@@ -1,4 +1,14 @@
-!--- genRealz ---!
+module timevars
+  implicit none
+  real(8), allocatable :: time(:)              ! keeps cumulative time data for everything
+                                               ! genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
+  integer, parameter   :: ntime = 7            ! size of 'time' array
+
+
+
+end module
+
+
 module genRealzvars
   implicit none
   !inputs
