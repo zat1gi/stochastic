@@ -12,8 +12,7 @@ CONTAINS
 
   subroutine WoodcockMC( j,Wood,fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
-                         fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg,&
-                         disthold )
+                         fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
@@ -24,12 +23,13 @@ CONTAINS
                     numpnSamp
   integer :: j
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
-  real(8) :: areapnSamp(4),disthold
+  real(8) :: areapnSamp(4)
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   character(3) :: Wood,allowneg,distneg
 
   integer :: i,o,nbin,k
+  real(8) :: disthold
   real(8) :: binlength,position,mu,ceilsig,woodrat,actsig,tscatrat
   real(8) :: db,dc,tt1,tt2
   real(8),allocatable :: binmaxind(:),binmaxes(:),fbinmax(:),bbinmax(:)

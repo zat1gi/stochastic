@@ -27,7 +27,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- Woodcock variables (new) ---!
-  real(8) ::                                 disthold,areapnSamp(4)
+  real(8) ::                                 areapnSamp(4)
   real(8),allocatable :: Woodf(:,:),radWoodf(:,:),KLWoodf(:,:)
   real(8),allocatable :: fWoodf(:,:),bWoodf(:,:)
   real(8),allocatable :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
@@ -71,8 +71,7 @@ program stochastic
     if(radWood=='yes') call WoodcockMC( j,Wood,&
                            fluxfaces,Woodf,radWoodf,KLWoodf,&
                            fWoodf,bWoodf,fradWoodf,bradWoodf,&
-                           fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg,&
-                           disthold )
+                           fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg )
     if(KLres=='yes') call KL_collect( j )
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( &
                            radMC,KLres,radWood,j,t1 )
@@ -103,8 +102,7 @@ program stochastic
     if(KLWood=='yes') call WoodcockMC( j,Wood,&
                          fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
-                         fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg,&
-                         disthold )
+                         fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg )
     if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j,t1)
   enddo
 
