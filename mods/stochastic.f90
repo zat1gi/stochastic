@@ -19,7 +19,7 @@ program stochastic
   !--- genRealz variables (new) ---!
   integer :: i,j
   !--- radtransMC variables (new) ---!
-  integer      :: numParts,trannprt,o,radtrans_int,pfnumcells
+  integer      :: trannprt,o,radtrans_int,pfnumcells
   character(6) :: rodOrplanar,results,sourceType,plotflux(2)
   character(7) :: pltflux(4)
   real(8),allocatable :: reflect(:),transmit(:),absorb(:),initcur(:)
@@ -41,14 +41,12 @@ program stochastic
   !!read and prepare parameters
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
-                           KLrec,&
-                           numParts,trannprt,radMC,rodOrplanar,results,&
+                           KLrec,trannprt,radMC,rodOrplanar,results,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
   call testinputstoc(      trannprt,KLres,KLrec,radWood,&
-                           radMC,&
-                           KLnoise,KLWood,pltflux,&
+                           radMC,KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
 
   call Acase_load
@@ -70,13 +68,13 @@ program stochastic
     call genReal(          j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
                            j,fluxfaces,pfnumcells )
-    if(radMC=='yes') call radtrans_MCsim( j,numParts,&
+    if(radMC=='yes') call radtrans_MCsim( j,&
                            rodOrplanar,o,transmit,&
                            reflect,absorb,initcur,radtrans_int,&
                            pfnumcells,fluxfaces,flux,fflux,bflux,plotflux,pltflux,&
                            sourceType,s )
     if(radWood=='yes') Wood='rad'
-    if(radWood=='yes') call WoodcockMC( j,numParts,Wood,&
+    if(radWood=='yes') call WoodcockMC( j,Wood,&
                            radWoodt,radWoodr,radWooda,radWood_rej,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                            KLWood_rej,rodOrplanar,&
@@ -100,10 +98,8 @@ program stochastic
   !!KLreconstructions
   if(KLrec=='yes') call KLrcondition
   do j=1,KLrnumRealz
-    if(KLrec=='yes') call KLrgenrealz( j,&
-                           t1 )
-    if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( j,&
-                           t1)
+    if(KLrec=='yes') call KLrgenrealz( j,t1 )
+    if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( j,t1)
   enddo
   if(KLadjust=='yes') call KLadjustmean
   if(KLrec=='yes') call KLreval
@@ -113,8 +109,7 @@ program stochastic
   do j=1,KLrnumRealz !for Woodcockreconstruct later
 
     if(KLWood=='yes') Wood='KL'
-    if(KLWood=='yes') call WoodcockMC( j,&
-                         numParts,Wood,&
+    if(KLWood=='yes') call WoodcockMC( j,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,rodOrplanar,&
@@ -122,12 +117,10 @@ program stochastic
                          pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
-    if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j,&
-                           t1)
+    if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j,t1)
   enddo
 
-!  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( &
-!                          Adamscase )
+!  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
 
 
 
@@ -135,13 +128,12 @@ program stochastic
   call Acase_print
 
   if(radMC=='yes') call radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
-                           numParts,&
                            results,radtrans_int,rodOrplanar,plotflux,pltflux,&
                            pfnumcells,flux,fluxfaces,fflux,bflux )
-  if(radWood=='yes') call WoodcockMCoutstats( numParts,radWoodt,radWoodr,&
+  if(radWood=='yes') call WoodcockMCoutstats( radWoodt,radWoodr,&
                            radWooda,radWood_rej,plotflux,pltflux,&
                            pfnumcells,fluxfaces,radWoodf,fradWoodf,bradWoodf )
-  if(KLWood=='yes') call WoodcockKLoutstats( numParts,KLWoodt,KLWoodr,&
+  if(KLWood=='yes') call WoodcockKLoutstats( KLWoodt,KLWoodr,&
                            KLWooda,KLWood_rej,plotflux,pltflux,&
                            pfnumcells,fluxfaces,KLWoodf,fKLWoodf,bKLWoodf )
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats( numpnSamp,areapnSamp,distneg )
@@ -150,7 +142,6 @@ program stochastic
 
   write(*,*)
   call calc_time_p(        t1,t2,runtime )
-  call timereport(         runtime,KLres,KLrec,radMC,radWood,KLWood,&
-                           KLnoise )
+  call timereport(         runtime,KLres,KLrec,radMC,radWood,KLWood,KLnoise )
 
 end program stochastic

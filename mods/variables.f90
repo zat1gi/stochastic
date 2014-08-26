@@ -4,8 +4,6 @@ module timevars
                                                ! genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
   integer, parameter   :: ntime = 7            ! size of 'time' array
 
-
-
 end module
 
 
@@ -111,9 +109,13 @@ end module KLvars
 module MCvars
   implicit none
   !inputs
+  integer :: numParts                          ! number of particles
   integer :: trprofile_binnum                  ! number of bins for tran and refl profiles
   character(7) :: radMCbinplot                 ! 'plot', 'noplot', 'preview'
   character(7) :: radWoodbinplot               ! 'plot', 'noplot', 'preview'
   character(7) :: KLWoodbinplot                ! 'plot', 'noplot', 'preview'
+
+  !non inputs
+
 end module MCvars
 

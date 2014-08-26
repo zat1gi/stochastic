@@ -10,7 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,numParts,Wood,&
+  subroutine WoodcockMC( j,Wood,&
                          radWoodt,radWoodr,radWooda,radWood_rej,&
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,rodOrplanar,&
@@ -22,7 +22,8 @@ CONTAINS
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  integer :: j,numParts,pfnumcells
+  use MCvars, only: numParts
+  integer :: j,pfnumcells
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
   real(8),allocatable :: radWoodt(:),radWoodr(:),radWooda(:)
@@ -309,13 +310,14 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockMCoutstats( numParts,radWoodt,radWoodr,&
+  subroutine WoodcockMCoutstats( radWoodt,radWoodr,&
                                  radWooda,radWood_rej,&
                                  plotflux,pltflux,pfnumcells,fluxfaces,radWoodf,&
                                  fradWoodf,bradWoodf )
   use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
-  integer :: numParts,pfnumcells
+  use MCvars, only: numParts
+  integer :: pfnumcells
   integer :: radWood_rej(2)
   real(8) :: fluxfaces(:),radWoodf(:,:),radWoodt(:),radWoodr(:),radWooda(:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
@@ -451,13 +453,14 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockKLoutstats( numParts,KLWoodt,KLWoodr,&
+  subroutine WoodcockKLoutstats( KLWoodt,KLWoodr,&
                                  KLWooda,KLWood_rej,&
                                  plotflux,pltflux,pfnumcells,fluxfaces,KLWoodf,&
                                  fKLWoodf,bKLWoodf )
   use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
-  integer :: numParts,pfnumcells
+  use MCvars, only: numParts
+  integer :: pfnumcells
   integer :: KLWood_rej(2)
   real(8) :: fluxfaces(:),KLWoodf(:,:),KLWoodt(:),KLWoodr(:),KLWooda(:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
