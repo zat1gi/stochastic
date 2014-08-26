@@ -79,7 +79,7 @@ CONTAINS
 
 
   subroutine readinputstoc( KLres,KLnoise,&
-                            KLrec,trannprt,radMC,rodOrplanar,results,&
+                            KLrec,radMC,rodOrplanar,results,&
                             radWood,KLWood,allowneg,&
                             distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
@@ -91,12 +91,11 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
-                                  numParts
+                                  numParts, trannprt
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLres,KLnoise
   character(3) :: KLrec
-  integer :: trannprt                      !radtransMC opts
   character(3) :: radMC
   character(6) :: rodOrplanar,results,sourceType
   character(3) :: radWood,KLWood,allowneg,distneg   !Woodcock opts
@@ -260,9 +259,8 @@ CONTAINS
 
 
 
-  subroutine testinputstoc( trannprt,KLres,KLrec,radWood,&
-                            radMC,&
-                            KLnoise,KLWood,pltflux,&
+  subroutine testinputstoc( KLres,KLrec,radWood,&
+                            radMC,KLnoise,KLWood,pltflux,&
                             sourceType,allowneg,distneg )
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich
@@ -270,7 +268,7 @@ CONTAINS
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi
-  integer :: trannprt
+  use MCvars, only: trannprt
   integer :: fpointorxi(2)
   character(6) :: sourceType
   character(7) :: pltflux(4)

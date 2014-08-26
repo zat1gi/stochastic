@@ -19,7 +19,7 @@ program stochastic
   !--- genRealz variables (new) ---!
   integer :: i,j
   !--- radtransMC variables (new) ---!
-  integer      :: trannprt,o,radtrans_int,pfnumcells
+  integer      :: o,radtrans_int,pfnumcells
   character(6) :: rodOrplanar,results,sourceType,plotflux(2)
   character(7) :: pltflux(4)
   real(8),allocatable :: reflect(:),transmit(:),absorb(:),initcur(:)
@@ -41,11 +41,11 @@ program stochastic
   !!read and prepare parameters
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
-                           KLrec,trannprt,radMC,rodOrplanar,results,&
+                           KLrec,radMC,rodOrplanar,results,&
                            radWood,KLWood,allowneg,&
                            distneg,plotflux,pfnumcells,pltflux,sourceType,seed )
 
-  call testinputstoc(      trannprt,KLres,KLrec,radWood,&
+  call testinputstoc(      KLres,KLrec,radWood,&
                            radMC,KLnoise,KLWood,pltflux,&
                            sourceType,allowneg,distneg )
 
@@ -84,7 +84,7 @@ program stochastic
                            disthold )
     if(KLres=='yes') call KL_collect( j )
     if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( &
-                           radMC,KLres,radWood,j,trannprt,t1 )
+                           radMC,KLres,radWood,j,t1 )
   enddo
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( &

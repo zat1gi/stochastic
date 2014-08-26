@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from mods/timeman.f90 on Mon Aug 25 23:58:03 2014
-MD5:ac9c5d55c16b0579a0b9dd8c13961f4a -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from mods/timeman.f90 on Tue Aug 26 00:01:57 2014
+MD5:d69825aae9fc978dd381fddf6f51b8e2 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -22,11 +22,11 @@ MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 7 0
 (8 9) () 0 () () () 0 0)
 10 'radtrans_time' 'timeman' 'radtrans_time' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 11 0 (12 13 14 15 16 17) () 0 () () () 0 0)
-18 'time_report' 'timeman' 'time_report' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 19 0
-(20 21 22 23 24 25) () 0 () () () 0 0)
-26 'timeman' 'timeman' 'timeman' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN ()) 11 0 (12 13 14 15 16) () 0 () () () 0 0)
+17 'time_report' 'timeman' 'time_report' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 18 0
+(19 20 21 22 23 24) () 0 () () () 0 0)
+25 'timeman' 'timeman' 'timeman' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
 12 'radmc' '' 'radmc' 11 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (INTEGER 4 0 0
@@ -39,10 +39,7 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
 15 'j' '' 'j' 11 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-16 'trannprt' '' 'trannprt' 11 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () ()
-() 0 0)
-17 't1' '' 't1' 11 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+16 't1' '' 't1' 11 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 5 't1' '' 't1' 3 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
@@ -52,20 +49,20 @@ UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 9 't1' '' 't1' 7 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-20 'type' '' 'type' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+19 'type' '' 'type' 18 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (INTEGER 4 0 0
 INTEGER ()) 0 '19'))) 0 0 () () 0 () () () 0 0)
-21 'timedone' '' 'timedone' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+20 'timedone' '' 'timedone' 18 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-22 'j' '' 'j' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+21 'j' '' 'j' 18 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-23 'numj' '' 'numj' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+22 'numj' '' 'numj' 18 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-24 'esttime' '' 'esttime' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+23 'esttime' '' 'esttime' 18 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-25 't1' '' 't1' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+24 't1' '' 't1' 18 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('klr_time' 0 2 'klwood_time' 0 6 'radtrans_time' 0 10 'time_report' 0
-18 'timeman' 0 26)
+17 'timeman' 0 25)

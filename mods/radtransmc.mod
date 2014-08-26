@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from mods/radtransMC.f90 on Mon Aug 25 23:58:05 2014
-MD5:115fcedb093b6758b5db99e09a46b66c -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from mods/radtransMC.f90 on Tue Aug 26 00:01:59 2014
+MD5:e5b5b39041699f212ff43d50d2bd163c -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -94,61 +94,61 @@ ALWAYS_EXPLICIT) (UNKNOWN 0 0 0 UNKNOWN ()) 150 0 (151 152 153 154 155
 156) () 0 () () () 0 0)
 157 'radtrans_time' 'timeman' 'radtrans_time' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 158 0 (159 160 161 162 163 164) () 0 () () () 0 0)
-165 'radtransmc' 'radtransmc' 'radtransmc' 1 ((MODULE UNKNOWN-INTENT
+UNKNOWN ()) 158 0 (159 160 161 162 163) () 0 () () () 0 0)
+164 'radtransmc' 'radtransmc' 'radtransmc' 1 ((MODULE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0
 () () () 0 0)
-166 'rang' 'mcnp_random' 'rang' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 FUNCTION) (REAL 8 0 0 REAL ()) 0 0 () () 166 () () () 0
+165 'rang' 'mcnp_random' 'rang' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 FUNCTION) (REAL 8 0 0 REAL ()) 0 0 () () 165 () () () 0
 0)
-167 'rn_init_particle' 'mcnp_random' 'rn_init_particle' 1 ((PROCEDURE
+166 'rn_init_particle' 'mcnp_random' 'rn_init_particle' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 168 0 (169) () 0 () () () 0 0)
-170 'rn_init_problem' 'mcnp_random' 'rn_init_problem' 1 ((PROCEDURE
+UNKNOWN ()) 167 0 (168) () 0 () () () 0 0)
+169 'rn_init_problem' 'mcnp_random' 'rn_init_problem' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 171 0 (172 173 174 175 176) () 0 () () () 0 0)
-177 'rn_query' 'mcnp_random' 'rn_query' 1 ((PROCEDURE UNKNOWN-INTENT
+UNKNOWN ()) 170 0 (171 172 173 174 175) () 0 () () () 0 0)
+176 'rn_query' 'mcnp_random' 'rn_query' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION IMPLICIT_PURE) (INTEGER 8 0 0
-INTEGER ()) 178 0 (179) () 177 () () () 0 0)
-180 'rn_query_first' 'mcnp_random' 'rn_query_first' 1 ((PROCEDURE
+INTEGER ()) 177 0 (178) () 176 () () () 0 0)
+179 'rn_query_first' 'mcnp_random' 'rn_query_first' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 FUNCTION) (INTEGER 8 0 0
-INTEGER ()) 181 0 (182) () 180 () () () 0 0)
-183 'rn_set' 'mcnp_random' 'rn_set' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 184
-0 (185 186) () 0 () () () 0 0)
-187 'rn_test_basic' 'mcnp_random' 'rn_test_basic' 1 ((PROCEDURE
+INTEGER ()) 180 0 (181) () 179 () () () 0 0)
+182 'rn_set' 'mcnp_random' 'rn_set' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 183
+0 (184 185) () 0 () () () 0 0)
+186 'rn_test_basic' 'mcnp_random' 'rn_test_basic' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 188 0 (189) () 0 () () () 0 0)
-190 'rn_test_mixed' 'mcnp_random' 'rn_test_mixed' 1 ((PROCEDURE
+UNKNOWN ()) 187 0 (188) () 0 () () () 0 0)
+189 'rn_test_mixed' 'mcnp_random' 'rn_test_mixed' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 191 0 (192) () 0 () () () 0 0)
-193 'rn_test_skip' 'mcnp_random' 'rn_test_skip' 1 ((PROCEDURE
+UNKNOWN ()) 190 0 (191) () 0 () () () 0 0)
+192 'rn_test_skip' 'mcnp_random' 'rn_test_skip' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
-UNKNOWN ()) 194 0 (195) () 0 () () () 0 0)
-196 'rn_update_stats' 'mcnp_random' 'rn_update_stats' 1 ((PROCEDURE
+UNKNOWN ()) 193 0 (194) () 0 () () () 0 0)
+195 'rn_update_stats' 'mcnp_random' 'rn_update_stats' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0
 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
-197 'select_from_pdf' 'utilities' 'select_from_pdf' 1 ((PROCEDURE
+196 'select_from_pdf' 'utilities' 'select_from_pdf' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE ALWAYS_EXPLICIT)
-(UNKNOWN 0 0 0 UNKNOWN ()) 198 0 (199 200 201 202 203) () 0 () () () 0 0)
-204 'store_in_bins' 'utilities' 'store_in_bins' 1 ((PROCEDURE
+(UNKNOWN 0 0 0 UNKNOWN ()) 197 0 (198 199 200 201 202) () 0 () () () 0 0)
+203 'store_in_bins' 'utilities' 'store_in_bins' 1 ((PROCEDURE
 UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (
-UNKNOWN 0 0 0 UNKNOWN ()) 205 0 (206 207 208 209 210 211 212) () 0 () ()
+UNKNOWN 0 0 0 UNKNOWN ()) 204 0 (205 206 207 208 209 210 211) () 0 () ()
 () 0 0)
-213 'time_report' 'timeman' 'time_report' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 214
-0 (215 216 217 218 219 220) () 0 () () () 0 0)
-221 'timeman' 'timeman' 'timeman' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+212 'time_report' 'timeman' 'time_report' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 213
+0 (214 215 216 217 218 219) () 0 () () () 0 0)
+220 'timeman' 'timeman' 'timeman' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
-222 'utilities' 'utilities' 'utilities' 1 ((MODULE UNKNOWN-INTENT
+221 'utilities' 'utilities' 'utilities' 1 ((MODULE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0
 () () () 0 0)
-223 'var_p' 'utilities' 'var_p' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 REAL ()) 224 0 (
-225 226) () 223 () () () 0 0)
-227 'var_s' 'utilities' 'var_s' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 REAL ()) 228 0 (
-229 230) () 227 () () () 0 0)
+222 'var_p' 'utilities' 'var_p' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 REAL ()) 223 0 (
+224 225) () 222 () () () 0 0)
+226 'var_s' 'utilities' 'var_s' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 REAL ()) 227 0 (
+228 229) () 226 () () () 0 0)
 133 'rodorplanar' '' 'rodorplanar' 131 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '6'))) 0 0 () () 0 () () () 0 0)
@@ -209,55 +209,58 @@ ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
 0 0)
 162 'j' '' 'j' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-163 'trannprt' '' 'trannprt' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () ()
-() 0 0)
+163 't1' '' 't1' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+214 'type' '' 'type' 213 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (INTEGER 4 0 0
+INTEGER ()) 0 '19'))) 0 0 () () 0 () () () 0 0)
+218 'esttime' '' 'esttime' 213 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+219 't1' '' 't1' 213 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+217 'numj' '' 'numj' 213 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+216 'j' '' 'j' 213 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+215 'timedone' '' 'timedone' 213 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 161 'radwood' '' 'radwood' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
 160 'klres' '' 'klres' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
-159 'radmc' '' 'radmc' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
-INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
-218 'numj' '' 'numj' 214 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-219 'esttime' '' 'esttime' 214 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-220 't1' '' 't1' 214 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-217 'j' '' 'j' 214 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-169 'nps' '' 'nps' 168 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
+168 'nps' '' 'nps' 167 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (INTEGER 8 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-176 'print_info' '' 'print_info' 171 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+175 'print_info' '' 'print_info' 170 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-175 'new_part1' '' 'new_part1' 171 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+174 'new_part1' '' 'new_part1' 170 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 8 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-195 'new_gen' '' 'new_gen' 194 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+194 'new_gen' '' 'new_gen' 193 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-192 'new_gen' '' 'new_gen' 191 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+191 'new_gen' '' 'new_gen' 190 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-189 'new_gen' '' 'new_gen' 188 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+188 'new_gen' '' 'new_gen' 187 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-182 'nps' '' 'nps' 181 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
+181 'nps' '' 'nps' 180 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (INTEGER 8 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-173 'new_seed' '' 'new_seed' 171 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+172 'new_seed' '' 'new_seed' 170 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 8 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-174 'new_stride' '' 'new_stride' 171 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+173 'new_stride' '' 'new_stride' 170 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 8 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-172 'new_standard_gen' '' 'new_standard_gen' 171 ((VARIABLE IN
+171 'new_standard_gen' '' 'new_standard_gen' 170 ((VARIABLE IN
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-179 'key' '' 'key' 178 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
+178 'key' '' 'key' 177 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (CHARACTER 1 0 0 CHARACTER (())) 0 0 () () 0 () () () 0 0)
-185 'key' '' 'key' 184 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
+184 'key' '' 'key' 183 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (CHARACTER 1 0 0 CHARACTER (())) 0 0 () () 0 () () () 0 0)
-186 'value' '' 'value' 184 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0
+185 'value' '' 'value' 183 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (INTEGER 8 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 132 'j' '' 'j' 131 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+77 't1' '' 't1' 75 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 20 'runtime' '' 'runtime' 17 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 19 't2' '' 't2' 17 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
@@ -310,53 +313,53 @@ UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 UNKNOWN UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
 0 0)
-203 'rand' '' 'rand' 198 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+202 'rand' '' 'rand' 197 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-202 'chosenvalue' '' 'chosenvalue' 198 ((VARIABLE UNKNOWN-INTENT
+201 'chosenvalue' '' 'chosenvalue' 197 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0
 () () () 0 0)
-207 'binlargebound' '' 'binlargebound' 205 ((VARIABLE IN UNKNOWN-PROC
+206 'binlargebound' '' 'binlargebound' 204 ((VARIABLE IN UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-209 'bincounts' '' 'bincounts' 205 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN
+208 'bincounts' '' 'bincounts' 204 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (VARIABLE (INTEGER
-4 0 0 INTEGER ()) 0 208 ())) 0 () () () 0 0)
-208 'binnumof' '' 'binnumof' 205 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+4 0 0 INTEGER ()) 0 207 ())) 0 () () () 0 0)
+207 'binnumof' '' 'binnumof' 204 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-211 'vararray' '' 'vararray' 205 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+210 'vararray' '' 'vararray' 204 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0 EXPLICIT (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (VARIABLE (INTEGER 4 0 0
-INTEGER ()) 0 212 ())) 0 () () () 0 0)
-212 'numvar' '' 'numvar' 205 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+INTEGER ()) 0 211 ())) 0 () () () 0 0)
+211 'numvar' '' 'numvar' 204 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-210 'binbounds' '' 'binbounds' 205 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN
+209 'binbounds' '' 'binbounds' 204 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0 EXPLICIT (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (OP (INTEGER 4 0 0 INTEGER ())
-0 PLUS (VARIABLE (INTEGER 4 0 0 INTEGER ()) 0 208 ()) (CONSTANT (
+0 PLUS (VARIABLE (INTEGER 4 0 0 INTEGER ()) 0 207 ()) (CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '1'))) 0 () () () 0 0)
-206 'binsmallbound' '' 'binsmallbound' 205 ((VARIABLE IN UNKNOWN-PROC
+205 'binsmallbound' '' 'binsmallbound' 204 ((VARIABLE IN UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-229 'values' '' 'values' 228 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+228 'values' '' 'values' 227 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
 0 0)
-226 'numofvalues' '' 'numofvalues' 224 ((VARIABLE UNKNOWN-INTENT
+225 'numofvalues' '' 'numofvalues' 223 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-225 'values' '' 'values' 224 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+224 'values' '' 'values' 223 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
 0 0)
-230 'numofvalues' '' 'numofvalues' 228 ((VARIABLE UNKNOWN-INTENT
+229 'numofvalues' '' 'numofvalues' 227 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-201 'curcat' '' 'curcat' 198 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+200 'curcat' '' 'curcat' 197 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-200 'numbins' '' 'numbins' 198 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+199 'numbins' '' 'numbins' 197 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-199 'binnedpdf' '' 'binnedpdf' 198 ((VARIABLE UNKNOWN-INTENT
+198 'binnedpdf' '' 'binnedpdf' 197 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 ALLOCATABLE DIMENSION DUMMY) (REAL 8 0
 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
 44 'values' '' 'values' 43 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
@@ -376,21 +379,15 @@ UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 UNKNOWN UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
 0 0)
-216 'timedone' '' 'timedone' 214 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-215 'type' '' 'type' 214 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (INTEGER 4 0 0
-INTEGER ()) 0 '19'))) 0 0 () () 0 () () () 0 0)
-164 't1' '' 't1' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-77 't1' '' 't1' 75 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+159 'radmc' '' 'radmc' 158 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
+INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
 76 'j' '' 'j' 75 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
-0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-80 'j' '' 'j' 79 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 81 't1' '' 't1' 79 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+80 'j' '' 'j' 79 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+0 0 DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 116 'reflect' '' 'reflect' 115 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
@@ -618,9 +615,9 @@ ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') ()) 0 () () ()
 'klr_time' 0 74 'klwood_time' 0 78 'mean' 0 82 'mean_and_var_p' 0 86
 'mean_and_var_s' 0 92 'newmu' 0 98 'plot_flux' 0 99 'radtrans_bin' 0 106
 'radtrans_mcoutstats' 0 114 'radtrans_mcsim' 0 130 'radtrans_resultplot'
-0 149 'radtrans_time' 0 157 'radtransmc' 0 165 'rang' 0 166
-'rn_init_particle' 0 167 'rn_init_problem' 0 170 'rn_query' 0 177
-'rn_query_first' 0 180 'rn_set' 0 183 'rn_test_basic' 0 187
-'rn_test_mixed' 0 190 'rn_test_skip' 0 193 'rn_update_stats' 0 196
-'select_from_pdf' 0 197 'store_in_bins' 0 204 'time_report' 0 213
-'timeman' 0 221 'utilities' 0 222 'var_p' 0 223 'var_s' 0 227)
+0 149 'radtrans_time' 0 157 'radtransmc' 0 164 'rang' 0 165
+'rn_init_particle' 0 166 'rn_init_problem' 0 169 'rn_query' 0 176
+'rn_query_first' 0 179 'rn_set' 0 182 'rn_test_basic' 0 186
+'rn_test_mixed' 0 189 'rn_test_skip' 0 192 'rn_update_stats' 0 195
+'select_from_pdf' 0 196 'store_in_bins' 0 203 'time_report' 0 212
+'timeman' 0 220 'utilities' 0 221 'var_p' 0 222 'var_s' 0 226)
