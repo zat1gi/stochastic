@@ -19,7 +19,7 @@ program stochastic
   !--- genRealz variables (new) ---!
   integer :: i,j
   !--- radtransMC variables (new) ---!
-  integer      :: o,radtrans_int,pfnumcells
+  integer      :: o,pfnumcells
   character(6) :: rodOrplanar,results,sourceType,plotflux(2)
   character(7) :: pltflux(4)
   real(8),allocatable :: reflect(:),transmit(:),absorb(:),initcur(:)
@@ -70,7 +70,7 @@ program stochastic
                            j,fluxfaces,pfnumcells )
     if(radMC=='yes') call radtrans_MCsim( j,&
                            rodOrplanar,o,transmit,&
-                           reflect,absorb,initcur,radtrans_int,&
+                           reflect,absorb,initcur,&
                            pfnumcells,fluxfaces,flux,fflux,bflux,plotflux,pltflux,&
                            sourceType,s )
     if(radWood=='yes') Wood='rad'
@@ -128,7 +128,7 @@ program stochastic
   call Acase_print
 
   if(radMC=='yes') call radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
-                           results,radtrans_int,rodOrplanar,plotflux,pltflux,&
+                           results,rodOrplanar,plotflux,pltflux,&
                            pfnumcells,flux,fluxfaces,fflux,bflux )
   if(radWood=='yes') call WoodcockMCoutstats( radWoodt,radWoodr,&
                            radWooda,radWood_rej,plotflux,pltflux,&

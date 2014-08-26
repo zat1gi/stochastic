@@ -109,14 +109,15 @@ end module KLvars
 module MCvars
   implicit none
   !inputs
-  integer :: numParts                          ! number of particles
-  integer :: trannprt                          ! how often to print to screen
-  integer :: trprofile_binnum                  ! number of bins for tran and refl profiles
-  character(7) :: radMCbinplot                 ! 'plot', 'noplot', 'preview'
-  character(7) :: radWoodbinplot               ! 'plot', 'noplot', 'preview'
-  character(7) :: KLWoodbinplot                ! 'plot', 'noplot', 'preview'
+  integer              :: numParts             ! number of particles
+  integer              :: trannprt             ! how often to print to screen
+  integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
+  character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview'
+  character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'
+  character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview'
 
   !non inputs
+  integer              :: radtrans_int         !
 
 end module MCvars
 
