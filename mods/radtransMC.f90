@@ -276,13 +276,13 @@ enddo
 
 
 
-  subroutine initialize_fluxplot( radMC,radWood,KLWood )
+  subroutine initialize_fluxplot( KLWood )
   use genRealzvars, only: s, numRealz
   use KLvars, only: KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
-                    flux
-  character(3) :: radMC,radWood,KLWood
+                    flux, radMC, radWood
+  character(3) :: KLWood
 
   integer :: i
   allocate(fluxfaces(pfnumcells+1))
@@ -324,9 +324,9 @@ enddo
 
 
 
-  subroutine plot_flux( radMC,radWood,KLWood )
-  use MCvars, only: plotflux, pltflux
-  character(3) :: radMC,radWood,KLWood
+  subroutine plot_flux( KLWood )
+  use MCvars, only: plotflux, pltflux, radMC, radWood
+  character(3) :: KLWood
 
   if(plotflux(1)=='cell') then
 

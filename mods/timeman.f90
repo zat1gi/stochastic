@@ -6,14 +6,13 @@ CONTAINS
 
 
 !! time tracking funcs and subs
-  subroutine radtrans_time( radMC,radWood,j,t1 )
+  subroutine radtrans_time( j,t1 )
   use timevars, only: time
   use genRealzvars, only: numRealz
   use KLvars, only: KLres
-  use MCvars, only: trannprt
+  use MCvars, only: trannprt, radMC, radWood
   integer :: j
   real(8) :: t1
-  character(3) :: radMC,radWood
 
   real(8) :: timedone,esttime
   character(19) :: type

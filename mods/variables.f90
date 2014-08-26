@@ -112,6 +112,8 @@ end module KLvars
 module MCvars
   implicit none
   !inputs
+  character(3)         :: radMC                ! perform TMC on binary mixtures operations?
+  character(3)         :: radWood              ! perform WMC on binary mixtures operations?
   integer              :: numParts             ! number of particles
   integer              :: trannprt             ! how often to print to screen
   integer              :: pfnumcells           ! number of cells for flux profile (?)

@@ -12,11 +12,11 @@ program stochastic
   use Woodcock
 
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
-  use MCvars, only: pltflux, allowneg, Wood
+  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood
   implicit none
   real(8) :: runtime,t1,t2,seeddum
   integer :: seed
-  character(3) :: radMC,radWood,KLWood
+  character(3) :: KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
   !--- radtransMC variables (new) ---!
@@ -24,12 +24,9 @@ program stochastic
 
   !!read and prepare parameters
   call cpu_time(t1)
-  call readinputstoc(      radMC,&
-                           radWood,KLWood,&
-                           seed )
+  call readinputstoc(      KLWood,seed )
 
-  call testinputstoc(      radWood,&
-                           radMC,KLWood )
+  call testinputstoc(      KLWood )
 
   call Acase_load
   call Acase_print
@@ -42,7 +39,7 @@ program stochastic
   if(KLres=='yes')   call KL_eigenvalue
   if(KLres=='yes')   call KL_Correlation
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
-                           call initialize_fluxplot(radMC,radWood,KLWood )
+                           call initialize_fluxplot(KLWood )
   do j=1,numRealz
     call genReal(          j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
@@ -52,8 +49,7 @@ program stochastic
     if(radWood=='yes') Wood='rad'
     if(radWood=='yes') call WoodcockMC( j )
     if(KLres=='yes') call KL_collect( j )
-    if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( &
-                           radMC,radWood,j,t1 )
+    if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( j,t1 )
   enddo
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
@@ -92,11 +88,11 @@ program stochastic
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
-  if(pltflux(1)/='noplot') call plot_flux( radMC,radWood,KLWood )
+  if(pltflux(1)/='noplot') call plot_flux( KLWood )
   call radtrans_resultplot !bin for radMC,radWood
 
   write(*,*)
   call calc_time_p(        t1,t2,runtime )
-  call timereport(         runtime,radMC,radWood,KLWood )
+  call timereport(         runtime,KLWood )
 
 end program stochastic
