@@ -168,5 +168,10 @@ module MCvars
   integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
   real(8)              :: areapnSamp(4)        ! tals pos&neg area: tot pos, tot neg, max pos, max neg
 
+!  real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
+!  real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
+!  real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
+
+
 end module MCvars
 

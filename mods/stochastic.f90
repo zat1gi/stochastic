@@ -21,9 +21,6 @@ program stochastic
   integer :: i,j
   !--- radtransMC variables (new) ---!
   integer      :: o
-  real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
-  real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
-  real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
 
   !!read and prepare parameters
   call cpu_time(t1)
