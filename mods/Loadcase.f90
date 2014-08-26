@@ -78,7 +78,7 @@ CONTAINS
 
 
 
-  subroutine readinputstoc( KLWood,seed )
+  subroutine readinputstoc( seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, plotmatdxs, pltgenrealzwhich
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -90,10 +90,10 @@ CONTAINS
                                   KLres, KLrec, KLnoise
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
-                                  plotflux, results, pltflux, allowneg, distneg, radMC, radWood
+                                  plotflux, results, pltflux, allowneg, distneg, radMC, radWood, &
+                                  KLWood
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
-  character(3) :: KLWood   !Woodcock opts
 
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -251,16 +251,15 @@ CONTAINS
 
 
 
-  subroutine testinputstoc( KLWood )
+  subroutine testinputstoc
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise
-  use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood
+  use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood
   integer :: fpointorxi(2)
-  character(3) :: KLWood
 
   integer :: i
   real(8) :: smallersig,largersig,sigratio
@@ -402,12 +401,11 @@ CONTAINS
 
 
 
-  subroutine timereport( runtime,KLWood )
+  subroutine timereport( runtime )
   use KLvars, only: KLres, KLrec, KLnoise
-  use MCvars, only: radMC, radWood
+  use MCvars, only: radMC, radWood, KLWood
   use timevars, only: time, ntime
   real(8) :: runtime
-  character(3) :: KLWood
 
   integer :: i
   real(8) :: othertime,otherpercent

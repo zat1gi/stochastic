@@ -12,11 +12,10 @@ program stochastic
   use Woodcock
 
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
-  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood
+  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood
   implicit none
   real(8) :: runtime,t1,t2,seeddum
   integer :: seed
-  character(3) :: KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
   !--- radtransMC variables (new) ---!
@@ -24,9 +23,9 @@ program stochastic
 
   !!read and prepare parameters
   call cpu_time(t1)
-  call readinputstoc(      KLWood,seed )
+  call readinputstoc(      seed )
 
-  call testinputstoc(      KLWood )
+  call testinputstoc
 
   call Acase_load
   call Acase_print
@@ -39,7 +38,7 @@ program stochastic
   if(KLres=='yes')   call KL_eigenvalue
   if(KLres=='yes')   call KL_Correlation
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
-                           call initialize_fluxplot(KLWood )
+                           call initialize_fluxplot
   do j=1,numRealz
     call genReal(          j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
@@ -88,11 +87,11 @@ program stochastic
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
-  if(pltflux(1)/='noplot') call plot_flux( KLWood )
+  if(pltflux(1)/='noplot') call plot_flux
   call radtrans_resultplot !bin for radMC,radWood
 
   write(*,*)
   call calc_time_p(        t1,t2,runtime )
-  call timereport(         runtime,KLWood )
+  call timereport(         runtime )
 
 end program stochastic
