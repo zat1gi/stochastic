@@ -9,13 +9,12 @@ CONTAINS
 
   subroutine radtrans_MCsim( j,rodOrplanar,&
              o,transmit,reflect,absorb,&
-             initcur,pfnumcells,fluxfaces,flux,&
+             initcur,fluxfaces,flux,&
              fflux,bflux,plotflux,pltflux,sourceType,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
-  use MCvars, only: numParts, radtrans_int
+  use MCvars, only: numParts, radtrans_int, pfnumcells
   integer  :: j,o
-  integer  :: pfnumcells
   real(8)  :: tt1,tt2,s
   character(6) :: rodOrplanar,plotflux(2),sourceType
   real(8),allocatable :: transmit(:),reflect(:),absorb(:),initcur(:)
@@ -64,17 +63,17 @@ CONTAINS
           i=i+1
 !print *,"particle: ",o,"  transmit"
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
-                                      pfnumcells,plotflux,pltflux,j,mu)
+                                      plotflux,pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     pfnumcells,plotflux,pltflux,j,mu)
+                                     plotflux,pltflux,j,mu)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
 !print *,"particle: ",o,"  reflect"
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
-                                      pfnumcells,plotflux,pltflux,j,mu)
+                                      plotflux,pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     pfnumcells,plotflux,pltflux,j,mu)
+                                     plotflux,pltflux,j,mu)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
           if(i==1)              exit
           i=i-1
@@ -82,18 +81,18 @@ CONTAINS
       elseif( sc_ab<scatrat(matType(i)) ) then          !scatter
 !print *,"particle: ",o,"  scatter"
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,flux,&
-                                    pfnumcells,plotflux,pltflux,j,mu)
+                                    plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   pfnumcells,plotflux,pltflux,j,mu)
+                                   plotflux,pltflux,j,mu)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
 !print *,"particle: ",o,"  absorb"
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,flux,&
-                                    pfnumcells,plotflux,pltflux,j,mu)
+                                    plotflux,pltflux,j,mu)
                                 absorb(j)=absorb(j)+1.0d0 !absorb
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   pfnumcells,plotflux,pltflux,j,mu)
+                                   plotflux,pltflux,j,mu)
                                 exit
       endif
 
@@ -115,11 +114,10 @@ CONTAINS
 
   subroutine radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
              results,&
-             rodOrplanar,plotflux,pltflux,pfnumcells,flux,fluxfaces,fflux,&
+             rodOrplanar,plotflux,pltflux,flux,fluxfaces,fflux,&
              bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
-  use MCvars, only: numParts, radtrans_int
-  integer :: pfnumcells
+  use MCvars, only: numParts, radtrans_int, pfnumcells
   real(8) :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
   character(6) :: rodOrplanar,results,plotflux(2)
@@ -296,12 +294,12 @@ enddo
 
 
 
-  subroutine initialize_fluxplot( pfnumcells,fluxfaces,flux,fflux,bflux,&
+  subroutine initialize_fluxplot( fluxfaces,flux,fflux,bflux,&
                                   plotflux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
                                   fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   use genRealzvars, only: s, numRealz
   use KLvars, only: KLrnumRealz
-  integer :: pfnumcells
+  use MCvars, only: pfnumcells
   real(8),allocatable :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:),Woodf(:,:)
   real(8),allocatable :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: flux(:,:),fflux(:,:),bflux(:,:)
@@ -499,9 +497,10 @@ enddo
 !! Radtrans and Woodcock funcs and subs
 
 
-  subroutine adv_pos_col_flux( oldpos,newpos,fluxfaces,flux,pfnumcells,plotflux,&
+  subroutine adv_pos_col_flux( oldpos,newpos,fluxfaces,flux,plotflux,&
                                pltflux,j,mu )
-  integer :: pfnumcells,j
+  use MCvars, only: pfnumcells
+  integer :: j
   real(8) :: oldpos,newpos,mu,absmu
   real(8) :: fluxfaces(:),flux(:,:)
   character(6) :: plotflux(2)
@@ -555,11 +554,12 @@ enddo
 
 
 
-  subroutine col_fbflux( oldpos,newpos,fluxfaces,fflux,bflux,pfnumcells,plotflux,&
+  subroutine col_fbflux( oldpos,newpos,fluxfaces,fflux,bflux,plotflux,&
                          pltflux,j,mu )
   !tallies flux contribution in each material withing fluxface bins 
   use genRealzvars, only: matType, matLength
-  integer :: pfnumcells,j
+  use MCvars, only: pfnumcells
+  integer :: j
   real(8) :: oldpos,newpos,mu,absmu
   real(8) :: fluxfaces(:),fflux(:,:),bflux(:,:) !fb for first and second material
   character(6) :: plotflux(2)

@@ -111,6 +111,8 @@ module MCvars
   !inputs
   integer              :: numParts             ! number of particles
   integer              :: trannprt             ! how often to print to screen
+  integer              :: pfnumcells           ! number of cells for flux profile (?)
+
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview'
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'

@@ -15,15 +15,15 @@ CONTAINS
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,rodOrplanar,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
-                         pfnumcells,sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
+                         sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  use MCvars, only: numParts
-  integer :: j,pfnumcells
+  use MCvars, only: numParts, pfnumcells
+  integer :: j
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
   real(8),allocatable :: radWoodt(:),radWoodr(:),radWooda(:)
@@ -155,9 +155,9 @@ if(print=='yes') print *,
       if( dc>db .AND. mu>=0 ) then        !tally trans or refl
         Woodt(j) = Woodt(j)+1 !transmit
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,fluxfaces,Woodf,&
-                                    pfnumcells,plotflux,pltflux,j,mu)
+                                    plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,s,fluxfaces,fWoodf,bWoodf,&
-                                   pfnumcells,plotflux,pltflux,j,mu)
+                                   plotflux,pltflux,j,mu)
 
         if(print=='yes') print *,"                      tally transmit"
         exit
@@ -165,17 +165,17 @@ if(print=='yes') print *,
       if( dc>db .AND. mu<0 ) then
         Woodr(j) = Woodr(j) + 1 !reflect
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,fluxfaces,Woodf,&
-                                    pfnumcells,plotflux,pltflux,j,mu)
+                                    plotflux,pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fluxfaces,fWoodf,bWoodf,&
-                                   pfnumcells,plotflux,pltflux,j,mu)
+                                   plotflux,pltflux,j,mu)
         if(print=='yes') print *,"                      tally reflect"
         exit
       endif
 
       if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,Woodf,&
-                                  pfnumcells,plotflux,pltflux,j,mu)
+                                  plotflux,pltflux,j,mu)
       if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fWoodf,bWoodf,&
-                                 pfnumcells,plotflux,pltflux,j,mu)
+                                 plotflux,pltflux,j,mu)
       if(Wood=='rad') woodrat= radWood_actsig(position,sig)&
                                /ceilsig
       if(Wood=='KL')  woodrat= KLrxi_point(j,position)&
@@ -312,12 +312,11 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
   subroutine WoodcockMCoutstats( radWoodt,radWoodr,&
                                  radWooda,radWood_rej,&
-                                 plotflux,pltflux,pfnumcells,fluxfaces,radWoodf,&
+                                 plotflux,pltflux,fluxfaces,radWoodf,&
                                  fradWoodf,bradWoodf )
   use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
-  use MCvars, only: numParts
-  integer :: pfnumcells
+  use MCvars, only: numParts, pfnumcells
   integer :: radWood_rej(2)
   real(8) :: fluxfaces(:),radWoodf(:,:),radWoodt(:),radWoodr(:),radWooda(:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
@@ -455,12 +454,11 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
   subroutine WoodcockKLoutstats( KLWoodt,KLWoodr,&
                                  KLWooda,KLWood_rej,&
-                                 plotflux,pltflux,pfnumcells,fluxfaces,KLWoodf,&
+                                 plotflux,pltflux,fluxfaces,KLWoodf,&
                                  fKLWoodf,bKLWoodf )
   use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
-  use MCvars, only: numParts
-  integer :: pfnumcells
+  use MCvars, only: numParts, pfnumcells
   integer :: KLWood_rej(2)
   real(8) :: fluxfaces(:),KLWoodf(:,:),KLWoodt(:),KLWoodr(:),KLWooda(:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
