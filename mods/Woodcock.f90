@@ -10,11 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,Wood,&
-                         radWood_rej,&
-                         Wood_rej,&
-                         KLWood_rej,&
-                         fluxfaces,Woodf,radWoodf,KLWoodf,&
+  subroutine WoodcockMC( j,Wood,fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
@@ -24,9 +20,9 @@ CONTAINS
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
-                    Wooda, radWooda, KLWooda
+                    Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej
   integer :: j
-  integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
+  integer :: numpnSamp(2)
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
   real(8) :: areapnSamp(4),disthold
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
@@ -307,14 +303,12 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockMCoutstats( radWood_rej,&
-                                 fluxfaces,radWoodf,&
+  subroutine WoodcockMCoutstats( fluxfaces,radWoodf,&
                                  fradWoodf,bradWoodf )
   use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
   use MCvars, only: numParts, pfnumcells, plotflux, pltflux, radWoodr, radWoodt, &
-                    radWooda
-  integer :: radWood_rej(2)
+                    radWooda, radWood_rej
   real(8) :: fluxfaces(:),radWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
@@ -447,13 +441,12 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockKLoutstats( KLWood_rej,&
-                                 fluxfaces,KLWoodf,&
+  subroutine WoodcockKLoutstats( fluxfaces,KLWoodf,&
                                  fKLWoodf,bKLWoodf )
   use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
-  use MCvars, only: numParts, pfnumcells, plotflux, pltflux, KLWoodr, KLWoodt, KLWooda
-  integer :: KLWood_rej(2)
+  use MCvars, only: numParts, pfnumcells, plotflux, pltflux, KLWoodr, KLWoodt, KLWooda, &
+                    KLWood_rej
   real(8) :: fluxfaces(:),KLWoodf(:,:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)

@@ -27,7 +27,7 @@ program stochastic
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   !--- Woodcock variables (new) ---!
-  integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2), numpnSamp(2)
+  integer :: numpnSamp(2)
   real(8) ::                                 disthold,areapnSamp(4)
   real(8),allocatable :: Woodf(:,:),radWoodf(:,:),KLWoodf(:,:)
   real(8),allocatable :: fWoodf(:,:),bWoodf(:,:)
@@ -70,9 +70,6 @@ program stochastic
                            fluxfaces,flux,fflux,bflux,s )
     if(radWood=='yes') Wood='rad'
     if(radWood=='yes') call WoodcockMC( j,Wood,&
-                           radWood_rej,&
-                           Wood_rej,&
-                           KLWood_rej,&
                            fluxfaces,Woodf,radWoodf,KLWoodf,&
                            fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
@@ -105,9 +102,6 @@ program stochastic
 
     if(KLWood=='yes') Wood='KL'
     if(KLWood=='yes') call WoodcockMC( j,Wood,&
-                         radWood_rej,&
-                         Wood_rej,&
-                         KLWood_rej,&
                          fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
@@ -124,10 +118,8 @@ program stochastic
 
   if(radMC=='yes') call radtrans_MCoutstats( initcur,&
                            flux,fluxfaces,fflux,bflux )
-  if(radWood=='yes') call WoodcockMCoutstats( radWood_rej,&
-                           fluxfaces,radWoodf,fradWoodf,bradWoodf )
-  if(KLWood=='yes') call WoodcockKLoutstats( KLWood_rej,&
-                           fluxfaces,KLWoodf,fKLWoodf,bKLWoodf )
+  if(radWood=='yes') call WoodcockMCoutstats( fluxfaces,radWoodf,fradWoodf,bradWoodf )
+  if(KLWood=='yes') call WoodcockKLoutstats( fluxfaces,KLWoodf,fKLWoodf,bKLWoodf )
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats( numpnSamp,areapnSamp,distneg )
   if(pltflux(1)/='noplot') call plot_flux( radMC,radWood,KLWood )
   call radtrans_resultplot !bin for radMC,radWood
