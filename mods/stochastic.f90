@@ -11,12 +11,12 @@ program stochastic
   use KLmeanadjust
   use Woodcock
 
-  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec
+  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
   use MCvars, only: pltflux, allowneg, Wood
   implicit none
   real(8) :: runtime,t1,t2,seeddum
   integer :: seed
-  character(3) :: radMC,KLnoise,radWood,KLWood
+  character(3) :: radMC,radWood,KLWood
   !--- genRealz variables (new) ---!
   integer :: i,j
   !--- radtransMC variables (new) ---!
@@ -24,13 +24,12 @@ program stochastic
 
   !!read and prepare parameters
   call cpu_time(t1)
-  call readinputstoc(      KLnoise,&
-                           radMC,&
+  call readinputstoc(      radMC,&
                            radWood,KLWood,&
                            seed )
 
   call testinputstoc(      radWood,&
-                           radMC,KLnoise,KLWood )
+                           radMC,KLWood )
 
   call Acase_load
   call Acase_print
@@ -98,6 +97,6 @@ program stochastic
 
   write(*,*)
   call calc_time_p(        t1,t2,runtime )
-  call timereport(         runtime,radMC,radWood,KLWood,KLnoise )
+  call timereport(         runtime,radMC,radWood,KLWood )
 
 end program stochastic
