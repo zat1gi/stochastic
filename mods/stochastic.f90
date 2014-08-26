@@ -21,7 +21,7 @@ program stochastic
   integer :: i,j
   !--- radtransMC variables (new) ---!
   integer      :: o
-  real(8),allocatable :: transmit(:),absorb(:),initcur(:)
+  real(8),allocatable :: absorb(:),initcur(:)
   real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
   real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
@@ -30,8 +30,8 @@ program stochastic
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2), numpnSamp(2)
   real(8) ::                                 disthold,areapnSamp(4)
   real(8),allocatable :: Wooda(:)
-  real(8),allocatable :: radWoodt(:),radWooda(:)
-  real(8),allocatable :: KLWoodt(:), KLWooda(:)
+  real(8),allocatable :: radWooda(:)
+  real(8),allocatable :: KLWooda(:)
   real(8),allocatable :: Woodf(:,:),radWoodf(:,:),KLWoodf(:,:)
   real(8),allocatable :: fWoodf(:,:),bWoodf(:,:)
   real(8),allocatable :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
@@ -68,13 +68,13 @@ program stochastic
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
                            j,fluxfaces )
     if(radMC=='yes') call radtrans_MCsim( j,&
-                           o,transmit,&
+                           o,&
                            absorb,initcur,&
                            fluxfaces,flux,fflux,bflux,s )
     if(radWood=='yes') Wood='rad'
     if(radWood=='yes') call WoodcockMC( j,Wood,&
-                           radWoodt,radWooda,radWood_rej,&
-                           Wooda,KLWoodt,KLWooda,Wood_rej,&
+                           radWooda,radWood_rej,&
+                           Wooda,KLWooda,Wood_rej,&
                            KLWood_rej,&
                            fluxfaces,Woodf,radWoodf,KLWoodf,&
                            fWoodf,bWoodf,fradWoodf,bradWoodf,&
@@ -108,8 +108,8 @@ program stochastic
 
     if(KLWood=='yes') Wood='KL'
     if(KLWood=='yes') call WoodcockMC( j,Wood,&
-                         radWoodt,radWooda,radWood_rej,&
-                         Wooda,KLWoodt,KLWooda,Wood_rej,&
+                         radWooda,radWood_rej,&
+                         Wooda,KLWooda,Wood_rej,&
                          KLWood_rej,&
                          fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
@@ -125,17 +125,15 @@ program stochastic
   !!concluding stats
   call Acase_print
 
-  if(radMC=='yes') call radtrans_MCoutstats( transmit,absorb,initcur,&
+  if(radMC=='yes') call radtrans_MCoutstats( absorb,initcur,&
                            flux,fluxfaces,fflux,bflux )
-  if(radWood=='yes') call WoodcockMCoutstats( radWoodt,&
-                           radWooda,radWood_rej,&
+  if(radWood=='yes') call WoodcockMCoutstats( radWooda,radWood_rej,&
                            fluxfaces,radWoodf,fradWoodf,bradWoodf )
-  if(KLWood=='yes') call WoodcockKLoutstats( KLWoodt,&
-                           KLWooda,KLWood_rej,&
+  if(KLWood=='yes') call WoodcockKLoutstats( KLWooda,KLWood_rej,&
                            fluxfaces,KLWoodf,fKLWoodf,bKLWoodf )
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats( numpnSamp,areapnSamp,distneg )
   if(pltflux(1)/='noplot') call plot_flux( radMC,radWood,KLWood )
-  call radtrans_resultplot( transmit,radWoodt,KLWoodt )!bin for radMC,radWood
+  call radtrans_resultplot !bin for radMC,radWood
 
   write(*,*)
   call calc_time_p(        t1,t2,runtime )

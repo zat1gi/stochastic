@@ -8,16 +8,16 @@ CONTAINS
   ! print statements in this module use # 300-399
 
   subroutine radtrans_MCsim( j,&
-             o,transmit,absorb,&
+             o,absorb,&
              initcur,fluxfaces,flux,&
              fflux,bflux,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
-                    plotflux, pltflux, reflect
+                    plotflux, pltflux, reflect, transmit
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  real(8),allocatable :: transmit(:),absorb(:),initcur(:)
+  real(8),allocatable :: absorb(:),initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
 
   integer  :: i,z
@@ -111,13 +111,13 @@ CONTAINS
 
 
 
-  subroutine radtrans_MCoutstats( transmit,absorb,initcur,&
+  subroutine radtrans_MCoutstats( absorb,initcur,&
              flux,fluxfaces,fflux,&
              bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux, &
-                    results, pltflux, reflect
-  real(8) :: transmit(:),absorb(:),initcur(:)
+                    results, pltflux, reflect, transmit
+  real(8) :: absorb(:),initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
 
   integer :: j,i
@@ -648,15 +648,11 @@ enddo
 
 
 
-  subroutine radtrans_resultplot( transmit,radWoodt,&
-                                  KLWoodt )
+  subroutine radtrans_resultplot
   !Plots pdfs of transmission and reflection for chosen methods
   use genRealzvars, only: numRealz
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, radWoodr, &
-                          KLWoodr
-  real(8) :: transmit(:)
-  real(8) :: radWoodt(:)
-  real(8) :: KLWoodt(:)
+                          KLWoodr, radWoodt, KLWoodt, transmit
 
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
@@ -693,7 +689,7 @@ enddo
   !radMC binning and printing
   call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
   if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') then
-    call radtrans_bin( transmit,smrefl,lgrefl,smtran,lgtran )
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
     call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
     call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
   endif
@@ -701,7 +697,7 @@ enddo
   !radWood binning and printing
   call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
   if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') then
-    call radtrans_bin( radWoodt,smrefl,lgrefl,smtran,lgtran )
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
     call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
     call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
   endif
@@ -709,7 +705,7 @@ enddo
   !KLWood binning and printing
   call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
   if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') then
-    call radtrans_bin( KLWoodt,smrefl,lgrefl,smtran,lgtran )
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
     call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
     call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
   endif
@@ -731,12 +727,11 @@ enddo
 
 
 
-  subroutine radtrans_bin( transmit,smrefl,lgrefl,smtran,lgtran )
+  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran )
   !Heart of radtrans_resultplot, loads values to bin, and prints to generic text file
   !for each method
   use genRealzvars,         only: numRealz
-  use MCvars,               only: trprofile_binnum, reflect
-  real(8) :: transmit(:)
+  use MCvars,               only: trprofile_binnum, reflect, transmit
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
   !local vars

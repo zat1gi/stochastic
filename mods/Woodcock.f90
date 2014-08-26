@@ -11,8 +11,8 @@ CONTAINS
 
 
   subroutine WoodcockMC( j,Wood,&
-                         radWoodt,radWooda,radWood_rej,&
-                         Wooda,KLWoodt,KLWooda,Wood_rej,&
+                         radWooda,radWood_rej,&
+                         Wooda,KLWooda,Wood_rej,&
                          KLWood_rej,&
                          fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
@@ -23,12 +23,12 @@ CONTAINS
                           matType, matLength
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
-                    pltflux, Woodt, Woodr, radWoodr, KLWoodr
+                    pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt
   integer :: j
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Wooda(:)
-  real(8),allocatable :: radWoodt(:),radWooda(:)
-  real(8),allocatable :: KLWoodt(:), KLWooda(:)
+  real(8),allocatable :: radWooda(:)
+  real(8),allocatable :: KLWooda(:)
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
   real(8) :: areapnSamp(4),disthold
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
@@ -309,15 +309,14 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockMCoutstats( radWoodt,&
-                                 radWooda,radWood_rej,&
+  subroutine WoodcockMCoutstats( radWooda,radWood_rej,&
                                  fluxfaces,radWoodf,&
                                  fradWoodf,bradWoodf )
   use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
-  use MCvars, only: numParts, pfnumcells, plotflux, pltflux, radWoodr
+  use MCvars, only: numParts, pfnumcells, plotflux, pltflux, radWoodr, radWoodt
   integer :: radWood_rej(2)
-  real(8) :: fluxfaces(:),radWoodf(:,:),radWoodt(:),radWooda(:)
+  real(8) :: fluxfaces(:),radWoodf(:,:),radWooda(:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
 
@@ -449,15 +448,14 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockKLoutstats( KLWoodt,&
-                                 KLWooda,KLWood_rej,&
+  subroutine WoodcockKLoutstats( KLWooda,KLWood_rej,&
                                  fluxfaces,KLWoodf,&
                                  fKLWoodf,bKLWoodf )
   use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
-  use MCvars, only: numParts, pfnumcells, plotflux, pltflux, KLWoodr
+  use MCvars, only: numParts, pfnumcells, plotflux, pltflux, KLWoodr, KLWoodt
   integer :: KLWood_rej(2)
-  real(8) :: fluxfaces(:),KLWoodf(:,:),KLWoodt(:),KLWooda(:)
+  real(8) :: fluxfaces(:),KLWoodf(:,:),KLWooda(:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
 
