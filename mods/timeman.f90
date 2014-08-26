@@ -6,13 +6,12 @@ CONTAINS
 
 
 !! time tracking funcs and subs
-  subroutine radtrans_time( j,t1 )
+  subroutine radtrans_time( j )
   use timevars, only: time
   use genRealzvars, only: numRealz
   use KLvars, only: KLres
   use MCvars, only: trannprt, radMC, radWood
   integer :: j
-  real(8) :: t1
 
   real(8) :: timedone,esttime
   character(19) :: type
@@ -32,7 +31,7 @@ CONTAINS
     if(radWood=='yes') timedone=timedone+time(3)
     timedone=timedone/60.0d0
     esttime = timedone*numRealz/j
-    call time_report( type,timedone,j,numRealz,esttime,t1 )
+    call time_report( type,timedone,j,numRealz,esttime )
   endif
 
   end subroutine radtrans_time
@@ -40,44 +39,43 @@ CONTAINS
 
 
 
-  subroutine KLr_time( j,t1 )
+  subroutine KLr_time( j )
   use timevars, only: time
   use KLvars, only: KLrnumRealz
   integer :: j
-  real(8) :: t1
 
   real(8) :: timedone,esttime
   character(19) :: type='KLrec              '
 
   timedone=time(6)/60.0d0
   esttime = timedone*KLrnumRealz/j
-  call time_report( type,timedone,j,KLrnumRealz,esttime,t1 )
+  call time_report( type,timedone,j,KLrnumRealz,esttime )
 
   end subroutine KLr_time
 
 
 
-  subroutine KLWood_time( j,t1 )
+  subroutine KLWood_time( j )
   use timevars, only: time
   use KLvars, only: KLrnumRealz
   integer :: j
-  real(8) :: t1
 
   real(8) :: timedone,esttime
   character(19) :: type='KLWood              '
 
   timedone=time(7)/60.0d0
   esttime = timedone*KLrnumRealz/j
-  call time_report( type,timedone,j,KLrnumRealz,esttime,t1 )
+  call time_report( type,timedone,j,KLrnumRealz,esttime )
 
   end subroutine KLWood_time
 
 
 
 
-  subroutine time_report( type,timedone,j,numj,esttime,t1 )
+  subroutine time_report( type,timedone,j,numj,esttime )
+  use timevars, only: t1
   integer :: j,numj
-  real(8) :: timedone,esttime,t1
+  real(8) :: timedone,esttime
   character(19) :: type
 
   real(8) :: tottime,t2

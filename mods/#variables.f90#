@@ -4,7 +4,7 @@ module timevars
                                                ! genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
   integer, parameter   :: ntime = 7            ! size of 'time' array
   real(8)              :: t1                   ! initial computer time for run
-  real(8)              :: runtime              ! total time code has been running
+  real(8)              :: runtime              ! total cpu time code has been running
 
 end module
 

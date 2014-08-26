@@ -401,11 +401,10 @@ CONTAINS
 
 
 
-  subroutine timereport( runtime )
+  subroutine timereport
   use KLvars, only: KLres, KLrec, KLnoise
   use MCvars, only: radMC, radWood, KLWood
-  use timevars, only: time, ntime
-  real(8) :: runtime
+  use timevars, only: time, ntime, runtime
 
   integer :: i
   real(8) :: othertime,otherpercent

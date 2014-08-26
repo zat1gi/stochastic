@@ -44,8 +44,7 @@ CONTAINS
 
 
 
-  subroutine KLrgenrealz( j,&
-                          t1 )
+  subroutine KLrgenrealz( j )
   !This subroutine reconstructs realizations based upon the KL expansion
   !It reconstructs based upon the fixed point and fixed xi methods
   !It also passes an array of selected ramdom variables xi to be plotted in KLreval
@@ -56,7 +55,7 @@ CONTAINS
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
   integer :: j
-  real(8) :: t1,tt1,tt2
+  real(8) :: tt1,tt2
   character(3) :: neg
 
   integer :: i,curEig,w,u
