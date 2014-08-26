@@ -8,16 +8,16 @@ CONTAINS
   ! print statements in this module use # 300-399
 
   subroutine radtrans_MCsim( j,&
-             o,absorb,&
+             o,&
              initcur,fluxfaces,flux,&
              fflux,bflux,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
-                    plotflux, pltflux, reflect, transmit
+                    plotflux, pltflux, reflect, transmit, absorb
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  real(8),allocatable :: absorb(:),initcur(:)
+  real(8),allocatable :: initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
 
   integer  :: i,z
@@ -111,13 +111,13 @@ CONTAINS
 
 
 
-  subroutine radtrans_MCoutstats( absorb,initcur,&
+  subroutine radtrans_MCoutstats( initcur,&
              flux,fluxfaces,fflux,&
              bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux, &
-                    results, pltflux, reflect, transmit
-  real(8) :: absorb(:),initcur(:)
+                    results, pltflux, reflect, transmit, absorb
+  real(8) :: initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
 
   integer :: j,i

@@ -134,7 +134,12 @@ module MCvars
   real(8), allocatable :: transmit(:)          ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodt(:)             ! generic transmission tally for Woodcock routines
   real(8), allocatable :: radWoodt(:)          ! slab transmission tally, WMC on binary mixtures
-  real(8), allocatable :: KLWoodt(:)           ! slab transmission tally, WMC on KL reconstruction
+  real(8), allocatable :: KLWoodt(:)           ! slab transmission tally, WMC on KL reconstructions
+
+  real(8), allocatable :: absorb(:)            ! slab absorption tally, TMC on binary mixtures
+  real(8), allocatable :: Wooda(:)             ! generic absorption tally for Woodcock routines
+  real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
+  real(8), allocatable :: KLWooda(:)           ! slab absorption tally, WMC on KL reconstructions
 
 end module MCvars
 
