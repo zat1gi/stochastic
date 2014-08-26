@@ -7,16 +7,16 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
-  subroutine radtrans_MCsim( j,o )
+  subroutine radtrans_MCsim( j )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength, s
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
                     plotflux, pltflux, reflect, transmit, absorb, initcur, fluxfaces, &
                     fflux, bflux, flux
-  integer  :: j,o
+  integer  :: j
   real(8)  :: tt1,tt2
 
-  integer  :: i,z
+  integer  :: i,z,o
   real(8)  :: mu,db,dc,position,sc_ab,sigma
 
   call cpu_time(tt1)

@@ -17,8 +17,6 @@ program stochastic
   implicit none
   !--- genRealz variables (new) ---!
   integer :: j
-  !--- radtransMC variables (new) ---!
-  integer :: o
 
   ! pass by reference (one use only)
   integer :: seed
@@ -28,12 +26,9 @@ program stochastic
   !!read and prepare parameters
   call cpu_time(t1)
   call readinputstoc( seed )
-
   call testinputstoc
-
   call Acase_load
   call Acase_print
-
   do j=1,seed !advance starting seed
     seeddum = rang()
   enddo
@@ -41,16 +36,17 @@ program stochastic
   !!genRealz, KLresearch, radtrans, radWood
   if(KLres=='yes')   call KL_eigenvalue
   if(KLres=='yes')   call KL_Correlation
-  if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
+  if(radWood=='yes' .or. KLWood=='yes' .or. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot
+
+  if(radWood=='yes') Wood='rad'
   do j=1,numRealz
     call genReal( j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( j )
-    if(radMC=='yes') call radtrans_MCsim( j,o )
-    if(radWood=='yes') Wood='rad'
+    if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
     if(KLres=='yes') call KL_collect( j )
-    if(radMC=='yes' .OR. KLres=='yes' .OR. radWood=='yes') call radtrans_time( j )
+    if(radMC=='yes' .or. KLres=='yes' .or. radWood=='yes') call radtrans_time( j )
   enddo
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
@@ -61,25 +57,26 @@ program stochastic
 
 
   !!KLreconstructions
-  if(KLrec=='yes') call KLrcondition
-  do j=1,KLrnumRealz
-    if(KLrec=='yes') call KLrgenrealz( j )
-    if(mod(j,KLrprintat)==0 .AND. KLrec=='yes') call KLr_time( j )
-  enddo
+  if(KLrec=='yes') then
+    call KLrcondition
+    do j=1,KLrnumRealz
+      call KLrgenrealz( j )
+      if(mod(j,KLrprintat)==0) call KLr_time( j )
+    enddo
+  endif
   if(KLadjust=='yes') call KLadjustmean
   if(KLrec=='yes') call KLreval
 
 
   !!radKL transport
-  do j=1,KLrnumRealz !for Woodcockreconstruct later
-
-    if(KLWood=='yes') Wood='KL'
-    if(KLWood=='yes') call WoodcockMC( j )
-    if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j )
-  enddo
-
+  if(KLWood=='yes') then
+    Wood='KL'
+    do j=1,KLrnumRealz !for Woodcockreconstruct later
+      call WoodcockMC( j )
+      if(mod(j,KLrprintat)==0) call KLWood_time( j )
+    enddo
+  endif
 !  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
-
 
 
   !!concluding stats
