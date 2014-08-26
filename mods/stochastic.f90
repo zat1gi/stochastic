@@ -15,11 +15,9 @@ program stochastic
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
   use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood
   implicit none
-  !--- genRealz variables (new) ---!
-  integer :: j
-
-  ! pass by reference (one use only)
-  integer :: seed
+  ! pass by reference
+  integer :: j      !current realization, better to make global?
+  integer :: seed   !random number seed for overall problem, used once.
   ! local variables
   real(8) :: t2, seeddum
 
@@ -33,12 +31,13 @@ program stochastic
     seeddum = rang()
   enddo
 
-  !!genRealz, KLresearch, radtrans, radWood
+  !!prepare parameters, especially for KLresearch
   if(KLres=='yes')   call KL_eigenvalue
   if(KLres=='yes')   call KL_Correlation
   if(radWood=='yes' .or. KLWood=='yes' .or. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot
 
+  !!genRealz, KLresearch, radtrans, radWood
   if(radWood=='yes') Wood='rad'
   do j=1,numRealz
     call genReal( j )
