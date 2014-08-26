@@ -45,6 +45,7 @@ end module
 module KLvars  !"KLresearch" and "KLreconstruct"
   implicit none
   !inputs
+  character(3)         :: KLres                ! perform "KL research" operations?
   integer              :: KLrnumRealz          ! num of realizations to reconstruct
   integer              :: KLrprintat           ! print at this many realizations
   character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
@@ -167,11 +168,6 @@ module MCvars
   integer              :: KLWood_rej(2)        ! Woodcock rejection tally, WMC on KL reconstructions
   integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
   real(8)              :: areapnSamp(4)        ! tals pos&neg area: tot pos, tot neg, max pos, max neg
-
-!  real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
-!  real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
-!  real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
-
 
 end module MCvars
 
