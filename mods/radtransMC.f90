@@ -10,13 +10,13 @@ CONTAINS
   subroutine radtrans_MCsim( j,&
              o,transmit,reflect,absorb,&
              initcur,fluxfaces,flux,&
-             fflux,bflux,plotflux,pltflux,s )
+             fflux,bflux,pltflux,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType
+  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
+                    plotflux
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  character(6) :: plotflux(2)
   real(8),allocatable :: transmit(:),reflect(:),absorb(:),initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   character(7) :: pltflux(4)
@@ -63,17 +63,17 @@ CONTAINS
           i=i+1
 !print *,"particle: ",o,"  transmit"
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
-                                      plotflux,pltflux,j,mu)
+                                      pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     plotflux,pltflux,j,mu)
+                                     pltflux,j,mu)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
 !print *,"particle: ",o,"  reflect"
           if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),fluxfaces,flux,&
-                                      plotflux,pltflux,j,mu)
+                                      pltflux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fluxfaces,fflux,bflux,&
-                                     plotflux,pltflux,j,mu)
+                                     pltflux,j,mu)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
           if(i==1)              exit
           i=i-1
@@ -81,18 +81,18 @@ CONTAINS
       elseif( sc_ab<scatrat(matType(i)) ) then          !scatter
 !print *,"particle: ",o,"  scatter"
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,flux,&
-                                    plotflux,pltflux,j,mu)
+                                    pltflux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   plotflux,pltflux,j,mu)
+                                   pltflux,j,mu)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
 !print *,"particle: ",o,"  absorb"
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,flux,&
-                                    plotflux,pltflux,j,mu)
+                                    pltflux,j,mu)
                                 absorb(j)=absorb(j)+1.0d0 !absorb
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fflux,bflux,&
-                                   plotflux,pltflux,j,mu)
+                                   pltflux,j,mu)
                                 exit
       endif
 
@@ -113,13 +113,13 @@ CONTAINS
 
 
   subroutine radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
-             results,plotflux,pltflux,flux,fluxfaces,fflux,&
+             results,pltflux,flux,fluxfaces,fflux,&
              bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar
+  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux
   real(8) :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
-  character(6) :: results,plotflux(2)
+  character(6) :: results
   character(7) :: pltflux(4)
 
   integer :: j,i
@@ -294,15 +294,14 @@ enddo
 
 
   subroutine initialize_fluxplot( fluxfaces,flux,fflux,bflux,&
-                                  plotflux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
+                                  radMC,radWood,KLWood,radWoodf,KLWoodf,&
                                   fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   use genRealzvars, only: s, numRealz
   use KLvars, only: KLrnumRealz
-  use MCvars, only: pfnumcells
+  use MCvars, only: pfnumcells, plotflux
   real(8),allocatable :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:),Woodf(:,:)
   real(8),allocatable :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: flux(:,:),fflux(:,:),bflux(:,:)
-  character(6) :: plotflux(2)
   character(3) :: radMC,radWood,KLWood
 
   integer :: i
@@ -345,9 +344,9 @@ enddo
 
 
 
-  subroutine plot_flux( plotflux,pltflux,radMC,radWood,KLWood )
+  subroutine plot_flux( pltflux,radMC,radWood,KLWood )
+  use MCvars, only: plotflux
   character(3) :: radMC,radWood,KLWood
-  character(6) :: plotflux(2)
   character(7) :: pltflux(4)
 
   if(plotflux(1)=='cell') then
@@ -496,13 +495,12 @@ enddo
 !! Radtrans and Woodcock funcs and subs
 
 
-  subroutine adv_pos_col_flux( oldpos,newpos,fluxfaces,flux,plotflux,&
+  subroutine adv_pos_col_flux( oldpos,newpos,fluxfaces,flux,&
                                pltflux,j,mu )
-  use MCvars, only: pfnumcells
+  use MCvars, only: pfnumcells, plotflux
   integer :: j
   real(8) :: oldpos,newpos,mu,absmu
   real(8) :: fluxfaces(:),flux(:,:)
-  character(6) :: plotflux(2)
   character(7) :: pltflux(4)
 
   integer :: i
@@ -553,15 +551,14 @@ enddo
 
 
 
-  subroutine col_fbflux( oldpos,newpos,fluxfaces,fflux,bflux,plotflux,&
+  subroutine col_fbflux( oldpos,newpos,fluxfaces,fflux,bflux,&
                          pltflux,j,mu )
   !tallies flux contribution in each material withing fluxface bins 
   use genRealzvars, only: matType, matLength
-  use MCvars, only: pfnumcells
+  use MCvars, only: pfnumcells, plotflux
   integer :: j
   real(8) :: oldpos,newpos,mu,absmu
   real(8) :: fluxfaces(:),fflux(:,:),bflux(:,:) !fb for first and second material
-  character(6) :: plotflux(2)
   character(7) :: pltflux(4)
 
   integer :: i,k
