@@ -81,7 +81,7 @@ CONTAINS
   subroutine readinputstoc( KLres,KLnoise,&
                             KLrec,radMC,results,&
                             radWood,KLWood,allowneg,&
-                            distneg,plotflux,pltflux,sourceType,seed )
+                            distneg,plotflux,pltflux,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, plotmatdxs, pltgenrealzwhich
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -91,13 +91,13 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
-                                  numParts, trannprt, pfnumcells, rodOrplanar
+                                  numParts, trannprt, pfnumcells, rodOrplanar, sourceType
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLres,KLnoise
   character(3) :: KLrec
   character(3) :: radMC
-  character(6) :: results,sourceType
+  character(6) :: results
   character(3) :: radWood,KLWood,allowneg,distneg   !Woodcock opts
   character(6) :: plotflux(2)
   character(7) :: pltflux(4)
@@ -260,16 +260,15 @@ CONTAINS
 
   subroutine testinputstoc( KLres,KLrec,radWood,&
                             radMC,KLnoise,KLWood,pltflux,&
-                            sourceType,allowneg,distneg )
+                            allowneg,distneg )
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi
-  use MCvars, only: trannprt
+  use MCvars, only: trannprt, sourceType
   integer :: fpointorxi(2)
-  character(6) :: sourceType
   character(7) :: pltflux(4)
   character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood,allowneg,distneg
 

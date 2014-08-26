@@ -10,13 +10,13 @@ CONTAINS
   subroutine radtrans_MCsim( j,&
              o,transmit,reflect,absorb,&
              initcur,fluxfaces,flux,&
-             fflux,bflux,plotflux,pltflux,sourceType,s )
+             fflux,bflux,plotflux,pltflux,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar
+  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  character(6) :: plotflux(2),sourceType
+  character(6) :: plotflux(2)
   real(8),allocatable :: transmit(:),reflect(:),absorb(:),initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   character(7) :: pltflux(4)

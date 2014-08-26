@@ -114,6 +114,7 @@ module MCvars
   integer              :: pfnumcells           ! number of cells for flux profile (?)
 
   character(6)         :: rodOrplanar          ! transport geometry mode
+  character(6)         :: sourceType           ! 'intern' or 'left', distributed or beam source
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview'
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'

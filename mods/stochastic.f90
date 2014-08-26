@@ -20,7 +20,7 @@ program stochastic
   integer :: i,j
   !--- radtransMC variables (new) ---!
   integer      :: o
-  character(6) :: results,sourceType,plotflux(2)
+  character(6) :: results,plotflux(2)
   character(7) :: pltflux(4)
   real(8),allocatable :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
@@ -43,11 +43,11 @@ program stochastic
   call readinputstoc(      KLres,KLnoise,&
                            KLrec,radMC,results,&
                            radWood,KLWood,allowneg,&
-                           distneg,plotflux,pltflux,sourceType,seed )
+                           distneg,plotflux,pltflux,seed )
 
   call testinputstoc(      KLres,KLrec,radWood,&
                            radMC,KLnoise,KLWood,pltflux,&
-                           sourceType,allowneg,distneg )
+                           allowneg,distneg )
 
   call Acase_load
   call Acase_print
@@ -72,14 +72,14 @@ program stochastic
                            o,transmit,&
                            reflect,absorb,initcur,&
                            fluxfaces,flux,fflux,bflux,plotflux,pltflux,&
-                           sourceType,s )
+                           s )
     if(radWood=='yes') Wood='rad'
     if(radWood=='yes') call WoodcockMC( j,Wood,&
                            radWoodt,radWoodr,radWooda,radWood_rej,&
                            Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                            KLWood_rej,&
                            fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
-                           sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
+                           fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                            disthold )
     if(KLres=='yes') call KL_collect( j )
@@ -114,7 +114,7 @@ program stochastic
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
-                         sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
+                         fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
     if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j,t1)

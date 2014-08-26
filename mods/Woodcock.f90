@@ -15,14 +15,14 @@ CONTAINS
                          Woodt,Woodr,Wooda,KLWoodt,KLWoodr,KLWooda,Wood_rej,&
                          KLWood_rej,&
                          fluxfaces,plotflux,pltflux,Woodf,radWoodf,KLWoodf,&
-                         sourceType,fWoodf,bWoodf,fradWoodf,bradWoodf,&
+                         fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf,allowneg,numpnSamp,areapnSamp,distneg,&
                          disthold )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  use MCvars, only: numParts, pfnumcells, rodOrplanar
+  use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType
   integer :: j
   integer :: Wood_rej(2),radWood_rej(2),KLWood_rej(2),numpnSamp(2)
   real(8),allocatable :: Woodt(:),   Woodr(:),   Wooda(:)
@@ -33,7 +33,7 @@ CONTAINS
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   character(3) :: Wood,allowneg,distneg
-  character(6) :: plotflux(2),sourceType
+  character(6) :: plotflux(2)
   character(7) :: pltflux(4)
 
   integer :: i,o,nbin,k
