@@ -15,12 +15,13 @@ program stochastic
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
   use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood
   implicit none
-  integer :: seed
   !--- genRealz variables (new) ---!
-  integer :: i,j
+  integer :: j
   !--- radtransMC variables (new) ---!
-  integer      :: o
+  integer :: o
 
+  ! pass by reference (one use only)
+  integer :: seed
   ! local variables
   real(8) :: t2, seeddum
 
