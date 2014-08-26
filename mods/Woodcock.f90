@@ -10,9 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,Woodf,radWoodf,KLWoodf,&
-                         fradWoodf,bradWoodf,&
-                         fKLWoodf,bKLWoodf )
+  subroutine WoodcockMC( j,Woodf,radWoodf,KLWoodf )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
@@ -21,11 +19,10 @@ CONTAINS
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
                     numpnSamp, areapnSamp, allowneg, distneg, Wood, fluxfaces, &
-                    fWoodf, bWoodf
+                    fWoodf, bWoodf, fradWoodf, bradWoodf, fKLWoodf, bKLWoodf
   integer :: j
   real(8),allocatable :: Woodf(:,:)
   real(8) :: radWoodf(:,:),KLWoodf(:,:)
-  real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
 
   integer :: i,o,nbin,k
   real(8) :: disthold
@@ -302,14 +299,12 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockMCoutstats( radWoodf,&
-                                 fradWoodf,bradWoodf )
+  subroutine WoodcockMCoutstats( radWoodf )
   use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
   use MCvars, only: numParts, pfnumcells, plotflux, pltflux, radWoodr, radWoodt, &
-                    radWooda, radWood_rej, fluxfaces
+                    radWooda, radWood_rej, fluxfaces, fradWoodf, bradWoodf
   real(8) :: radWoodf(:,:)
-  real(8) :: fradWoodf(:,:),bradWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
 
   integer :: i,j
@@ -440,14 +435,12 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockKLoutstats( KLWoodf,&
-                                 fKLWoodf,bKLWoodf )
+  subroutine WoodcockKLoutstats( KLWoodf )
   use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
   use MCvars, only: numParts, pfnumcells, plotflux, pltflux, KLWoodr, KLWoodt, KLWooda, &
-                    KLWood_rej, fluxfaces
+                    KLWood_rej, fluxfaces, fKLWoodf, bKLWoodf
   real(8) :: KLWoodf(:,:)
-  real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
 
   integer :: i,j

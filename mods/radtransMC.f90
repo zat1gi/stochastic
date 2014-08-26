@@ -286,13 +286,12 @@ enddo
 
 
 
-  subroutine initialize_fluxplot( flux,radMC,radWood,KLWood,radWoodf,KLWoodf,&
-                                  fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
+  subroutine initialize_fluxplot( flux,radMC,radWood,KLWood,radWoodf,KLWoodf )
   use genRealzvars, only: s, numRealz
   use KLvars, only: KLrnumRealz
-  use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux
+  use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
+                    bradWoodf, fKLWoodf, bKLWoodf
   real(8),allocatable :: radWoodf(:,:),KLWoodf(:,:),Woodf(:,:)
-  real(8),allocatable :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: flux(:,:)
   character(3) :: radMC,radWood,KLWood
 
