@@ -7,15 +7,14 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
-  subroutine radtrans_MCsim( j,o,flux,s )
+  subroutine radtrans_MCsim( j,o,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
                     plotflux, pltflux, reflect, transmit, absorb, initcur, fluxfaces, &
-                    fflux, bflux
+                    fflux, bflux, flux
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  real(8),allocatable :: flux(:,:)
 
   integer  :: i,z
   real(8)  :: mu,db,dc,position,sc_ab,sigma
@@ -100,12 +99,11 @@ CONTAINS
 
 
 
-  subroutine radtrans_MCoutstats( flux )
+  subroutine radtrans_MCoutstats
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux, &
                     results, pltflux, reflect, transmit, absorb, initcur, fluxfaces, &
-                    fflux, bflux
-  real(8) :: flux(:,:)
+                    fflux, bflux, flux
 
   integer :: j,i
   real(8) :: reflection,transmission,absorption
@@ -278,12 +276,12 @@ enddo
 
 
 
-  subroutine initialize_fluxplot( flux,radMC,radWood,KLWood )
+  subroutine initialize_fluxplot( radMC,radWood,KLWood )
   use genRealzvars, only: s, numRealz
   use KLvars, only: KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
-                    bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf
-  real(8),allocatable :: flux(:,:)
+                    bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
+                    flux
   character(3) :: radMC,radWood,KLWood
 
   integer :: i

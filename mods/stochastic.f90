@@ -24,7 +24,6 @@ program stochastic
   real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
   real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
-  real(8),allocatable :: flux(:,:)
 
   !!read and prepare parameters
   call cpu_time(t1)
@@ -47,15 +46,13 @@ program stochastic
   if(KLres=='yes')   call KL_eigenvalue
   if(KLres=='yes')   call KL_Correlation
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
-                           call initialize_fluxplot(&
-                           flux,&
-                           radMC,radWood,KLWood )
+                           call initialize_fluxplot(radMC,radWood,KLWood )
   do j=1,numRealz
     call genReal(          j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
                            j )
     if(radMC=='yes') call radtrans_MCsim( j,&
-                           o,flux,s )
+                           o,s )
     if(radWood=='yes') Wood='rad'
     if(radWood=='yes') call WoodcockMC( j )
     if(KLres=='yes') call KL_collect( j )
@@ -95,7 +92,7 @@ program stochastic
   !!concluding stats
   call Acase_print
 
-  if(radMC=='yes') call radtrans_MCoutstats( flux )
+  if(radMC=='yes') call radtrans_MCoutstats
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
