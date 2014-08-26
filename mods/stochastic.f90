@@ -24,7 +24,7 @@ program stochastic
   real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
   real(8),allocatable :: aveTran(:),devTran(:),relTran(:)
   real(8),allocatable :: aveAbso(:),devAbso(:),relAbso(:)
-  real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
+  real(8),allocatable :: flux(:,:),fflux(:,:),bflux(:,:)
   !--- Woodcock variables (new) ---!
   real(8),allocatable :: Woodf(:,:),radWoodf(:,:),KLWoodf(:,:)
   real(8),allocatable :: fWoodf(:,:),bWoodf(:,:)
@@ -52,18 +52,17 @@ program stochastic
   if(KLres=='yes')   call KL_Correlation
   if(radWood=='yes' .OR. KLWood=='yes' .OR. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot(&
-                           fluxfaces,flux,fflux,bflux,&
+                           flux,fflux,bflux,&
                            radMC,radWood,KLWood,radWoodf,KLWoodf,&
                            fradWoodf,bradWoodf,fKLWoodf,bKLWoodf )
   do j=1,numRealz
     call genReal(          j )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( &
-                           j,fluxfaces )
+                           j )
     if(radMC=='yes') call radtrans_MCsim( j,&
-                           o,fluxfaces,flux,fflux,bflux,s )
+                           o,flux,fflux,bflux,s )
     if(radWood=='yes') Wood='rad'
-    if(radWood=='yes') call WoodcockMC( j,&
-                           fluxfaces,Woodf,radWoodf,KLWoodf,&
+    if(radWood=='yes') call WoodcockMC( j,Woodf,radWoodf,KLWoodf,&
                            fWoodf,bWoodf,fradWoodf,bradWoodf,&
                            fKLWoodf,bKLWoodf )
     if(KLres=='yes') call KL_collect( j )
@@ -71,8 +70,7 @@ program stochastic
                            radMC,KLres,radWood,j,t1 )
   enddo
   call genReal_stats
-  if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot( &
-                           fluxfaces )
+  if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
   if(KLres=='yes') call KL_Cochart
   if(KLres=='yes') call KL_eval
   if(KLnoise=='yes') call KL_Noise
@@ -93,8 +91,7 @@ program stochastic
   do j=1,KLrnumRealz !for Woodcockreconstruct later
 
     if(KLWood=='yes') Wood='KL'
-    if(KLWood=='yes') call WoodcockMC( j,&
-                         fluxfaces,Woodf,radWoodf,KLWoodf,&
+    if(KLWood=='yes') call WoodcockMC( j,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf )
     if(mod(j,KLrprintat)==0 .AND. KLWood=='yes') call KLWood_time( j,t1)
@@ -107,9 +104,9 @@ program stochastic
   !!concluding stats
   call Acase_print
 
-  if(radMC=='yes') call radtrans_MCoutstats( flux,fluxfaces,fflux,bflux )
-  if(radWood=='yes') call WoodcockMCoutstats( fluxfaces,radWoodf,fradWoodf,bradWoodf )
-  if(KLWood=='yes') call WoodcockKLoutstats( fluxfaces,KLWoodf,fKLWoodf,bKLWoodf )
+  if(radMC=='yes') call radtrans_MCoutstats( flux,fflux,bflux )
+  if(radWood=='yes') call WoodcockMCoutstats( radWoodf,fradWoodf,bradWoodf )
+  if(KLWood=='yes') call WoodcockKLoutstats( KLWoodf,fKLWoodf,bKLWoodf )
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
   if(pltflux(1)/='noplot') call plot_flux( radMC,radWood,KLWood )
   call radtrans_resultplot !bin for radMC,radWood

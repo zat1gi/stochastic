@@ -10,7 +10,7 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,fluxfaces,Woodf,radWoodf,KLWoodf,&
+  subroutine WoodcockMC( j,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf )
   use timevars, only: time
@@ -20,10 +20,10 @@ CONTAINS
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
-                    numpnSamp, areapnSamp, allowneg, distneg, Wood
+                    numpnSamp, areapnSamp, allowneg, distneg, Wood, fluxfaces
   integer :: j
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
-  real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
+  real(8) :: radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
 
   integer :: i,o,nbin,k
@@ -145,9 +145,9 @@ if(print=='yes') print *,
       if( dc>db ) Wood_rej(1)=Wood_rej(1)+1   !accept path
       if( dc>db .AND. mu>=0 ) then        !tally trans or refl
         Woodt(j) = Woodt(j)+1 !transmit
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,fluxfaces,Woodf,&
+        if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,Woodf,&
                                     j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,s,fluxfaces,fWoodf,bWoodf,&
+        if(plotflux(2)=='fb') call col_fbflux(position,s,fWoodf,bWoodf,&
                                    j,mu)
 
         if(print=='yes') print *,"                      tally transmit"
@@ -155,17 +155,17 @@ if(print=='yes') print *,
       endif
       if( dc>db .AND. mu<0 ) then
         Woodr(j) = Woodr(j) + 1 !reflect
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,fluxfaces,Woodf,&
+        if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,Woodf,&
                                     j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fluxfaces,fWoodf,bWoodf,&
+        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fWoodf,bWoodf,&
                                    j,mu)
         if(print=='yes') print *,"                      tally reflect"
         exit
       endif
 
-      if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,fluxfaces,Woodf,&
+      if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,Woodf,&
                                   j,mu)
-      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fluxfaces,fWoodf,bWoodf,&
+      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fWoodf,bWoodf,&
                                  j,mu)
       if(Wood=='rad') woodrat= radWood_actsig(position,sig)&
                                /ceilsig
@@ -301,13 +301,13 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockMCoutstats( fluxfaces,radWoodf,&
+  subroutine WoodcockMCoutstats( radWoodf,&
                                  fradWoodf,bradWoodf )
   use genRealzvars, only: Adamscase, numRealz, P
   use KLvars, only: numEigs
   use MCvars, only: numParts, pfnumcells, plotflux, pltflux, radWoodr, radWoodt, &
-                    radWooda, radWood_rej
-  real(8) :: fluxfaces(:),radWoodf(:,:)
+                    radWooda, radWood_rej, fluxfaces
+  real(8) :: radWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
 
@@ -439,13 +439,13 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine WoodcockKLoutstats( fluxfaces,KLWoodf,&
+  subroutine WoodcockKLoutstats( KLWoodf,&
                                  fKLWoodf,bKLWoodf )
   use genRealzvars, only: Adamscase, P
   use KLvars,       only: KLvarcalc, varmain, numEigs, KLrnumRealz
   use MCvars, only: numParts, pfnumcells, plotflux, pltflux, KLWoodr, KLWoodt, KLWooda, &
-                    KLWood_rej
-  real(8) :: fluxfaces(:),KLWoodf(:,:)
+                    KLWood_rej, fluxfaces
+  real(8) :: KLWoodf(:,:)
   real(8) :: fKLWoodf(:,:),bKLWoodf(:,:)
   real(8),allocatable :: Woodfave(:),Woodfvar(:),fluxinput(:)
 

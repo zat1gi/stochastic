@@ -202,13 +202,12 @@ CONTAINS
 
 
 
-  subroutine matdxs_collect( j,fluxfaces )
+  subroutine matdxs_collect( j )
   !This subroutine collects how much of each material is in each segment defined by
   !fluxfaces.
   use genRealzvars, only: numRealz, nummatSegs, matType, matLength, matdxs
-  use MCvars, only: pfnumcells
+  use MCvars, only: pfnumcells, fluxfaces
   integer :: j
-  real(8) :: fluxfaces(:)
 
   integer :: i,f
   real(8) :: dx
@@ -247,10 +246,9 @@ CONTAINS
 
 
 
-  subroutine matdxs_stats_plot( fluxfaces )
+  subroutine matdxs_stats_plot
   use genRealzvars, only: numRealz, plotmatdxs, matdxs
-  use MCvars, only: pfnumcells
-  real(8) :: fluxfaces(:)
+  use MCvars, only: pfnumcells, fluxfaces
 
   integer :: j,f
   real(8) :: dx

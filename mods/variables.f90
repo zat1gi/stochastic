@@ -131,10 +131,14 @@ module MCvars
 
   real(8), allocatable :: initcur(:)           ! initial current into the slab
 
+  real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
+
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodr(:)             ! generic reflection tally for Woodcock routines
   real(8), allocatable :: radWoodr(:)          ! slab reflection tally, WMC on binary mixtures
   real(8), allocatable :: KLWoodr(:)           ! slab reflection tally, WMC on KL reconstructions
+
+  character(3)         :: Wood                 ! toggle flag between 'rad' and 'KL'
 
   real(8), allocatable :: transmit(:)          ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodt(:)             ! generic transmission tally for Woodcock routines
@@ -145,8 +149,6 @@ module MCvars
   real(8), allocatable :: Wooda(:)             ! generic absorption tally for Woodcock routines
   real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
   real(8), allocatable :: KLWooda(:)           ! slab absorption tally, WMC on KL reconstructions
-
-  character(3)         :: Wood                 ! toggle flag between 'rad' and 'KL'
 
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures
