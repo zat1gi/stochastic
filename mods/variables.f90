@@ -145,6 +145,7 @@ module MCvars
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures
   integer              :: KLWood_rej(2)        ! Woodcock rejection tally, WMC on KL reconstructions
   integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
+  real(8)              :: areapnSamp(4)        ! tals pos&neg area: tot pos, tot neg, max pos, max neg
 
 end module MCvars
 

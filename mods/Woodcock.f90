@@ -12,7 +12,7 @@ CONTAINS
 
   subroutine WoodcockMC( j,Wood,fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
-                         fKLWoodf,bKLWoodf,allowneg,areapnSamp,distneg )
+                         fKLWoodf,bKLWoodf,allowneg,distneg )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
@@ -20,10 +20,9 @@ CONTAINS
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
-                    numpnSamp
+                    numpnSamp, areapnSamp
   integer :: j
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
-  real(8) :: areapnSamp(4)
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
   character(3) :: Wood,allowneg,distneg
@@ -583,11 +582,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine Woodnegstats( areapnSamp,distneg )
+  subroutine Woodnegstats( distneg )
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
-  use MCvars, only: numpnSamp
-  real(8) :: areapnSamp(4) !tot pos, tot neg, max pos, max neg
+  use MCvars, only: numpnSamp, areapnSamp
   character(3) :: distneg
 
   real(8) :: pos,neg
