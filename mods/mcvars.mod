@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from mods/variables.f90 on Tue Aug 26 00:23:16 2014
-MD5:61a75b5b86f6f3d2fd4ae93fe72adf37 -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from mods/variables.f90 on Tue Aug 26 00:27:24 2014
+MD5:537040d5ae542307e0c289c00719f4ee -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -34,14 +34,17 @@ UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 8 'radwoodbinplot' 'mcvars' 'radwoodbinplot' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '7'))) 0 0 () () 0 () () () 0 0)
-9 'trannprt' 'mcvars' 'trannprt' 1 ((VARIABLE UNKNOWN-INTENT
+9 'rodorplanar' 'mcvars' 'rodorplanar' 1 ((VARIABLE UNKNOWN-INTENT
+UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((
+CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '6'))) 0 0 () () 0 () () () 0 0)
+10 'trannprt' 'mcvars' 'trannprt' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-10 'trprofile_binnum' 'mcvars' 'trprofile_binnum' 1 ((VARIABLE
+11 'trprofile_binnum' 'mcvars' 'trprofile_binnum' 1 ((VARIABLE
 UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0
 INTEGER ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('klwoodbinplot' 0 2 'mcvars' 0 3 'numparts' 0 4 'pfnumcells' 0 5
-'radmcbinplot' 0 6 'radtrans_int' 0 7 'radwoodbinplot' 0 8 'trannprt' 0
-9 'trprofile_binnum' 0 10)
+'radmcbinplot' 0 6 'radtrans_int' 0 7 'radwoodbinplot' 0 8 'rodorplanar'
+0 9 'trannprt' 0 10 'trprofile_binnum' 0 11)

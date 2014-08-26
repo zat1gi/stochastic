@@ -7,16 +7,16 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
-  subroutine radtrans_MCsim( j,rodOrplanar,&
+  subroutine radtrans_MCsim( j,&
              o,transmit,reflect,absorb,&
              initcur,fluxfaces,flux,&
              fflux,bflux,plotflux,pltflux,sourceType,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
-  use MCvars, only: numParts, radtrans_int, pfnumcells
+  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  character(6) :: rodOrplanar,plotflux(2),sourceType
+  character(6) :: plotflux(2),sourceType
   real(8),allocatable :: transmit(:),reflect(:),absorb(:),initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
   character(7) :: pltflux(4)
@@ -113,14 +113,13 @@ CONTAINS
 
 
   subroutine radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
-             results,&
-             rodOrplanar,plotflux,pltflux,flux,fluxfaces,fflux,&
+             results,plotflux,pltflux,flux,fluxfaces,fflux,&
              bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
-  use MCvars, only: numParts, radtrans_int, pfnumcells
+  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar
   real(8) :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
-  character(6) :: rodOrplanar,results,plotflux(2)
+  character(6) :: results,plotflux(2)
   character(7) :: pltflux(4)
 
   integer :: j,i
