@@ -12,7 +12,7 @@ CONTAINS
 
   subroutine WoodcockMC( j,Wood,fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
-                         fKLWoodf,bKLWoodf,allowneg,distneg )
+                         fKLWoodf,bKLWoodf,distneg )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
@@ -20,12 +20,12 @@ CONTAINS
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
-                    numpnSamp, areapnSamp
+                    numpnSamp, areapnSamp, allowneg
   integer :: j
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
-  character(3) :: Wood,allowneg,distneg
+  character(3) :: Wood,distneg
 
   integer :: i,o,nbin,k
   real(8) :: disthold

@@ -123,6 +123,8 @@ module MCvars
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'
   character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview'
 
+  character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
+
   !non inputs
   integer              :: radtrans_int         !
 
