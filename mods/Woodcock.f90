@@ -11,7 +11,7 @@ CONTAINS
 
 
   subroutine WoodcockMC( j,Woodf,radWoodf,KLWoodf,&
-                         fWoodf,bWoodf,fradWoodf,bradWoodf,&
+                         fradWoodf,bradWoodf,&
                          fKLWoodf,bKLWoodf )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
@@ -20,9 +20,10 @@ CONTAINS
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
-                    numpnSamp, areapnSamp, allowneg, distneg, Wood, fluxfaces
+                    numpnSamp, areapnSamp, allowneg, distneg, Wood, fluxfaces, &
+                    fWoodf, bWoodf
   integer :: j
-  real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
+  real(8),allocatable :: Woodf(:,:)
   real(8) :: radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
 
@@ -147,7 +148,7 @@ if(print=='yes') print *,
         Woodt(j) = Woodt(j)+1 !transmit
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,Woodf,&
                                     j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,s,fWoodf,bWoodf,&
+        if(plotflux(2)=='fb') call col_fbflux(position,s,&
                                    j,mu)
 
         if(print=='yes') print *,"                      tally transmit"
@@ -157,7 +158,7 @@ if(print=='yes') print *,
         Woodr(j) = Woodr(j) + 1 !reflect
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,Woodf,&
                                     j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fWoodf,bWoodf,&
+        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,&
                                    j,mu)
         if(print=='yes') print *,"                      tally reflect"
         exit
@@ -165,7 +166,7 @@ if(print=='yes') print *,
 
       if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,Woodf,&
                                   j,mu)
-      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fWoodf,bWoodf,&
+      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,&
                                  j,mu)
       if(Wood=='rad') woodrat= radWood_actsig(position,sig)&
                                /ceilsig

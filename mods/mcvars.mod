@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from mods/variables.f90 on Tue Aug 26 02:13:08 2014
-MD5:7b284d27e8d96108c49f9a63133b6e75 -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from mods/variables.f90 on Tue Aug 26 02:25:13 2014
+MD5:a5d3a6b8ca7a73f445ff8b7a79f70f32 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -24,121 +24,133 @@ CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '4')) 0 () () () 0 0)
-5 'distneg' 'mcvars' 'distneg' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+5 'bflux' 'mcvars' 'bflux' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+6 'bwoodf' 'mcvars' 'bwoodf' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+7 'distneg' 'mcvars' 'distneg' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
-6 'fluxfaces' 'mcvars' 'fluxfaces' 1 ((VARIABLE UNKNOWN-INTENT
+8 'fflux' 'mcvars' 'fflux' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+9 'fluxfaces' 'mcvars' 'fluxfaces' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-7 'initcur' 'mcvars' 'initcur' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+10 'fwoodf' 'mcvars' 'fwoodf' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+11 'initcur' 'mcvars' 'initcur' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-8 'klwood_rej' 'mcvars' 'klwood_rej' 1 ((VARIABLE UNKNOWN-INTENT
+12 'klwood_rej' 'mcvars' 'klwood_rej' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 INTEGER
 ()) 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-9 'klwooda' 'mcvars' 'klwooda' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+13 'klwooda' 'mcvars' 'klwooda' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-10 'klwoodbinplot' 'mcvars' 'klwoodbinplot' 1 ((VARIABLE UNKNOWN-INTENT
+14 'klwoodbinplot' 'mcvars' 'klwoodbinplot' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '7'))) 0 0 () () 0 () () () 0 0)
-11 'klwoodr' 'mcvars' 'klwoodr' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+15 'klwoodr' 'mcvars' 'klwoodr' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-12 'klwoodt' 'mcvars' 'klwoodt' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+16 'klwoodt' 'mcvars' 'klwoodt' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-13 'mcvars' 'mcvars' 'mcvars' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+17 'mcvars' 'mcvars' 'mcvars' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
-14 'numparts' 'mcvars' 'numparts' 1 ((VARIABLE UNKNOWN-INTENT
+18 'numparts' 'mcvars' 'numparts' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-15 'numpnsamp' 'mcvars' 'numpnsamp' 1 ((VARIABLE UNKNOWN-INTENT
+19 'numpnsamp' 'mcvars' 'numpnsamp' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 INTEGER
 ()) 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-16 'pfnumcells' 'mcvars' 'pfnumcells' 1 ((VARIABLE UNKNOWN-INTENT
+20 'pfnumcells' 'mcvars' 'pfnumcells' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-17 'plotflux' 'mcvars' 'plotflux' 1 ((VARIABLE UNKNOWN-INTENT
+21 'plotflux' 'mcvars' 'plotflux' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (CHARACTER 1 0 0
 CHARACTER ((CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '6'))) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER
 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-18 'pltflux' 'mcvars' 'pltflux' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+22 'pltflux' 'mcvars' 'pltflux' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '7'))) 0 0 () (1 0 EXPLICIT (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0
 INTEGER ()) 0 '4')) 0 () () () 0 0)
-19 'radmcbinplot' 'mcvars' 'radmcbinplot' 1 ((VARIABLE UNKNOWN-INTENT
+23 'radmcbinplot' 'mcvars' 'radmcbinplot' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '7'))) 0 0 () () 0 () () () 0 0)
-20 'radtrans_int' 'mcvars' 'radtrans_int' 1 ((VARIABLE UNKNOWN-INTENT
+24 'radtrans_int' 'mcvars' 'radtrans_int' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-21 'radwood_rej' 'mcvars' 'radwood_rej' 1 ((VARIABLE UNKNOWN-INTENT
+25 'radwood_rej' 'mcvars' 'radwood_rej' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 INTEGER
 ()) 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-22 'radwooda' 'mcvars' 'radwooda' 1 ((VARIABLE UNKNOWN-INTENT
+26 'radwooda' 'mcvars' 'radwooda' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-23 'radwoodbinplot' 'mcvars' 'radwoodbinplot' 1 ((VARIABLE
+27 'radwoodbinplot' 'mcvars' 'radwoodbinplot' 1 ((VARIABLE
 UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0
 CHARACTER ((CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '7'))) 0 0 () () 0 ()
 () () 0 0)
-24 'radwoodr' 'mcvars' 'radwoodr' 1 ((VARIABLE UNKNOWN-INTENT
+28 'radwoodr' 'mcvars' 'radwoodr' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-25 'radwoodt' 'mcvars' 'radwoodt' 1 ((VARIABLE UNKNOWN-INTENT
+29 'radwoodt' 'mcvars' 'radwoodt' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-26 'reflect' 'mcvars' 'reflect' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+30 'reflect' 'mcvars' 'reflect' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-27 'results' 'mcvars' 'results' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+31 'results' 'mcvars' 'results' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '6'))) 0 0 () () 0 () () () 0 0)
-28 'rodorplanar' 'mcvars' 'rodorplanar' 1 ((VARIABLE UNKNOWN-INTENT
+32 'rodorplanar' 'mcvars' 'rodorplanar' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '6'))) 0 0 () () 0 () () () 0 0)
-29 'sourcetype' 'mcvars' 'sourcetype' 1 ((VARIABLE UNKNOWN-INTENT
+33 'sourcetype' 'mcvars' 'sourcetype' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '6'))) 0 0 () () 0 () () () 0 0)
-30 'trannprt' 'mcvars' 'trannprt' 1 ((VARIABLE UNKNOWN-INTENT
+34 'trannprt' 'mcvars' 'trannprt' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-31 'transmit' 'mcvars' 'transmit' 1 ((VARIABLE UNKNOWN-INTENT
+35 'transmit' 'mcvars' 'transmit' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-32 'trprofile_binnum' 'mcvars' 'trprofile_binnum' 1 ((VARIABLE
+36 'trprofile_binnum' 'mcvars' 'trprofile_binnum' 1 ((VARIABLE
 UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0
 INTEGER ()) 0 0 () () 0 () () () 0 0)
-33 'wood' 'mcvars' 'wood' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+37 'wood' 'mcvars' 'wood' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 CHARACTER ((CONSTANT (
 INTEGER 4 0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
-34 'wood_rej' 'mcvars' 'wood_rej' 1 ((VARIABLE UNKNOWN-INTENT
+38 'wood_rej' 'mcvars' 'wood_rej' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 INTEGER
 ()) 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-35 'wooda' 'mcvars' 'wooda' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+39 'wooda' 'mcvars' 'wooda' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-36 'woodr' 'mcvars' 'woodr' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+40 'woodr' 'mcvars' 'woodr' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-37 'woodt' 'mcvars' 'woodt' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+41 'woodt' 'mcvars' 'woodt' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
 )
 
-('absorb' 0 2 'allowneg' 0 3 'areapnsamp' 0 4 'distneg' 0 5 'fluxfaces'
-0 6 'initcur' 0 7 'klwood_rej' 0 8 'klwooda' 0 9 'klwoodbinplot' 0 10
-'klwoodr' 0 11 'klwoodt' 0 12 'mcvars' 0 13 'numparts' 0 14 'numpnsamp'
-0 15 'pfnumcells' 0 16 'plotflux' 0 17 'pltflux' 0 18 'radmcbinplot' 0
-19 'radtrans_int' 0 20 'radwood_rej' 0 21 'radwooda' 0 22 'radwoodbinplot'
-0 23 'radwoodr' 0 24 'radwoodt' 0 25 'reflect' 0 26 'results' 0 27
-'rodorplanar' 0 28 'sourcetype' 0 29 'trannprt' 0 30 'transmit' 0 31
-'trprofile_binnum' 0 32 'wood' 0 33 'wood_rej' 0 34 'wooda' 0 35 'woodr'
-0 36 'woodt' 0 37)
+('absorb' 0 2 'allowneg' 0 3 'areapnsamp' 0 4 'bflux' 0 5 'bwoodf' 0 6
+'distneg' 0 7 'fflux' 0 8 'fluxfaces' 0 9 'fwoodf' 0 10 'initcur' 0 11
+'klwood_rej' 0 12 'klwooda' 0 13 'klwoodbinplot' 0 14 'klwoodr' 0 15
+'klwoodt' 0 16 'mcvars' 0 17 'numparts' 0 18 'numpnsamp' 0 19 'pfnumcells'
+0 20 'plotflux' 0 21 'pltflux' 0 22 'radmcbinplot' 0 23 'radtrans_int' 0
+24 'radwood_rej' 0 25 'radwooda' 0 26 'radwoodbinplot' 0 27 'radwoodr' 0
+28 'radwoodt' 0 29 'reflect' 0 30 'results' 0 31 'rodorplanar' 0 32
+'sourcetype' 0 33 'trannprt' 0 34 'transmit' 0 35 'trprofile_binnum' 0
+36 'wood' 0 37 'wood_rej' 0 38 'wooda' 0 39 'woodr' 0 40 'woodt' 0 41)
