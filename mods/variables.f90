@@ -125,6 +125,12 @@ module MCvars
 
   !non inputs
   integer              :: radtrans_int         !
+  real(8), allocatable :: reflect(:)           ! slab reflection tally
+  real(8), allocatable :: Woodr(:)             ! generic reflection tally for Woodcock routines
+  real(8), allocatable :: radWoodr(:)          ! slab reflection tally, WMC on binary mixtures
+  real(8), allocatable :: KLWoodr(:)           ! slab reflection tally, WMC on KL reconstructions
+
+  real(8), allocatable :: Woodt(:)             ! generic transmission tally for Woodcock routines
 
 end module MCvars
 
