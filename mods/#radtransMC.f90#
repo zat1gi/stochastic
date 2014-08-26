@@ -58,16 +58,14 @@ CONTAINS
         if( mu>=0 ) then
           i=i+1
 !print *,"particle: ",o,"  transmit"
-          if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),flux,&
-                                      j,mu)
+          if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),flux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),&
                                      j,mu)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
 !print *,"particle: ",o,"  reflect"
-          if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),flux,&
-                                      j,mu)
+          if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),flux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),&
                                      j,mu)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
@@ -76,16 +74,14 @@ CONTAINS
         endif
       elseif( sc_ab<scatrat(matType(i)) ) then          !scatter
 !print *,"particle: ",o,"  scatter"
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,flux,&
-                                    j,mu)
+        if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,flux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,&
                                    j,mu)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
 !print *,"particle: ",o,"  absorb"
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,flux,&
-                                    j,mu)
+        if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,flux,j,mu)
                                 absorb(j)=absorb(j)+1.0d0 !absorb
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,&
                                    j,mu)
@@ -484,8 +480,7 @@ enddo
 !! Radtrans and Woodcock funcs and subs
 
 
-  subroutine adv_pos_col_flux( oldpos,newpos,flux,&
-                               j,mu )
+  subroutine adv_pos_col_flux( oldpos,newpos,flux,j,mu )
   use MCvars, only: pfnumcells, plotflux, pltflux, fluxfaces
   integer :: j
   real(8) :: oldpos,newpos,mu,absmu

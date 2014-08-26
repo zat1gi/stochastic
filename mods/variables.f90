@@ -132,6 +132,9 @@ module MCvars
   real(8), allocatable :: initcur(:)           ! initial current into the slab
 
   real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
+  real(8), allocatable :: Woodf(:,:)           ! flux tally both mats, generic Woodcock
+  real(8), allocatable :: radWoodf(:,:)        ! flux tally both mats, WMC over binary mixtures
+  real(8), allocatable :: KLWoodf(:,:)         ! flux tally both mats, WMC over KL reconstruction
   real(8), allocatable :: fflux(:,:)           ! flux tally in 1st mat, TMC over binary mixtures
   real(8), allocatable :: fWoodf(:,:)          ! flux tally in 1st mat, generic Woodcock
   real(8), allocatable :: fradWoodf(:,:)       ! flux tally in 1st mat, WMC over binary mixtures
