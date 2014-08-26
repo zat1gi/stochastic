@@ -79,7 +79,7 @@ CONTAINS
 
 
   subroutine readinputstoc( KLres,KLnoise,&
-                            KLrec,radMC,results,&
+                            KLrec,radMC,&
                             radWood,KLWood,allowneg,&
                             distneg,pltflux,seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
@@ -92,13 +92,12 @@ CONTAINS
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
-                                  plotflux
+                                  plotflux, results
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLres,KLnoise
   character(3) :: KLrec
   character(3) :: radMC
-  character(6) :: results
   character(3) :: radWood,KLWood,allowneg,distneg   !Woodcock opts
   character(7) :: pltflux(4)
 

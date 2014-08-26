@@ -113,13 +113,14 @@ CONTAINS
 
 
   subroutine radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
-             results,pltflux,flux,fluxfaces,fflux,&
+             pltflux,flux,fluxfaces,fflux,&
              bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux
+  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux, &
+                    results
   real(8) :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
-  character(6) :: results
+
   character(7) :: pltflux(4)
 
   integer :: j,i

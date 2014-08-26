@@ -20,7 +20,6 @@ program stochastic
   integer :: i,j
   !--- radtransMC variables (new) ---!
   integer      :: o
-  character(6) :: results
   character(7) :: pltflux(4)
   real(8),allocatable :: reflect(:),transmit(:),absorb(:),initcur(:)
   real(8),allocatable :: aveRefl(:),devRefl(:),relRefl(:)
@@ -41,7 +40,7 @@ program stochastic
   !!read and prepare parameters
   call cpu_time(t1)
   call readinputstoc(      KLres,KLnoise,&
-                           KLrec,radMC,results,&
+                           KLrec,radMC,&
                            radWood,KLWood,allowneg,&
                            distneg,pltflux,seed )
 
@@ -128,7 +127,7 @@ program stochastic
   call Acase_print
 
   if(radMC=='yes') call radtrans_MCoutstats( reflect,transmit,absorb,initcur,&
-                           results,pltflux,&
+                           pltflux,&
                            flux,fluxfaces,fflux,bflux )
   if(radWood=='yes') call WoodcockMCoutstats( radWoodt,radWoodr,&
                            radWooda,radWood_rej,pltflux,&
