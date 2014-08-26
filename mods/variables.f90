@@ -46,6 +46,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   implicit none
   !inputs
   character(3)         :: KLres                ! perform "KL research" operations?
+  character(3)         :: KLrec                ! perform "KL reconstruct" operations?
   integer              :: KLrnumRealz          ! num of realizations to reconstruct
   integer              :: KLrprintat           ! print at this many realizations
   character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no

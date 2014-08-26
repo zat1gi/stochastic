@@ -79,7 +79,7 @@ CONTAINS
 
 
   subroutine readinputstoc( KLnoise,&
-                            KLrec,radMC,&
+                            radMC,&
                             radWood,KLWood,&
                             seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
@@ -90,14 +90,13 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
-                                  KLres
+                                  KLres, KLrec
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
                                   plotflux, results, pltflux, allowneg, distneg
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLnoise
-  character(3) :: KLrec
   character(3) :: radMC
   character(3) :: radWood,KLWood   !Woodcock opts
 
@@ -257,17 +256,17 @@ CONTAINS
 
 
 
-  subroutine testinputstoc( KLrec,radWood,&
+  subroutine testinputstoc( radWood,&
                             radMC,KLnoise,KLWood )
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres
+                    pltKLrrealzPointorXi, KLres, KLrec
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg
   integer :: fpointorxi(2)
-  character(3) :: KLrec,radMC,KLnoise,KLWood,radWood
+  character(3) :: radMC,KLnoise,KLWood,radWood
 
   integer :: i
   real(8) :: smallersig,largersig,sigratio
@@ -409,12 +408,12 @@ CONTAINS
 
 
 
-  subroutine timereport( runtime,KLrec,radMC,radWood,KLWood,&
+  subroutine timereport( runtime,radMC,radWood,KLWood,&
                          KLnoise )
-  use KLvars, only: KLres
+  use KLvars, only: KLres, KLrec
   use timevars, only: time, ntime
   real(8) :: runtime
-  character(3) :: KLrec,radMC,radWood,KLWood,KLnoise
+  character(3) :: radMC,radWood,KLWood,KLnoise
 
   integer :: i
   real(8) :: othertime,otherpercent
