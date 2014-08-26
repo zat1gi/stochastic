@@ -117,6 +117,7 @@ module MCvars
   character(6)         :: sourceType           ! 'intern' or 'left', distributed or beam source
   character(6)         :: plotflux(2)          ! 
   character(6)         :: results              !
+  character(7)         :: pltflux(4)           ! 
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview'
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'
