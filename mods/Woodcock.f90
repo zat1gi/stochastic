@@ -143,8 +143,7 @@ if(print=='yes') print *,
       if( dc>db .AND. mu>=0 ) then        !tally trans or refl
         Woodt(j) = Woodt(j)+1 !transmit
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,Woodf,j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,s,&
-                                   j,mu)
+        if(plotflux(2)=='fb') call col_fbflux(position,s,fWoodf,bWoodf,j,mu)
 
         if(print=='yes') print *,"                      tally transmit"
         exit
@@ -152,15 +151,13 @@ if(print=='yes') print *,
       if( dc>db .AND. mu<0 ) then
         Woodr(j) = Woodr(j) + 1 !reflect
         if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,Woodf,j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,&
-                                   j,mu)
+        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fWoodf,bWoodf,j,mu)
         if(print=='yes') print *,"                      tally reflect"
         exit
       endif
 
       if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,Woodf,j,mu)
-      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,&
-                                 j,mu)
+      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fWoodf,bWoodf,j,mu)
       if(Wood=='rad') woodrat= radWood_actsig(position,sig)&
                                /ceilsig
       if(Wood=='KL')  woodrat= KLrxi_point(j,position)&
