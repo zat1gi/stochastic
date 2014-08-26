@@ -144,6 +144,7 @@ module MCvars
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures
   integer              :: KLWood_rej(2)        ! Woodcock rejection tally, WMC on KL reconstructions
+  integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
 
 end module MCvars
 
