@@ -81,7 +81,7 @@ CONTAINS
   subroutine readinputstoc( KLres,KLnoise,&
                             KLrec,radMC,&
                             radWood,KLWood,&
-                            distneg,seed )
+                            seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, plotmatdxs, pltgenrealzwhich
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -92,13 +92,13 @@ CONTAINS
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
-                                  plotflux, results, pltflux, allowneg
+                                  plotflux, results, pltflux, allowneg, distneg
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
   character(3) :: KLres,KLnoise
   character(3) :: KLrec
   character(3) :: radMC
-  character(3) :: radWood,KLWood,distneg   !Woodcock opts
+  character(3) :: radWood,KLWood   !Woodcock opts
 
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -257,17 +257,16 @@ CONTAINS
 
 
   subroutine testinputstoc( KLres,KLrec,radWood,&
-                            radMC,KLnoise,KLWood,&
-                            distneg )
+                            radMC,KLnoise,KLWood )
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi
-  use MCvars, only: trannprt, sourceType, pltflux, allowneg
+  use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg
   integer :: fpointorxi(2)
-  character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood,distneg
+  character(3) :: KLres,KLrec,radMC,KLnoise,KLWood,radWood
 
   integer :: i
   real(8) :: smallersig,largersig,sigratio

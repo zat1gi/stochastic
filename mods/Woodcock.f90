@@ -10,9 +10,9 @@ CONTAINS
   ! print statements in this module use 600-699
 
 
-  subroutine WoodcockMC( j,Wood,fluxfaces,Woodf,radWoodf,KLWoodf,&
+  subroutine WoodcockMC( j,fluxfaces,Woodf,radWoodf,KLWoodf,&
                          fWoodf,bWoodf,fradWoodf,bradWoodf,&
-                         fKLWoodf,bKLWoodf,distneg )
+                         fKLWoodf,bKLWoodf )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
                           matType, matLength
@@ -20,12 +20,11 @@ CONTAINS
   use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
                     pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
-                    numpnSamp, areapnSamp, allowneg
+                    numpnSamp, areapnSamp, allowneg, distneg, Wood
   integer :: j
   real(8),allocatable :: Woodf(:,:),fWoodf(:,:),bWoodf(:,:)
   real(8) :: fluxfaces(:),radWoodf(:,:),KLWoodf(:,:)
   real(8) :: fradWoodf(:,:),bradWoodf(:,:),fKLWoodf(:,:),bKLWoodf(:,:)
-  character(3) :: Wood,distneg
 
   integer :: i,o,nbin,k
   real(8) :: disthold
@@ -582,11 +581,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine Woodnegstats( distneg )
+  subroutine Woodnegstats
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
-  use MCvars, only: numpnSamp, areapnSamp
-  character(3) :: distneg
+  use MCvars, only: numpnSamp, areapnSamp, distneg
 
   real(8) :: pos,neg
 

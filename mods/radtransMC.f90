@@ -7,17 +7,14 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
-  subroutine radtrans_MCsim( j,&
-             o,&
-             initcur,fluxfaces,flux,&
+  subroutine radtrans_MCsim( j,o,fluxfaces,flux,&
              fflux,bflux,s )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
-                    plotflux, pltflux, reflect, transmit, absorb
+                    plotflux, pltflux, reflect, transmit, absorb, initcur
   integer  :: j,o
   real(8)  :: tt1,tt2,s
-  real(8),allocatable :: initcur(:)
   real(8),allocatable :: fluxfaces(:),flux(:,:),fflux(:,:),bflux(:,:)
 
   integer  :: i,z
@@ -49,7 +46,7 @@ CONTAINS
       if(rodOrplanar=='planar') mu = newmu()
     endif
 
-                                initcur(j) = initcur(j) + 1    !initial current 
+                                initcur(j) = initcur(j) + 1d0    !initial current 
     do            ! through per part interaction
       radtrans_int=radtrans_int+1 !used to calc num of interactions
 
@@ -111,13 +108,10 @@ CONTAINS
 
 
 
-  subroutine radtrans_MCoutstats( initcur,&
-             flux,fluxfaces,fflux,&
-             bflux )
+  subroutine radtrans_MCoutstats( flux,fluxfaces,fflux,bflux )
   use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux, &
-                    results, pltflux, reflect, transmit, absorb
-  real(8) :: initcur(:)
+                    results, pltflux, reflect, transmit, absorb, initcur
   real(8) :: flux(:,:),fluxfaces(:),fflux(:,:),bflux(:,:)
 
   integer :: j,i

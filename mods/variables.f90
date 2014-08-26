@@ -124,9 +124,12 @@ module MCvars
   character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview'
 
   character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
+  character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
   !non inputs
   integer              :: radtrans_int         !
+
+  real(8), allocatable :: initcur(:)           ! initial current into the slab
 
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodr(:)             ! generic reflection tally for Woodcock routines
@@ -142,6 +145,8 @@ module MCvars
   real(8), allocatable :: Wooda(:)             ! generic absorption tally for Woodcock routines
   real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
   real(8), allocatable :: KLWooda(:)           ! slab absorption tally, WMC on KL reconstructions
+
+  character(3)         :: Wood                 ! toggle flag between 'rad' and 'KL'
 
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures
