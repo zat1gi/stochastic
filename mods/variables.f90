@@ -134,6 +134,11 @@ module MCvars
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
   !non inputs
+  real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
+  real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values
+                                               ! First rank: 1 average, 2 stdev
+                                               ! Second rank: 1 AdMC, 2 AdLP, 3 BrMC, 4 BrLP, 5 Bratmix
+
   integer              :: radtrans_int         !
 
   real(8), allocatable :: initcur(:)           ! initial current into the slab
