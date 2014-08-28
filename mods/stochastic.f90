@@ -93,12 +93,15 @@ program stochastic
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
 
+
+
   !!print final reports
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
   if(pltflux(1)/='noplot') call plot_flux
   call radtrans_resultplot !bin for radMC,radWood
-  write(*,*)
+  if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
   call calc_time_p( t1,t2,runtime )
   call timereport
+
 
 end program stochastic

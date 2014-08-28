@@ -761,4 +761,56 @@ enddo
 
 
 
+
+
+
+  subroutine MCprintstats
+  !This subroutine prints reflection, transmission, and absorption stats to screen
+  !and an output file.  When available it prints values from Adams89 and Brantley11 papers.
+  use genRealzvars, only: Adamscase
+  use MCvars, only: ABreflection, ABtransmission, rodOrplanar
+
+
+  320 format(" |AdamsMC:  |",f8.5,"  +-",f9.5,"    |"f8.5,"  +-",f9.5,"|")
+  321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
+  322 format(" |AdamsLP:  |",f8.5,"                 |",f8.5,"             |")
+  323 format(" |BrantLP:  |",f8.5,"                 |",f8.5,"             |")
+  324 format(" |BrAtMix:  |",f8.5,"                 |",f8.5,"             |")
+  325 format(" |-case:",f3.1,"-|---- Reflection and Transmission Results ------|")
+
+  !print to file
+  open(unit=100,file="MCleakage_results.txt")
+  write(100,*)
+  if(Adamscase/=0) write(100,325) Adamscase
+  if(Adamscase==0) write(100,*) "|--------------- Reflection and Transmission Results ------|"
+  write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
+  write(100,*) "|----------|-------------------------|---------------------|"
+  if(Adamscase/=0) then
+    write(100,320) ABreflection(1,1),ABreflection(2,1),ABtransmission(1,1),ABtransmission(2,1)
+    if(rodOrplanar=='planar') write(100,321) ABreflection(1,3),ABtransmission(1,3)
+  endif
+  if(Adamscase/=0) then
+    !write(100,*) "|          |                         |                     |" 
+    write(100,*) "|----------|-------------------------|---------------------|"
+    write(100,322) ABreflection(1,2),ABtransmission(1,2)
+    if(rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
+  endif
+  if(Adamscase/=0) then
+    !write(100,*) "|          |                         |                     |" 
+    write(100,*) "|----------|-------------------------|---------------------|"
+    if(rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
+  endif
+  write(100,*) "|----------------------------------------------------------|"
+  write(100,*)
+  close(unit=100)
+
+  !move file and print to screen
+  call system("mv MCleakage_results.txt texts")
+  call system("cat texts/MCleakage_results.txt")
+
+  end subroutine MCprintstats
+
+
+
+
 end module radtransMC
