@@ -765,8 +765,9 @@ enddo
 
 
   subroutine MCprintstats
-  !This subroutine prints reflection, transmission, and absorption stats to screen
-  !and an output file.  When available it prints values from Adams89 and Brantley11 papers.
+  !This subroutine prints reflection, transmission, and absorption stats to a '.out' file,
+  !then prints that file to the screen for user friendliness.
+  !Stats are from Adams89, Brantley11, and those generated here!
   use genRealzvars, only: Adamscase
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar
 
@@ -779,7 +780,7 @@ enddo
   325 format(" |-case:",f3.1,"-|---- Reflection and Transmission Results ------|")
 
   !print to file
-  open(unit=100,file="MCleakage_results.txt")
+  open(unit=100,file="MCleakage_results.out")
   write(100,*)
   if(Adamscase/=0) write(100,325) Adamscase
   if(Adamscase==0) write(100,*) "|--------------- Reflection and Transmission Results ------|"
@@ -805,8 +806,8 @@ enddo
   close(unit=100)
 
   !move file and print to screen
-  call system("mv MCleakage_results.txt texts")
-  call system("cat texts/MCleakage_results.txt")
+  call system("mv MCleakage_results.out texts")
+  call system("cat texts/MCleakage_results.out")
 
   end subroutine MCprintstats
 

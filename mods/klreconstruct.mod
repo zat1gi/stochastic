@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/KLreconstruct.f90
-MD5:bb32a31ca34e8c8b1f739431d3488954 -- If you edit this, you'll get what you deserve.
+MD5:c3ba6fd1d8344222e05c98f49b54b9c7 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -17,11 +17,11 @@ MD5:bb32a31ca34e8c8b1f739431d3488954 -- If you edit this, you'll get what you de
 (2 'rn_seed' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 3 ()
 () 0 () () () 0 0)
-3 'rn_count' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 4 ()
-() 0 () () () 0 0)
 4 'rn_nps' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 0 ()
+() 0 () () () 0 0)
+3 'rn_count' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 4 ()
 () 0 () () () 0 0)
 5 '__convert_r4_r8' '(intrinsic)' '' 1 ((PROCEDURE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 FUNCTION ELEMENTAL PURE) (REAL 8 0 0 0
@@ -167,19 +167,22 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 155 0 (156 157
 161 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-162 'utilities' 'utilities' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+162 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 ()
+() () 0 0)
+163 'utilities' 'utilities' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-163 'var_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
-UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 164 0 (165
-166) () 163 () () () 0 0)
-167 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
-UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 168 0 (169
-170) () 167 () () () 0 0)
-171 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+164 'var_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 165 0 (166
+167) () 164 () () () 0 0)
+168 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 169 0 (170
+171) () 168 () () () 0 0)
+172 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-172 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+173 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 10 't1' '' '' 9 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
@@ -365,18 +368,18 @@ UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 160 'esttime' '' '' 155 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-165 'values' '' '' 164 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+166 'values' '' '' 165 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 () 0 0)
-166 'numofvalues' '' '' 164 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+167 'numofvalues' '' '' 165 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-169 'values' '' '' 168 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+170 'values' '' '' 169 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 () 0 0)
-170 'numofvalues' '' '' 168 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+171 'numofvalues' '' '' 169 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
 )
@@ -394,5 +397,5 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 'rn_query_first' 0 119 'rn_set' 0 122 'rn_test_basic' 0 126
 'rn_test_mixed' 0 129 'rn_test_skip' 0 132 'rn_update_stats' 0 135
 'select_from_pdf' 0 136 'step' 0 143 'stol' 0 144 'store_in_bins' 0 145
-'time_report' 0 154 'timeman' 0 161 'utilities' 0 162 'var_p' 0 163
-'var_s' 0 167 'xl' 0 171 'xr' 0 172)
+'time_report' 0 154 'timeman' 0 161 'timereport' 0 162 'utilities' 0 163
+'var_p' 0 164 'var_s' 0 168 'xl' 0 172 'xr' 0 173)

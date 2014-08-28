@@ -352,54 +352,6 @@ CONTAINS
 
 
 
-
-
-  subroutine timereport
-  use KLvars, only: KLres, KLrec, KLnoise
-  use MCvars, only: radMC, radWood, KLWood
-  use timevars, only: time, ntime, runtime
-
-  integer :: i
-  real(8) :: othertime,otherpercent
-  real(8),allocatable :: pertime(:)
-
-  allocate(pertime(ntime))
-
-
-  othertime = runtime
-  do i=1,ntime
-    time(i)    = time(i) / 60
-    othertime  = othertime - time(i)
-    pertime(i) = time(i) / runtime * 100
-  enddo
-  otherpercent = othertime / runtime * 100
-
-  110 format("    genRealz   :",f10.2," min     per:",f6.2," %")
-  111 format("    radMC      :",f10.2," min     per:",f6.2," %")
-  112 format("    radWood    :",f10.2," min     per:",f6.2," %")
-  113 format("    KLnoise    :",f10.2," min     per:",f6.2," %")
-  114 format("    KLcol      :",f10.2," min     per:",f6.2," %")
-  115 format("    KLrec      :",f10.2," min     per:",f6.2," %")
-  116 format("    KLWood     :",f10.2," min     per:",f6.2," %")
-  117 format("    other      :",f10.2," min     per:",f6.2," %")
-!  118 format("    total      :",f10.2," min")
-
-                     write(*,110) time(1),pertime(1)
-  if(radMC=='yes')   write(*,111) time(2),pertime(2)
-  if(radWood=='yes') write(*,112) time(3),pertime(3)
-  if(KLnoise=='yes') write(*,113) time(4),pertime(4)
-  if(KLres=='yes')   write(*,114) time(5),pertime(5)
-  if(KLrec=='yes')   write(*,115) time(6),pertime(6)
-  if(KLWood=='yes')  write(*,116) time(7),pertime(7)
-                     write(*,117) othertime,otherpercent
-!  write(*,118) runtime
-
-
-  end subroutine timereport
-
-
-
-
   subroutine Acase_load
   use genRealzvars, only:   Adamscase, sig, lam, scatrat, s  
   use MCvars, only: rodOrplanar, ABreflection, ABtransmission

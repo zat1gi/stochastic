@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/timeman.f90
-MD5:949b0646d485f20196d6dbc6d9d12448 -- If you edit this, you'll get what you deserve.
+MD5:f647ccdb87c735ea1d77e4cb146d0c3d -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -28,6 +28,9 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 12 0 (13 14 15
 16 17) () 0 () () () 0 0)
 18 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
+19 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 ()
+() () 0 0)
 4 'j' '' '' 3 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 7 'j' '' '' 6 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
@@ -48,4 +51,4 @@ UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('klr_time' 0 2 'klwood_time' 0 5 'radtrans_time' 0 8 'time_report' 0 11
-'timeman' 0 18)
+'timeman' 0 18 'timereport' 0 19)

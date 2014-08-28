@@ -19,7 +19,7 @@ program stochastic
   integer :: j      !current realization, better to make global?
   integer :: seed   !random number seed for overall problem, used once.
   ! local variables
-  real(8) :: t2, seeddum
+  real(8) :: seeddum
 
   !!read parameters
   call cpu_time(t1)
@@ -100,7 +100,6 @@ program stochastic
   if(pltflux(1)/='noplot') call plot_flux
   call radtrans_resultplot !bin for radMC,radWood
   if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
-  call calc_time_p( t1,t2,runtime )
   call timereport
 
 

@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/Woodcock.f90
-MD5:ad30b37fe2ef583890b4e1608ccb690c -- If you edit this, you'll get what you deserve.
+MD5:06b6bee730f49f8201f1cc15378ee0af -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -206,37 +206,40 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 207 0 (208 209
 213 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-214 'transplot' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 215 0 (216) ()
+214 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 ()
+() () 0 0)
+215 'transplot' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 216 0 (217) ()
 0 () () () 0 0)
-217 'utilities' 'utilities' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+218 'utilities' 'utilities' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-218 'var_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
-UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 219 0 (220
-221) () 218 () () () 0 0)
-222 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
-UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 223 0 (224
-225) () 222 () () () 0 0)
-226 'woodcock' 'woodcock' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+219 'var_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 220 0 (221
+222) () 219 () () () 0 0)
+223 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 224 0 (225
+226) () 223 () () () 0 0)
+227 'woodcock' 'woodcock' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-227 'woodcockkloutstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
+228 'woodcockkloutstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)
-228 'woodcockmc' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 229 0 (230) ()
+229 'woodcockmc' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 230 0 (231) ()
 0 () () () 0 0)
-231 'woodcockmcoutstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
+232 'woodcockmcoutstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)
-232 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
+233 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)
-233 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+234 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-234 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+235 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 8 'oldpos' '' '' 7 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
@@ -510,23 +513,23 @@ UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 212 'esttime' '' '' 207 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-216 'adamscase' '' '' 215 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+217 'adamscase' '' '' 216 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-220 'values' '' '' 219 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+221 'values' '' '' 220 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 () 0 0)
-221 'numofvalues' '' '' 219 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+222 'numofvalues' '' '' 220 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-224 'values' '' '' 223 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+225 'values' '' '' 224 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 () 0 0)
-225 'numofvalues' '' '' 223 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+226 'numofvalues' '' '' 224 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-230 'j' '' '' 229 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+231 'j' '' '' 230 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 )
 
@@ -547,7 +550,7 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 'rn_init_problem' 0 161 'rn_query' 0 168 'rn_query_first' 0 171 'rn_set'
 0 174 'rn_test_basic' 0 178 'rn_test_mixed' 0 181 'rn_test_skip' 0 184
 'rn_update_stats' 0 187 'select_from_pdf' 0 188 'step' 0 195 'stol' 0
-196 'store_in_bins' 0 197 'time_report' 0 206 'timeman' 0 213 'transplot'
-0 214 'utilities' 0 217 'var_p' 0 218 'var_s' 0 222 'woodcock' 0 226
-'woodcockkloutstats' 0 227 'woodcockmc' 0 228 'woodcockmcoutstats' 0 231
-'woodnegstats' 0 232 'xl' 0 233 'xr' 0 234)
+196 'store_in_bins' 0 197 'time_report' 0 206 'timeman' 0 213 'timereport'
+0 214 'transplot' 0 215 'utilities' 0 218 'var_p' 0 219 'var_s' 0 223
+'woodcock' 0 227 'woodcockkloutstats' 0 228 'woodcockmc' 0 229
+'woodcockmcoutstats' 0 232 'woodnegstats' 0 233 'xl' 0 234 'xr' 0 235)
