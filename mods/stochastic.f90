@@ -21,21 +21,30 @@ program stochastic
   ! local variables
   real(8) :: t2, seeddum
 
-  !!read and prepare parameters
+  !!read parameters
   call cpu_time(t1)
   call readinputstoc( seed )
   call testinputstoc
+
+  !!allocate/prepare global parameters
   call Acase_load
   call Acase_print
   do j=1,seed !advance starting seed
     seeddum = rang()
   enddo
 
-  !!prepare parameters, especially for KLresearch
+  !!Perform KL research
   if(KLres=='yes')   call KL_eigenvalue
   if(KLres=='yes')   call KL_Correlation
   if(radWood=='yes' .or. KLWood=='yes' .or. radMC=='yes' .or. plotmatdxs/='noplot')&
                            call initialize_fluxplot
+
+
+  !!Perform Transport with Various UQ Methods
+  !loop over different methods that will be used
+    !allocate UQ specific variables
+
+
 
   !!genRealz, KLresearch, radtrans, radWood
   if(radWood=='yes') Wood='rad'
@@ -53,8 +62,6 @@ program stochastic
   if(KLres=='yes') call KL_eval
   if(KLnoise=='yes') call KL_Noise
 
-
-
   !!KLreconstructions
   if(KLrec=='yes') then
     call KLrcondition
@@ -65,7 +72,6 @@ program stochastic
   endif
   if(KLadjust=='yes') call KLadjustmean
   if(KLrec=='yes') call KLreval
-
 
   !!radKL transport
   if(KLWood=='yes') then
@@ -78,16 +84,19 @@ program stochastic
 !  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
 
 
-  !!concluding stats
-  call Acase_print
 
+
+
+  !!concluding stats-need to be in UQ wrapper
+  call Acase_print
   if(radMC=='yes') call radtrans_MCoutstats
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
+
+  !!print final reports
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
   if(pltflux(1)/='noplot') call plot_flux
   call radtrans_resultplot !bin for radMC,radWood
-
   write(*,*)
   call calc_time_p( t1,t2,runtime )
   call timereport

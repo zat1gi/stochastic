@@ -46,6 +46,7 @@ CONTAINS
         s=10.0d0
       endif
     endif
+    ! Loading transmission and reflection results from Adams and Brantley Papers
 
   end subroutine Acase_load
 
