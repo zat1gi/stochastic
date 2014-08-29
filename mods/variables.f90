@@ -57,7 +57,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)
   integer              :: numEigs              ! number of eigenmodes to calculate
-  integer              :: numSlice             ! 
+  integer              :: numSlice             ! number of points to plot eigenfunction at
   integer              :: levsrefEig           !
   real(8)              :: binSmallBound        ! smallest xi value for xi bins
   real(8)              :: binLargeBound        ! largest xi value for xi bins

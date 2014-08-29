@@ -57,82 +57,60 @@ CONTAINS
 
   open(unit=2,file="inputstoc.txt")
 
-  !--- genRealz ---!
-  read(2,*) dumchar    !-- genRealz Shared Variables --!
+  read(2,*) seed
+
+  !--- Geometry ---!
+  read(2,*) dumchar
   read(2,*) Adamscase
   read(2,*) sig(1),sig(2)
   read(2,*) scatrat(1),scatrat(2)
   read(2,*) lam(1),lam(2)
   read(2,*) s
-  read(2,*) numRealz
+  read(2,*) numRealz,trannprt
+  read(2,*) KLrnumRealz,KLrprintat
 
-
-  !--- KL ---!
-  read(2,*) dumchar    !-- KL Shared Variables --!
-  read(2,*) KLvarcalc
-  read(2,*) KLvarkept_tol
-
-
-  !--- Transport ---!
-  read(2,*) dumchar    !-- Transport Shared Variables --!
-  read(2,*) trprofile_binnum
-
-  read(2,*) dumchar    !-- radMC (TMC) Specific Variables --!
-  read(2,*) dumchar      !!-radMCbinplot
-  read(2,*) radMCbinplot
-
-  read(2,*) dumchar    !-- radWood (WMC) Specific Variables --!
-  read(2,*) dumchar      !!-radWoodbinplot
-  read(2,*) radWoodbinplot
-
-  read(2,*) dumchar    !-- KLWood (KLWMC) Specific Variables --!
-  read(2,*) dumchar      !!-KLWoodbinplot
-  read(2,*) KLWoodbinplot
-
-
-
-
-  read(2,*) seed
-
-  read(2,*) dumchar    !KL research options
-  read(2,*) KLres
-  read(2,*) binNumof
+  !--- Large KL Options ---!
+  read(2,*) dumchar
+  read(2,*) KLres,KLrec
   read(2,*) numEigs
-  read(2,*) numSlice
+  read(2,*) binNumof
+
+  !--- Large MCtrans Options ---!
+  read(2,*) dumchar
+  read(2,*) radMC,radWood,KLWood
+  read(2,*) numParts
+
+  !--- Lesser KL Options ---!
+  read(2,*) dumchar
+  read(2,*) KLrnumpoints(2),KLrnumpoints(1)     !fixed xi, fixed point
   read(2,*) levsrefEig
   read(2,*) binSmallBound,binLargeBound
   read(2,*) KLnoise
+  read(2,*) KLvarcalc,KLvarkept_tol
+  read(2,*) numSlice
 
-  read(2,*) dumchar    !KL reconstruct options
-  read(2,*) KLrec
-  read(2,*) KLrnumpoints(1)     !fixed point
-  read(2,*) KLrnumpoints(2)     !fixed xi
-  read(2,*) KLrnumRealz
-  read(2,*) KLrprintat
-
-  read(2,*) dumchar    !radtransMC options
-  read(2,*) radMC
-  read(2,*) numParts
-  read(2,*) trannprt
+  !--- Lesser MCtrans Options ---!
+  read(2,*) dumchar 
   read(2,*) rodOrplanar
   read(2,*) sourceType
-  read(2,*) results
-
-  read(2,*) dumchar    !Woodcock options
-  read(2,*) radWood
-  read(2,*) KLWood
   read(2,*) allowneg,distneg
   read(2,*) KLadjust,meanadjust_tol
+  read(2,*) results
+
+
 
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
 
-  read(2,*) dumchar    !Plotting flux
-  read(2,*) pltflux(1),pltflux(2),pltflux(3),pltflux(4)
-  read(2,*) plotmatdxs
-  read(2,*) plotflux(1),plotflux(2)
-  read(2,*) pfnumcells
+  read(2,*) dumchar    !Plotting genRealz realz
+  read(2,*) pltgenrealz(1),pltgenrealz(2),pltgenrealz(3),pltgenrealz(4)
+  read(2,*) pltgenrealznumof
+  allocate(pltgenrealzwhich(pltgenrealznumof))
+  do i=1,pltgenrealznumof
+    read(2,*) pltgenrealzwhich(i)
+  enddo
+
 
   read(2,*) dumchar    !Plotting Eigenfunction
   read(2,*) pltEigf(1),pltEigf(2),pltEigf(3),pltEigf(4)
@@ -141,10 +119,6 @@ CONTAINS
   do i=1,pltEigfnumof
     read(2,*) pltEigfwhich(i)
   enddo
-
-  read(2,*) dumchar    !Plotting Correlation contours
-  read(2,*) Corropts(1),Corropts(2)
-  read(2,*) Corrnumpoints
 
   read(2,*) dumchar    !Plotting xiBins
   read(2,*) pltxiBins(1),pltxiBins(2),pltxiBins(3),pltxiBins(4)
@@ -164,14 +138,6 @@ CONTAINS
     read(2,*) pltKLrrealzwhich(1,i),pltKLrrealzwhich(2,i),pltKLrrealzPointorXi(i)
   enddo
 
-  read(2,*) dumchar    !Plotting genRealz realz
-  read(2,*) pltgenrealz(1),pltgenrealz(2),pltgenrealz(3),pltgenrealz(4)
-  read(2,*) pltgenrealznumof
-  allocate(pltgenrealzwhich(pltgenrealznumof))
-  do i=1,pltgenrealznumof
-    read(2,*) pltgenrealzwhich(i)
-  enddo
-
   read(2,*) dumchar    !Plotting Variace (Co)
   read(2,*) pltCo(1),pltCo(2),pltCo(3),pltCo(4)
   read(2,*) pltConumof
@@ -180,17 +146,37 @@ CONTAINS
     read(2,*) pltCowhich(1,i),pltCowhich(2,i)
   enddo
 
+  read(2,*) dumchar    !Plotting Correlation contours
+  read(2,*) Corropts(1),Corropts(2)
+  read(2,*) Corrnumpoints
+
+
+  read(2,*) dumchar    !Leakage pdf
+  read(2,*) radMCbinplot,radWoodbinplot,KLWoodbinplot
+  read(2,*) trprofile_binnum
+
+  read(2,*) dumchar    !Plotting flux
+  read(2,*) pltflux(1),pltflux(2),pltflux(3),pltflux(4)
+  read(2,*) plotmatdxs
+  read(2,*) plotflux(1),plotflux(2)
+  read(2,*) pfnumcells
+
+
+
 
 
 
   if( pltallopt .NE. 'default' ) then
-    pltEigf(1)     =pltallopt
-    Corropts(1)    =pltallopt
-    pltxiBins(1)   =pltallopt
-    pltKLrrealz(1) =pltallopt
-    pltgenrealz(1) =pltallopt
-    pltCo(1)       =pltallopt
-    pltflux(1)     =pltallopt
+    radMCbinplot   = pltallopt
+    radWoodbinplot = pltallopt
+    KLWoodbinplot  = pltallopt
+    pltEigf(1)     = pltallopt
+    Corropts(1)    = pltallopt
+    pltxiBins(1)   = pltallopt
+    pltKLrrealz(1) = pltallopt
+    pltgenrealz(1) = pltallopt
+    pltCo(1)       = pltallopt
+    pltflux(1)     = pltallopt
   endif
 
   end subroutine readinputstoc

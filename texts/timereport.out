@@ -1,8 +1,8 @@
   total runtime:      0.01 min
     genRealz   :      0.00 min     per:  0.00 %
-    radMC      :      0.00 min     per:  0.00 %
-    radWood    :      0.00 min     per:  3.72 %
+    radMC      :      0.00 min     per:  1.93 %
+    radWood    :      0.00 min     per:  5.68 %
     KLcol      :      0.00 min     per:  0.00 %
-    KLrec      :      0.00 min     per: 32.67 %
-    KLWood     :      0.00 min     per:  1.86 %
-    other      :      0.01 min     per: 61.74 %
+    KLrec      :      0.00 min     per: 28.38 %
+    KLWood     :      0.00 min     per:  0.00 %
+    other      :      0.01 min     per: 64.01 %
