@@ -11,7 +11,7 @@ program stochastic
   use KLmeanadjust
   use Woodcock
 
-  use timevars, only: t1, runtime
+  use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
   use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood
   implicit none
