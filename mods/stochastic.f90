@@ -18,8 +18,6 @@ program stochastic
   ! pass by reference
   integer :: j      !current realization, better to make global?
   integer :: seed   !random number seed for overall problem, used once.
-  ! local variables
-  real(8) :: seeddum
 
   !!read parameters
   call cpu_time(t1)
@@ -28,38 +26,34 @@ program stochastic
 
   !!allocate/prepare global parameters
   call Acase_load
+  call global_allocate( seed )
   call Acase_print
-  do j=1,seed !advance starting seed
-    seeddum = rang()
-  enddo
-  call global_allocate
+
 
   !!Perform KL research
   if(KLres=='yes') then
-    call KL_eigenvalue  !solves for eigenmode vars
-    call KL_Correlation !calcs and can plot spacial correlation funcs
-    call KL_collect     !collects xi values over realizations
-    call genReal_stats  !performs stats on above realizations
-    call KL_Cochart     !creates plots of variance kept to total variance
-    call KL_eval        !creates xi distributions from xi values
+    call KL_eigenvalue      !solves for eigenmode vars
+    call KL_Correlation     !calcs and can plot spacial correlation funcs
+    call KL_collect         !collects xi values over realizations
+    call genReal_stats      !performs stats on above realizations
+    call KL_Cochart         !creates plots of variance kept to total variance
+    call KL_eval            !creates xi distributions from xi values
     if(KLnoise=='yes') call KL_Noise !does something with xi distributions
-    call reset_genRealtals !resets Markov realz stats for next round of creation
+    call reset_genRealtals  !resets Markov realz stats for next round of creation
   endif
 
   !!Perform KL reconstructions
   if(KLrec=='yes') then
-    call KLrmeshgen    !creates mesh for fixed x and xi material constructions
-    call KLrgenrealz   !selects array of random variables xi
-    if(KLadjust=='yes') call KLadjustmean !transport workaround, adjusts mean after lopping neg to be desired
-    call KLreval       !plots reconstructed realiztions
+    call KLrmeshgen         !creates mesh for fixed x and xi material constructions
+    call KLrgenrealz        !selects array of random variables xi
+    if(KLadjust=='yes') call KLadjustmean !adjusts mean after lopping neg cross sections
+    call KLrplotrealz       !plots reconstructed realiztions
   endif
 
 
   !!Perform Transport with Various UQ Methods
   !loop over different methods that will be used
     !allocate UQ specific variables
-
-
 
   !!genRealz, KLresearch, radtrans, radWood
   if(radWood=='yes') Wood='rad'
@@ -96,9 +90,9 @@ program stochastic
 
   !!print final reports
   call Acase_print
-  if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
+  if(allowneg=='yes') call Woodnegstats
   if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
   call timereport
-
+  call finalreport
 
 end program stochastic

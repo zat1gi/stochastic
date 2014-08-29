@@ -48,13 +48,10 @@ CONTAINS
 
     print *,"Beginning mean adjustment iteration ",adjustiter
     do j=1,KLrnumRealz
-!print *,"adjusting realization: ",j
       xr = KLrxi_point(j,0d0)
       xl = 0d0
       do
-!print *,"about to find next point"
         xr = findnextpoint(j)
-!print *,"found next point: ",xr
         areacont = KLrxi_integral(j,xl,xr)/KLrnumRealz/s
 
         xmid = KLrxi_point(j,(xr+xl)/2d0)
@@ -73,10 +70,9 @@ CONTAINS
 
     if(abs(aveposarea-sigave)/sigave<meanadjust_tol) exit
     print *,"avenegarea: ",avenegarea,"  aveposarea: ",aveposarea
-    meanadjust = meanadjust + (sigave - aveposarea)!/s
+    meanadjust = meanadjust + (sigave - aveposarea)
     if(abs(sigave-aveposarea)<meanadjust_tol) exit
     print *,"meanadjust: ",meanadjust
-    !if(adjustiter==6) exit
   enddo !loop over calculating adjustment
     
   end subroutine KLadjustmean
@@ -95,24 +91,19 @@ CONTAINS
 
   curx = xl
   curs = KLrxi_point(j,curx)
-!print *,"outside: curx: ",curx,"  step: ",step
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
     curs = KLrxi_point(j,curx)
-!print *,"inside1: curx: ",curx,"  step: ",step
     if(curs*olds<0d0) then
       curx = refinenextpoint(j,oldx,curx)
-!print *,"inside2: curx: ",curx,"  step: ",step
       exit
     elseif(curx>=s) then
       curx = s
-!print *,"inside3: curx: ",curx,"  step: ",step
       exit
     endif
-!print *,"inside4: curx: ",curx,"  step: ",step
 
   enddo
   findnextpoint = curx
@@ -148,9 +139,6 @@ CONTAINS
   enddo
 
   end function refinenextpoint
-
-
-
 
 
 

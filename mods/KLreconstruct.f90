@@ -123,7 +123,7 @@ CONTAINS
 
 
 
-  subroutine KLreval
+  subroutine KLrplotrealz
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use genRealzvars, only: lamc
@@ -189,7 +189,7 @@ CONTAINS
   print *," Total num reconstructed realz w/ neg value: ",negcnt
   print *,
 
-  end subroutine KLreval
+  end subroutine KLrplotrealz
 
 
 

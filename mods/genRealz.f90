@@ -63,28 +63,28 @@ CONTAINS
     if(i>largesti) largesti=1 !track largest i
 
 
-    if( pltgenrealz(1) .ne. 'noplot' ) then
-    203 format("          ",A7,"            ",A7)!print to plot selected realizations
+    if( pltgenrealz(1) .ne. 'noplot' ) then  !print to plot selected realizations
+    203 format("          ",A7,"            ",A7)
     204 format("      0.00000000     ",f16.8)
     205 format(f16.8,"     ",f16.8)
 
-    if(j==pltgenrealzwhich(1)           ) open(unit=20, file="genRealzplot1.txt")
-    if(j==pltgenrealzwhich(1) .and. i==2) write(20,203) pltgenrealz(3),pltgenrealz(4)
-    if(j==pltgenrealzwhich(1)           ) write(20,205) matLength_temp(i-1),sig(matType_temp(i-1))
-    if(j==pltgenrealzwhich(1)           ) write(20,205) matLength_temp(i),sig(matType_temp(i-1))
-
-    if( pltgenrealznumof>=2) then
-    if(j==pltgenrealzwhich(2)           ) open(unit=21, file="genRealzplot2.txt")
-    if(j==pltgenrealzwhich(2) .and. i==2) write(21,203) pltgenrealz(3),pltgenrealz(4)
-    if(j==pltgenrealzwhich(2)           ) write(21,205) matLength_temp(i-1),sig(matType_temp(i-1))
-    if(j==pltgenrealzwhich(2)           ) write(21,205) matLength_temp(i),sig(matType_temp(i-1))
+    if( j==pltgenrealzwhich(1) ) then
+      if(i==2) open(unit=20, file="genRealzplot1.txt")
+      if(i==2) write(20,203) pltgenrealz(3),pltgenrealz(4)
+               write(20,205) matLength_temp(i-1),sig(matType_temp(i-1))
+               write(20,205) matLength_temp(i),  sig(matType_temp(i-1))
     endif
-
-    if( pltgenrealznumof>=3) then
-    if(j==pltgenrealzwhich(3)           ) open(unit=22, file="genRealzplot3.txt")
-    if(j==pltgenrealzwhich(3) .and. i==2) write(22,203) pltgenrealz(3),pltgenrealz(4)
-    if(j==pltgenrealzwhich(3)           ) write(22,205) matLength_temp(i-1),sig(matType_temp(i-1))
-    if(j==pltgenrealzwhich(3)           ) write(22,205) matLength_temp(i),sig(matType_temp(i-1))
+    if( pltgenrealznumof>=2 .and. j==pltgenrealzwhich(2) ) then
+      if(i==2) open(unit=21, file="genRealzplot2.txt")
+      if(i==2) write(21,203) pltgenrealz(3),pltgenrealz(4)
+               write(21,205) matLength_temp(i-1),sig(matType_temp(i-1))
+               write(21,205) matLength_temp(i),  sig(matType_temp(i-1))
+    endif
+    if( pltgenrealznumof>=3 .and. j==pltgenrealzwhich(3) ) then
+      if(i==2) open(unit=22, file="genRealzplot3.txt")
+      if(i==2) write(22,203) pltgenrealz(3),pltgenrealz(4)
+               write(22,205) matLength_temp(i-1),sig(matType_temp(i-1))
+               write(22,205) matLength_temp(i),  sig(matType_temp(i-1))
     endif
     endif
 

@@ -734,7 +734,7 @@ enddo
   325 format(" |-case:",f3.1,"-|---- Reflection and Transmission Results ------|")
 
   !print to file
-  open(unit=100,file="MCleakage_results.out")
+  open(unit=100,file="MCleakage.out")
   write(100,*)
   if(Adamscase/=0) write(100,325) Adamscase
   if(Adamscase==0) write(100,*) "|--------------- Reflection and Transmission Results ------|"
@@ -760,8 +760,7 @@ enddo
   close(unit=100)
 
   !move file and print to screen
-  call system("mv MCleakage_results.out texts")
-  call system("cat texts/MCleakage_results.out")
+  call system("mv MCleakage.out texts")
 
   end subroutine MCprintstats
 

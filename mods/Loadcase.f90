@@ -9,21 +9,23 @@ CONTAINS
   subroutine Acase_print
   use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc
 
-    lamc = lam(1)*lam(2)/(lam(1)+lam(2))
+  100 format("  Values loaded for special Adamscase :",f5.1)
+  101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
+  102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
+  103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
+  104 format("    s         :",f6.2,"       lamc      :",f6.2)
 
-    100 format("  Values loaded for special Adamscase :",f5.1)
-    101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
-    102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
-    103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
-    104 format("    s         :",f6.2,"       lamc      :",f6.2)
+  open(unit=100,file="Acase.out")
+  write(100,*)
+  write(100,100) Adamscase
+  write(100,101) sig(1),sig(2)
+  write(100,102) scatrat(1),scatrat(2)
+  write(100,103) lam(1),lam(2)
+  write(100,104) s,lamc
+  write(100,*)
 
-    write(*,*)
-    write(*,100) Adamscase
-    write(*,101) sig(1),sig(2)
-    write(*,102) scatrat(1),scatrat(2)
-    write(*,103) lam(1),lam(2)
-    write(*,104) s,lamc
-    write(*,*)
+  close(unit=100)
+  call system("mv Acase.out texts")
 
   end subroutine Acase_print
 
@@ -327,7 +329,10 @@ CONTAINS
       stopstatus = 'yes'
     endif
   endif
-
+  if( KLWood=='no' .and. allowneg=='yes') then
+    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
+    stopstatus = 'yes'
+  endif
 
   if( stopstatus=='yes' ) STOP 'killed'
 
@@ -335,7 +340,7 @@ CONTAINS
 
 
 
-  subroutine global_allocate
+  subroutine global_allocate( seed )
   !This subroutine allocates and initializes all global variables
   use timevars, only: time, ntime
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
@@ -346,8 +351,14 @@ CONTAINS
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood
+  use mcnp_random, only: rang
+  integer :: i,seed
+  real(8) :: seeddum
 
-  integer :: i
+  !initialize seed
+  do i=1,seed !advance starting seed
+    seeddum = rang()
+  enddo
 
   !allocate and initialize timevars
   allocate(time(ntime))
@@ -417,6 +428,13 @@ CONTAINS
   endif
 
   end subroutine global_allocate
+
+
+
+  subroutine finalreport
+  call system("cat texts/Acase.out texts/Woodnegstats.out texts/MCleakage.out texts/timereport.out > texts/finalreport.out")
+  call system("cat texts/finalreport.out")
+  end subroutine finalreport
 
 
 

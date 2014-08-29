@@ -137,7 +137,6 @@ CONTAINS
 !  write(100,118) runtime
   close(unit=100)
   call system("mv timereport.out texts")
-  call system("cat texts/timereport.out")
 
   end subroutine timereport
 

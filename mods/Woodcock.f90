@@ -158,10 +158,8 @@ if(print=='yes') print *,
 
       if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,Woodf,j,mu)
       if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fWoodf,bWoodf,j,mu)
-      if(Wood=='rad') woodrat= radWood_actsig(position,sig)&
-                               /ceilsig
-      if(Wood=='KL')  woodrat= KLrxi_point(j,position)&
-                               /ceilsig
+      if(Wood=='rad') woodrat= radWood_actsig(position,sig)/ceilsig
+      if(Wood=='KL')  woodrat= KLrxi_point(j,position)/ceilsig
       if(woodrat>1.0d0) then
         print *,"j: ",j,"  woodrat: ",woodrat
         STOP 'Higher sig sampled in KLWood than ceiling, exiting program'
@@ -574,22 +572,29 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
   real(8) :: pos,neg
 
-  if(distneg=='no')  print *,"--Negative smoothing stats, neg smoothing off--"
-  if(distneg=='yes') print *,"--Negative smoothing stats, neg smoothing on--"
+  open(unit=100,file="Woodnegstats.out")
+
+  if(distneg=='no')  write(100,*) "--Negative smoothing stats, neg smoothing off--"
+  if(distneg=='yes') write(100,*) "--Negative smoothing stats, neg smoothing on--"
   600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)
   601 format("  Neg samples : ",f8.5,"%, ",i21," /",i21)
   602 format("  Neg area    : ",f8.5,"%")
   603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
   604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
-  write(*,600) real(negcnt,8)/real(numRealz,8),negcnt,numRealz
+  write(100,600) real(negcnt,8)/real(numRealz,8),negcnt,numRealz
   pos = real(numpnSamp(1),8)
   neg = real(numpnSamp(2),8)
-  write(*,601) neg/(pos+neg),numpnSamp(2),numpnSamp(1)+numpnSamp(2)
-  write(*,602) -areapnSamp(2)/(areapnSamp(1)-areapnSamp(2))
-  write(*,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
-  write(*,604) areapnSamp(4),areapnSamp(3)
+  write(100,601) neg/(pos+neg),numpnSamp(2),numpnSamp(1)+numpnSamp(2)
+  write(100,602) -areapnSamp(2)/(areapnSamp(1)-areapnSamp(2))
+  write(100,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
+  write(100,604) areapnSamp(4),areapnSamp(3)
+  write(100,*)
+
+  close(unit=100)
+  call system("mv Woodnegstats.out texts")
   end subroutine Woodnegstats
+
 
 
 

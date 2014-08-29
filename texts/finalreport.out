@@ -1,0 +1,35 @@
+
+  Values loaded for special Adamscase :  1.2
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  0.00       scatrat(2):  1.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         :  1.00       lamc      :  0.10
+
+ --Negative smoothing stats, neg smoothing off--
+  Neg realz   :  0.60000%,                    60 /                  100
+  Neg samples :  0.27730%,                  2110 /                 7609
+  Neg area    :  0.24745%
+  Ave neg samp:     -1.3393   Ave pos samp:      1.5629
+  Max neg samp:     -4.7834   Max pos samp:      7.9192
+
+
+ |-case:1.2-|---- Reflection and Transmission Results ------|
+ |Method    | reflave      refldev    | tranave      trandev|
+ |----------|-------------------------|---------------------|
+ |AdamsMC:  | 0.24950  +-  0.23540    | 0.59500  +-  0.21430|
+ |BrantMC:  | 0.25069                 | 0.59607             |
+ |----------|-------------------------|---------------------|
+ |AdamsLP:  | 0.21870                 | 0.62540             |
+ |BrantLP:  | 0.21888                 | 0.62741             |
+ |----------|-------------------------|---------------------|
+ |BrAtMix:  | 0.36040                 | 0.48096             |
+ |----------------------------------------------------------|
+
+  total runtime:      0.02 min
+    genRealz   :      0.00 min     per:  1.60 %
+    radMC      :      0.00 min     per:  0.00 %
+    radWood    :      0.00 min     per:  1.71 %
+    KLcol      :      0.00 min     per:  0.00 %
+    KLrec      :      0.00 min     per: 31.73 %
+    KLWood     :      0.00 min     per:  5.02 %
+    other      :      0.01 min     per: 59.94 %
