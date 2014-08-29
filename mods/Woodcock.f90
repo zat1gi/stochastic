@@ -589,7 +589,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   write(*,602) -areapnSamp(2)/(areapnSamp(1)-areapnSamp(2))
   write(*,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
   write(*,604) areapnSamp(4),areapnSamp(3)
-  end subroutine
+  end subroutine Woodnegstats
 
 
 

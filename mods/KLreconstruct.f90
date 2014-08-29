@@ -9,11 +9,10 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLrcondition
-  !This subroutine gets variables ready to reconstruct Sigma plots from the KL
-  !expansion.  Specifically it creates a mesh based on selected frequency of 
+  subroutine KLrmeshgen
+  !This subroutine creates a mesh based on selected frequency of 
   !sampling in x for a fixed point reconstruction, and then for a fixed xi
-  !construction.
+  !construction.  The fixed xi construction is the only one we care about.
   use genRealzvars , only: s
   use KLvars, only: KLrnumpoints, KLrx, KLrxi
 
@@ -21,7 +20,6 @@ CONTAINS
   real(8) :: KLrxstepsize
 
   allocate(KLrx(KLrnumpoints(1)))
-
   KLrx = 0                             !create mesh for fixed point KL reconstruction
   KLrxstepsize = s / KLrnumpoints(1)
   do i=1,KLrnumpoints(1)
@@ -29,14 +27,13 @@ CONTAINS
   enddo
 
   allocate(KLrxi(KLrnumpoints(2)))
-
   KLrxi = 0                            !create mesh for fixed xi KL reconstruction
   KLrxstepsize = s / KLrnumpoints(2)
   do i=1,KLrnumpoints(2)
     KLrxi(i) = KLrxstepsize*i - KLrxstepsize/2
   enddo
 
-  end subroutine KLrcondition
+  end subroutine KLrmeshgen
 
 
 
@@ -44,92 +41,76 @@ CONTAINS
 
 
 
-  subroutine KLrgenrealz( j )
-  !This subroutine reconstructs realizations based upon the KL expansion
-  !It reconstructs based upon the fixed point and fixed xi methods
-  !It also passes an array of selected ramdom variables xi to be plotted in KLreval
+  subroutine KLrgenrealz
+  !This subroutine reconstructs realizations based upon the KL expansion.
+  !It reconstructs based upon the fixed point and fixed xi methods.
+  !It also passes an array of selected random variables xi to be plotted in KLreval.
   use timevars, only: time
   use genRealzvars, only: s, lamc
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
-  integer :: j
-  real(8) :: tt1,tt2
+  use timeman, only: KLr_time
+  integer :: i,j,curEig,w,u
+  real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
-
-  integer :: i,curEig,w,u
-  real(8) :: KLsigtemp,Eigfterm,xiterm,rand
 
   call cpu_time(tt1)
 
-  if( j==1 ) then  !inialize some
-    allocate(KLrrandarray(KLrnumpoints(1),numEigs,pltKLrrealznumof+1)) !fpoint allocations
-    allocate(KLrsig(KLrnumpoints(1)))
-!    allocate(KLrxivals(KLrnumRealz,numEigs))  !fxi allocations
-    allocate(KLrxisig(KLrnumpoints(2)))
-    allocate(pltKLrrealzarray(maxval(KLrnumpoints),pltKLrrealznumof+1)) !fpoint a/o fxi all
-    negcnt  =0
-  endif
+  do j=1,KLrnumRealz
 
-
-
-  KLrsig = 0          !create a realization, fixed point
-  do i=1,KLrnumpoints(1)
-    KLrsig(i) = sigave
-    do curEig=1,numEigs
-      Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
-
-      rand = rang()
-      do u=1,pltKLrrealznumof   !capture rand if useful to plot later
-        if( pltKLrrealzwhich(1,u)==j ) then
-          KLrrandarray(i,curEig,u+1) = rand
-        endif
+    KLrsig = 0          !create a realization, fixed point
+    do i=1,KLrnumpoints(1)
+      KLrsig(i) = sigave
+      do curEig=1,numEigs
+        Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
+        rand = rang()
+        do u=1,pltKLrrealznumof   !capture rand if useful to plot later
+          if( pltKLrrealzwhich(1,u)==j ) then
+            KLrrandarray(i,curEig,u+1) = rand
+          endif
+        enddo
+        call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
+        KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
       enddo
-      call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
-      KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
-      !print *,rand,xiterm,Eigfterm,sqrt(Eig(curEig)),KLrsig(i)
-      !if( curEig==numEigs ) print *,
     enddo
+    612 format("  ",f14.8)     !print sigma values to text file, fixed point
+    open(unit=10,file="KLrsig.txt")
+    do i=1,KLrnumpoints(1)
+      write(10,612,advance="no") KLrsig(i)
+    enddo
+    write(10,*)
+
+
+
+    KLrxisig = 0      !create a realization, fixed xi
+    do curEig=1,numEigs  !select xi values
+      rand = rang()
+      call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+      KLrxivals(j,curEig) = xiterm
+    enddo
+
+    neg='no'
+    call KLr_negsearch( j,neg )
+    if(neg=='yes') then  !counts the number of realz that contain a negative value
+      negcnt=negcnt+1
+      print *,"negcnt  : ",negcnt,"          realz#: ",j
+    endif
+
+    do i=1,KLrnumpoints(2)  !create realization
+      KLrxisig(i) = KLrxi_point(j,KLrxi(i))
+    enddo
+    open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
+    do i=1,KLrnumpoints(2)
+      write(11,612,advance="no") KLrxisig(i)
+    enddo
+    write(11,*)
+
+
+
+    if(mod(j,KLrprintat)==0) call KLr_time( j ) !print progress
   enddo
-
-  612 format("  ",f14.8)     !print sigma values to text file, fixed point
-  open(unit=10,file="KLrsig.txt")
-  do i=1,KLrnumpoints(1)
-    write(10,612,advance="no") KLrsig(i)
-  enddo
-  write(10,*)
-
-  KLrxisig = 0      !create a realization, fixed xi
-  do curEig=1,numEigs  !select xi values
-    rand = rang()
-    call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-!if(curEig==1) print *,"curEig/xiterm: ",cureig," ",xiterm
-!if(curEig==2) print *,"curEig/xiterm:     ",cureig," ",xiterm
-!if(curEig==3) print *,"curEig/xiterm:         ",cureig," ",xiterm
-
-    KLrxivals(j,curEig) = xiterm
-  enddo
-
-  neg='no'
-  call KLr_negsearch( j,s,neg )
-
-  if(neg=='yes') then  !counts the number of realz that contain a negative value
-    negcnt=negcnt+1
-    print *,"negcnt  : ",negcnt,"          realz#: ",j
-  endif
-
-  do i=1,KLrnumpoints(2)  !create realization
-    KLrxisig(i) = KLrxi_point(j,KLrxi(i))
-  enddo
-
-
-  open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
-  do i=1,KLrnumpoints(2)
-    write(11,612,advance="no") KLrxisig(i)
-  enddo
-  write(11,*)
-
 
   call cpu_time(tt2)
   time(6) = time(6) + (tt2-tt1)
@@ -212,10 +193,12 @@ CONTAINS
 
 
 
-  subroutine KLr_negsearch( j,s,neg )
+
+
+  subroutine KLr_negsearch( j,neg )
+  use genRealzvars, only: s
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave
   integer :: j
-  real(8) :: s
   character(3) :: neg
 
   integer :: i,k,l

@@ -59,8 +59,8 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: numEigs              ! number of eigenmodes to calculate
   integer              :: numSlice             ! 
   integer              :: levsrefEig           !
-  real(8)              :: binSmallBound        !
-  real(8)              :: binLargeBound        !
+  real(8)              :: binSmallBound        ! smallest xi value for xi bins
+  real(8)              :: binLargeBound        ! largest xi value for xi bins
 
   character(7)         :: pltxiBins(4)         !
   character(7)         :: pltxiBinsgauss       !

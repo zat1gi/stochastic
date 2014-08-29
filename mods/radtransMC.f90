@@ -580,7 +580,7 @@ enddo
 
 
 
-  subroutine radtrans_resultplot
+  subroutine MCLeakage_pdfplot
   !Plots pdfs of transmission and reflection for chosen methods
   use genRealzvars, only: numRealz
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, radWoodr, &
@@ -655,7 +655,7 @@ enddo
   call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
   call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
 
-  end subroutine radtrans_resultplot
+  end subroutine MCLeakage_pdfplot
 
 
 

@@ -13,7 +13,7 @@ CONTAINS
 
 
   subroutine KL_eigenvalue
-  !This subroutine: 1) calculates some initial values used here and later
+  !This subroutine: 1) calculates some initial values used here
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
@@ -21,7 +21,7 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, numRealz, P, lamc
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
-                          levsrefEig, sigave, pltEigf, KLrnumRealz, KLrxivals
+                          levsrefEig, sigave, pltEigf, KLrnumRealz
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: index,l,level,curEig,i,j
@@ -32,25 +32,14 @@ CONTAINS
   real(8) :: Eigval,Eigvalsum,oldsEig,newsEig
   real(8), allocatable :: oldAllgam(:),oldAllEig(:),cumeig(:)
 
+  TT = s/lamc
+  Co = P(1)*P(2)*(sig(1)-sig(2))**2
+  if( stepGam==0 ) stepGam  =1/TT/50
   allocate(Eigfplotarray(numSlice,numSlice+1))
-  allocate(gam(numEigs))
-  allocate(alpha(numEigs))
-  allocate(Ak(numEigs))
-  allocate(Eig(numEigs))
-  allocate(xi(numRealz,numEigs))
-  allocate(KLrxivals(KLrnumRealz,numEigs))
+
 
   424 format("   P(1):",f8.5,"   P(2)  :",f8.5,"   lamc:",f8.5,"   TT:",f8.5)
   425 format("   Co  :",f8.5,"   sigave:",f8.5,"   stepGam:",f8.5)
-  lamc   =(lam(1)*lam(2))/(lam(1)+lam(2))
-  P(1)     =lam(1)/(lam(1)+lam(2))
-  P(2)     =lam(2)/(lam(1)+lam(2))
-  TT       =s/lamc
-  sigave   =P(1)*sig(1)+P(2)*sig(2)
-  Co       =P(1)*P(2)*(sig(1)-sig(2))**2
-  if( stepGam==0 ) then
-    stepGam  =1/TT/50
-  endif
 
   !Initial guesses for Gam
   420 format(i7,"     ",f15.9," ",f19.14)
@@ -359,7 +348,7 @@ CONTAINS
     enddo
 
   enddo
-print *,"xi: ",xi
+
   call cpu_time(tt2)
   time(5) = time(5) + (tt2-tt1) - time(1) !time(1) is time used creating realz while here
 

@@ -353,7 +353,10 @@ CONTAINS
   !This subroutine allocates and initializes all global variables
   use timevars, only: time, ntime
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength
+                          totLength, lamc, sig
+  use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
+                    KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
+                    xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood
@@ -370,8 +373,27 @@ CONTAINS
   sqrPath   = 0d0
   largesti  = 0d0
   totLength = 0d0
-  P(1) = lam(1)/(lam(1)+lam(2)) !calc probabilities
-  P(2) = lam(2)/(lam(1)+lam(2))
+  P(1)      = lam(1)/(lam(1)+lam(2)) !calc probabilities
+  P(2)      = lam(2)/(lam(1)+lam(2))
+  sigave    = P(1)*sig(1)+P(2)*sig(2)
+  lamc      = (lam(1)*lam(2))/(lam(1)+lam(2))
+
+
+  !allocate  KLresearch variables
+  allocate(gam(numEigs))
+  allocate(alpha(numEigs))
+  allocate(Ak(numEigs))
+  allocate(Eig(numEigs))
+  allocate(xi(numRealz,numEigs))
+
+
+  !allocate and initialize KLreconstruction variables
+  allocate(KLrrandarray(KLrnumpoints(1),numEigs,pltKLrrealznumof+1))  !fpoint allocations
+  allocate(KLrsig(KLrnumpoints(1)))
+  allocate(KLrxivals(KLrnumRealz,numEigs))                            !fxi allocations
+  allocate(KLrxisig(KLrnumpoints(2)))
+  allocate(pltKLrrealzarray(maxval(KLrnumpoints),pltKLrrealznumof+1)) !fpoint and/or fxi all
+  negcnt  = 0
 
 
   !allocate fluxplot variables

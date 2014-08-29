@@ -46,16 +46,13 @@ program stochastic
     call reset_genRealtals !resets Markov realz stats for next round of creation
   endif
 
-  !!KLreconstructions
+  !!Perform KL reconstructions
   if(KLrec=='yes') then
-    call KLrcondition
-    do j=1,KLrnumRealz
-      call KLrgenrealz( j )
-      if(mod(j,KLrprintat)==0) call KLr_time( j )
-    enddo
+    call KLrmeshgen    !creates mesh for fixed x and xi material constructions
+    call KLrgenrealz   !selects array of random variables xi
+    if(KLadjust=='yes') call KLadjustmean !transport workaround, adjusts mean after lopping neg to be desired
+    call KLreval       !plots reconstructed realiztions
   endif
-  if(KLadjust=='yes') call KLadjustmean
-  if(KLrec=='yes') call KLreval
 
 
   !!Perform Transport with Various UQ Methods
@@ -76,9 +73,6 @@ program stochastic
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
 
-
-
-
   !!radKL transport
   if(KLWood=='yes') then
     Wood='KL'
@@ -89,22 +83,20 @@ program stochastic
   endif
 !  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
 
-
-
-
-
-  !!concluding stats-need to be in UQ wrapper
-  call Acase_print
+  !!MC stats and plots.  Some of this needs to be in UQ wrapper, some just passed to 'MCprintstats'
   if(radMC=='yes') call radtrans_MCoutstats
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
+  if(pltflux(1)/='noplot') call plot_flux
+  call MCLeakage_pdfplot !bin for radMC,radWood
+
+
 
 
 
   !!print final reports
+  call Acase_print
   if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
-  if(pltflux(1)/='noplot') call plot_flux
-  call radtrans_resultplot !bin for radMC,radWood
   if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
   call timereport
 
