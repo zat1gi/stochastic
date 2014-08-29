@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from mods/variables.f90 on Thu Aug 28 23:52:40 2014
-MD5:9271e492c09f9165c636b9355fdb8890 -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from mods/variables.f90 on Fri Aug 29 01:25:32 2014
+MD5:204d3341f1ebe972f95c97a73a5c5045 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -182,14 +182,10 @@ UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 53 'tnumeigs' 'klvars' 'tnumeigs' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
-54 'totlength' 'klvars' 'totlength' 1 ((VARIABLE UNKNOWN-INTENT
-UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
-0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
-CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-55 'varmain' 'klvars' 'varmain' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+54 'varmain' 'klvars' 'varmain' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-56 'xi' 'klvars' 'xi' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+55 'xi' 'klvars' 'xi' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (2
 0 DEFERRED () () () ()) 0 () () () 0 0)
 )
@@ -206,5 +202,5 @@ IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (2
 41 'plteigfwhich' 0 42 'pltklrrealz' 0 43 'pltklrrealzarray' 0 44
 'pltklrrealznumof' 0 45 'pltklrrealzpointorxi' 0 46 'pltklrrealzwhich' 0
 47 'pltxibins' 0 48 'pltxibinsgauss' 0 49 'pltxibinsnumof' 0 50
-'pltxibinswhich' 0 51 'sigave' 0 52 'tnumeigs' 0 53 'totlength' 0 54
-'varmain' 0 55 'xi' 0 56)
+'pltxibinswhich' 0 51 'sigave' 0 52 'tnumeigs' 0 53 'varmain' 0 54 'xi'
+0 55)

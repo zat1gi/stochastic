@@ -325,45 +325,43 @@ CONTAINS
 
 
 
-  subroutine KL_collect( j )
+  subroutine KL_collect
+  !This subroutine collects xi values from a set of distributions.
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength
-  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave, totLength
-  integer :: j
-  real(8) :: tt1,tt2
-
-  integer :: i,k,curEig,doloop
-  real(8) :: xitermtot,xl,xr,sigma,xiterm
+  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave
+  use genRealz, only: genReal
+  integer :: i,j,k,curEig
+  real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,tt2
 
   call cpu_time(tt1)
 
-  do curEig=1,numEigs
-    xl=0
-    xiterm=0
-    xitermtot=0
+  do j=1,numRealz
+    call genReal( j )
+    do curEig=1,numEigs
+      xl       =0d0
+      xiterm   =0d0
+      xitermtot=0d0
 
-    do i=2,nummatSegs+1
-      xl=matLength(i-1)   !set xl and xr for calculations
-      xr=matLength(i)
-      sigma=sig(matType(i-1))                    !set sig to the correct sig
+      do i=2,nummatSegs+1
+        xl=matLength(i-1)   !set xl and xr for calculations
+        xr=matLength(i)
+        sigma=sig(matType(i-1))                    !set sig to the correct sig
 
-      xiterm= (sigma-sigave)*&                 !actual calculation
-              (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
-              -lamc*sin(alpha(curEig)*xl)+cos(alpha(curEig)*xl)/alpha(curEig))
+        xiterm= (sigma-sigave)*&                 !actual calculation
+                (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
+                -lamc*sin(alpha(curEig)*xl)+cos(alpha(curEig)*xl)/alpha(curEig))
 
-      xitermtot = xitermtot + xiterm
+        xitermtot = xitermtot + xiterm
+      enddo
+
+      xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot   !find resulting xi
     enddo
 
-    xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot   !find resulting xi
   enddo
-
-
-  do i=2,nummatSegs !collect total length data for Actual Co calculations
-    totLength(matType(i-1))=totLength(matType(i-1))+matLength(i)-matLength(i-1)
-  enddo
-
+print *,"xi: ",xi
   call cpu_time(tt2)
-  time(5) = time(5) + (tt2-tt1)
+  time(5) = time(5) + (tt2-tt1) - time(1) !time(1) is time used creating realz while here
 
   end subroutine KL_collect
 
@@ -374,19 +372,18 @@ CONTAINS
 
 
 
-
   subroutine KL_Cochart
-  !This subroutine calculates the ratio of the calculated variace (Co) using a chosen
+  !This subroutine calculates the ratio of the calculated variance (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
-  !eigenmodes.  The ratio will thus always be less than 1.  The close to 1 the ratio
+  !eigenmodes.  The ratio will thus always be less than 1.  The closer to 1 the ratio
   !is, the more efficient that approximation is.  This calculation is made using the
   !Co value given by input parameters (P(1) & P(2)), and by the generated actual
   !probabilities.  Since the eigenvalue contains the variance, this baseline Co
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
-  use genRealzvars, only: sig, s, numRealz, P, lamc
+  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          sigave, totLength, CoExp, pltCo
+                          sigave, CoExp, pltCo
 
   integer :: curCS,curEig,twice,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
@@ -760,18 +757,6 @@ CONTAINS
   time(4) = time(4) + (tt2-tt1)
 
 !  allocate(xi(numRealz,numEigs))
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 !  peaks = 0

@@ -31,6 +31,7 @@ module genRealzvars
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
+  real(8)              :: totLength(2)         ! summed length of each material in stoc family
   integer              :: nummatSegs           ! number of material segments in realz (rid, use size?)
   real(8)              :: perFirstTally(2)     ! percentage of first material as mat1 or 2, bin mix
   real(8)              :: devFirstTally(2)     ! stdev of first material as mat1 or 2, bin mix
@@ -93,7 +94,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
   real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
   integer              :: tnumEigs             ! temp numEigs, local use "KLreval", nice to get rid of
-  real(8)              :: totLength(2)         !
   real(8)              :: binSize              !
   real(8)              :: CoExp                !
   integer              :: negcnt               ! tally of number of realizations that have gone neg

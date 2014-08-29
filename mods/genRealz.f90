@@ -8,10 +8,12 @@ CONTAINS
 
 
   subroutine genReal( j )
-  use timevars, only: time, ntime
+  !creates a realization, plots if specified, and collects tallies for realization stats
+  use timevars, only: time
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
-                          pltgenrealz, matType, matLength, pltgenrealzwhich
+                          pltgenrealz, matType, matLength, pltgenrealzwhich, &
+                          totLength
   integer :: j
   real(8) :: tt1,tt2
 
@@ -20,24 +22,15 @@ CONTAINS
   real(8) :: matLength_temp(numArrSz)
 
   call cpu_time(tt1)
+  if(allocated(matType)) deallocate(matType)
+  if(allocated(matLength)) deallocate(matLength)
 
-  if( j==1 ) then
-    numPath =0
-    sumPath =0d0
-    sqrPath =0d0
-    largesti=0d0
-    allocate(time(ntime))
-    time = 0d0
-  endif
   matLength_temp=0d0
   matType_temp=0
 
   200 format("P(1),(2)            :",f12.4,f12.4)
   201 format("matFirstTally(1),(2):",f12.0,f12.0)
   202 format("matLength_temp:",f10.4,"    matType:",i7)
-
-  P(1) = lam(1)/(lam(1)+lam(2)) !calculate probabilities for first segment
-  P(2) = lam(2)/(lam(1)+lam(2))
   
   if( rang() < P(1) ) then  !choose which material first and tally
     matType_temp(1) = 1
@@ -70,26 +63,26 @@ CONTAINS
     if(i>largesti) largesti=1 !track largest i
 
 
-    if( pltgenrealz(1) .NE. 'noplot' ) then
+    if( pltgenrealz(1) .ne. 'noplot' ) then
     203 format("          ",A7,"            ",A7)!print to plot selected realizations
     204 format("      0.00000000     ",f16.8)
     205 format(f16.8,"     ",f16.8)
 
     if(j==pltgenrealzwhich(1)           ) open(unit=20, file="genRealzplot1.txt")
-    if(j==pltgenrealzwhich(1) .AND. i==2) write(20,203) pltgenrealz(3),pltgenrealz(4)
+    if(j==pltgenrealzwhich(1) .and. i==2) write(20,203) pltgenrealz(3),pltgenrealz(4)
     if(j==pltgenrealzwhich(1)           ) write(20,205) matLength_temp(i-1),sig(matType_temp(i-1))
     if(j==pltgenrealzwhich(1)           ) write(20,205) matLength_temp(i),sig(matType_temp(i-1))
 
     if( pltgenrealznumof>=2) then
     if(j==pltgenrealzwhich(2)           ) open(unit=21, file="genRealzplot2.txt")
-    if(j==pltgenrealzwhich(2) .AND. i==2) write(21,203) pltgenrealz(3),pltgenrealz(4)
+    if(j==pltgenrealzwhich(2) .and. i==2) write(21,203) pltgenrealz(3),pltgenrealz(4)
     if(j==pltgenrealzwhich(2)           ) write(21,205) matLength_temp(i-1),sig(matType_temp(i-1))
     if(j==pltgenrealzwhich(2)           ) write(21,205) matLength_temp(i),sig(matType_temp(i-1))
     endif
 
     if( pltgenrealznumof>=3) then
     if(j==pltgenrealzwhich(3)           ) open(unit=22, file="genRealzplot3.txt")
-    if(j==pltgenrealzwhich(3) .AND. i==2) write(22,203) pltgenrealz(3),pltgenrealz(4)
+    if(j==pltgenrealzwhich(3) .and. i==2) write(22,203) pltgenrealz(3),pltgenrealz(4)
     if(j==pltgenrealzwhich(3)           ) write(22,205) matLength_temp(i-1),sig(matType_temp(i-1))
     if(j==pltgenrealzwhich(3)           ) write(22,205) matLength_temp(i),sig(matType_temp(i-1))
     endif
@@ -98,20 +91,21 @@ CONTAINS
     i=i+1
   enddo
 
-  if(j/=1) deallocate(matType)
-  if(j/=1) deallocate(matLength)
-
   allocate(matType(nummatSegs))
   allocate(matLength(nummatSegs+1))
   matType   = 0
   matLength = 0.0d0
-
 
   do i=1,nummatSegs !translate to allocated arrays
     matType(i)   = matType_temp(i)
     matLength(i) = matLength_temp(i)
   enddo
   matLength(nummatSegs+1) = matLength_temp(nummatSegs+1)
+
+
+  do i=2,nummatSegs+1 !collect total length data for Actual Co calculations
+    totLength(matType(i-1))=totLength(matType(i-1))+matLength(i)-matLength(i-1)
+  enddo
 
   close(unit=20) !close three files printing xs data to
   close(unit=21)
@@ -198,6 +192,22 @@ CONTAINS
   endif
 
   end subroutine genReal_stats
+
+
+
+
+
+  subroutine reset_genRealtals
+  !This subroutine is used when realizations are created more than one time.
+  !It resets Markov stats for the next round of tallies
+  use genRealzvars, only: numPath, sumPath, sqrPath, largesti, totLength
+  numPath   = 0  !setup Markov material tallies
+  sumPath   = 0d0
+  sqrPath   = 0d0
+  largesti  = 0d0
+  totLength = 0d0
+  end subroutine reset_genRealtals
+
 
 
 

@@ -53,12 +53,12 @@
   8,          Number of points to recreate Sig at, fixed point
   30,          Number of points to plot Sig at, fixed xi (also neg check)
   100,           Number of realizations to construct from KL expansion
-  10,             How often prnt to screen when, every ___ realization (must<=previous entry)
+  1,             How often prnt to screen when, every ___ realization (must<=previous entry)
 
   !--- radtransMC options ---!
   yes,            Perform radtransMC subroutines? ('yes' or 'no')
   40,          Number of particles to simulate on each realization
-  100,           How often to print to screen (num of realizations)
+  1,           How often to print to screen (num of realizations)
   planar,           Choose 'rod' or 'planar' for geometry type
   left,          Choose 'left' or 'intern' (for internal)
   remove,        Choose to 'remove' old results and use new, or 'add' to existing results

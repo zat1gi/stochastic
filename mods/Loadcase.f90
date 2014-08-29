@@ -349,6 +349,68 @@ CONTAINS
 
 
 
+  subroutine global_allocate
+  !This subroutine allocates and initializes all global variables
+  use timevars, only: time, ntime
+  use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
+                          totLength
+  use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
+                    bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
+                    flux, radMC, radWood, KLWood
+
+  integer :: i
+
+  !allocate and initialize timevars
+  allocate(time(ntime))
+  time = 0d0
+
+  !allocate and initialize genRealzvars
+  numPath   = 0  !setup Markov material tallies
+  sumPath   = 0d0
+  sqrPath   = 0d0
+  largesti  = 0d0
+  totLength = 0d0
+  P(1) = lam(1)/(lam(1)+lam(2)) !calc probabilities
+  P(2) = lam(2)/(lam(1)+lam(2))
+
+
+  !allocate fluxplot variables
+  if(radMC/='no' .or. radWood/='no' .or. KLWood/='no') then
+    allocate(fluxfaces(pfnumcells+1))
+    fluxfaces = 0.0d0
+    do i=1,pfnumcells+1
+      fluxfaces(i) = (s/pfnumcells) * (i-1)
+    enddo
+  endif
+  if(radMC=='yes') then
+    !i.e. different length for surface flux tally
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') allocate(flux(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') flux  = 0.0d0
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb')  allocate(fflux(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb')  fflux = 0.0d0
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb')  allocate(bflux(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb')  bflux = 0.0d0
+  endif
+  if(radWood=='yes') then
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') allocate(radWoodf(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') radWoodf  = 0.0d0
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') allocate(fradWoodf(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') fradWoodf = 0.0d0
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') allocate(bradWoodf(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') bradWoodf = 0.0d0
+  endif
+  if(KLWood=='yes') then
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') allocate(KLWoodf(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') KLWoodf  = 0.0d0
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') allocate(fKLWoodf(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') fKLWoodf = 0.0d0
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') allocate(bKLWoodf(numRealz,pfnumcells))
+    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') bKLWoodf = 0.0d0
+  endif
+
+  end subroutine global_allocate
+
+
 
 
 

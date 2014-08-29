@@ -32,12 +32,30 @@ program stochastic
   do j=1,seed !advance starting seed
     seeddum = rang()
   enddo
+  call global_allocate
 
   !!Perform KL research
-  if(KLres=='yes')   call KL_eigenvalue
-  if(KLres=='yes')   call KL_Correlation
-  if(radWood=='yes' .or. KLWood=='yes' .or. radMC=='yes' .or. plotmatdxs/='noplot')&
-                           call initialize_fluxplot
+  if(KLres=='yes') then
+    call KL_eigenvalue  !solves for eigenmode vars
+    call KL_Correlation !calcs and can plot spacial correlation funcs
+    call KL_collect     !collects xi values over realizations
+    call genReal_stats  !performs stats on above realizations
+    call KL_Cochart     !creates plots of variance kept to total variance
+    call KL_eval        !creates xi distributions from xi values
+    if(KLnoise=='yes') call KL_Noise !does something with xi distributions
+    call reset_genRealtals !resets Markov realz stats for next round of creation
+  endif
+
+  !!KLreconstructions
+  if(KLrec=='yes') then
+    call KLrcondition
+    do j=1,KLrnumRealz
+      call KLrgenrealz( j )
+      if(mod(j,KLrprintat)==0) call KLr_time( j )
+    enddo
+  endif
+  if(KLadjust=='yes') call KLadjustmean
+  if(KLrec=='yes') call KLreval
 
 
   !!Perform Transport with Various UQ Methods
@@ -53,25 +71,13 @@ program stochastic
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( j )
     if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
-    if(KLres=='yes') call KL_collect( j )
     if(radMC=='yes' .or. KLres=='yes' .or. radWood=='yes') call radtrans_time( j )
   enddo
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
-  if(KLres=='yes') call KL_Cochart
-  if(KLres=='yes') call KL_eval
-  if(KLnoise=='yes') call KL_Noise
 
-  !!KLreconstructions
-  if(KLrec=='yes') then
-    call KLrcondition
-    do j=1,KLrnumRealz
-      call KLrgenrealz( j )
-      if(mod(j,KLrprintat)==0) call KLr_time( j )
-    enddo
-  endif
-  if(KLadjust=='yes') call KLadjustmean
-  if(KLrec=='yes') call KLreval
+
+
 
   !!radKL transport
   if(KLWood=='yes') then

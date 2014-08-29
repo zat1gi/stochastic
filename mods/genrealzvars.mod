@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from mods/variables.f90 on Thu Aug 28 23:52:40 2014
-MD5:31da71f5df4eef2b2990652e80e3fccf -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from mods/variables.f90 on Fri Aug 29 01:25:32 2014
+MD5:fc96d8498fc8f35c2010cf8ddc22214c -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -100,6 +100,10 @@ CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
+27 'totlength' 'genrealzvars' 'totlength' 1 ((VARIABLE UNKNOWN-INTENT
+UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
+CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 )
 
 ('__convert_i4_r8' 0 2 'adamscase' 0 3 'devfirsttally' 0 4 'genrealzvars'
@@ -107,4 +111,5 @@ CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 10 'matlength' 0 11 'mattype' 0 12 'nummatsegs' 0 13 'numpath' 0 14
 'numrealz' 0 15 'p' 0 16 'perfirsttally' 0 17 'plotmatdxs' 0 18
 'pltgenrealz' 0 19 'pltgenrealznumof' 0 20 'pltgenrealzwhich' 0 21 's' 0
-22 'scatrat' 0 23 'sig' 0 24 'sqrpath' 0 25 'sumpath' 0 26)
+22 'scatrat' 0 23 'sig' 0 24 'sqrpath' 0 25 'sumpath' 0 26 'totlength' 0
+27)

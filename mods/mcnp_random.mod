@@ -1,4 +1,4 @@
-GFORTRAN module version '6' created from mods/mcnp_random.f90 on Thu Aug 28 23:52:35 2014
+GFORTRAN module version '6' created from mods/mcnp_random.f90 on Fri Aug 29 01:25:32 2014
 MD5:c2cdc29a2663db508d5d0ae8030c05f1 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
