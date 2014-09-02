@@ -7,6 +7,67 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
+
+  subroutine MCsetup_cases
+  ! This subroutine allocates and loads variables into MCcaseson and MCcases,
+  ! which are the controllers through the MCtransport process
+  use MCvars, only: radMC, radWood, KLWood, MCcaseson, MCcases
+
+  allocate(MCcaseson(3))
+  MCcaseson = 0
+  if(radMC  =='yes') MCcaseson(1) = 1
+  if(radWood=='yes') MCcaseson(2) = 1
+  if(KLWood =='yes') MCcaseson(3) = 1
+
+  allocate(MCcases(3))
+  MCcases(1) = 'radMC'
+  MCcases(2) = 'radWood'
+  MCcases(3) = 'KLWood'
+
+  end subroutine MCsetup_cases
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   subroutine radtrans_MCsim( j )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength, s

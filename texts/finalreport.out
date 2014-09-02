@@ -25,11 +25,11 @@
  |BrAtMix:  | 0.36040                 | 0.48096             |
  |----------------------------------------------------------|
 
-  total runtime:      0.02 min
-    genRealz   :      0.00 min     per:  1.60 %
-    radMC      :      0.00 min     per:  0.00 %
-    radWood    :      0.00 min     per:  1.71 %
-    KLcol      :      0.00 min     per:  0.00 %
-    KLrec      :      0.00 min     per: 31.73 %
-    KLWood     :      0.00 min     per:  5.02 %
-    other      :      0.01 min     per: 59.94 %
+  total runtime:      0.00 min
+    genRealz   :      0.00 min     per:  3.37 %
+    radMC      :      0.00 min     per:  3.67 %
+    radWood    :      0.00 min     per: 13.79 %
+    KLcol      :      0.00 min     per:  1.44 %
+    KLrec      :      0.00 min     per: 24.16 %
+    KLWood     :      0.00 min     per:  8.62 %
+    other      :      0.00 min     per: 44.94 %

@@ -180,5 +180,8 @@ module MCvars
   integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
   real(8)              :: areapnSamp(4)        ! tals pos&neg area: tot pos, tot neg, max pos, max neg
 
+  integer, allocatable :: MCcaseson(:)         ! reference of on or not on, cases selected or not
+  character(7), allocatable :: MCcases(:)      ! library of MC transport cases
+
 end module MCvars
 

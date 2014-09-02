@@ -13,7 +13,7 @@ program stochastic
 
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
-  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood
+  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood, MCcaseson
   implicit none
   ! pass by reference
   integer :: j      !current realization, better to make global?
@@ -51,9 +51,13 @@ program stochastic
   endif
 
 
-  !!Perform Transport with Various UQ Methods
-  !loop over different methods that will be used
-    !allocate UQ specific variables
+  
+  if( radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes' ) then
+    call MCsetup_cases
+    !allocate
+    !perform transport
+    !batch stuff/print/plot
+  endif
 
   !!genRealz, KLresearch, radtrans, radWood
   if(radWood=='yes') Wood='rad'
@@ -83,6 +87,7 @@ program stochastic
   if(KLWood=='yes') call WoodcockKLoutstats
   if(pltflux(1)/='noplot') call plot_flux
   call MCLeakage_pdfplot !bin for radMC,radWood
+
 
 
 
