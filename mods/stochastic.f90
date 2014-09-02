@@ -55,8 +55,8 @@ program stochastic
   if( sum(MCcaseson)>0 ) then        !perform if at least one cases chosen
     do icase=1,3                     !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
-        !allocate
-        !perform transport
+        call MCallocate              !allocate/initialize tallies
+        call MCtransport( icase )    !perform transport
         !batch stuff/print/plot
       endif
     enddo

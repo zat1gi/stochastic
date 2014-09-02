@@ -141,8 +141,6 @@ module MCvars
 
   integer              :: radtrans_int         !
 
-  real(8), allocatable :: initcur(:)           ! initial current into the slab
-
   real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
   real(8), allocatable :: flux(:,:)            ! flux tally both mats, TMC over binary mixtures
   real(8), allocatable :: Woodf(:,:)           ! flux tally both mats, generic Woodcock
