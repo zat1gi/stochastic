@@ -350,7 +350,7 @@ CONTAINS
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
-                    flux, radMC, radWood, KLWood
+                    flux, radMC, radWood, KLWood, MCcaseson, MCcases
   use mcnp_random, only: rang
   integer :: i,seed
   real(8) :: seeddum
@@ -391,6 +391,19 @@ CONTAINS
   allocate(KLrxisig(KLrnumpoints(2)))
   allocate(pltKLrrealzarray(maxval(KLrnumpoints),pltKLrrealznumof+1)) !fpoint and/or fxi all
   negcnt  = 0
+
+
+  !allocate/initialize MCvars
+  allocate(MCcaseson(3))
+  MCcaseson = 0
+  if(radMC  =='yes') MCcaseson(1) = 1
+  if(radWood=='yes') MCcaseson(2) = 1
+  if(KLWood =='yes') MCcaseson(3) = 1
+
+  allocate(MCcases(3))
+  MCcases(1) = 'radMC'
+  MCcases(2) = 'radWood'
+  MCcases(3) = 'KLWood'
 
 
   !allocate fluxplot variables

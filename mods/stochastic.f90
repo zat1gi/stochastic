@@ -16,8 +16,8 @@ program stochastic
   use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood, MCcaseson
   implicit none
   ! pass by reference
-  integer :: j      !current realization, better to make global?
-  integer :: seed   !random number seed for overall problem, used once.
+  integer :: j,icase !current realization, current MCtransport case
+  integer :: seed    !random number seed for overall problem, used once.
 
   !!read parameters
   call cpu_time(t1)
@@ -52,11 +52,14 @@ program stochastic
 
 
   
-  if( radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes' ) then
-    call MCsetup_cases
-    !allocate
-    !perform transport
-    !batch stuff/print/plot
+  if( sum(MCcaseson)>0 ) then        !perform if at least one cases chosen
+    do icase=1,3                     !cycle through possible cases
+      if( MCcaseson(icase)==1 ) then !run case if chosen
+        !allocate
+        !perform transport
+        !batch stuff/print/plot
+      endif
+    enddo
   endif
 
   !!genRealz, KLresearch, radtrans, radWood
