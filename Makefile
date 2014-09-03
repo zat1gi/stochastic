@@ -2,7 +2,7 @@
 FC = gfortran
 
 OBJ = mods/stochastic.f90
-MODS = mods/mcnp_random.f90 mods/variables.f90 mods/timeman.f90 mods/KLmeanadjust.f90 mods/utilities.f90 mods/Loadcase.f90 mods/genRealz.f90 mods/radtransMC.f90 mods/KLresearch.f90 mods/KLreconstruct.f90 mods/Woodcock.f90
+MODS = mods/mcnp_random.f90 mods/variables.f90 mods/timeman.f90 mods/KLmeanadjust.f90 mods/utilities.f90 mods/Loadcase.f90 mods/genRealz.f90 mods/Woodcock.f90 mods/radtransMC.f90 mods/KLresearch.f90 mods/KLreconstruct.f90 
 
 # Dependency Tree
 #

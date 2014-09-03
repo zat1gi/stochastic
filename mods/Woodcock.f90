@@ -19,14 +19,14 @@ CONTAINS
                     Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
                     numpnSamp, areapnSamp, allowneg, distneg, Wood, fluxfaces, &
                     fWoodf, bWoodf, fradWoodf, bradWoodf, fKLWoodf, bKLWoodf, &
-                    radWoodf, KLWoodf, Woodf
+                    radWoodf, KLWoodf, Woodf, binmaxind, binmaxes, fbinmax, bbinmax, &
+                    nceilbin
   integer :: j
 
-  integer :: i,o,nbin,k
+  integer :: i,o,k
   real(8) :: disthold
   real(8) :: binlength,position,mu,ceilsig,woodrat,actsig,tscatrat
   real(8) :: db,dc,tt1,tt2
-  real(8),allocatable :: binmaxind(:),binmaxes(:),fbinmax(:),bbinmax(:)
 
   character(3) :: print='no'
 
@@ -70,35 +70,35 @@ CONTAINS
 
 
   !select local bin maxes
-  if(Wood=='rad') nbin = ceiling(s/lamc)
-  if(Wood=='KL')  nbin = numEigs
+  if(Wood=='rad') nceilbin = ceiling(s/lamc)
+  if(Wood=='KL')  nceilbin = numEigs
 
-  allocate(binmaxind(nbin+1))
-  allocate(binmaxes(nbin))
-  allocate(fbinmax(nbin))
-  allocate(bbinmax(nbin))
+  allocate(binmaxind(nceilbin+1))
+  allocate(binmaxes(nceilbin))
+  allocate(fbinmax(nceilbin))
+  allocate(bbinmax(nceilbin))
   binmaxind=0.0d0
   binmaxes=0.0d0
   fbinmax=0.0d0
   bbinmax=0.0d0
 
-  binlength=s/nbin
+  binlength=s/nceilbin
   binmaxind(1)=0.0d0
-  do i=2,nbin+1
+  do i=2,nceilbin+1
     binmaxind(i)=binmaxind(i-1)+binlength
-    if(print=='yes') print *,"i:",i,"binmaxind(i):",binmaxind(i),"   nbin",nbin
+    if(print=='yes') print *,"i:",i,"binmaxind(i):",binmaxind(i),"   nceilbin",nceilbin
   enddo
 
-  if(Wood=='rad') call radWood_binmaxes(nummatSegs,binmaxind,binmaxes,nbin,sig)
-  if(Wood=='KL')  call KLWood_binmaxes( j,binmaxind,binmaxes,nbin)
+  if(Wood=='rad') call radWood_binmaxes( nummatSegs )
+  if(Wood=='KL')  call KLWood_binmaxes( j )
 
   !create forward/backward motion max vectors
   bbinmax(1)=binmaxes(1)
-  fbinmax(nbin)=binmaxes(nbin)
-  do i=2,nbin
+  fbinmax(nceilbin)=binmaxes(nceilbin)
+  do i=2,nceilbin
     bbinmax(i) = merge(bbinmax(i-1),binmaxes(i),bbinmax(i-1)>binmaxes(i))
   enddo
-  do i=nbin-1,1,-1
+  do i=nceilbin-1,1,-1
     fbinmax(i) = merge(fbinmax(i+1),binmaxes(i),fbinmax(i+1)>binmaxes(i))
   enddo
 
@@ -129,8 +129,8 @@ if(print=='yes') print *,
     do    !p-loop, through per particle interaction
       db = merge(s-position,position,mu>=0)/abs(mu) !calc db
       
-      ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nbin),& !sel max sig
-             ceilsigfunc(binmaxind,bbinmax,position,nbin),mu>=0)
+      ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
+             ceilsigfunc(position,bbinmax),mu>=0)
 
       dc = -log(1-rang())/ceilsig                   !calc dc
 
@@ -619,10 +619,10 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine KLWood_binmaxes( j,binmaxind,binmaxes,nbin)
+  subroutine KLWood_binmaxes( j )
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave
-  integer :: j,nbin
-  real(8) :: binmaxind(:),binmaxes(:)
+  use MCvars, only: binmaxind, binmaxes, nceilbin
+  integer :: j
 
   integer :: i,k
   integer :: numinnersteps = 7
@@ -630,7 +630,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   real(8) :: safetyfactor  = 1.1d0
   real(8) :: innerstep,maxsig,maxpos,xpos,xsig,xpos1,xsig1,xpos2,xsig2
 
-  do i=1,nbin
+  do i=1,nceilbin
     innerstep = (binmaxind(2)-binmaxind(1)) / (numinnersteps-1)
     maxsig=0.0d0             !find initial max val
     maxpos=0.0d0
@@ -667,13 +667,13 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  function ceilsigfunc(binmaxind,binmax,position,nbin)
-  integer :: nbin
-  real(8) :: binmaxind(:),binmax(:),position,ceilsigfunc
+  function ceilsigfunc(position,binmax)
+  use MCvars, only: nceilbin, binmaxind
+  real(8) :: position,ceilsigfunc,binmax(:)
 
   integer :: i
 
-  do i=1,nbin
+  do i=1,nceilbin
     if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
       ceilsigfunc = binmax(i)
       exit
@@ -719,11 +719,11 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   end function radWood_actscatrat
 
 
-  subroutine radWood_binmaxes(numArrSz,binmaxind,binmaxes,nbin,sig)
+  subroutine radWood_binmaxes( numArrSz )
   !subroutine starts to set up ceiling for WoodcockMC by mapping highest point in each bin
-  use genRealzvars, only: matType, matLength
-  integer :: numArrSz,nbin
-  real(8) :: binmaxind(:),binmaxes(:),sig(2)
+  use genRealzvars, only: matType, matLength, sig
+  use MCvars, only: nceilbin, binmaxind, binmaxes
+  integer :: numArrSz
 
   integer :: i,k
   real(8) :: smallersig,largersig
@@ -731,7 +731,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   smallersig=minval(sig)
   largersig =maxval(sig)
 
-  do i=1,nbin
+  do i=1,nceilbin
     do k=1,numArrSz
 
       !contains both
@@ -749,7 +749,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
     enddo
   enddo
 
-  end subroutine
+  end subroutine radWood_binmaxes
 
 
 

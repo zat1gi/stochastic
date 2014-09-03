@@ -20,7 +20,7 @@ CONTAINS
   real(8) :: tt1,tt2
 
   call cpu_time(tt1)
-  
+print *,"starting method: ",MCcases(icase)  
   do j=1,numRealz
 print *,"starting realization: ",j
     call genReal( j )                   !gen geometry
@@ -54,16 +54,16 @@ print *,"starting realization: ",j
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
-                    nceilbin, Wood_rej, allowneg, distneg, MCcases
+                    nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
+                    bbinmax, binmaxind, binmaxes
 
-  use Woodcock, only: ceilsigfunc, radWood_actsig, radWood_actscatrat, KLrxi_point
+  use Woodcock, only: radWood_actsig, radWood_actscatrat, KLrxi_point
                       !above only here because of politics, rid when you finish merging!
   integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
 
   !local variables
   integer :: i,o
   real(8) :: db,dc,dist,  sigma,  ceilsig,woodrat,disthold
-  real(8),allocatable :: binmaxind(:), binmaxes(:), fbinmax(:), bbinmax(:) !ceiling vars
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
 
@@ -95,12 +95,12 @@ print *,"   starting pathlength"
         case ("radMC")
           dc = -log(1-rang())/sig(matType(i))
         case ("radWood")
-          ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nceilbin),& !sel max sig
-                        ceilsigfunc(binmaxind,bbinmax,position,nceilbin),mu>=0)
+          ceilsig=merge(ceilsigfunc2(position,fbinmax),& !sel max sig
+                        ceilsigfunc2(position,bbinmax),mu>=0)
           dc = -log(1-rang())/ceilsig                   !calc dc
         case ("KLWood")
-          ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nceilbin),& !sel max sig
-                        ceilsigfunc(binmaxind,bbinmax,position,nceilbin),mu>=0)
+          ceilsig=merge(ceilsigfunc2(position,fbinmax),& !sel max sig
+                        ceilsigfunc2(position,bbinmax),mu>=0)
           dc = -log(1-rang())/ceilsig                   !calc dc
       end select
 
@@ -345,12 +345,12 @@ print *,"flEscapeDir : ",flEscapeDir
   use KLvars, only: numEigs
   use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
 
-  use Woodcock, only: radwood_binmaxes, KLWood_binmaxes
+  use Woodcock, only: KLWood_binmaxes
   integer :: j,icase
 
   integer :: i
   real(8) :: binlength
-
+print *,"in MCWood_setceils"
     !select local bin maxes
     if(MCcases(icase)=='radWood') nceilbin = ceiling(s/lamc)
     if(MCcases(icase)=='KLWood' ) nceilbin = numEigs
@@ -374,8 +374,8 @@ print *,"flEscapeDir : ",flEscapeDir
       binmaxind(i)=binmaxind(i-1)+binlength
     enddo
 
-    if(MCcases(icase)=='radWood') call radWood_binmaxes(nummatSegs,binmaxind,binmaxes,nceilbin,sig)
-    if(MCcases(icase)=='KLWood' ) call KLWood_binmaxes(j,binmaxind,binmaxes,nceilbin)
+    if(MCcases(icase)=='radWood') call radWood_binmaxes2( nummatSegs )
+    if(MCcases(icase)=='KLWood' ) call KLWood_binmaxes2( j )
 
     !create forward/backward motion max vectors
     bbinmax(1)=binmaxes(1)
@@ -386,7 +386,114 @@ print *,"flEscapeDir : ",flEscapeDir
     do i=nceilbin-1,1,-1
       fbinmax(i) = merge(fbinmax(i+1),binmaxes(i),fbinmax(i+1)>binmaxes(i))
     enddo
+print *,"binmaxind: ",binmaxind
+print *,"bbinmax: ",bbinmax
+print *,"fbinmax: ",fbinmax
   end subroutine MCWood_setceils
+
+
+
+  subroutine KLWood_binmaxes2( j ) ! make '1' when done with Woodcock version
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
+  use MCvars, only: binmaxind, binmaxes, nceilbin
+
+  use Woodcock, only: KLrxi_point !rid of when done with Woodcock version
+  integer :: j
+
+  integer :: i,k
+  integer :: numinnersteps = 7
+  integer :: numrefine     = 5
+  real(8) :: safetyfactor  = 1.1d0
+  real(8) :: innerstep,maxsig,maxpos,xpos,xsig,xpos1,xsig1,xpos2,xsig2
+
+  do i=1,nceilbin
+    innerstep = (binmaxind(2)-binmaxind(1)) / (numinnersteps-1)
+    maxsig=0.0d0             !find initial max val
+    maxpos=0.0d0
+    do k=1,numinnersteps
+      xpos=binmaxind(i)+(k-1)*innerstep
+      xsig= KLrxi_point(j,xpos)
+      if(xsig>maxsig) then
+        maxsig=xsig
+        maxpos=xpos
+      endif
+    enddo
+    do k=1,numrefine     !refine
+      innerstep=innerstep/2
+      xpos1=maxpos-innerstep
+      xsig1= KLrxi_point(j,xpos1)
+      xpos2=maxpos+innerstep
+      xsig2= KLrxi_point(j,xpos2)
+      if(xsig1>maxsig .AND. xsig1>xsig2) then
+        maxsig=xsig1
+        maxpos=xpos1
+      elseif(xsig2>maxsig .AND. xsig2>xsig1) then
+        maxsig=xsig2
+        maxpos=xpos2
+      else
+        maxpos=xpos
+      endif
+    enddo
+    binmaxes(i)=maxsig*safetyfactor   !assign maxsig
+
+  enddo
+
+  end subroutine KLWood_binmaxes2
+
+
+
+
+
+  subroutine radWood_binmaxes2( numArrSz ) !make simply '1' when other gone from Woodcock
+  !subroutine starts to set up ceiling for WoodcockMC by mapping highest point in each bin
+  use genRealzvars, only: matType, matLength, sig
+  use MCvars, only: nceilbin, binmaxind, binmaxes
+  integer :: numArrSz
+
+  integer :: i,k
+  real(8) :: smallersig,largersig
+
+  smallersig=minval(sig)
+  largersig =maxval(sig)
+
+  do i=1,nceilbin
+    do k=1,numArrSz
+
+      !contains both
+      if(matLength(k)>binmaxind(i) .AND. matLength(k)<binmaxind(i+1)) then
+        binmaxes(i)=largersig
+        exit
+      endif
+
+      !contains only one
+      if(matLength(k)<=binmaxind(i) .AND. matLength(k+1)>=binmaxind(i+1)) then
+        binmaxes(i)=sig(matType(k))
+        exit
+      endif
+
+    enddo
+  enddo
+print *,"binmaxes: ",binmaxes
+  end subroutine radWood_binmaxes2
+
+
+
+
+  function ceilsigfunc2(position,binmax) ! make '1' when done with Woodcock version
+  use MCvars, only: nceilbin, binmaxind
+  real(8) :: position,ceilsigfunc2,binmax(:)
+
+  integer :: i
+print *,"ceilsigfunc2 spot 1"
+  do i=1,nceilbin
+    if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
+      ceilsigfunc2 = binmax(i)
+      exit
+    endif
+  enddo
+print *,"ceilsigfunc2 spot 2"
+  end function ceilsigfunc2
+
 
 
 
