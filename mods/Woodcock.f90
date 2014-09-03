@@ -9,7 +9,6 @@ module Woodcock
 CONTAINS
   ! print statements in this module use 600-699
 
-
   subroutine WoodcockMC( j )
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &

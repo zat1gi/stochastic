@@ -7,99 +7,76 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
-  subroutine MCtransport( icase )
-  !This subroutine performs MC transport over an array of different geometry and source options.
-  !'icase' denotes which predefined setup over which to run MC transport.
-  !It may in the future make more sense to have flags which do or do not use certain functionality,
-  !but for the time being each operation is simply chosen as a function of which case is selected.
+  subroutine UQ_MC( icase )
+  !This subroutine perfoms Monte Carlo in the uncertain space, currently for binary mixtures.
+  !'MCtransport' handles the spatial MC, but this subroutine collects data in UQ space
   use timevars, only: time
-  use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength, s, &
-                          lamc
-  use KLvars, only: numEigs
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
-                    plotflux, pltflux, reflect, transmit, absorb, fluxfaces, &
-                    fflux, bflux, flux
-  integer :: icase     !which mode of transport being used
+  use genRealzvars, only: numRealz
+  use MCvars, only: MCcases, numParts
+  use genRealz, only: genReal
+  integer :: icase
 
-  !local variables
+  integer :: j !which realization
   real(8) :: tt1,tt2
-  integer :: j         !which realization
-  integer :: i,z,o,nbin
-  real(8) :: position,oldposition,mu,  db,dc,dist,  scatOrabs_rand,sigma
-  real(8),allocatable :: binmaxind(:), binmaxes(:), fbinmax(:), bbinmax(:) !ceiling vars
-  character(9) :: fldist, flIntType, flEscapeDir
 
   call cpu_time(tt1)
+  
+  do j=1,numRealz
+print *,"starting realization: ",j
+    call genReal( j )                   !gen geometry
+    if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') call MCWood_setceils( j,icase )
+                                        !for WMC, create ceilings
 
-  if(icase==3) then !initialize, move this to allocator also
-    numpnSamp =0
-    areapnSamp=0.0d0
-    disthold  =0.0d0
-  endif
+    call MCtransport( j,icase,numParts )
 
-  if(icase==2 .or. icase==3) then !setting ceilings, probably make this a seperate sub
-                                  !later, but at least move allocations to allocation sub
-    !select local bin maxes
-    if(icase==2) nbin = ceiling(s/lamc)
-    if(icase==3) nbin = numEigs
+  enddo !loops over realizations
 
-    if(allocated(binmaxind)) deallocate(binmaxind)
-    if(allocated(binmaxes)) deallocate(binmaxes)
-    if(allocated(fbinmax)) deallocate(fbinmax)
-    if(allocated(bbinmax)) deallocate(bbinmax)
-    allocate(binmaxind(nbin+1))
-    allocate(binmaxes(nbin))
-    allocate(fbinmax(nbin))
-    allocate(bbinmax(nbin))
-    binmaxind=0.0d0
-    binmaxes=0.0d0
-    fbinmax=0.0d0
-    bbinmax=0.0d0
+  !log time (in future subtract out any other contributions above)
+  call cpu_time(tt2)
+  if(MCcases(icase)=='radMC'  ) time(2)=time(2)+(tt2-tt1)
+  if(MCcases(icase)=='radWood') time(3)=time(3)+(tt2-tt1)
+  if(MCcases(icase)=='KLWood' ) time(7)=time(7)+(tt2-tt1)
 
-    binlength=s/nbin
-    binmaxind(1)=0.0d0
-    do i=2,nbin+1
-      binmaxind(i)=binmaxind(i-1)+binlength
-    enddo
-
-    if(icase==2) call radWood_binmaxes(nummatSegs,binmaxind,binmaxes,nbin,sig)
-    if(icase==3) call KLWood_binmaxes(j,binmaxind,binmaxes,nbin)
-
-    !create forward/backward motion max vectors
-    bbinmax(1)=binmaxes(1)
-    fbinmax(nbin)=binmaxes(nbin)
-    do i=2,nbin
-      bbinmax(i) = merge(bbinmax(i-1),binmaxes(i),bbinmax(i-1)>binmaxes(i))
-    enddo
-    do i=nbin-1,1,-1
-      fbinmax(i) = merge(fbinmax(i+1),binmaxes(i),fbinmax(i+1)>binmaxes(i))
-    enddo
-  endif
+  end subroutine UQ_MC
 
 
 
-  do o=1,numParts !o-loop, through per particle
-
-    !generate source particle position and direction
-    if( sourceType=='left' ) then
-      position = 0.0d0
-      i        = 1
-      mu       = 1.0d0
-      if(rodOrplanar=='planar') mu = isoboundmu()
-    elseif( sourceType=='intern') then
-      position = s * rang()
-      i        = internal_init_i(position,nummatSegs)
-      mu       = merge(1.0d0,-1.0d0,rang()>0.5d0)
-      if(rodOrplanar=='planar') mu = newmu()
-    endif
 
 
+  subroutine MCtransport( j,icase,tnumParts )
+  !This subroutine performs MC transport over a specified geometry.
+  !It can be used by a UQ_MC wrapper, and likely in the future by UQ_MLMC and/or UQ_SC.
+  !'j' denotes which realization over which the MC transport is performed.
+  !'icase' denotes which predefined setup over which the MC transport is performed.
+  !'tnumParts' is the number of particles over which the MC transport is performed.
+  !It may in the future make more sense to have flags which do or do not use certain functionality,
+  !but for the time being each operation is simply chosen as a function of which case is selected.
+  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s
+  use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
+                    absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
+                    nceilbin, Wood_rej, allowneg, distneg, MCcases
 
-    do ! simulate one particle
+  use Woodcock, only: ceilsigfunc, radWood_actsig, radWood_actscatrat, KLrxi_point
+                      !above only here because of politics, rid when you finish merging!
+  integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
 
+  !local variables
+  integer :: i,o
+  real(8) :: db,dc,dist,  sigma,  ceilsig,woodrat,disthold
+  real(8),allocatable :: binmaxind(:), binmaxes(:), fbinmax(:), bbinmax(:) !ceiling vars
+  character(9) :: fldist, flIntType, flEscapeDir, flExit
+
+
+  do o=1,tnumParts                     !loop over particles
+print *," starting particle: ",o
+    call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
+
+    do ! simulate one pathlength of a particle
+print *,"   starting pathlength"
+      flExit='clean'
 
       !tally number of interactions
-      radtrans_int=radtrans_int+1
+      if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
 
 
       !calculate distance to boundary
@@ -118,51 +95,65 @@ CONTAINS
         case ("radMC")
           dc = -log(1-rang())/sig(matType(i))
         case ("radWood")
-          ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nbin),& !sel max sig
-                        ceilsigfunc(binmaxind,bbinmax,position,nbin),mu>=0)
+          ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nceilbin),& !sel max sig
+                        ceilsigfunc(binmaxind,bbinmax,position,nceilbin),mu>=0)
           dc = -log(1-rang())/ceilsig                   !calc dc
         case ("KLWood")
-          ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nbin),& !sel max sig
-                        ceilsigfunc(binmaxind,bbinmax,position,nbin),mu>=0)
+          ceilsig=merge(ceilsigfunc(binmaxind,fbinmax,position,nceilbin),& !sel max sig
+                        ceilsigfunc(binmaxind,bbinmax,position,nceilbin),mu>=0)
           dc = -log(1-rang())/ceilsig                   !calc dc
       end select
 
 
 
       !select distance limiter (add another later with LP)
+      fldist = 'clean'
       dist   = min(db,dc)
-      fldist = merge('boundary','collision',db<dc)
+      fldist = merge('boundary ','collision',db<dc)
+
 
 
       !if boundary chosen
       if(fldist=='boundary') then
+        flEscapeDir = 'clean'
         !set direction flag
-        flEscapeDir = merge('transmit','reflect',mu>0.0d0)
+        flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
+        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej(1)=Wood_rej(1)+1 !accept path tal
 
         !evaluate for local or global transmission or reflection
-        if(flEscapeDir='transmit') then   !transmit
+        if(flEscapeDir=='transmit') then   !transmit
           select case (MCcases(icase))
             case ("radMC")
               i=i+1
-              oldposition = position
-              position    = matLength(i)
+              call MCinc_pos( matLength(i) )
               if(i==nummatSegs+1) transmit(j)=transmit(j)+1.0d0
-              if(i==nummatSegs+1) exit
+              if(i==nummatSegs+1) flExit='exit'
             case ("radWood")
+              call MCinc_pos( s )
+              transmit(j) = transmit(j)
+              flExit='exit'
             case ("KLWood")
+              call MCinc_pos( s )
+              transmit(j) = transmit(j)
+              flExit='exit'
           end select
         endif
 
-        if(flEscapeDir='reflect') then    !reflect
+        if(flEscapeDir=='reflect') then    !reflect
           select case (MCcases(icase))
             case ("radMC")
-              oldposition = position
-              position    = matLength(i)
+              call MCinc_pos( matLength(i) )
               if(i==1)            reflect(j)=reflect(j)+1.0d0
-              if(i==1)            exit
+              if(i==1)            flExit='exit'
               i=i-1
             case ("radWood")
+              call MCinc_pos( 0.0d0 )
+              reflect(j)  = reflect(j)+1
+              flExit='exit'
             case ("KLWood")
+              call MCinc_pos( 0.0d0 )
+              reflect(j)  = reflect(j)+1
+              flExit='exit'
           end select
         endif
 
@@ -171,45 +162,122 @@ CONTAINS
 
       !if collision chosen
       if(fldist=='collision') then
-        !Choose scatter or absorb
-        scatOrabs_rand = rang()
-        flIntType = merge('scatter','absorb',scatOrabs_rand<scatrat)
+        flIntType = 'clean'
+        !Advance position for all outcomes
+        call MCinc_pos( position + dc*mu )
+
+        !Choose scatter, absorb, or reject interaction
+        select case (MCcases(icase))
+          case ("radMC")
+            flIntType = merge('scatter','absorb ',rang()<scatrat(1))
+          case ("radWood")
+            woodrat = radWood_actsig(position,sig)/ceilsig
+            if(woodrat>1.0d0) then
+              print *,"j: ",j,"  woodrat: ",woodrat
+              stop 'Higher sig samples in radWood than ceiling, exiting program'
+            endif
+            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(flIntType=='clean') then                !accept interaction
+              if(radWood_actscatrat(position,scatrat)>rang()) then
+                flIntType = 'scatter'
+              else
+                flIntType = 'absorb'
+              endif
+            endif
+          case ("KLWood")
+            woodrat = KLrxi_point(j,position)/ceilsig
+            if(woodrat>1.0d0) then                      !assert woodrat
+              print *,"j: ",j,"  woodrat: ",woodrat
+              stop 'Higher sig samples in KLWood than ceiling, exiting program'
+            endif
+            if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
+            if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
+              if(abs(disthold)>woodrat*ceilsig) then
+                woodrat = 0.0d0
+              else
+                woodrat = (woodrat*ceilsig + disthold) / ceilsig
+              endif
+              disthold = 0.0d0
+            endif
+            if(allowneg=='yes') then                    !tallies for neg/pos if allowing neg
+              if(woodrat<0.0d0) then
+                numpnSamp(2)  =  numpnSamp(2)+1
+                areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
+                if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
+                if(distneg=='yes') disthold = woodrat*ceilsig
+                woodrat=0.0d0
+              else
+                numpnSamp(1)  =  numpnSamp(1)+1
+                areapnSamp(1) = areapnSamp(1)+woodrat*ceilsig          
+                if(woodrat*ceilsig>areapnSamp(3)) areapnSamp(3)=woodrat*ceilsig
+              endif
+            endif
+            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(flIntType=='clean') then                !accept interaction
+              if(scatrat(1)>rang()) then !this will need amending when scatrat is changed
+                flIntType = 'scatter'
+              else
+                flIntType = 'absorb'
+              endif
+            endif
+        end select
+
+        !Tally for neg stats
+        select case (MCcases(icase))
+          case ("radMC")
+          case ("radWood")
+            if(flIntType=='reject') then
+              Wood_rej(2)=Wood_rej(2)+1
+            else
+              Wood_rej(1)=Wood_rej(1)+1
+            endif
+          case ("KLWood")
+            if(flIntType=='reject') then
+              Wood_rej(2)=Wood_rej(2)+1
+            else
+              Wood_rej(1)=Wood_rej(1)+1
+            endif
+        end select
+
 
         !Evaluate scatter or absorb
         if(flIntType=='scatter') then     !scatter
-         select case (MCcases(icase))
+          select case (MCcases(icase))
             case ("radMC")
-              oldposition = position
-              position    = position + dc*mu
-              if(rodOrplanar=='rod')    mu = merge(1.0do,-1.0d0,rang()>=0.5d0)
+              if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
               if(rodOrplanar=='planar') mu = newmu()
             case ("radWood")
+              if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+              if(rodOrplanar=='planar') mu = newmu()
             case ("KLWood")
-         end select
+              if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+              if(rodOrplanar=='planar') mu = newmu()
+          end select
         endif
 
         if(flIntType=='absorb') then      !absorb
           select case (MCcases(icase))
             case ("radMC")
-              oldposition = position
-              position    = position + dc*mu
               absorb(j)=absorb(j)+1.0d0
-              exit
+              flExit='exit'
             case ("radWood")
+              absorb(j)=absorb(j)+1.0d0
+              flExit='exit'
             case ("KLWood")
+              absorb(j)=absorb(j)+1.0d0
+              flExit='exit'
           end select
         endif
 
       endif
 
-    enddo !simulate one particle
-
-
-  !log time (in future subtract out any other contributions above)
-  call cpu_time(tt2)
-  if(MCcases(icase)=='radMC'  ) time(2)=time(2)+(tt2-tt1)
-  if(MCcases(icase)=='radWood') time(3)=time(3)+(tt2-tt1)
-  if(MCcases(icase)=='KLWood' ) time(7)=time(7)+(tt2-tt1)
+      if(flExit=='exit') exit
+print *,"flExit      : ",flExit
+print *,"fldist      : ",fldist
+print *,"flIntType   : ",flIntType
+print *,"flEscapeDir : ",flEscapeDir
+    enddo !simulate one pathlength
+  enddo !loop over particles
 
   end subroutine MCtransport
 
@@ -217,176 +285,52 @@ CONTAINS
 
 
 
-  subroutine WoodcockMC( j )
-  use timevars, only: time
-  use genRealzvars, only: sig, scatrat, lam, s, numRealz, nummatSegs, lamc, &
-                          matType, matLength
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
-  use MCvars, only: numParts, pfnumcells, rodOrplanar, sourceType, plotflux, &
-                    pltflux, Woodt, Woodr, radWoodr, KLWoodr, radWoodt, KLWoodt, &
-                    Wooda, radWooda, KLWooda, Wood_rej, radWood_rej, KLWood_rej, &
-                    numpnSamp, areapnSamp, allowneg, distneg, Wood, fluxfaces, &
-                    fWoodf, bWoodf, fradWoodf, bradWoodf, fKLWoodf, bKLWoodf, &
-                    radWoodf, KLWoodf, Woodf
-  integer :: j
-
-  integer :: i,o,nbin,k
-  real(8) :: disthold
-  real(8) :: binlength,position,mu,ceilsig,woodrat,actsig,tscatrat
-  real(8) :: db,dc,tt1,tt2
-  real(8),allocatable :: binmaxind(:),binmaxes(:),fbinmax(:),bbinmax(:)
-
-  character(3) :: print='no'
-
-  call cpu_time(tt1)
-
-
-
-  do o=1,numParts !o-loop, through per particle
-
-    do    !p-loop, through per particle interaction
-
-
-      if( dc>db ) Wood_rej(1)=Wood_rej(1)+1   !accept path
-      if( dc>db .AND. mu>=0 ) then        !tally trans or refl
-        Woodt(j) = Woodt(j)+1 !transmit
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,s,Woodf,j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,s,fWoodf,bWoodf,j,mu)
-
-        if(print=='yes') print *,"                      tally transmit"
-        exit
-      endif
-      if( dc>db .AND. mu<0 ) then
-        Woodr(j) = Woodr(j) + 1 !reflect
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,0.0d0,Woodf,j,mu)
-        if(plotflux(2)=='fb') call col_fbflux(position,0.0d0,fWoodf,bWoodf,j,mu)
-        if(print=='yes') print *,"                      tally reflect"
-        exit
-      endif
-
-      if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,Woodf,j,mu)
-      if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fWoodf,bWoodf,j,mu)
-      if(Wood=='rad') woodrat= radWood_actsig(position,sig)/ceilsig
-      if(Wood=='KL')  woodrat= KLrxi_point(j,position)/ceilsig
-      if(woodrat>1.0d0) then
-        print *,"j: ",j,"  woodrat: ",woodrat
-        STOP 'Higher sig sampled in KLWood than ceiling, exiting program'
-      endif
-      if(Wood=='KL' .and. distneg=='yes' .and. woodrat>0.0d0) then !opt to redist neg xs values
-        if(abs(disthold)>woodrat*ceilsig) then
-          woodrat = 0.0d0
-        else
-          woodrat = (woodrat*ceilsig + disthold) / ceilsig
-        endif
-        disthold = 0.0d0
-      endif
-      if(woodrat<0.0d0 .and. allowneg=='no') STOP 'Neg number sampled in KLWood, exiting program'
-      if(Wood=='KL'  .and. allowneg=='yes') then  !tally data for neg/pos if allowing neg
-        if(woodrat<0.0) then
-          numpnSamp(2)  =  numpnSamp(2)+1
-          areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
-          if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
-          if(distneg=='yes') disthold = woodrat*ceilsig
-!if(distneg=='yes') print *,"disthold: ",disthold
-          woodrat=0.0d0
-        else
-          numpnSamp(1)  =  numpnSamp(1)+1
-          areapnSamp(1) = areapnSamp(1)+woodrat*ceilsig          
-          if(woodrat*ceilsig>areapnSamp(3)) areapnSamp(3)=woodrat*ceilsig
-        endif
-      endif
-
-      if(rang()>woodrat) then                 !not true int?
-        Wood_rej(2)=Wood_rej(2)+1 !reject path
-        if(print=='yes') print *,"                      reject interaction"
-        cycle
-      endif
-
-      Wood_rej(1)=Wood_rej(1)+1   !accept path
-
-      if(Wood=='rad') tscatrat=radWood_actscatrat(position,scatrat)
-      if(Wood=='KL')  tscatrat=scatrat(1)
-      if(rang()<tscatrat) then !scat or absorb
-        if(print=='yes') print *,"                      scatter (cycle)"
-        if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-        if(rodOrplanar=='planar') mu = newmu()
-        cycle
-     else
-        Wooda(j) = Wooda(j)+1 !absorb
-        if(print=='yes') print *,"                      tally absorb"
-        exit
-      endif
-
-    enddo  !end p-loop
-  enddo  !end o-loop
 
 
 
 
 
-  if(j==numRealz .AND. Wood=='rad') then  !store away for use in stats
-    allocate(radWoodt(numRealz))
-    allocate(radWoodr(numRealz))
-    allocate(radWooda(numRealz))
-    radWood_rej(1)=Wood_rej(1)
-    radWood_rej(2)=Wood_rej(2)
-    do k=1,numRealz
-      radWoodt(k)=Woodt(k)
-      radWoodr(k)=Woodr(k)
-      radWooda(k)=Wooda(k)
-      do i=1,pfnumcells
-        if(plotflux(2)=='tot') radWoodf(k,i)=Woodf(k,i)
-        if(plotflux(2)=='fb') fradWoodf(k,i)=fWoodf(k,i)
-        if(plotflux(2)=='fb') bradWoodf(k,i)=bWoodf(k,i)
-      enddo
-    enddo
-    deallocate(Woodt)
-    deallocate(Woodr)
-    deallocate(Wooda)
-    if(plotflux(2)=='tot') deallocate(Woodf)
-    if(plotflux(2)=='fb')  deallocate(fWoodf)
-    if(plotflux(2)=='fb')  deallocate(bWoodf)
-    deallocate(binmaxind)
-    deallocate(binmaxes)
-    deallocate(fbinmax)
-    deallocate(bbinmax)
 
-if(print=='yes') print *,
-if(print=='yes') print *,
-if(print=='yes') print *,
-if(print=='yes') print *,
-if(print=='yes') print *,"radWood_rej(1)",radWood_rej(1),"    radWood_rej(2)",radWood_rej(2)
-if(print=='yes') print *,
-if(print=='yes') print *,"radWood refl  :",real(radWoodr(j),8)/numParts,"   radWoodr(j):",radWoodr(j)
-if(print=='yes') print *,"radWood trans :",real(radWoodt(j),8)/numParts,"   radWoodt(j):",radWoodt(j)
-if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radWooda(j):",radWooda(j)
 
-  endif
-  if(j==KLrnumRealz .AND. Wood=='KL') then
-    allocate(KLWoodt(KLrnumRealz))
-    allocate(KLWoodr(KLrnumRealz))
-    allocate(KLWooda(KLrnumRealz))
-    KLWood_rej(1)=Wood_rej(1)
-    KLWood_rej(2)=Wood_rej(2)
-    do k=1,KLrnumRealz
-      KLWoodt(k)=Woodt(k)
-      KLWoodr(k)=Woodr(k)
-      KLWooda(k)=Wooda(k)
-      do i=1,pfnumcells
-        if(plotflux(2)=='tot') KLWoodf(k,i)=Woodf(k,i)
-        if(plotflux(2)=='fb') fKLWoodf(k,i)=fWoodf(k,i)
-        if(plotflux(2)=='fb') bKLWoodf(k,i)=bWoodf(k,i)
-      enddo
-    enddo
-    deallocate(Woodt)
-    deallocate(Woodr)
-    deallocate(Wooda)
-    if(plotflux(2)=='tot') deallocate(Woodf)
-    if(plotflux(2)=='fb') deallocate(fWoodf)
-    if(plotflux(2)=='fb') deallocate(bWoodf)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  subroutine genSourcePart( i,icase )
+  !This subroutine generates a position and direction, and bin if needed
+  !to specify a source particle.
+  use genRealzvars, only: s, nummatSegs
+  use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases
+  integer :: i,icase
+
+  if( sourceType=='left' ) then  !generate source particles
+    position = 0.0d0
+    mu       = 1.0d0
+    if(rodOrplanar=='planar') mu = isoboundmu()
+  elseif( sourceType=='intern' ) then
+    position = s * rang()
+    mu       = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+    if(rodOrplanar=='planar') mu = newmu()
   endif
 
-  end subroutine WoodcockMC
+  i = 0
+
+  if(MCcases(icase)=='radMC') then !if bin need be set
+    if(sourceType=='left') i = 1
+    if(sourceType=='intern') i = internal_init_i(nummatSegs)
+  endif
+
+  end subroutine genSourcePart
 
 
 
@@ -394,39 +338,79 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
+  subroutine MCWood_setceils( j,icase )
+  !This subroutine sets up ceiling values for Woodcock Monte Carlo.
+  !These ceilings of course need to be recalculated for each new realization
+  use genRealzvars, only: s, lamc, nummatSegs, sig
+  use KLvars, only: numEigs
+  use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
+
+  use Woodcock, only: radwood_binmaxes, KLWood_binmaxes
+  integer :: j,icase
+
+  integer :: i
+  real(8) :: binlength
+
+    !select local bin maxes
+    if(MCcases(icase)=='radWood') nceilbin = ceiling(s/lamc)
+    if(MCcases(icase)=='KLWood' ) nceilbin = numEigs
+
+    if(allocated(binmaxind)) deallocate(binmaxind)
+    if(allocated(binmaxes)) deallocate(binmaxes)
+    if(allocated(fbinmax)) deallocate(fbinmax)
+    if(allocated(bbinmax)) deallocate(bbinmax)
+    allocate(binmaxind(nceilbin+1))
+    allocate(binmaxes(nceilbin))
+    allocate(fbinmax(nceilbin))
+    allocate(bbinmax(nceilbin))
+    binmaxind=0.0d0
+    binmaxes=0.0d0
+    fbinmax=0.0d0
+    bbinmax=0.0d0
+
+    binlength=s/nceilbin
+    binmaxind(1)=0.0d0
+    do i=2,nceilbin+1
+      binmaxind(i)=binmaxind(i-1)+binlength
+    enddo
+
+    if(MCcases(icase)=='radWood') call radWood_binmaxes(nummatSegs,binmaxind,binmaxes,nceilbin,sig)
+    if(MCcases(icase)=='KLWood' ) call KLWood_binmaxes(j,binmaxind,binmaxes,nceilbin)
+
+    !create forward/backward motion max vectors
+    bbinmax(1)=binmaxes(1)
+    fbinmax(nceilbin)=binmaxes(nceilbin)
+    do i=2,nceilbin
+      bbinmax(i) = merge(bbinmax(i-1),binmaxes(i),bbinmax(i-1)>binmaxes(i))
+    enddo
+    do i=nceilbin-1,1,-1
+      fbinmax(i) = merge(fbinmax(i+1),binmaxes(i),fbinmax(i+1)>binmaxes(i))
+    enddo
+  end subroutine MCWood_setceils
 
 
 
 
+  subroutine MCinc_pos( newposition )
+  !This subroutine stores position in new position and reference passed value as position
+  use MCvars, only: oldposition, position
+  real(8) :: newposition
+  oldposition = position
+  position    = newposition
+  end subroutine MCinc_pos
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  subroutine MCallocate
+  subroutine MCallocate( icase )
   !This subroutine allocates and initializes variables that will be passed
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use MCvars, only: transmit, reflect, absorb, radtrans_int
+  use genRealzvars, only: numRealz
+  use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
+                    numpnSamp, areapnSamp, disthold, Wood_rej
+  integer :: icase
 
   if(.not.allocated(transmit)) allocate(transmit(numRealz))
   if(.not.allocated(reflect)) allocate(reflect(numRealz))
@@ -436,12 +420,25 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   absorb       =0.0d0
   radtrans_int =0
 
+  if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej = 0
+
+  if(MCcases(icase)=='KLWood') then
+    numpnSamp =0
+    areapnSamp=0.0d0
+    disthold  =0.0d0
+  endif
+
   end subroutine MCallocate
 
 
 
 
+
+
+
+
   subroutine radtrans_MCsim( j )
+!this is the old subroutine for radMC, doomed to be deleted when UQ_MC and MCtransport overshadow it
   use timevars, only: time
   use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength, s
   use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
@@ -474,7 +471,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
       if(rodOrplanar=='planar') mu = isoboundmu()
     elseif( sourceType=='intern') then
       position = s * rang()
-      i        = internal_init_i(position,nummatSegs)
+      i        = internal_init_i(nummatSegs)
       mu       = merge(1.0d0,-1.0d0,rang()>0.5d0)
       if(rodOrplanar=='planar') mu = newmu()
     endif
@@ -525,6 +522,7 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   time(2) = time(2) + (tt2-tt1)
 
   end subroutine radtrans_MCsim
+
 
 
 
@@ -838,10 +836,10 @@ enddo
 
 
 
-  function internal_init_i( position,numArrSz )
+  function internal_init_i( numArrSz )
   use genRealzvars, only: matLength
+  use MCvars, only: position
   integer :: numArrSz
-  real(8) :: position
 
   integer :: i,internal_init_i
 

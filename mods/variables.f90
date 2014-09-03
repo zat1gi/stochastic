@@ -155,6 +155,8 @@ module MCvars
   real(8), allocatable :: bradWoodf(:,:)       ! flux tally in 2nd mat, WMC over binary mixtures
   real(8), allocatable :: bKLWoodf(:,:)        ! flux tally in 2nd mat, WMC over KL reconstructions
 
+  real(8), allocatable :: initcur(:) !here for politics only, finish new MC driver, get rid of me
+
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodr(:)             ! generic reflection tally for Woodcock routines
   real(8), allocatable :: radWoodr(:)          ! slab reflection tally, WMC on binary mixtures
@@ -178,8 +180,18 @@ module MCvars
   integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
   real(8)              :: areapnSamp(4)        ! tals pos&neg area: tot pos, tot neg, max pos, max neg
 
+  real(8),allocatable  :: binmaxind(:)         ! These are used in ceilings for WMC
+  real(8),allocatable  :: binmaxes(:)          ! 
+  real(8),allocatable  :: fbinmax(:)           ! 
+  real(8),allocatable  :: bbinmax(:)           ! 
+  real(8)              :: disthold             ! used in a workaround for neg vals in KLWood
+
+  real(8)              :: position             ! 'current' position of particle
+  real(8)              :: oldposition          ! most recent position of particle
+  real(8)              :: mu                   ! 'current' direction of particle
   integer, allocatable :: MCcaseson(:)         ! reference of on or not on, cases selected or not
   character(7), allocatable :: MCcases(:)      ! library of MC transport cases
+  integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
 
 end module MCvars
 

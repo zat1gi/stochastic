@@ -14,7 +14,7 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,no,yes,   Perform radMC/radWood/KLWood subroutines? ('yes' or 'no')
+  yes,yes,yes,   Perform radMC/radWood/KLWood subroutines? ('yes' or 'no')
   40,            Number of particles to simulate on each realization
 
 
