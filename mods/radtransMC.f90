@@ -29,7 +29,13 @@ print *,"starting realization: ",j
 
     call MCtransport( j,icase,numParts )
 
+    !add routine to print time updates here
+
   enddo !loops over realizations
+
+  !add routine to calculate stats here, later make the above two loops, batch stats in between, final out here
+
+  !add plotter here.
 
   !log time (in future subtract out any other contributions above)
   call cpu_time(tt2)
