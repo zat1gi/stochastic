@@ -232,8 +232,9 @@ CONTAINS
     stopstatus = 'yes'
   endif
 
-  if( KLrprintat>KLrnumRealz ) then  !Test print frequency on reconstruction
-    print *,"--User trying to print KLreconstruction update less often than total reconstructions"
+                              !Test KLreconstruct print frequency
+  if( (KLrprintat>KLrnumRealz .or. mod(KLrnumRealz,KLrprintat)/=0) .AND. KLrec=='yes' ) then 
+    print *,"--Print to screen frequency for KLreconstruct must be factor of number of KLrealizations"
     stopstatus = 'yes'
   endif
 
@@ -268,8 +269,9 @@ CONTAINS
     KLrec = 'no'
   endif
 
-  if( trannprt>numRealz .AND. radMC=='yes' ) then !Test radtransMC print frequency
-    print *,"--User attempting to print to screen after more realizations than calculated (radtrans)"
+                              !Test radtransMC print frequency
+  if( (trannprt>numRealz .or. mod(numRealz,trannprt)/=0) .AND. radMC=='yes' ) then 
+    print *,"--Print to screen frequency for MCtran must be factor of number of realizations"
     stopstatus = 'yes'
   endif
 
