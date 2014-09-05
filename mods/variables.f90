@@ -5,6 +5,8 @@ module timevars
   integer, parameter   :: ntime = 7            ! size of 'time' array
   real(8)              :: t1                   ! initial computer time for run
   real(8)              :: runtime              ! total cpu time code has been running
+  integer, allocatable :: totparts(:)          ! total particles to be run in each method
+  integer, allocatable :: cumparts(:)          ! cumulative particles run in each method
 
 end module
 

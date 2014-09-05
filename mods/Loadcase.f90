@@ -342,7 +342,7 @@ CONTAINS
 
   subroutine global_allocate( seed )
   !This subroutine allocates and initializes all global variables
-  use timevars, only: time, ntime
+  use timevars, only: time, ntime, totparts, cumparts
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
@@ -350,19 +350,15 @@ CONTAINS
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
-                    flux, radMC, radWood, KLWood, MCcaseson, MCcases
+                    flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts
   use mcnp_random, only: rang
-  integer :: i,seed
+  integer :: i,seed,icase
   real(8) :: seeddum
 
   !initialize seed
   do i=1,seed !advance starting seed
     seeddum = rang()
   enddo
-
-  !allocate and initialize timevars
-  allocate(time(ntime))
-  time = 0d0
 
   !allocate and initialize genRealzvars
   numPath   = 0  !setup Markov material tallies
@@ -405,6 +401,19 @@ CONTAINS
   MCcases(2) = 'radWood'
   MCcases(3) = 'KLWood'
 
+
+  !allocate and initialize timevars
+  allocate(time(ntime))
+  time = 0.0d0
+  allocate(totparts(3))
+  allocate(cumparts(3))
+  totparts = 0
+  cumparts = 0
+  do icase=1,3
+    if(MCcaseson(icase)==1) then
+      totparts(icase) = numRealz*numParts
+    endif
+  enddo
 
   !allocate fluxplot variables
   if(radMC/='no' .or. radWood/='no' .or. KLWood/='no') then

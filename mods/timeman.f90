@@ -6,6 +6,85 @@ CONTAINS
 
 
 !! time tracking funcs and subs
+
+
+  subroutine radtrans_timeupdate( j,icase,tt1 )
+  use timevars, only: time, totparts, cumparts
+  use genRealzvars, only: numRealz
+  use MCvars, only: numParts, MCcaseson, MCcases
+  integer :: j,icase
+  real(8) :: tt1
+
+  integer :: ticase
+  real(8) :: ttime,localper,timeeta,wgtavetime,tt2
+  real(8) :: local_time,finished_time,local_time_left,non_local_time_left
+  real(8), allocatable :: avetime(:) !average time per MC method
+
+
+  !log time (in future subtract out any other contributions above)
+  call cpu_time(tt2)
+  select case (MCcases(icase))
+    case ("radMC")
+      time(2)=time(2)+(tt2-tt1)
+    case ("radWood")
+      time(3)=time(3)+(tt2-tt1)
+    case ("KLWood")
+      time(7)=time(7)+(tt2-tt1)
+  end select
+  tt1 = tt2                         !reset tt1 to tt2
+
+  cumparts(icase) = j*numParts      !update cumulative particles
+  localper = real(j,8)/numRealz*100 !percentage of local method done
+
+  !get time estimates
+  if(.not.allocated(avetime)) allocate(avetime(3))
+  avetime = 0.0d0
+  do ticase=1,icase
+    if(MCcaseson(ticase)==1) then
+      select case (MCcases(ticase)) !load to ttime the time of each method
+        case ("radMC")
+          ttime = time(2)
+        case ("radWood")
+          ttime = time(3)
+        case ("KLWood")
+          ttime = time(7)
+      end select
+      avetime(ticase) = ttime/cumparts(ticase)  !average time per particle for method
+    endif
+  enddo
+  wgtavetime = sum(avetime)/3  !weighted average time per particle estimate
+
+  local_time          = cumparts(icase)                                                  *avetime(icase)
+
+  finished_time       = sum(time)
+  local_time_left     = (totparts(icase)-cumparts(icase))                                *avetime(icase)
+  non_local_time_left = (sum(totparts)-sum(cumparts) - (totparts(icase)-cumparts(icase)))*wgtavetime
+
+  timeeta             = finished_time + local_time_left + non_local_time_left
+
+
+  1100 format(A9,"   ",f7.2," min,",f6.1,"% of method ",i2," of ",i2,"      time/est:",f7.2,"/",f7.2," min")
+  write(*,1100) MCcases(icase),local_time/60.0d0,localper,sum(MCcaseson(1:icase)),sum(MCcaseson),&
+                finished_time/60.0d0,timeeta/60.0d0
+  if(localper==100) print *,
+
+  end subroutine radtrans_timeupdate
+
+
+
+!  subroutine KL_timeupdate
+
+!  end subroutine KL_timeupdate
+
+
+
+
+
+
+
+
+
+
   subroutine radtrans_time( j )
   use timevars, only: time
   use genRealzvars, only: numRealz
@@ -38,6 +117,22 @@ CONTAINS
 
 
 
+  subroutine KLWood_time( j )
+  use timevars, only: time
+  use KLvars, only: KLrnumRealz
+  integer :: j
+
+  real(8) :: timedone,esttime
+  character(19) :: type='KLWood              '
+
+  timedone=time(7)/60.0d0
+  esttime = timedone*KLrnumRealz/j
+  call time_report( type,timedone,j,KLrnumRealz,esttime )
+
+  end subroutine KLWood_time
+
+
+
 
   subroutine KLr_time( j )
   use timevars, only: time
@@ -53,21 +148,6 @@ CONTAINS
 
   end subroutine KLr_time
 
-
-
-  subroutine KLWood_time( j )
-  use timevars, only: time
-  use KLvars, only: KLrnumRealz
-  integer :: j
-
-  real(8) :: timedone,esttime
-  character(19) :: type='KLWood              '
-
-  timedone=time(7)/60.0d0
-  esttime = timedone*KLrnumRealz/j
-  call time_report( type,timedone,j,KLrnumRealz,esttime )
-
-  end subroutine KLWood_time
 
 
 
@@ -91,7 +171,16 @@ CONTAINS
 
 
 
+
+
+
+
+
+
+
+
   subroutine timereport
+  !This is the timereport that comes at the end of the whole code running, the final time report.
   use timevars, only: t1, runtime
   use KLvars, only: KLres, KLrec, KLnoise
   use MCvars, only: radMC, radWood, KLWood

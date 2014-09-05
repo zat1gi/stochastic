@@ -12,36 +12,30 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data in UQ space
   use timevars, only: time
   use genRealzvars, only: numRealz
-  use MCvars, only: MCcases, numParts
+  use MCvars, only: MCcases, numParts, trannprt
   use genRealz, only: genReal
   integer :: icase
 
   integer :: j !which realization
-  real(8) :: tt1,tt2
+  real(8) :: tt1
 
   call cpu_time(tt1)
-print *,"starting method: ",MCcases(icase)  
+!print *,"starting method: ",MCcases(icase)  
   do j=1,numRealz
-print *,"starting realization: ",j
-    call genReal( j )                   !gen geometry
+!print *,"starting realization: ",j
+    call genReal( j )                      !gen geometry
     if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') call MCWood_setceils( j,icase )
-                                        !for WMC, create ceilings
+                                           !for WMC, create ceilings
 
-    call MCtransport( j,icase,numParts )
+    call MCtransport( j,icase,numParts )   !transport over a realization
 
-    !add routine to print time updates here
-
+    if(mod( j,trannprt )==0) call radtrans_timeupdate( j,icase,tt1 )    !print time updates
   enddo !loops over realizations
 
   !add routine to calculate stats here, later make the above two loops, batch stats in between, final out here
 
   !add plotter here.
 
-  !log time (in future subtract out any other contributions above)
-  call cpu_time(tt2)
-  if(MCcases(icase)=='radMC'  ) time(2)=time(2)+(tt2-tt1)
-  if(MCcases(icase)=='radWood') time(3)=time(3)+(tt2-tt1)
-  if(MCcases(icase)=='KLWood' ) time(7)=time(7)+(tt2-tt1)
 
   end subroutine UQ_MC
 
@@ -74,11 +68,11 @@ print *,"starting realization: ",j
 
 
   do o=1,tnumParts                     !loop over particles
-print *," starting particle: ",o
+!print *," starting particle: ",o
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
 
     do ! simulate one pathlength of a particle
-print *,"   starting pathlength"
+!print *,"   starting pathlength"
       flExit='clean'
 
       !tally number of interactions
@@ -179,7 +173,7 @@ print *,"   starting pathlength"
           case ("radWood")
             woodrat = radWood_actsig(position,sig)/ceilsig
             if(woodrat>1.0d0) then
-              print *,"j: ",j,"  woodrat: ",woodrat
+              !print *,"j: ",j,"  woodrat: ",woodrat
               stop 'Higher sig samples in radWood than ceiling, exiting program'
             endif
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
@@ -193,7 +187,7 @@ print *,"   starting pathlength"
           case ("KLWood")
             woodrat = KLrxi_point(j,position)/ceilsig
             if(woodrat>1.0d0) then                      !assert woodrat
-              print *,"j: ",j,"  woodrat: ",woodrat
+              !print *,"j: ",j,"  woodrat: ",woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
             if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
@@ -278,10 +272,10 @@ print *,"   starting pathlength"
       endif
 
       if(flExit=='exit') exit
-print *,"flExit      : ",flExit
-print *,"fldist      : ",fldist
-print *,"flIntType   : ",flIntType
-print *,"flEscapeDir : ",flEscapeDir
+!print *,"flExit      : ",flExit
+!print *,"fldist      : ",fldist
+!print *,"flIntType   : ",flIntType
+!print *,"flEscapeDir : ",flEscapeDir
     enddo !simulate one pathlength
   enddo !loop over particles
 
@@ -356,7 +350,7 @@ print *,"flEscapeDir : ",flEscapeDir
 
   integer :: i
   real(8) :: binlength
-print *,"in MCWood_setceils"
+!print *,"in MCWood_setceils"
     !select local bin maxes
     if(MCcases(icase)=='radWood') nceilbin = ceiling(s/lamc)
     if(MCcases(icase)=='KLWood' ) nceilbin = numEigs
@@ -392,9 +386,9 @@ print *,"in MCWood_setceils"
     do i=nceilbin-1,1,-1
       fbinmax(i) = merge(fbinmax(i+1),binmaxes(i),fbinmax(i+1)>binmaxes(i))
     enddo
-print *,"binmaxind: ",binmaxind
-print *,"bbinmax: ",bbinmax
-print *,"fbinmax: ",fbinmax
+!print *,"binmaxind: ",binmaxind
+!print *,"bbinmax: ",bbinmax
+!print *,"fbinmax: ",fbinmax
   end subroutine MCWood_setceils
 
 
@@ -479,7 +473,7 @@ print *,"fbinmax: ",fbinmax
 
     enddo
   enddo
-print *,"binmaxes: ",binmaxes
+!print *,"binmaxes: ",binmaxes
   end subroutine radWood_binmaxes2
 
 
@@ -490,14 +484,14 @@ print *,"binmaxes: ",binmaxes
   real(8) :: position,ceilsigfunc2,binmax(:)
 
   integer :: i
-print *,"ceilsigfunc2 spot 1"
+!print *,"ceilsigfunc2 spot 1"
   do i=1,nceilbin
     if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
       ceilsigfunc2 = binmax(i)
       exit
     endif
   enddo
-print *,"ceilsigfunc2 spot 2"
+!print *,"ceilsigfunc2 spot 2"
   end function ceilsigfunc2
 
 

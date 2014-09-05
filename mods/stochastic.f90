@@ -64,7 +64,6 @@ program stochastic
 stop
 
 
-
   !!genRealz, KLresearch, radtrans, radWood
   if(radWood=='yes') Wood='rad'
   do j=1,numRealz
