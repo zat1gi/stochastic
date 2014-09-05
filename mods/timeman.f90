@@ -9,6 +9,8 @@ CONTAINS
 
 
   subroutine radtrans_timeupdate( j,icase,tt1 )
+  !Print time updates for MCtrans methods.  Also time tracking is performed in part on the 
+  !fly in this subroutine.
   use timevars, only: time, totparts, cumparts
   use genRealzvars, only: numRealz
   use MCvars, only: numParts, MCcaseson, MCcases
@@ -75,6 +77,8 @@ CONTAINS
 
 
   subroutine KL_timeupdate( j,tt1,flKLtype )
+  !Print time updates for KLcol and KLrec methods.  Also time tracking is performed in part on the 
+  !fly in this subroutine.
   use timevars, only: time
   use genRealzvars, only: numRealz
   use KLvars, only: KLrnumRealz
