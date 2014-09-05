@@ -55,6 +55,7 @@ CONTAINS
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
+  character(5) :: flKLtype = 'KLrec'
 
   call cpu_time(tt1)
 
@@ -108,12 +109,8 @@ CONTAINS
     write(11,*)
 
 
-
-    if(mod(j,KLrprintat)==0) call KLr_time( j ) !print progress
+    if(mod(j,KLrprintat)==0) call KL_timeupdate( j,tt1,flKLtype )
   enddo
-
-  call cpu_time(tt2)
-  time(6) = time(6) + (tt2-tt1)
 
   end subroutine KLrgenrealz
 

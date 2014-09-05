@@ -318,10 +318,12 @@ CONTAINS
   !This subroutine collects xi values from a set of distributions.
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength
-  use KLvars,       only: gam, alpha, Ak, Eig, xi, numEigs, sigave
+  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, sigave
+  use MCvars, only: trannprt
   use genRealz, only: genReal
   integer :: i,j,k,curEig
-  real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,tt2
+  real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1
+  character(5) :: flKLtype = 'KLcol'
 
   call cpu_time(tt1)
 
@@ -333,24 +335,22 @@ CONTAINS
       xitermtot=0d0
 
       do i=2,nummatSegs+1
-        xl=matLength(i-1)   !set xl and xr for calculations
+        xl=matLength(i-1)                                         !set xl and xr for calculations
         xr=matLength(i)
-        sigma=sig(matType(i-1))                    !set sig to the correct sig
+        sigma=sig(matType(i-1))                                   !set sig to the correct sig
 
-        xiterm= (sigma-sigave)*&                 !actual calculation
+        xiterm= (sigma-sigave)*&                                  !actual calculation
                 (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
                 -lamc*sin(alpha(curEig)*xl)+cos(alpha(curEig)*xl)/alpha(curEig))
 
         xitermtot = xitermtot + xiterm
       enddo
 
-      xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot   !find resulting xi
+      xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot     !find resulting xi
     enddo
 
+    if(mod( j,trannprt )==0) call KL_timeupdate( j,tt1,flKLtype ) !print time updates
   enddo
-
-  call cpu_time(tt2)
-  time(5) = time(5) + (tt2-tt1) - time(1) !time(1) is time used creating realz while here
 
   end subroutine KL_collect
 

@@ -1,7 +1,7 @@
   200,         Advance random see how far?
   !--- Geometry ---!
-  1.2,           Adamscase option, if==0, then user input for next three parameters
-  0.1,0.9        Sigma cross section vals
+  0,           Adamscase option, if==0, then user input for next three parameters
+  0.8,0.9        Sigma cross section vals
   0.5,0.5,       Scattering Ratios
   0.2,0.01,      Lambda path length vals
   1.0,           slab thickness
@@ -10,7 +10,7 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  30,             Number of eigenvalues
+  3,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!

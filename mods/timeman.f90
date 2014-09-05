@@ -72,9 +72,47 @@ CONTAINS
 
 
 
-!  subroutine KL_timeupdate
 
-!  end subroutine KL_timeupdate
+
+  subroutine KL_timeupdate( j,tt1,flKLtype )
+  use timevars, only: time
+  use genRealzvars, only: numRealz
+  use KLvars, only: KLrnumRealz
+  integer :: j
+  real(8) :: tt1,localper,local_time,timeeta
+  character(5) :: flKLtype
+
+  real(8) :: tt2
+
+
+  call cpu_time(tt2)     !increment time
+  select case (flKLtype)
+    case ("KLcol")
+      time(5) = time(5) + (tt2-tt1)
+    case ("KLrec")
+      time(6) = time(6) + (tt2-tt1)
+  end select      
+  tt1 = tt2
+
+
+  1110 format(A9,"   ",f7.2," min,",f6.1,"% of est",f7.2," min for meth")
+  select case (flKLtype) !print update
+    case ("KLcol")
+      localper   = real(j,8)/numRealz*100
+      local_time = time(5)-time(1)
+      timeeta    = local_time / (localper/100)
+      write(*,1110) flKLtype,local_time/60.0d0,localper,timeeta/60.0d0
+    case ("KLrec")
+      localper   = real(j,8)/KLrnumRealz*100
+      local_time = time(6)
+      timeeta    = local_time / (localper/100)
+      write(*,1110) flKLtype,local_time/60.0d0,localper,timeeta/60.0d0
+  end select      
+
+
+  if(flKLtype=='KLcol' .and. j==numRealz) time(5) = time(5) - time(1)  !time(1) is genReal
+
+  end subroutine KL_timeupdate
 
 
 
