@@ -59,6 +59,7 @@ CONTAINS
 
   call cpu_time(tt1)
 
+  write(*,*) "Starting method: ",flKLtype  
   do j=1,KLrnumRealz
 
     KLrsig = 0          !create a realization, fixed point

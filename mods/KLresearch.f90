@@ -327,6 +327,7 @@ CONTAINS
 
   call cpu_time(tt1)
 
+  write(*,*) "Starting method: ",flKLtype  
   do j=1,numRealz
     call genReal( j )
     do curEig=1,numEigs

@@ -20,7 +20,7 @@ CONTAINS
   real(8) :: tt1
 
   call cpu_time(tt1)
-!print *,"starting method: ",MCcases(icase)  
+  write(*,*) "Starting method: ",MCcases(icase)  
   do j=1,numRealz
 !print *,"starting realization: ",j
     call genReal( j )                      !gen geometry
