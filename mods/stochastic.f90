@@ -13,7 +13,8 @@ program stochastic
 
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
-  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood, MCcaseson
+  use MCvars, only: pltflux, allowneg, Wood, radMC, radWood, KLWood, MCcaseson, &
+                    numPosMCmeths
   implicit none
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
@@ -54,7 +55,7 @@ program stochastic
 
   !!Perform UQ-MC for transport problems  
   if( sum(MCcaseson)>0 ) then        !perform if at least one cases chosen
-    do icase=1,3                     !cycle through possible cases
+    do icase=1,numPosMCmeths         !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
         call MCallocate( icase )     !allocate/initialize tallies
         call UQ_MC( icase )          !perform transport

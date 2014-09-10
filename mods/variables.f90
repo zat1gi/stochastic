@@ -136,6 +136,8 @@ module MCvars
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
   !non inputs
+  integer, parameter   :: numPosMCmeths = 3    ! total number of MC transport methods available
+
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values
                                                ! First rank: 1 average, 2 stdev

@@ -353,7 +353,8 @@ CONTAINS
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
-                    stocMC_reflection, stocMC_transmission, stocMC_absorption
+                    stocMC_reflection, stocMC_transmission, stocMC_absorption, &
+                    numPosMCmeths
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -394,20 +395,20 @@ CONTAINS
 
 
   !allocate/initialize MCvars
-  allocate(MCcaseson(3))
+  allocate(MCcaseson(numPosMCmeths))
   MCcaseson = 0
   if(radMC  =='yes') MCcaseson(1) = 1
   if(radWood=='yes') MCcaseson(2) = 1
   if(KLWood =='yes') MCcaseson(3) = 1
 
-  allocate(MCcases(3))
+  allocate(MCcases(numPosMCmeths))
   MCcases(1) = 'radMC'
   MCcases(2) = 'radWood'
   MCcases(3) = 'KLWood'
 
-  allocate(stocMC_reflection(3,2))   !global MC variables for each method
-  allocate(stocMC_transmission(3,2)) !rank 2 holds 1=average, 2=deviation
-  allocate(stocMC_absorption(3,2))
+  allocate(stocMC_reflection(numPosMCmeths,2))   !global MC variables for each method
+  allocate(stocMC_transmission(numPosMCmeths,2)) !rank 2 holds 1=average, 2=deviation
+  allocate(stocMC_absorption(numPosMCmeths,2))
   stocMC_reflection   = 0.0d0
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
@@ -423,7 +424,7 @@ CONTAINS
   allocate(cumparts(3))
   totparts = 0
   cumparts = 0
-  do icase=1,3
+  do icase=1,numPosMCmeths
     if(MCcaseson(icase)==1) then
       totparts(icase) = numRealz*numParts
     endif

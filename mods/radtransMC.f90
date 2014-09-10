@@ -1316,7 +1316,8 @@ enddo
   !Stats are from Adams89, Brantley11, and those generated here!
   use genRealzvars, only: Adamscase
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, stocMC_absorption, MCcases, MCcaseson
+                    stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
+                    numPosMCmeths
   integer :: icase
 
   320 format(" |AdamsMC:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
@@ -1344,7 +1345,7 @@ enddo
   endif
 
   !print my solutions for radMC, radWood, KLWood
-  do icase = 1,3
+  do icase = 1,numPosMCmeths
     if(MCcaseson(icase)==1) then
       if(MCcases(icase)=='radMC')   write(100,326) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
