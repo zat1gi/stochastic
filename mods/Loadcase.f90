@@ -46,7 +46,7 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
                                   plotflux, results, pltflux, allowneg, distneg, radMC, radWood, &
-                                  KLWood
+                                  KLWood, LPMC, atmixMC, LPamnumParts
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
 
@@ -79,8 +79,9 @@ CONTAINS
 
   !--- Large MCtrans Options ---!
   read(2,*) dumchar
-  read(2,*) radMC,radWood,KLWood
+  read(2,*) radMC,radWood,KLWood,LPMC,atmixMC
   read(2,*) numParts
+  read(2,*) LPamnumParts
 
   !--- Lesser KL Options ---!
   read(2,*) dumchar
@@ -354,7 +355,7 @@ CONTAINS
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
-                    numPosMCmeths
+                    numPosMCmeths, LPMC, atmixMC
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -400,11 +401,15 @@ CONTAINS
   if(radMC  =='yes') MCcaseson(1) = 1
   if(radWood=='yes') MCcaseson(2) = 1
   if(KLWood =='yes') MCcaseson(3) = 1
+  if(LPMC   =='yes') MCcaseson(4) = 1
+  if(atmixMC=='yes') MCcaseson(5) = 1
 
   allocate(MCcases(numPosMCmeths))
   MCcases(1) = 'radMC'
   MCcases(2) = 'radWood'
   MCcases(3) = 'KLWood'
+  MCcases(4) = 'LPMC'
+  MCcases(5) = 'atmixMC'
 
   allocate(stocMC_reflection(numPosMCmeths,2))   !global MC variables for each method
   allocate(stocMC_transmission(numPosMCmeths,2)) !rank 2 holds 1=average, 2=deviation
@@ -420,8 +425,8 @@ CONTAINS
   !allocate and initialize timevars
   allocate(time(ntime))
   time = 0.0d0
-  allocate(totparts(3))
-  allocate(cumparts(3))
+  allocate(totparts(numPosMCmeths))
+  allocate(cumparts(numPosMCmeths))
   totparts = 0
   cumparts = 0
   do icase=1,numPosMCmeths

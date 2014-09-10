@@ -16,23 +16,32 @@ CONTAINS
   use genRealz, only: genReal
   integer :: icase
 
-  integer :: j !which realization
+  integer :: j,tnumParts !which realization
   real(8) :: tt1
 
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
+
+  call MCallocate( icase,tnumParts )         !allocate/initialize tallies
   do j=1,numRealz
-!print *,"starting realization: ",j
-    call genReal( j )                      !gen geometry
-    if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') call MCWood_setceils( j,icase )
-                                           !for WMC, create ceilings
 
-    call MCtransport( j,icase,numParts )   !transport over a realization
+      if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
+    call genReal( j,'binary ' )                        !gen geometry
+      if(MCcases(icase)=='atmixMC') &
+    call genReal( j,'atmix  '  )
 
-    if(mod( j,trannprt )==0) call radtrans_timeupdate( j,icase,tt1 )    !print time updates
+      if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') &
+    call MCWood_setceils( j,icase )          !for WMC, create ceilings
+
+    call MCtransport( j,icase,tnumParts )     !transport over a realization
+
+      if(mod( j,trannprt )==0 .or. MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') &
+    call radtrans_timeupdate( j,icase,tt1 )  !print time updates
+
+    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') exit
   enddo !loops over realizations
 
-  call stocMC_stats( icase )               !add routine to calc stats in stochastic space here
+  call stocMC_stats( icase )               !calc stats in stochastic space here
                                            !later make the above two loops,
                                            !batch spatial stats in between, final out here
 
@@ -535,50 +544,60 @@ CONTAINS
   !This subroutine calculates mean and standard deviation for leakage values over stochastic
   !space for each MC transport solver.
   use genRealzvars, only: numRealz
-  use MCvars, only: reflect, transmit, absorb, stocMC_reflection, &
-                    stocMC_transmission, stocMC_absorption, numParts
+  use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
+                    stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
+                    MCcases
   integer :: icase
 
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
 print *,"reflect         : ",sum(reflect)
 print *,"transmit        : ",sum(transmit)
 print *,"absorb          : ",sum(absorb)
 print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
-  reflect  = reflect  / numParts
-  transmit = transmit / numparts
-  absorb   = absorb   / numParts
+    reflect  = reflect  / numParts
+    transmit = transmit / numparts
+    absorb   = absorb   / numParts
 
-  call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
-  call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
-  call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
+    call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
+    call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
+    call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
 
-!print *,"stocMC_reflection: ",stocMC_reflection
-!print *,"stocMC_transmission: ",stocMC_transmission
-!print *,"stocMC_absorption: ",stocMC_absorption
-!print *
-!print *
+  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+    stocMC_reflection(icase,1)   = LPamMCsums(1) / LPamnumParts
+    stocMC_transmission(icase,1) = LPamMCsums(2) / LPamnumParts
+    stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
+  endif
 
   end subroutine stocMC_stats
 
 
 
 
-  subroutine MCallocate( icase )
+  subroutine MCallocate( icase,tnumparts )
   !This subroutine allocates and initializes variables that will be passed
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
   use genRealzvars, only: numRealz
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
-                    numpnSamp, areapnSamp, disthold, Wood_rej
-  integer :: icase
+                    numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
+                    numParts, LPamnumParts
+  integer :: icase,tnumParts
 
-  if(.not.allocated(transmit)) allocate(transmit(numRealz))
-  if(.not.allocated(reflect)) allocate(reflect(numRealz))
-  if(.not.allocated(absorb)) allocate(absorb(numRealz))
-  transmit     =0.0d0
-  reflect      =0.0d0
-  absorb       =0.0d0
-  radtrans_int =0
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+    if(.not.allocated(transmit)) allocate(transmit(numRealz))
+    if(.not.allocated(reflect)) allocate(reflect(numRealz))
+    if(.not.allocated(absorb)) allocate(absorb(numRealz))
+    transmit     = 0.0d0
+    reflect      = 0.0d0
+    absorb       = 0.0d0
+    radtrans_int = 0
+    tnumParts    = numParts
+  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+    if(.not.allocated(LPamMCsums)) allocate(LPamMCsums(3))
+    LPamMCsums   = 0.0d0
+    tnumParts    = LPamnumParts
+  endif
 
   if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej = 0
 

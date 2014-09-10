@@ -30,6 +30,8 @@ module genRealzvars
   real(8)              :: lamc                 ! "correlation length" for binary mixtures  
   integer, allocatable :: matType(:)           ! material type in cell
   real(8), allocatable :: matLength(:)         ! material boundaries
+  real(8)              :: atmixsig             ! atomically mixed cross section value
+  real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
@@ -118,7 +120,10 @@ module MCvars
   character(3)         :: radMC                ! perform TMC on binary mixtures operations?
   character(3)         :: radWood              ! perform WMC on binary mixtures operations?
   character(3)         :: KLWood               ! perform WMC on KL reconstructions operations?
+  character(3)         :: LPMC                 ! perform MC in the LP sense for binary mixtures?
+  character(3)         :: atmixMC              ! perform TMC over atomic mix of binary mixtures?
   integer              :: numParts             ! number of particles
+  integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen
   integer              :: pfnumcells           ! number of cells for flux profile (?)
 
@@ -136,7 +141,7 @@ module MCvars
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
   !non inputs
-  integer, parameter   :: numPosMCmeths = 3    ! total number of MC transport methods available
+  integer, parameter   :: numPosMCmeths = 5    ! total number of MC transport methods available
 
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values
@@ -178,11 +183,14 @@ module MCvars
   real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
   real(8), allocatable :: KLWooda(:)           ! slab absorption tally, WMC on KL reconstructions
 
+  real(8), allocatable :: LPamMCsums(:)        ! for LP or atomic mix, sum of tallies, refl, tran, abs
+
                                                ! stoc means mean and variance accross stochastic domain
                                                ! MC means for MC transport solves in spatial domain
   real(8), allocatable :: stocMC_reflection(:,:) ! reflection of MC meths, mean & var in stoc space
   real(8), allocatable :: stocMC_transmission(:,:)! trans of MC meths, mean & var in stoc space
   real(8), allocatable :: stocMC_absorption(:,:) ! absorption of MC meths, mean & var in stoc space
+
 
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures

@@ -329,7 +329,7 @@ CONTAINS
 
   write(*,*) "Starting method: ",flKLtype  
   do j=1,numRealz
-    call genReal( j )
+    call genReal( j,'binary ' )
     do curEig=1,numEigs
       xl       =0d0
       xiterm   =0d0

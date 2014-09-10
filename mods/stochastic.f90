@@ -57,7 +57,6 @@ program stochastic
   if( sum(MCcaseson)>0 ) then        !perform if at least one cases chosen
     do icase=1,numPosMCmeths         !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
-        call MCallocate( icase )     !allocate/initialize tallies
         call UQ_MC( icase )          !perform transport
       endif
     enddo
@@ -80,7 +79,7 @@ stop
   !!genRealz, KLresearch, radtrans, radWood
   if(radWood=='yes') Wood='rad'
   do j=1,numRealz
-    call genReal( j )
+    call genReal( j,'binary ' )
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( j )
     if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
