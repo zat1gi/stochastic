@@ -70,10 +70,16 @@ CONTAINS
 
 
   do o=1,tnumParts                     !loop over particles
+!print *
+!print *
+!print *
+!print *
 !print *," starting particle: ",o
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
 
     do ! simulate one pathlength of a particle
+!print *
+!print *
 !print *,"   starting pathlength"
       flExit='clean'
 
@@ -90,7 +96,6 @@ CONTAINS
         case ("KLWood")
           db = merge(s-position,position,mu>=0)/abs(mu)
       end select
-
 
       !calculate distance to collision
       select case (MCcases(icase))
@@ -112,7 +117,11 @@ CONTAINS
       fldist = 'clean'
       dist   = min(db,dc)
       fldist = merge('boundary ','collision',db<dc)
-
+!print *
+!print *,"first decision, do I go to boundary or have a collision?"
+!print *,"position:",position,"mu:",mu
+!print *,"  db: ",db,"  dc: ",dc
+!print *,"Decision made: ",fldist
 
 
       !if boundary chosen
@@ -120,7 +129,8 @@ CONTAINS
         flEscapeDir = 'clean'
         !set direction flag
         flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
-        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej(1)=Wood_rej(1)+1 !accept path tal
+        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej(1)=Wood_rej(1)+1
+                                                                    !accept path tal
 
         !evaluate for local or global transmission or reflection
         if(flEscapeDir=='transmit') then   !transmit
@@ -128,15 +138,17 @@ CONTAINS
             case ("radMC")
               i=i+1
               call MCinc_pos( matLength(i) )
-              if(i==nummatSegs+1) transmit(j)=transmit(j)+1.0d0
+              if(i==nummatSegs+1) transmit(j)=transmit(j) + 1.0d0
+!if(i==nummatSegs+1) print *,"radMC tally transmit here"
               if(i==nummatSegs+1) flExit='exit'
             case ("radWood")
               call MCinc_pos( s )
-              transmit(j) = transmit(j)
+              transmit(j) = transmit(j) + 1.0d0
               flExit='exit'
             case ("KLWood")
               call MCinc_pos( s )
-              transmit(j) = transmit(j)
+              transmit(j) = transmit(j) + 1.0d0
+!print *,"KLWood tally transmit here"
               flExit='exit'
           end select
         endif
@@ -145,16 +157,19 @@ CONTAINS
           select case (MCcases(icase))
             case ("radMC")
               call MCinc_pos( matLength(i) )
-              if(i==1)            reflect(j)=reflect(j)+1.0d0
+!if(i==1) print *,"radMC tally reflect here"
+              if(i==1)            reflect(j)=reflect(j) + 1.0d0
               if(i==1)            flExit='exit'
               i=i-1
             case ("radWood")
               call MCinc_pos( 0.0d0 )
-              reflect(j)  = reflect(j)+1
+!print *,"radWood tally reflect here"
+              reflect(j)  = reflect(j) + 1.0d0
               flExit='exit'
             case ("KLWood")
               call MCinc_pos( 0.0d0 )
-              reflect(j)  = reflect(j)+1
+!print *,"KLWood tally reflect here"
+              reflect(j)  = reflect(j) + 1.0d0
               flExit='exit'
           end select
         endif
@@ -171,7 +186,7 @@ CONTAINS
         !Choose scatter, absorb, or reject interaction
         select case (MCcases(icase))
           case ("radMC")
-            flIntType = merge('scatter','absorb ',rang()<scatrat(1))
+            flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
           case ("radWood")
             woodrat = radWood_actsig(position,sig)/ceilsig
             if(woodrat>1.0d0) then
@@ -187,7 +202,9 @@ CONTAINS
               endif
             endif
           case ("KLWood")
+            !load woodcock ratio for this position and ceiling
             woodrat = KLrxi_point(j,position)/ceilsig
+            !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               !print *,"j: ",j,"  woodrat: ",woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
@@ -214,6 +231,7 @@ CONTAINS
                 if(woodrat*ceilsig>areapnSamp(3)) areapnSamp(3)=woodrat*ceilsig
               endif
             endif
+            !decide fate of particle
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
               if(scatrat(1)>rang()) then !this will need amending when scatrat is changed
@@ -260,13 +278,15 @@ CONTAINS
         if(flIntType=='absorb') then      !absorb
           select case (MCcases(icase))
             case ("radMC")
-              absorb(j)=absorb(j)+1.0d0
+              absorb(j)=absorb(j) + 1.0d0
+!print *,"radMC tally absorb here"
               flExit='exit'
             case ("radWood")
-              absorb(j)=absorb(j)+1.0d0
+              absorb(j)=absorb(j) + 1.0d0
               flExit='exit'
             case ("KLWood")
-              absorb(j)=absorb(j)+1.0d0
+              absorb(j)=absorb(j) + 1.0d0
+!print *,"KLWood tally absorb here"
               flExit='exit'
           end select
         endif
@@ -519,10 +539,10 @@ CONTAINS
                     stocMC_transmission, stocMC_absorption, numParts
   integer :: icase
 
-print *,"reflect: ",reflect
-print *,"transmit: ",transmit
-print *,"absorb: ",absorb
-
+print *,"reflect         : ",sum(reflect)
+print *,"transmit        : ",sum(transmit)
+print *,"absorb          : ",sum(absorb)
+print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   reflect  = reflect  / numParts
   transmit = transmit / numparts
   absorb   = absorb   / numParts
@@ -531,11 +551,11 @@ print *,"absorb: ",absorb
   call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
   call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
 
-print *,"stocMC_reflection: ",stocMC_reflection
-print *,"stocMC_transmission: ",stocMC_transmission
-print *,"stocMC_absorption: ",stocMC_absorption
-print *
-print *
+!print *,"stocMC_reflection: ",stocMC_reflection
+!print *,"stocMC_transmission: ",stocMC_transmission
+!print *,"stocMC_absorption: ",stocMC_absorption
+!print *
+!print *
 
   end subroutine stocMC_stats
 
@@ -1323,9 +1343,6 @@ enddo
     if(rodOrplanar=='planar') write(100,321) ABreflection(1,3),ABtransmission(1,3)
   endif
 
-
-print *,"stocMC_reflection:",stocMC_reflection
-print *,"stocMC_transmission: ",stocMC_transmission
   !print my solutions for radMC, radWood, KLWood
   do icase = 1,3
     if(MCcaseson(icase)==1) then
