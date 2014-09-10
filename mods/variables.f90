@@ -176,6 +176,10 @@ module MCvars
   real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
   real(8), allocatable :: KLWooda(:)           ! slab absorption tally, WMC on KL reconstructions
 
+  real(8), allocatable :: MCreflection(:,:)    ! reflection of all MC methods, mean and stdev
+  real(8), allocatable :: MCtransmission(:,:)  ! transmission of all MC methods, mean and stdev
+  real(8), allocatable :: MCabsorption(:,:)    ! absorption of all MC methods, mean and stdev
+
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures
   integer              :: KLWood_rej(2)        ! Woodcock rejection tally, WMC on KL reconstructions

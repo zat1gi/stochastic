@@ -352,7 +352,9 @@ CONTAINS
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
-                    flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts
+                    flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
+                    MCreflection, MCtransmission, MCabsorption
+
   use mcnp_random, only: rang
   integer :: i,seed,icase
   real(8) :: seeddum
@@ -402,6 +404,16 @@ CONTAINS
   MCcases(1) = 'radMC'
   MCcases(2) = 'radWood'
   MCcases(3) = 'KLWood'
+
+  allocate(MCreflection(sum(MCcaseson),2))   !global MC variables for each method
+  allocate(MCtransmission(sum(MCcaseson),2)) !rank 2 holds 1=average, 2=deviation
+  allocate(MCabsorption(sum(MCcaseson),2))
+  MCreflection   = 0.0d0
+  MCtransmission = 0.0d0
+  MCabsorption   = 0.0d0
+
+
+
 
 
   !allocate and initialize timevars

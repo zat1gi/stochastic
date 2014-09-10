@@ -57,11 +57,14 @@ program stochastic
     do icase=1,3                     !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
         call MCallocate( icase )     !allocate/initialize tallies
-        call UQ_MC( icase )    !perform transport
+        call UQ_MC( icase )          !perform transport
       endif
     enddo
   endif
 stop
+
+
+
 
 
   !!genRealz, KLresearch, radtrans, radWood
