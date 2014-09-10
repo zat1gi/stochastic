@@ -176,9 +176,11 @@ module MCvars
   real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
   real(8), allocatable :: KLWooda(:)           ! slab absorption tally, WMC on KL reconstructions
 
-  real(8), allocatable :: MCreflection(:,:)    ! reflection of all MC methods, mean and stdev
-  real(8), allocatable :: MCtransmission(:,:)  ! transmission of all MC methods, mean and stdev
-  real(8), allocatable :: MCabsorption(:,:)    ! absorption of all MC methods, mean and stdev
+                                               ! stoc means mean and stdev accross stochastic domain
+                                               ! MC means for MC transport solves in spatial domain
+  real(8), allocatable :: stocMC_reflection(:,:) ! reflection of MC meths, mean & stdev in stoc space
+  real(8), allocatable :: stocMC_transmission(:,:)! trans of MC meths, mean & stdev in stoc space
+  real(8), allocatable :: stocMC_absorption(:,:) ! absorption of MC meths, mean & stdev in stoc space
 
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: radWood_rej(2)       ! Woodcock rejection tally, WMC on binary mixtures

@@ -353,7 +353,7 @@ CONTAINS
   use MCvars, only: pfnumcells, plotflux, fluxfaces, fflux, bflux, fradWoodf, &
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
-                    MCreflection, MCtransmission, MCabsorption
+                    stocMC_reflection, stocMC_transmission, stocMC_absorption
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -405,12 +405,12 @@ CONTAINS
   MCcases(2) = 'radWood'
   MCcases(3) = 'KLWood'
 
-  allocate(MCreflection(sum(MCcaseson),2))   !global MC variables for each method
-  allocate(MCtransmission(sum(MCcaseson),2)) !rank 2 holds 1=average, 2=deviation
-  allocate(MCabsorption(sum(MCcaseson),2))
-  MCreflection   = 0.0d0
-  MCtransmission = 0.0d0
-  MCabsorption   = 0.0d0
+  allocate(stocMC_reflection(sum(MCcaseson),2))   !global MC variables for each method
+  allocate(stocMC_transmission(sum(MCcaseson),2)) !rank 2 holds 1=average, 2=deviation
+  allocate(stocMC_absorption(sum(MCcaseson),2))
+  stocMC_reflection   = 0.0d0
+  stocMC_transmission = 0.0d0
+  stocMC_absorption   = 0.0d0
 
 
 
