@@ -405,9 +405,9 @@ CONTAINS
   MCcases(2) = 'radWood'
   MCcases(3) = 'KLWood'
 
-  allocate(stocMC_reflection(sum(MCcaseson),2))   !global MC variables for each method
-  allocate(stocMC_transmission(sum(MCcaseson),2)) !rank 2 holds 1=average, 2=deviation
-  allocate(stocMC_absorption(sum(MCcaseson),2))
+  allocate(stocMC_reflection(3,2))   !global MC variables for each method
+  allocate(stocMC_transmission(3,2)) !rank 2 holds 1=average, 2=deviation
+  allocate(stocMC_absorption(3,2))
   stocMC_reflection   = 0.0d0
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0

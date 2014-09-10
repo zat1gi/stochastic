@@ -61,6 +61,15 @@ program stochastic
       endif
     enddo
   endif
+
+
+  !!print final reports
+  call Acase_print
+  if(allowneg=='yes') call Woodnegstats
+  if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
+  call timereport
+  call finalreport
+
 stop
 
 
@@ -96,16 +105,5 @@ stop
   if(pltflux(1)/='noplot') call plot_flux
   call MCLeakage_pdfplot !bin for radMC,radWood
 
-
-
-
-
-
-  !!print final reports
-  call Acase_print
-  if(allowneg=='yes') call Woodnegstats
-  if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
-  call timereport
-  call finalreport
 
 end program stochastic
