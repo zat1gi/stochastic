@@ -323,19 +323,19 @@ CONTAINS
       read(*,*) run
       if( run .NE. 'run' ) stopstatus = 'yes'
     endif
-    if( allowneg=='no' .and. distneg=='yes' ) then
-      print *,"--User attempting to redistribute negative xs values without allowneg on"
-      stopstatus = 'yes'
-    endif
-    if( radMC=='yes' .and. numRealz/=KLrnumRealz ) then
-      print *,"--User attempting to do transport over original and reconstructed with dif num of realz"
-      stopstatus = 'yes'
-    endif
+!    if( allowneg=='no' .and. distneg=='yes' ) then !so! let that one be, who cares!
+!      print *,"--User attempting to redistribute negative xs values without allowneg on"
+!      stopstatus = 'yes'
+!    endif
+!    if( radMC=='yes' .and. numRealz/=KLrnumRealz ) then !this is no longer relevant
+!      print *,"--User attempting to do transport over original and reconstructed with dif num of realz"
+!      stopstatus = 'yes'
+!    endif
   endif
-  if( KLWood=='no' .and. allowneg=='yes') then
-    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
-    stopstatus = 'yes'
-  endif
+!  if( KLWood=='no' .and. allowneg=='yes') then  !so! let that one be, who cares!
+!    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
+!    stopstatus = 'yes'
+!  endif
 
   if( stopstatus=='yes' ) STOP 'killed'
 
@@ -355,7 +355,7 @@ CONTAINS
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
-                    numPosMCmeths, LPMC, atmixMC
+                    numPosMCmeths, LPMC, atmixMC, LPamnumParts
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -419,9 +419,6 @@ CONTAINS
   stocMC_absorption   = 0.0d0
 
 
-
-
-
   !allocate and initialize timevars
   allocate(time(ntime))
   time = 0.0d0
@@ -431,9 +428,14 @@ CONTAINS
   cumparts = 0
   do icase=1,numPosMCmeths
     if(MCcaseson(icase)==1) then
-      totparts(icase) = numRealz*numParts
+      if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+        totparts(icase) = LPamnumParts
+      else
+        totparts(icase) = numRealz*numParts
+      endif
     endif
   enddo
+
 
   !allocate fluxplot variables
   if(radMC/='no' .or. radWood/='no' .or. KLWood/='no') then

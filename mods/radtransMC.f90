@@ -22,28 +22,28 @@ CONTAINS
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
 
-  call MCallocate( icase,tnumParts )         !allocate/initialize tallies
+  call MCallocate( icase,tnumParts )          !allocate/initialize tallies
   do j=1,numRealz
 
       if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
-    call genReal( j,'binary ' )                        !gen geometry
+    call genReal( j,'binary ' )               !gen binary geometry
       if(MCcases(icase)=='atmixMC') &
-    call genReal( j,'atmix  '  )
+    call genReal( j,'atmix  '  )              !gen atomic mix geometry
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') &
-    call MCWood_setceils( j,icase )          !for WMC, create ceilings
+    call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
     call MCtransport( j,icase,tnumParts )     !transport over a realization
 
       if(mod( j,trannprt )==0 .or. MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') &
-    call radtrans_timeupdate( j,icase,tt1 )  !print time updates
+    call radtrans_timeupdate( j,icase,tt1 )   !print time updates
 
-    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') exit
+    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') exit !only 1 'realization' for each
   enddo !loops over realizations
 
-  call stocMC_stats( icase )               !calc stats in stochastic space here
-                                           !later make the above two loops,
-                                           !batch spatial stats in between, final out here
+  call stocMC_stats( icase )                  !calc stats in stochastic space here
+                                              !later make the above two loops,
+                                              !batch spatial stats in between, final out here
 
   !add plotter here.
 
@@ -55,18 +55,19 @@ CONTAINS
 
 
   subroutine MCtransport( j,icase,tnumParts )
-  !This subroutine performs MC transport over a specified geometry.
+  !This subroutine performs MC transport over a specified geometry and method.
   !It can be used by a UQ_MC wrapper, and likely in the future by UQ_MLMC and/or UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
   !'icase' denotes which predefined setup over which the MC transport is performed.
   !'tnumParts' is the number of particles over which the MC transport is performed.
   !It may in the future make more sense to have flags which do or do not use certain functionality,
   !but for the time being each operation is simply chosen as a function of which case is selected.
-  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s
+  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
-                    bbinmax, binmaxind, binmaxes
+                    bbinmax, binmaxind, binmaxes, LPamMCsums
+  use genRealz, only: genReal
 
   use Woodcock, only: radWood_actsig, radWood_actscatrat, KLrxi_point
                       !above only here because of politics, rid when you finish merging!
@@ -74,9 +75,8 @@ CONTAINS
 
   !local variables
   integer :: i,o
-  real(8) :: db,dc,dist,  sigma,  ceilsig,woodrat,disthold
+  real(8) :: db,dc,di,dist,  sigma,  ceilsig,woodrat,disthold
   character(9) :: fldist, flIntType, flEscapeDir, flExit
-
 
   do o=1,tnumParts                     !loop over particles
 !print *
@@ -85,9 +85,9 @@ CONTAINS
 !print *
 !print *," starting particle: ",o
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
+    if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
 
     do ! simulate one pathlength of a particle
-!print *
 !print *
 !print *,"   starting pathlength"
       flExit='clean'
@@ -104,21 +104,30 @@ CONTAINS
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("KLWood")
           db = merge(s-position,position,mu>=0)/abs(mu)
+        case ("LPMC")
+          db = merge(s-position,position,mu>=0)/abs(mu)
       end select
 
       !calculate distance to collision
       select case (MCcases(icase))
         case ("radMC")
-          dc = -log(1-rang())/sig(matType(i))
+          dc = -log(rang())/sig(matType(i))
         case ("radWood")
           ceilsig=merge(ceilsigfunc2(position,fbinmax),& !sel max sig
                         ceilsigfunc2(position,bbinmax),mu>=0)
-          dc = -log(1-rang())/ceilsig                   !calc dc
+          dc = -log(rang())/ceilsig                   !calc dc
         case ("KLWood")
           ceilsig=merge(ceilsigfunc2(position,fbinmax),& !sel max sig
                         ceilsigfunc2(position,bbinmax),mu>=0)
-          dc = -log(1-rang())/ceilsig                   !calc dc
+          dc = -log(rang())/ceilsig                   !calc dc
+        case ("LPMC")
+          dc = -log(rang())/sig(matType(1))
+!          dc = -log(rang()) / ( sig(matType(1)) + 1.0d0/lam(matType(1)) ) !combines dc and di
       end select
+
+
+      !calculate distance to interface
+      if(MCcases(icase)=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
 
 
 
@@ -126,6 +135,13 @@ CONTAINS
       fldist = 'clean'
       dist   = min(db,dc)
       fldist = merge('boundary ','collision',db<dc)
+      if(MCcases(icase)=='LPMC') then
+        fldist = merge('interface',fldist,di<dist)
+        dist   = min(di,dist)
+      endif
+!print *,"db: ",db," dc: ",dc," di: ",di
+!print *,"fldist: ",fldist
+!print *
 !print *
 !print *,"first decision, do I go to boundary or have a collision?"
 !print *,"position:",position,"mu:",mu
@@ -138,6 +154,7 @@ CONTAINS
         flEscapeDir = 'clean'
         !set direction flag
         flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
+!print *,"mu: ",mu," flEscapeDir: ",flEscapeDir
         if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej(1)=Wood_rej(1)+1
                                                                     !accept path tal
 
@@ -158,6 +175,11 @@ CONTAINS
               call MCinc_pos( s )
               transmit(j) = transmit(j) + 1.0d0
 !print *,"KLWood tally transmit here"
+              flExit='exit'
+            case ("LPMC")
+              call MCinc_pos( s )
+              LPamMCsums(2) = LPamMCsums(2) + 1.0d0
+!print *,"LPMC tally transmit here"
               flExit='exit'
           end select
         endif
@@ -180,10 +202,15 @@ CONTAINS
 !print *,"KLWood tally reflect here"
               reflect(j)  = reflect(j) + 1.0d0
               flExit='exit'
+            case ("LPMC")
+              call MCinc_pos( 0.0d0 )
+!print *,"LPMC tally reflect here"
+              LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
+              flExit='exit'
           end select
         endif
 
-      endif
+      endif !endif fldist=='boundary'
 
 
       !if collision chosen
@@ -192,7 +219,7 @@ CONTAINS
         !Advance position for all outcomes
         call MCinc_pos( position + dc*mu )
 
-        !Choose scatter, absorb, or reject interaction
+        !Choose scatter, absorb, 'interfa'ce (LP), or reject (Woodcock) interaction
         select case (MCcases(icase))
           case ("radMC")
             flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
@@ -244,12 +271,20 @@ CONTAINS
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
               if(scatrat(1)>rang()) then !this will need amending when scatrat is changed
-                flIntType = 'scatter'
+                flIntType = 'scatter'    !could make a 'merge'
               else
                 flIntType = 'absorb'
               endif
             endif
+          case ("LPMC")
+!            if( rang()<( sig(matType(1)) / (sig(matType(1))+1.0d0/lam(matType(1))) ) ) then
+              flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
+!print *,"flIntType: ",flIntType
+!            else
+!              flIntType = 'interfa'
+!            endif
         end select
+
 
         !Tally for neg stats
         select case (MCcases(icase))
@@ -266,10 +301,11 @@ CONTAINS
             else
               Wood_rej(1)=Wood_rej(1)+1
             endif
+          case ("LPMC")
         end select
 
 
-        !Evaluate scatter or absorb
+        !Evaluate scatter, absorb, or interface change (LP)
         if(flIntType=='scatter') then     !scatter
           select case (MCcases(icase))
             case ("radMC")
@@ -281,26 +317,43 @@ CONTAINS
             case ("KLWood")
               if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
               if(rodOrplanar=='planar') mu = newmu()
+            case ("LPMC")
+              if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+              if(rodOrplanar=='planar') mu = newmu()
+!print *,"LPMC scatter chosen, new mu: ",mu
           end select
         endif
 
         if(flIntType=='absorb') then      !absorb
           select case (MCcases(icase))
             case ("radMC")
-              absorb(j)=absorb(j) + 1.0d0
+              absorb(j)     = absorb(j)     + 1.0d0
 !print *,"radMC tally absorb here"
               flExit='exit'
             case ("radWood")
-              absorb(j)=absorb(j) + 1.0d0
+              absorb(j)     = absorb(j)     + 1.0d0
               flExit='exit'
             case ("KLWood")
-              absorb(j)=absorb(j) + 1.0d0
+              absorb(j)     = absorb(j)     + 1.0d0
 !print *,"KLWood tally absorb here"
+              flExit='exit'
+            case ("LPMC")
+              LPamMCsums(3) = LPamMCsums(3) + 1.0d0
+!print *,"LPMC absorb tally here"
               flExit='exit'
           end select
         endif
 
-      endif
+      endif !endif fldist=='collision'
+
+      !if(flIntType=='interfa') &        !interface change (LP)
+      if(fldist=='interface') then
+!print *,"LPMC interface option chosen"
+!print *,"matType(1): ",matType(1)
+        matType(1) = merge(1,2,matType(1)==2)
+!print *,"matType(1): ",matType(1)
+      endif !endif fldist=='interface'
+
 
       if(flExit=='exit') exit
 !print *,"flExit      : ",flExit
@@ -346,12 +399,12 @@ CONTAINS
 
   if( sourceType=='left' ) then  !generate source particles
     position = 0.0d0
-    mu       = 1.0d0
-    if(rodOrplanar=='planar') mu = isoboundmu()
+    mu       = isoboundmu()
+    if(rodOrplanar=='rod') mu = 1.0d0
   elseif( sourceType=='intern' ) then
     position = s * rang()
-    mu       = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-    if(rodOrplanar=='planar') mu = newmu()
+    mu       = newmu()
+    if(rodOrplanar=='rod') mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
   endif
 
   i = 0
@@ -1339,9 +1392,9 @@ enddo
                     numPosMCmeths
   integer :: icase
 
-  320 format(" |AdamsMC:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
+  320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
-  322 format(" |AdamsLP:  |",f8.5,"                 |",f8.5,"             |")
+  322 format(" |AdamsLP:  |",f7.4,"                  |",f7.4,"              |")
   323 format(" |BrantLP:  |",f8.5,"                 |",f8.5,"             |")
   324 format(" |BrAtMix:  |",f8.5,"                 |",f8.5,"             |")
   325 format(" |-case:",f3.1,"-|---- Reflection and Transmission Results ------|")
@@ -1349,6 +1402,7 @@ enddo
   326 format(" |radMC  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
+  329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
 
   !print to file
   open(unit=100,file="MCleakage.out")
@@ -1382,6 +1436,12 @@ enddo
     write(100,322) ABreflection(1,2),ABtransmission(1,2)
     if(rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
   endif
+
+  !print my solution for LPMC
+  do icase = 1,numPosMCmeths
+    if(MCcaseson(icase)==1 .and. MCcases(icase)=='LPMC') write(100,329) stocMC_reflection(icase,1),&
+                                                                      stocMC_transmission(icase,1)
+  enddo
 
   !print benchmark atomic mix solutions
   if(Adamscase/=0) then

@@ -1,8 +1,8 @@
 module timevars
   implicit none
   real(8), allocatable :: time(:)              ! keeps cumulative time data for everything
-                                               ! genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood
-  integer, parameter   :: ntime = 7            ! size of 'time' array
+                                               ! genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood,LPMC,atmixMC
+  integer, parameter   :: ntime = 9            ! size of 'time' array
   real(8)              :: t1                   ! initial computer time for run
   real(8)              :: runtime              ! total cpu time code has been running
   integer, allocatable :: totparts(:)          ! total particles to be run in each method

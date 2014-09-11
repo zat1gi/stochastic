@@ -114,7 +114,15 @@ CONTAINS
     close(unit=20) !close three files printing xs data to
     close(unit=21)
     close(unit=22)
-  elseif(flmode=='atmix') then
+  elseif(flmode=='LPMC') then
+    nummatSegs   = 1
+    allocate(matType(nummatSegs))
+    if(rang()<P(1)) then
+      matType(1) = 1
+    else
+      matType(1) = 2
+    endif
+  elseif(flmode=='atmixMC') then
     nummatSegs   = 1
     allocate(matType(nummatSegs))
     allocate(matLength(nummatSegs+1))
