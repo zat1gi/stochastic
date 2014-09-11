@@ -28,7 +28,7 @@ CONTAINS
       if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
     call genReal( j,'binary ' )               !gen binary geometry
       if(MCcases(icase)=='atmixMC') &
-    call genReal( j,'atmix  '  )              !gen atomic mix geometry
+    call genReal( j,'atmixMC'  )              !gen atomic mix geometry
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
@@ -62,7 +62,8 @@ CONTAINS
   !'tnumParts' is the number of particles over which the MC transport is performed.
   !It may in the future make more sense to have flags which do or do not use certain functionality,
   !but for the time being each operation is simply chosen as a function of which case is selected.
-  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam
+  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
+                          atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
@@ -106,6 +107,8 @@ CONTAINS
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("LPMC")
           db = merge(s-position,position,mu>=0)/abs(mu)
+        case ("atmixMC")
+          db = merge(s-position,position,mu>=0)/abs(mu)
       end select
 
       !calculate distance to collision
@@ -123,6 +126,8 @@ CONTAINS
         case ("LPMC")
           dc = -log(rang())/sig(matType(1))
 !          dc = -log(rang()) / ( sig(matType(1)) + 1.0d0/lam(matType(1)) ) !combines dc and di
+        case ("atmixMC")
+          dc = -log(rang())/atmixsig
       end select
 
 
@@ -181,6 +186,11 @@ CONTAINS
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
 !print *,"LPMC tally transmit here"
               flExit='exit'
+            case ("atmixMC")
+              call MCinc_pos( s )
+              LPamMCsums(2) = LPamMCsums(2) + 1.0d0
+!print *,"atmixMC tally transmit here"
+              flExit='exit'
           end select
         endif
 
@@ -205,6 +215,11 @@ CONTAINS
             case ("LPMC")
               call MCinc_pos( 0.0d0 )
 !print *,"LPMC tally reflect here"
+              LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
+              flExit='exit'
+            case ("atmixMC")
+              call MCinc_pos( 0.0d0 )
+!print *,"atmixMC tally reflect here"
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
           end select
@@ -283,6 +298,8 @@ CONTAINS
 !            else
 !              flIntType = 'interfa'
 !            endif
+          case ("atmixMC")
+              flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
         end select
 
 
@@ -302,6 +319,7 @@ CONTAINS
               Wood_rej(1)=Wood_rej(1)+1
             endif
           case ("LPMC")
+          case ("atmixMC")
         end select
 
 
@@ -321,6 +339,10 @@ CONTAINS
               if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
               if(rodOrplanar=='planar') mu = newmu()
 !print *,"LPMC scatter chosen, new mu: ",mu
+            case ("atmixMC")
+              if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+              if(rodOrplanar=='planar') mu = newmu()
+!print *,"atmixMC scatter here"
           end select
         endif
 
@@ -340,6 +362,10 @@ CONTAINS
             case ("LPMC")
               LPamMCsums(3) = LPamMCsums(3) + 1.0d0
 !print *,"LPMC absorb tally here"
+              flExit='exit'
+            case ("atmixMC")
+              LPamMCsums(3) = LPamMCsums(3) + 1.0d0
+!print *,"atmixMC absorb tally here"
               flExit='exit'
           end select
         endif
@@ -1403,6 +1429,7 @@ enddo
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
+  330 format(" |atmixMC:  |",f8.5,"                 |",f8.5,"             |")
 
   !print to file
   open(unit=100,file="MCleakage.out")
@@ -1449,6 +1476,13 @@ enddo
     write(100,*) "|----------|-------------------------|---------------------|"
     if(rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
   endif
+
+  !print my solution for atmixMC
+  do icase = 1,numPosMCmeths
+    if(MCcaseson(icase)==1 .and. MCcases(icase)=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
+                                                                      stocMC_transmission(icase,1)
+  enddo
+
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
   close(unit=100)

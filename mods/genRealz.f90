@@ -123,12 +123,6 @@ CONTAINS
       matType(1) = 2
     endif
   elseif(flmode=='atmixMC') then
-    nummatSegs   = 1
-    allocate(matType(nummatSegs))
-    allocate(matLength(nummatSegs+1))
-    matType(1)   = 3
-    matLength(1) = 0.0d0
-    matLength(2) = s
     atmixsig     = P(1)*sig(1)     + P(2)*sig(2)
     atmixscatrat = P(1)*scatrat(1) + P(2)*scatrat(2)
   endif
