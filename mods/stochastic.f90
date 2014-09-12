@@ -65,8 +65,8 @@ program stochastic
 
   !!print final reports
   call Acase_print
-  if(allowneg=='yes') call Woodnegstats
-  if(radMC=='yes' .or. radWood=='yes' .or. KLWood=='yes') call MCprintstats
+  if((radWood=='yes' .or. KLWood=='yes') .and. allowneg=='yes') call Woodnegstats
+  if(sum(MCcaseson)/=0) call MCprintstats
   call timereport
   call finalreport
 

@@ -1,11 +1,4 @@
 
-  Values loaded for special Adamscase :  2.2
-    sig(1)    :  0.101010   sig(2)    :  9.090909
-    scatrat(1):  1.00       scatrat(2):  0.00
-    lam(1)    :  0.99       lam(2)    :  0.11
-    s         :  1.00       lamc      :  0.10
-
-
  |-case:2.2-|---- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
@@ -20,9 +13,3 @@
  |atmixMC:  | 0.35226                 | 0.47475             |
  |----------------------------------------------------------|
 
-  total runtime:      0.01 min
-    genRealz   :      0.00 min     per: 26.00 % --- genRealz in other meths,
-    ----------------------------------------------- not part of sum
-    LPMC       :      0.01 min     per: 77.04 %
-    atmixMC    :      0.00 min     per: 22.60 %
-    other      :      0.00 min     per:  0.36 %

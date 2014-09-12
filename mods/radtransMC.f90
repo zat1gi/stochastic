@@ -1418,6 +1418,8 @@ enddo
                     numPosMCmeths
   integer :: icase
 
+  call system("rm texts/MCleakage.out")
+
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
   322 format(" |AdamsLP:  |",f7.4,"                  |",f7.4,"              |")

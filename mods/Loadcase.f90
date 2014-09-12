@@ -15,6 +15,7 @@ CONTAINS
   103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
   104 format("    s         :",f6.2,"       lamc      :",f6.2)
 
+  call system("rm texts/Acase.out")
   open(unit=100,file="Acase.out")
   write(100,*)
   write(100,100) Adamscase
@@ -476,6 +477,7 @@ CONTAINS
 
 
   subroutine finalreport
+  call system("rm texts/finalreport.out")
   call system("cat texts/Acase.out texts/Woodnegstats.out texts/MCleakage.out texts/timereport.out > texts/finalreport.out")
   call system("cat texts/finalreport.out")
   end subroutine finalreport
