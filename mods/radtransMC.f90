@@ -28,7 +28,7 @@ CONTAINS
       if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
     call genReal( j,'binary ' )               !gen binary geometry
       if(MCcases(icase)=='atmixMC') &
-    call genReal( j,'atmixMC'  )              !gen atomic mix geometry
+    call genReal( j,'atmixMC' )               !gen atomic mix geometry
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
@@ -58,7 +58,7 @@ CONTAINS
   !This subroutine performs MC transport over a specified geometry and method.
   !It can be used by a UQ_MC wrapper, and likely in the future by UQ_MLMC and/or UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
-  !'icase' denotes which predefined setup over which the MC transport is performed.
+  !'icase' denotes which predefined transport method over which the MC transport is performed.
   !'tnumParts' is the number of particles over which the MC transport is performed.
   !It may in the future make more sense to have flags which do or do not use certain functionality,
   !but for the time being each operation is simply chosen as a function of which case is selected.
@@ -376,6 +376,7 @@ CONTAINS
       if(fldist=='interface') then
 !print *,"LPMC interface option chosen"
 !print *,"matType(1): ",matType(1)
+        call MCinc_pos( position + di*mu )
         matType(1) = merge(1,2,matType(1)==2)
 !print *,"matType(1): ",matType(1)
       endif !endif fldist=='interface'
@@ -433,10 +434,10 @@ CONTAINS
     if(rodOrplanar=='rod') mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
   endif
 
-  i = 0
+  i = 0  !why is this here?  test if I can get rid of it...
 
   if(MCcases(icase)=='radMC') then !if bin need be set
-    if(sourceType=='left') i = 1
+    if(sourceType=='left')   i = 1
     if(sourceType=='intern') i = internal_init_i(nummatSegs)
   endif
 

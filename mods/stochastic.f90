@@ -54,7 +54,7 @@ program stochastic
 
 
   !!Perform UQ-MC for transport problems  
-  if( sum(MCcaseson)>0 ) then        !perform if at least one cases chosen
+  if( sum(MCcaseson)>0 ) then        !perform if at least one case chosen
     do icase=1,numPosMCmeths         !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
         call UQ_MC( icase )          !perform transport

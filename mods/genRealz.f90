@@ -116,12 +116,8 @@ CONTAINS
     close(unit=22)
   elseif(flmode=='LPMC') then
     nummatSegs   = 1
-    allocate(matType(nummatSegs))
-    if(rang()<P(1)) then
-      matType(1) = 1
-    else
-      matType(1) = 2
-    endif
+    if(.not.allocated(matType)) allocate(matType(nummatSegs))
+    matType(1) = merge(1,2,rang()<P(1))
   elseif(flmode=='atmixMC') then
     atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
     atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig

@@ -1,6 +1,6 @@
-  total runtime:      0.02 min
-    genRealz   :      0.00 min     per: 14.76 % --- genRealz in other meths,
+  total runtime:      0.01 min
+    genRealz   :      0.00 min     per: 34.15 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    LPMC       :      0.01 min     per: 70.36 %
-    atmixMC    :      0.01 min     per: 29.44 %
-    other      :      0.00 min     per:  0.19 %
+    LPMC       :      0.01 min     per: 86.02 %
+    atmixMC    :      0.00 min     per: 13.51 %
+    other      :      0.00 min     per:  0.47 %
