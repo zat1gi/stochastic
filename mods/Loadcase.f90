@@ -206,7 +206,8 @@ CONTAINS
 
   integer :: i
   real(8) :: smallersig,largersig,sigratio
-  character(3) :: stopstatus = 'no', run = 'no'
+  real(8) :: eps = 0.000001d0
+  character(3) :: flstopstatus = 'no', flsleep = 'no', run = 'no'
 
   print *,"  "
 
@@ -214,45 +215,45 @@ CONTAINS
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigs .AND. pltEigf(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot Eigenfunction of higher order than Eigenvalues calculated"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
   enddo
 
   do i=1,pltxiBinsnumof  !Test xiBins plotting order of Eigs and num of bins
     if( pltxiBinswhich(1,i)>numEigs .AND. pltxiBins(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot xiBins for Eigenvalue of higher order than calculated"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
     if( pltxiBinswhich(2,i)>numRealz .AND. pltxiBins(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot xibins for more realizations than generated"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
   enddo
 
   if( KLnoise == 'yes' .AND. KLres == 'no' ) then !Test KLnoise w/o KLres
     print *,"--User tryint to perform KLnoise without KLres"
-    stopstatus = 'yes'
+    flstopstatus = 'yes'
   endif
 
                               !Test KLreconstruct print frequency
   if( (KLrprintat>KLrnumRealz .or. mod(KLrnumRealz,KLrprintat)/=0) .AND. KLrec=='yes' ) then 
     print *,"--Print to screen frequency for KLreconstruct must be factor of number of KLrealizations"
-    stopstatus = 'yes'
+    flstopstatus = 'yes'
   endif
 
   fpointorxi = 0    !Test KLreconstruction num of realz, order of Eigs, and plot types
   do i=1,pltKLrrealznumof
     if( pltKLrrealzwhich(1,i)>KLrnumRealz .AND. pltKLrrealz(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot more reconstructed realz than reconstructed"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
     if( pltKLrrealzwhich(2,i)>numEigs .AND. pltKLrrealz(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot reconstructed realz using more than calced num of Eigs"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
     if( pltKLrrealzPointorXi(i) .NE. 'fpoint' .AND. pltKLrrealzPointorXi(i) .NE. 'fxi' ) then
       print *,"--User plot option for type of reconstruction needs to be either 'fpoint' or 'fxi'"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
     !tally if more than one type present
     if(pltKLrrealzPointorXi(i) .EQ. 'fpoint') fpointorxi(1) = 1
@@ -262,83 +263,88 @@ CONTAINS
   if( fpointorxi(1) .NE. 0 .AND. fpointorxi(2) .NE. 0 .AND. pltKLrrealz(1) .NE. 'noplot' ) then
     if ( KLrnumpoints(1) .NE. KLrnumpoints(2) ) then
       print *,"--User must either plot only fpoint or fxi, or make num of points to plot same"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
   endif
   if( KLres=='no' .AND. KLrec=='yes' ) then
-    print *,"--User attempting to reconstuct realizations (KLrec) without harvesting values (KLres)"
-    print *,"--KLrec has been switched to 'no'"
-    KLrec = 'no'
+    KLrec = 'yes'
+    print *,"--User attempting KLrec  w/o        KLres,          KLres has been set to 'yes'"
+    flsleep = 'yes'
   endif
 
                               !Test radtransMC print frequency
   if( (trannprt>numRealz .or. mod(numRealz,trannprt)/=0) .AND. radMC=='yes' ) then 
     print *,"--Print to screen frequency for MCtran must be factor of number of realizations"
-    stopstatus = 'yes'
+    flstopstatus = 'yes'
   endif
 
                               !Test plotting flux
   if( pltflux(1)/='noplot' .AND. radMC=='no' .AND. radWood=='no' .AND. KLWood=='no' ) then
     print *,"--User attempting to plot flux when no transport calculations are made"
-    stopstatus = 'yes'
+    flstopstatus = 'yes'
   endif
   if( sourceType/='left' .AND. sourceType/='intern' ) then
     print *,"--User attempting to run invalid source type.  Please put either 'left' or 'intern'"
-    stopstatus = 'yes'
+    flstopstatus = 'yes'
   endif
 
   do i=1,pltgenrealznumof    !Test genRealz plotting over selected realz
     if( pltgenrealzwhich(i)>numRealz .AND. pltgenrealz(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot realizations that are not created"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
   enddo
 
   do i=1,pltConumof          !Test plotCo for Eig choice and CoEffExp or CoEffAct option
     if( pltCowhich(1,i)>numEigs .AND. pltCo(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot CoEff values for eigenvalues not calculated"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
     if( pltCowhich(2,i)/=1 .AND. pltCowhich(2,i)/=2 .AND. pltCo(1) .NE. 'noplot' ) then
       print *,"--User input for 'CoEffExp vs CoEffAct' not valid.  Enter a '1' or a '2'"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
   enddo
 
   if( KLWood=='yes' ) then  !Tests for KLWood
-    if( KLres=='no' .OR. KLrec=='no' ) then
-      print *,"--User attempting to run KLWood w/o either KLresearch or KLreconstruct"
-      stopstatus = 'yes'
+    if( KLres=='no' .or. KLrec=='no' ) then
+      !print *,"--User attempting to run KLWood w/o either KLresearch or KLreconstruct"
+      !flstopstatus = 'yes'
+      KLres='yes'
+      KLrec='yes'
+      print *,"--User attempting KLWood w/o either KLres or KLrec, both have been set to 'yes'"
+      flsleep = 'yes'
     endif
-    if( scatrat(1) /= scatrat(2) ) then
+    if( scatrat(1)<scatrat(2)-eps .or. scatrat(1)>scatrat(2)+eps ) then
       print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
-      stopstatus = 'yes'
+      flstopstatus = 'yes'
     endif
     smallersig = minval(sig)
     largersig  = maxval(sig)
     sigratio   = (largersig-smallersig)/smallersig
-    if( sigratio > 0.33334d0 .AND. stopstatus=='no' .and. allowneg=='no') then
+    if( sigratio > 0.33334d0 .AND. flstopstatus=='no' .and. allowneg=='no') then
       print *,"--User attempting to run KLWood where neg reconstructed xs values may exist"
       print *,"   -if you choose to run this, you will want your # of pnts to recon at to be quite high"
       print *,"   -please either 'run' to run anyway, or anything else to exit"
       read(*,*) run
-      if( run .NE. 'run' ) stopstatus = 'yes'
+      if( run .NE. 'run' ) flstopstatus = 'yes'
     endif
 !    if( allowneg=='no' .and. distneg=='yes' ) then !so! let that one be, who cares!
 !      print *,"--User attempting to redistribute negative xs values without allowneg on"
-!      stopstatus = 'yes'
+!      flstopstatus = 'yes'
 !    endif
-!    if( radMC=='yes' .and. numRealz/=KLrnumRealz ) then !this is no longer relevant
-!      print *,"--User attempting to do transport over original and reconstructed with dif num of realz"
-!      stopstatus = 'yes'
-!    endif
+    if( KLWood=='yes' .and. numRealz/=KLrnumRealz ) then
+      print *,"--User attempting to do transport over original and reconstructed with dif num of realz"
+      flstopstatus = 'yes'
+    endif
   endif
 !  if( KLWood=='no' .and. allowneg=='yes') then  !so! let that one be, who cares!
 !    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
-!    stopstatus = 'yes'
+!    flstopstatus = 'yes'
 !  endif
 
-  if( stopstatus=='yes' ) STOP 'killed'
+  if( flstopstatus=='yes' ) STOP 'killed'
+  if( flsleep=='yes' ) call sleep(4)
 
   end subroutine testinputstoc
 

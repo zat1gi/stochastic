@@ -665,8 +665,8 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if(.not.allocated(transmit)) allocate(transmit(numRealz))
-    if(.not.allocated(reflect)) allocate(reflect(numRealz))
-    if(.not.allocated(absorb)) allocate(absorb(numRealz))
+    if(.not.allocated(reflect))  allocate(reflect(numRealz))
+    if(.not.allocated(absorb))   allocate(absorb(numRealz))
     transmit     = 0.0d0
     reflect      = 0.0d0
     absorb       = 0.0d0

@@ -23,10 +23,10 @@ program stochastic
   !!read parameters
   call cpu_time(t1)
   call readinputstoc( seed )
+  call Acase_load !need to load these to test
   call testinputstoc
 
   !!allocate/prepare global parameters
-  call Acase_load
   call global_allocate( seed )
   call Acase_print
 
