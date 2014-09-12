@@ -1415,7 +1415,7 @@ enddo
   use genRealzvars, only: Adamscase
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
-                    numPosMCmeths
+                    numPosMCmeths, LPMC, atmixMC
   integer :: icase
 
   call system("rm texts/MCleakage.out")
@@ -1458,10 +1458,12 @@ enddo
     endif
   enddo
 
+  !print for formatting if any LP solutions printed
+  if(Adamscase/=0 .or. LPMC=='yes') &
+    write(100,*) "|----------|-------------------------|---------------------|"
+
   !print benchmark LP solutions
   if(Adamscase/=0) then
-    !write(100,*) "|          |                         |                     |" 
-    write(100,*) "|----------|-------------------------|---------------------|"
     write(100,322) ABreflection(1,2),ABtransmission(1,2)
     if(rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
   endif
@@ -1472,10 +1474,12 @@ enddo
                                                                       stocMC_transmission(icase,1)
   enddo
 
+  !print for formatting if any atomic mix solutions printed
+  if(Adamscase/=0 .or. atmixMC=='yes') &
+    write(100,*) "|----------|-------------------------|---------------------|"
+
   !print benchmark atomic mix solutions
   if(Adamscase/=0) then
-    !write(100,*) "|          |                         |                     |" 
-    write(100,*) "|----------|-------------------------|---------------------|"
     if(rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
   endif
 
