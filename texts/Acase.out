@@ -1,7 +1,7 @@
 
-  Values loaded for special Adamscase :  2.2
+  Values loaded for special Adamscase :  4.3
     sig(1)    :  0.101010   sig(2)    :  9.090909
-    scatrat(1):  1.00       scatrat(2):  0.00
-    lam(1)    :  0.99       lam(2)    :  0.11
-    s         :  1.00       lamc      :  0.10
+    scatrat(1):  0.00       scatrat(2):  1.00
+    lam(1)    :  9.90       lam(2)    :  1.10
+    s         : 10.00       lamc      :  0.99
 

@@ -1,28 +1,28 @@
 
-  Values loaded for special Adamscase :  2.2
+  Values loaded for special Adamscase :  4.3
     sig(1)    :  0.101010   sig(2)    :  9.090909
-    scatrat(1):  1.00       scatrat(2):  0.00
-    lam(1)    :  0.99       lam(2)    :  0.11
-    s         :  1.00       lamc      :  0.10
+    scatrat(1):  0.00       scatrat(2):  1.00
+    lam(1)    :  9.90       lam(2)    :  1.10
+    s         : 10.00       lamc      :  0.99
 
 
- |-case:2.2-|---- Reflection and Transmission Results ------|
+ |-case:4.3-|---- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |AdamsMC:  | 0.0548   +-  0.0307     | 0.4841   +-  0.3632 |
- |BrantMC:  | 0.05418                 | 0.48537             |
+ |AdamsMC:  | 0.2369   +-  0.2860     | 0.0981   +-  0.0887 |
+ |BrantMC:  | 0.23723                 | 0.09843             |
  |----------|-------------------------|---------------------|
- |AdamsLP:  | 0.0460                  | 0.4834              |
- |BrantLP:  | 0.04552                 | 0.48446             |
- |LPMC   :  | 0.04934                 | 0.41677             |
+ |AdamsLP:  | 0.1799                  | 0.1278              |
+ |BrantLP:  | 0.18049                 | 0.12840             |
+ |LPMC   :  | 0.33205                 | 0.08278             |
  |----------|-------------------------|---------------------|
- |BrAtMix:  | 0.01879                 | 0.23065             |
- |atmixMC:  | 0.35226                 | 0.47475             |
+ |BrAtMix:  | 0.49564                 | 0.00474             |
+ |atmixMC:  | 0.49852                 | 0.00440             |
  |----------------------------------------------------------|
 
-  total runtime:      0.01 min
-    genRealz   :      0.00 min     per: 26.00 % --- genRealz in other meths,
+  total runtime:      0.02 min
+    genRealz   :      0.00 min     per: 14.76 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    LPMC       :      0.01 min     per: 77.04 %
-    atmixMC    :      0.00 min     per: 22.60 %
-    other      :      0.00 min     per:  0.36 %
+    LPMC       :      0.01 min     per: 70.36 %
+    atmixMC    :      0.01 min     per: 29.44 %
+    other      :      0.00 min     per:  0.19 %

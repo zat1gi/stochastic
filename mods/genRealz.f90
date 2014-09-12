@@ -123,8 +123,8 @@ CONTAINS
       matType(1) = 2
     endif
   elseif(flmode=='atmixMC') then
-    atmixsig     = P(1)*sig(1)     + P(2)*sig(2)
-    atmixscatrat = P(1)*scatrat(1) + P(2)*scatrat(2)
+    atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
+    atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
   endif
 
   call cpu_time(tt2)

@@ -646,7 +646,6 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     stocMC_transmission(icase,1) = LPamMCsums(2) / LPamnumParts
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
   endif
-
   end subroutine stocMC_stats
 
 
