@@ -27,24 +27,27 @@ CONTAINS
   call cpu_time(tt2)
   select case (MCcases(icase))
     case ("radMC")
-      time(2)=time(2)+(tt2-tt1)
-      localper = real(j,8)/numRealz*100 !percentage of local method done
+      time(2)         = time(2)   + (tt2-tt1)
+      localper        = real(j,8) / numRealz*100 !percentage of local method done
+      cumparts(icase) = j         * numParts     !update cumulative particles
     case ("radWood")
-      time(3)=time(3)+(tt2-tt1)
-      localper = real(j,8)/numRealz*100
+      time(3)         = time(3)   + (tt2-tt1)
+      localper        = real(j,8) / numRealz*100
+      cumparts(icase) = j         * numParts
     case ("KLWood")
-      time(7)=time(7)+(tt2-tt1)
-      localper = real(j,8)/numRealz*100
+      time(7)         = time(7)   + (tt2-tt1)
+      localper        = real(j,8) / numRealz*100
+      cumparts(icase) = j         * numParts
     case ("LPMC")
-      time(8)=time(8)+(tt2-tt1)
-      localper = 100.0d0
+      time(8)         = time(8)   + (tt2-tt1)
+      localper        = 100.0d0
+      cumparts(icase) = LPamnumParts
     case ("atmixMC")
-      time(9)=time(9)+(tt2-tt1)
-      localper = 100.0d0
+      time(9)         = time(9)   + (tt2-tt1)
+      localper        = 100.0d0
+      cumparts(icase) = LPamnumParts
   end select
   tt1 = tt2                         !reset tt1 to tt2
-
-  cumparts(icase) = j*numParts      !update cumulative particles
 
   !get time estimates
   if(.not.allocated(avetime)) allocate(avetime(numPosMCmeths))
@@ -78,7 +81,7 @@ CONTAINS
   finished_time       = sum(time)
   local_time_left     = (totparts(icase)-cumparts(icase))                                *avetime(icase)
   non_local_time_left = (sum(totparts)-sum(cumparts) - (totparts(icase)-cumparts(icase)))*wgtavetime
-
+!print *,"local_time_left: ",local_time_left," non_local_time_left:",non_local_time_left
   timeeta             = finished_time + local_time_left + non_local_time_left
 
 
