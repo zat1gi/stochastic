@@ -16,14 +16,14 @@ CONTAINS
   use genRealz, only: genReal
   integer :: icase
 
-  integer :: j,tnumParts !which realization
+  integer :: j,tnumParts,tnumRealz !'j' is which realization
   real(8) :: tt1
 
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
 
-  call MCallocate( icase,tnumParts )          !allocate/initialize tallies
-  do j=1,numRealz
+  call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
+  do j=1,tnumRealz
 
       if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
     call genReal( j,'binary ' )               !gen binary geometry
@@ -38,10 +38,10 @@ CONTAINS
       if(mod( j,trannprt )==0 .or. MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') &
     call radtrans_timeupdate( j,icase,tt1 )   !print time updates
 
-    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') exit !only 1 'realization' for each
+!    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') exit !only 1 'realization' for each
   enddo !loops over realizations
 
-  call stocMC_stats( icase )                  !calc stats in stochastic space here
+  call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
 
@@ -620,15 +620,17 @@ CONTAINS
 
 
 
-  subroutine stocMC_stats( icase )
+  subroutine stocMC_stats( icase,tnumRealz )
   !This subroutine calculates mean and standard deviation for leakage values over stochastic
   !space for each MC transport solver.
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    MCcases
-  integer :: icase
+                    MCcases, fluxnumcells, pltflux, pltmatflux, fluxall, &
+                    fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2
+  integer :: icase,ifluxcell,tnumRealz
 
+  !leakage/absorption stats
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
 print *,"reflect         : ",sum(reflect)
 print *,"transmit        : ",sum(transmit)
@@ -641,18 +643,40 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
     call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
     call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
-
   elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
     stocMC_reflection(icase,1)   = LPamMCsums(1) / LPamnumParts
     stocMC_transmission(icase,1) = LPamMCsums(2) / LPamnumParts
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
   endif
+
+  !flux stats
+!still need to normalize, either here or when taking tally.  The more here the better
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+    if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then
+      do ifluxcell=1,fluxnumcells
+        call mean_and_var_s( fluxall(ifluxcell,:),numRealz, &
+                 stocMC_fluxall(ifluxcell,icase,1),stocMC_fluxall(ifluxcell,icase,2) )
+      enddo
+    endif
+    if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then
+      do ifluxcell=1,fluxnumcells
+        call mean_and_var_s( fluxmat1(ifluxcell,:),numRealz, &
+                  stocMC_fluxmat1(ifluxcell,icase,1),stocMC_fluxmat1(ifluxcell,icase,2) )
+        call mean_and_var_s( fluxmat2(ifluxcell,:),numRealz, &
+                  stocMC_fluxmat2(ifluxcell,icase,1),stocMC_fluxmat2(ifluxcell,icase,2) )
+      enddo
+    endif
+
+  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+!any normalization required here, but the average will be a function of that, and there will be nor var
+  endif
+
   end subroutine stocMC_stats
 
 
 
 
-  subroutine MCallocate( icase,tnumparts )
+  subroutine MCallocate( icase,tnumparts,tnumRealz )
   !This subroutine allocates and initializes variables that will be passed
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
@@ -660,9 +684,18 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   use genRealzvars, only: numRealz
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
-                    numParts, LPamnumParts
-  integer :: icase,tnumParts
+                    numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
+                    fluxmat2, pltflux, pltmatflux
+  integer :: icase,tnumParts,tnumRealz
 
+  !number of realizations allocation
+  if( MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC' ) then
+    tnumRealz = 1
+  else
+    tnumRealz = numRealz
+  endif
+
+  !current tally allocations
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if(.not.allocated(transmit)) allocate(transmit(numRealz))
     if(.not.allocated(reflect))  allocate(reflect(numRealz))
@@ -678,14 +711,31 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     tnumParts    = LPamnumParts
   endif
 
+  !rejection tally allocations
   if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej = 0
 
+  !negative xs transport tally allocations
   if(MCcases(icase)=='KLWood') then
     numpnSamp =0
     areapnSamp=0.0d0
     disthold  =0.0d0
   endif
 
+  !flux tally allocations
+  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then
+    if(allocated(fluxall)) deallocate(fluxall)
+    allocate(fluxall(fluxnumcells,tnumRealz))
+    fluxall = 0.0d0
+  endif
+  if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then
+    if(allocated(fluxmat1)) deallocate(fluxmat1)
+    if(allocated(fluxmat2)) deallocate(fluxmat2)
+    allocate(fluxmat1(fluxnumcells,tnumRealz))
+    allocate(fluxmat2(fluxnumcells,tnumRealz))
+    fluxmat1 = 0.0d0
+    fluxmat2 = 0.0d0
+  endif
+    
   end subroutine MCallocate
 
 

@@ -154,12 +154,12 @@ module MCvars
 
   real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
   real(8), allocatable :: flux(:,:)            ! flux tally both mats, TMC over binary mixtures !rid of me!replace me with "fluxo", and change it to just "flux"!!!
-  real(8), allocatable :: fluxo(:,:)           ! flux of a method, both mats, (numbins,realznumber)
-  real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (numbins, realznumber)
-  real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (numbins,realznumber)
-  real(8), allocatable :: stocMC_flux(:,:)     ! flux of MC meths in bins, mean & var in stoc space
-  real(8), allocatable :: stocMC_mat1flux(:,:) ! flux of MC meths in mat1, mean & var in stoc space
-  real(8), allocatable :: stocMC_mat2flux(:,:) ! flux of MC meths in mat2, mean & var in stoc space
+  real(8), allocatable :: fluxall(:,:)         ! flux of a method, all mats, (fluxnumbins,numRealz)
+  real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (fluxnumbins,numRealz)
+  real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (fluxnumbins,numRealz)
+  real(8), allocatable :: stocMC_fluxall(:,:,:) ! flux of MC meths in cells, (fluxnumbins,nummeths,2)
+  real(8), allocatable :: stocMC_fluxmat1(:,:,:)! flux of MC meths in mat1, '2' is mean and var
+  real(8), allocatable :: stocMC_fluxmat2(:,:,:)! flux of MC meths in mat2
 
 
   real(8), allocatable :: Woodf(:,:)           ! flux tally both mats, generic Woodcock

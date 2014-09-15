@@ -364,8 +364,8 @@ CONTAINS
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
-                    numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_flux, &
-                    stocMC_mat1flux, stocMC_mat2flux, pltflux, pltmatflux
+                    numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
+                    stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, fluxnumcells
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -429,14 +429,14 @@ CONTAINS
   stocMC_absorption   = 0.0d0
 
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then !mat irrespective flux allocations
-    allocate(stocMC_flux(numPosMCmeths,2))
-    stocMC_flux = 0.0d0
+    allocate(stocMC_fluxall(fluxnumcells,numPosMCmeths,2))
+    stocMC_fluxall = 0.0d0
   endif
   if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then !mat respective flux allocations
-    allocate(stocMC_mat1flux(numPosMCmeths,2))
-    allocate(stocMC_mat2flux(numPosMCmeths,2))
-    stocMC_mat1flux = 0.0d0
-    stocMC_mat2flux = 0.0d0
+    allocate(stocMC_fluxmat1(fluxnumcells,numPosMCmeths,2))
+    allocate(stocMC_fluxmat2(fluxnumcells,numPosMCmeths,2))
+    stocMC_fluxmat1 = 0.0d0
+    stocMC_fluxmat2 = 0.0d0
   endif
 
 

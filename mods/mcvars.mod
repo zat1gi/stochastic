@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:9cd19377e06b2873e3ce2f5a4de3bfd3 -- If you edit this, you'll get what you deserve.
+MD5:b3956452d3f411ec629082fd8b800333 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -72,21 +72,21 @@ UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 20 'flux' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (
 2 0 DEFERRED () () () ()) 0 () () () 0 0)
-21 'fluxfaces' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+21 'fluxall' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
+0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+22 'fluxfaces' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (1 0 DEFERRED () ()) 0 () () () 0 0)
-22 'fluxmat1' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+23 'fluxmat1' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-23 'fluxmat2' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+24 'fluxmat2' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-24 'fluxnumcells' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+25 'fluxnumcells' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-25 'fluxo' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (
-2 0 DEFERRED () () () ()) 0 () () () 0 0)
 26 'fradwoodf' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
@@ -219,15 +219,15 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '6'))) 0 0 () () 0 () () () 0 0)
 67 'stocmc_absorption' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-68 'stocmc_flux' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+68 'stocmc_fluxall' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
-0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-69 'stocmc_mat1flux' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
+0 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
+69 'stocmc_fluxmat1' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
-0 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-70 'stocmc_mat2flux' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
+0 0 REAL ()) 0 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
+70 'stocmc_fluxmat2' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
-0 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+0 0 REAL ()) 0 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
 71 'stocmc_reflection' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
@@ -268,18 +268,18 @@ IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (
 'areapnsamp' 0 6 'atmixmc' 0 7 'bbinmax' 0 8 'bflux' 0 9 'binmaxes' 0 10
 'binmaxind' 0 11 'bklwoodf' 0 12 'bradwoodf' 0 13 'bwoodf' 0 14 'disthold'
 0 15 'distneg' 0 16 'fbinmax' 0 17 'fflux' 0 18 'fklwoodf' 0 19 'flux' 0
-20 'fluxfaces' 0 21 'fluxmat1' 0 22 'fluxmat2' 0 23 'fluxnumcells' 0 24
-'fluxo' 0 25 'fradwoodf' 0 26 'fwoodf' 0 27 'initcur' 0 28 'klwood' 0 29
-'klwood_rej' 0 30 'klwooda' 0 31 'klwoodbinplot' 0 32 'klwoodf' 0 33
-'klwoodr' 0 34 'klwoodt' 0 35 'lpammcsums' 0 36 'lpamnumparts' 0 37 'lpmc'
-0 38 'mccases' 0 39 'mccaseson' 0 40 'mcvars' 0 41 'mu' 0 42 'nceilbin'
-0 43 'numparts' 0 44 'numpnsamp' 0 45 'numposmcmeths' 0 46 'oldposition'
-0 47 'pfnumcells' 0 48 'plotflux' 0 49 'pltflux' 0 50 'pltmatflux' 0 51
-'position' 0 52 'radmc' 0 53 'radmcbinplot' 0 54 'radtrans_int' 0 55
-'radwood' 0 56 'radwood_rej' 0 57 'radwooda' 0 58 'radwoodbinplot' 0 59
-'radwoodf' 0 60 'radwoodr' 0 61 'radwoodt' 0 62 'reflect' 0 63 'results'
-0 64 'rodorplanar' 0 65 'sourcetype' 0 66 'stocmc_absorption' 0 67
-'stocmc_flux' 0 68 'stocmc_mat1flux' 0 69 'stocmc_mat2flux' 0 70
-'stocmc_reflection' 0 71 'stocmc_transmission' 0 72 'trannprt' 0 73
-'transmit' 0 74 'trprofile_binnum' 0 75 'wood' 0 76 'wood_rej' 0 77
-'wooda' 0 78 'woodf' 0 79 'woodr' 0 80 'woodt' 0 81)
+20 'fluxall' 0 21 'fluxfaces' 0 22 'fluxmat1' 0 23 'fluxmat2' 0 24
+'fluxnumcells' 0 25 'fradwoodf' 0 26 'fwoodf' 0 27 'initcur' 0 28 'klwood'
+0 29 'klwood_rej' 0 30 'klwooda' 0 31 'klwoodbinplot' 0 32 'klwoodf' 0
+33 'klwoodr' 0 34 'klwoodt' 0 35 'lpammcsums' 0 36 'lpamnumparts' 0 37
+'lpmc' 0 38 'mccases' 0 39 'mccaseson' 0 40 'mcvars' 0 41 'mu' 0 42
+'nceilbin' 0 43 'numparts' 0 44 'numpnsamp' 0 45 'numposmcmeths' 0 46
+'oldposition' 0 47 'pfnumcells' 0 48 'plotflux' 0 49 'pltflux' 0 50
+'pltmatflux' 0 51 'position' 0 52 'radmc' 0 53 'radmcbinplot' 0 54
+'radtrans_int' 0 55 'radwood' 0 56 'radwood_rej' 0 57 'radwooda' 0 58
+'radwoodbinplot' 0 59 'radwoodf' 0 60 'radwoodr' 0 61 'radwoodt' 0 62
+'reflect' 0 63 'results' 0 64 'rodorplanar' 0 65 'sourcetype' 0 66
+'stocmc_absorption' 0 67 'stocmc_fluxall' 0 68 'stocmc_fluxmat1' 0 69
+'stocmc_fluxmat2' 0 70 'stocmc_reflection' 0 71 'stocmc_transmission' 0
+72 'trannprt' 0 73 'transmit' 0 74 'trprofile_binnum' 0 75 'wood' 0 76
+'wood_rej' 0 77 'wooda' 0 78 'woodf' 0 79 'woodr' 0 80 'woodt' 0 81)
