@@ -67,7 +67,7 @@ CONTAINS
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
-                    bbinmax, binmaxind, binmaxes, LPamMCsums
+                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot
   use genRealz, only: genReal
 
   use Woodcock, only: radWood_actsig, radWood_actscatrat, KLrxi_point
@@ -381,6 +381,7 @@ CONTAINS
 !print *,"matType(1): ",matType(1)
       endif !endif fldist=='interface'
 
+      if(flfluxplot) call MCfluxtally( j )
 
       if(flExit=='exit') exit
 !print *,"flExit      : ",flExit
@@ -616,6 +617,20 @@ CONTAINS
   oldposition = position
   position    = newposition
   end subroutine MCinc_pos
+
+
+
+
+  subroutine MCfluxtally( j )
+  !This subroutine uses the new and old position and keeps a tally for the flux in each bin
+  !for each realization
+  use MCvars, only: position, oldposition, fluxall, fluxmat1, fluxmat2, pltflux, &
+                    pltmatflux, fluxfaces
+  integer :: j
+
+
+
+  end subroutine MCfluxtally
 
 
 

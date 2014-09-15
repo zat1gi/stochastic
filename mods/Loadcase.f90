@@ -367,7 +367,8 @@ CONTAINS
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
-                    stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, fluxnumcells
+                    stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
+                    fluxnumcells, flfluxplot
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -430,6 +431,17 @@ CONTAINS
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
 
+  
+  flfluxplot = .false.  !flux variable allocations
+  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
+      pltmatflux=='plot' .or. pltmatflux=='preview' ) flfluxplot = .true.
+  if(flfluxplot) then
+    allocate(fluxfaces(fluxnumcells+1))
+    fluxfaces = 0.0d0
+    do i=1,fluxnumcells+1
+      fluxfaces(i) = (s/fluxnumcells) * (i-1)
+    enddo
+  endif
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then !mat irrespective flux allocations
     allocate(stocMC_fluxall(fluxnumcells,numPosMCmeths,2))
     stocMC_fluxall = 0.0d0
@@ -463,11 +475,11 @@ CONTAINS
 
   !allocate fluxplot variables
   if(radMC/='no' .or. radWood/='no' .or. KLWood/='no') then
-    allocate(fluxfaces(pfnumcells+1))
-    fluxfaces = 0.0d0
-    do i=1,pfnumcells+1
-      fluxfaces(i) = (s/pfnumcells) * (i-1)
-    enddo
+!    allocate(fluxfaces(pfnumcells+1))
+!    fluxfaces = 0.0d0
+!    do i=1,pfnumcells+1
+!      fluxfaces(i) = (s/pfnumcells) * (i-1)
+!    enddo
   endif
   if(radMC=='yes') then
     !i.e. different length for surface flux tally
