@@ -47,7 +47,8 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
                                   plotflux, results, pltflux, allowneg, distneg, radMC, radWood, &
-                                  KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux
+                                  KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
+                                  pltfluxtype
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
 
@@ -163,6 +164,7 @@ CONTAINS
   read(2,*) pltflux(1),pltflux(2),pltflux(3),pltflux(4)
   read(2,*) pltmatflux
   read(2,*) plotmatdxs
+  read(2,*) pltfluxtype
   read(2,*) plotflux(1),plotflux(2)
   read(2,*) fluxnumcells
   read(2,*) pfnumcells
@@ -203,7 +205,8 @@ CONTAINS
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise
-  use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood
+  use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
+                    pltfluxtype
   integer :: fpointorxi(2)
 
   integer :: i
@@ -284,6 +287,11 @@ CONTAINS
     print *,"--User attempting to run invalid source type.  Please put either 'left' or 'intern'"
     flstopstatus = 'yes'
   endif
+  if( pltfluxtype/='track' .and. pltfluxtype/='point' ) then
+    print *,"--User attempting to plot flux with invalid scheme.  Please enter 'track' or 'point'"
+    flstopstatus = 'yes'
+  endif
+
 
   do i=1,pltgenrealznumof    !Test genRealz plotting over selected realz
     if( pltgenrealzwhich(i)>numRealz .AND. pltgenrealz(1) .NE. 'noplot' ) then

@@ -134,6 +134,7 @@ module MCvars
   character(6)         :: results              !
   character(7)         :: pltflux(4)           ! plot material irrespective flux
   character(7)         :: pltmatflux           ! plot material respective fluxes
+  character(7)         :: pltfluxtype          ! full 'track' length flux plot or 'point' flux binning? 
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview'
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'

@@ -624,9 +624,39 @@ CONTAINS
   subroutine MCfluxtally( j )
   !This subroutine uses the new and old position and keeps a tally for the flux in each bin
   !for each realization
-  use MCvars, only: position, oldposition, fluxall, fluxmat1, fluxmat2, pltflux, &
-                    pltmatflux, fluxfaces
-  integer :: j
+  use MCvars, only: position, oldposition, mu, fluxall, fluxmat1, fluxmat2, pltflux, &
+                    pltmatflux, fluxfaces, pltfluxtype
+  integer :: j, ibin
+  real(8) :: minpos,maxpos,absmu,dx, length,point
+
+  !material irrespective
+  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then
+    minpos = min(oldposition,position)
+    maxpos = max(oldposition,position)
+    absmu  = abs(mu)
+    dx     = fluxfaces(2)-fluxfaces(1)
+
+    if( pltfluxtype=='point' ) then       !point selection
+      point  = rang()*(maxpos-minpos) + minpos
+      length = (maxpos-minpos) / absmu
+      ibin   = ceiling(point/dx)
+      fluxall(ibin,j) = fluxall(ibin,j) + length
+    elseif( pltfluxtype=='track' ) then   !whole tracklength
+      ibin = ceiling(minpos/dx)
+      fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first bin
+      do
+        ibin = ibin + 1
+        if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
+          fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-fluxfaces(ibin)) / absmu !mid bins
+        else
+          fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin)) / absmu !last bin
+          exit
+        endif
+      enddo
+
+    endif !point or track
+
+  endif !mat irrespective
 
 
 
@@ -752,6 +782,25 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   endif
     
   end subroutine MCallocate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
