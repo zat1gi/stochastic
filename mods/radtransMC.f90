@@ -380,7 +380,7 @@ CONTAINS
       endif !endif fldist=='interface'
 
       !tally flux
-      if(flfluxplot) call MCfluxtally( j,i )
+      if(flfluxplot) call MCfluxtallywrapper( j,icase )
 
       !increment material position
       if(MCcases(icase)=='radMC') then
@@ -625,26 +625,76 @@ CONTAINS
 
 
 
-
-  subroutine MCfluxtally( j,i ) !'i' only for 'radMC' and 'LPMC', others pass dummy arg
-  !This subroutine uses the new and old position and keeps a tally for the flux in each bin
-  !for each realization.  It can keep full tracklength tallies, or choose one bin in which
-  !to place the entire contribution of the flux track.  Flux can be calculated for the domain
-  !without respect to which material the tallies are in, or as a function of which material.
-  !This material respective version cannot be used with Woodcock methods, although with a
-  !wrapper that breaks the tracklength down into material specific pieces it might...
-  use MCvars, only: position, oldposition, mu, fluxall, fluxmat1, fluxmat2, &
-                    fluxfaces, pltfluxtype, flfluxplotall, flfluxplotmat
-  integer :: j, i, ibin
-  real(8) :: minpos,maxpos,absmu,dx, length,point
+  subroutine MCfluxtallywrapper( j,icase )
+  !This subroutine is the outer wrapper for flux tallies.
+  !First it calculates quantities related to this tally.
+  !Then for most methods it passes that info the the tally taker, but for 'radWood'
+  !it steps through the tracklength passing on segments at a time to be tallied.
+  use genRealzvars, only: matLength, matType
+  use MCvars, only: position, oldposition, flfluxplotall, flfluxplotmat, MCcases, &
+                    fluxfaces
+  integer :: j, i, ibin, icase
+  real(8) :: minpos, maxpos, dx
 
   minpos = min(oldposition,position)
   maxpos = max(oldposition,position)
+  dx     = fluxfaces(2)-fluxfaces(1)
+
+  !set value for 'i'
+  if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
+    i=0
+    do
+      if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
+      i = i+1
+    enddo
+  else                                                                !send dummy var for 'i'
+    i=1
+  endif
+
+  !fluxtally irrespective of mat
+  if(flfluxplotall) then
+    call MCfluxtally( j,i,minpos,maxpos,'irrespective' )
+  endif
+
+  !fluxtally irrespective of mat
+  if(MCcases(icase)=='radWood' .and. flfluxplotmat) then
+    !tally length through cells
+    if(matLength(i)<maxpos .and. maxpos<=matLength(i+1)) then       !first cell = last cell
+      call MCfluxtally( j,i,minpos,maxpos,'respective  ' )                  !tally first/last cell
+    else                                                            !first cell /= last cell
+      call MCfluxtally( j,i,minpos,matlength(i+1),'respective  ' )          !tally first cell
+      do
+        i = i+1
+        if(matLength(i)<maxpos .and. maxpos<=matLength(i+1)) then   !last cell
+          call MCfluxtally( j,i,matLength(i),maxpos,'respective  ' )        !tally last cell
+          exit
+        else                                                        !not first or last cell
+          call MCfluxtally( j,i,matLength(i),matLength(i+1),'respective  ' )!tally middle cell
+        endif
+      enddo
+    endif
+  elseif(flfluxplotmat) then
+    call MCfluxtally( j,i,minpos,maxpos,'respective  ' )
+  endif
+
+  end subroutine MCfluxtallywrapper
+
+
+
+  subroutine MCfluxtally( j,i,minpos,maxpos,flfluxtallytype )
+  !This subroutine accepts arguments from its wrapper, then tallies flux contributions accordingly.
+  !It can keep full tracklength tallies, or choose one bin in which to place the entire contribution.
+  !Flux can be calculated for the tracklength w/ or w/o respect to which material the tallies are in.
+  use MCvars, only: mu, fluxall, fluxmat1, fluxmat2, fluxfaces, pltfluxtype
+  integer :: j, i, ibin
+  real(8) :: minpos,maxpos,absmu,dx, length,point
+  character(12) :: flfluxtallytype
+
   absmu  = abs(mu)
   dx     = fluxfaces(2)-fluxfaces(1)
 
   !material irrespective
-  if(flfluxplotall) then
+  if( flfluxtallytype=='irrespective' ) then
     if( pltfluxtype=='point' ) then       !point selection
       point  = rang()*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
@@ -666,7 +716,7 @@ CONTAINS
   endif !mat irrespective
 
   !material respective
-  if(flfluxplotmat) then
+  if( flfluxtallytype=='respective') then
     if( pltfluxtype=='point' ) then       !point selection
       point  = rang()*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
