@@ -167,11 +167,10 @@ CONTAINS
         if(flEscapeDir=='transmit') then   !transmit
           select case (MCcases(icase))
             case ("radMC")
-              i=i+1
               call MCinc_pos( matLength(i) )
-              if(i==nummatSegs+1) transmit(j)=transmit(j) + 1.0d0
+              if(i+1==nummatSegs+1) transmit(j)=transmit(j) + 1.0d0
 !if(i==nummatSegs+1) print *,"radMC tally transmit here"
-              if(i==nummatSegs+1) flExit='exit'
+              if(i+1==nummatSegs+1) flExit='exit'
             case ("radWood")
               call MCinc_pos( s )
               transmit(j) = transmit(j) + 1.0d0
@@ -201,7 +200,6 @@ CONTAINS
 !if(i==1) print *,"radMC tally reflect here"
               if(i==1)            reflect(j)=reflect(j) + 1.0d0
               if(i==1)            flExit='exit'
-              i=i-1
             case ("radWood")
               call MCinc_pos( 0.0d0 )
 !print *,"radWood tally reflect here"
@@ -381,7 +379,14 @@ CONTAINS
 !print *,"matType(1): ",matType(1)
       endif !endif fldist=='interface'
 
-      if(flfluxplot) call MCfluxtally( j )
+      !tally flux
+      if(flfluxplot) call MCfluxtally( j,i )
+
+      !increment material position
+      if(MCcases(icase)=='radMC') then
+        if(flEscapeDir=='transmit') i = i+1
+        if(flEscapeDir=='reflect')  i = i-1
+      endif
 
       if(flExit=='exit') exit
 !print *,"flExit      : ",flExit
@@ -621,21 +626,25 @@ CONTAINS
 
 
 
-  subroutine MCfluxtally( j )
+  subroutine MCfluxtally( j,i ) !'i' only for 'radMC' and 'LPMC', others pass dummy arg
   !This subroutine uses the new and old position and keeps a tally for the flux in each bin
-  !for each realization
-  use MCvars, only: position, oldposition, mu, fluxall, fluxmat1, fluxmat2, pltflux, &
-                    pltmatflux, fluxfaces, pltfluxtype
-  integer :: j, ibin
+  !for each realization.  It can keep full tracklength tallies, or choose one bin in which
+  !to place the entire contribution of the flux track.  Flux can be calculated for the domain
+  !without respect to which material the tallies are in, or as a function of which material.
+  !This material respective version cannot be used with Woodcock methods, although with a
+  !wrapper that breaks the tracklength down into material specific pieces it might...
+  use MCvars, only: position, oldposition, mu, fluxall, fluxmat1, fluxmat2, &
+                    fluxfaces, pltfluxtype, flfluxplotall, flfluxplotmat
+  integer :: j, i, ibin
   real(8) :: minpos,maxpos,absmu,dx, length,point
 
-  !material irrespective
-  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then
-    minpos = min(oldposition,position)
-    maxpos = max(oldposition,position)
-    absmu  = abs(mu)
-    dx     = fluxfaces(2)-fluxfaces(1)
+  minpos = min(oldposition,position)
+  maxpos = max(oldposition,position)
+  absmu  = abs(mu)
+  dx     = fluxfaces(2)-fluxfaces(1)
 
+  !material irrespective
+  if(flfluxplotall) then
     if( pltfluxtype=='point' ) then       !point selection
       point  = rang()*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
@@ -647,21 +656,55 @@ CONTAINS
       do
         ibin = ibin + 1
         if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
-          fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-fluxfaces(ibin)) / absmu !mid bins
+          fluxall(ibin,j) = fluxall(ibin,j) + dx / absmu !mid bins
         else
           fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin)) / absmu !last bin
           exit
         endif
       enddo
-
     endif !point or track
-
   endif !mat irrespective
 
-
+  !material respective
+  if(flfluxplotmat) then
+    if( pltfluxtype=='point' ) then       !point selection
+      point  = rang()*(maxpos-minpos) + minpos
+      length = (maxpos-minpos) / absmu
+      ibin   = ceiling(point/dx)
+      call MCfluxtallycontribute( j,ibin,i,length )
+    elseif( pltfluxtype=='track' ) then   !whole tracklength
+      ibin = ceiling(minpos/dx)
+      call MCfluxtallycontribute( j,ibin,i,(fluxfaces(ibin+1)-minpos)/absmu )   !first bin
+      do
+        ibin = ibin + 1
+        if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
+          call MCfluxtallycontribute( j,ibin,i,dx/absmu )                       !mid bins
+        else
+          call MCfluxtallycontribute( j,ibin,i,(maxpos-fluxfaces(ibin))/absmu ) !last bin
+          exit
+        endif
+      enddo
+    endif !point or track
+  endif !mat respective
 
   end subroutine MCfluxtally
 
+
+
+
+  subroutine MCfluxtallycontribute( j,ibin,i,contribution )
+  !This is used specifically in 'MCfluxtally' to add to the appropriate material bin
+  use genRealzvars, only: matType
+  use MCvars, only: fluxmat1, fluxmat2
+  integer :: j,ibin,i
+  real(8) :: contribution
+
+  if( matType(i)==1 ) then
+    fluxmat1(ibin,j) = fluxmat1(ibin,j) + contribution
+  elseif( matType(i)==2 ) then
+    fluxmat2(ibin,j) = fluxmat2(ibin,j) + contribution
+  endif
+  end subroutine MCfluxtallycontribute
 
 
 
@@ -730,7 +773,7 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
-                    fluxmat2, pltflux, pltmatflux
+                    fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat
   integer :: icase,tnumParts,tnumRealz
 
   !number of realizations allocation
@@ -767,12 +810,28 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   endif
 
   !flux tally allocations
-  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then
+  flfluxplotall = .false.
+  flfluxplotmat = .false.
+  select case(MCcases(icase))
+    case ("radMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
+    case ("radWood")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+    case ("KLWood")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+    case ("LPMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
+    case ("atmixMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+  end select
+  if(flfluxplotall) then
     if(allocated(fluxall)) deallocate(fluxall)
     allocate(fluxall(fluxnumcells,tnumRealz))
     fluxall = 0.0d0
   endif
-  if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then
+  if(flfluxplotmat) then
     if(allocated(fluxmat1)) deallocate(fluxmat1)
     if(allocated(fluxmat2)) deallocate(fluxmat2)
     allocate(fluxmat1(fluxnumcells,tnumRealz))

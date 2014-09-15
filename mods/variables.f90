@@ -156,6 +156,8 @@ module MCvars
   real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
   real(8), allocatable :: flux(:,:)            ! flux tally both mats, TMC over binary mixtures !rid of me!replace me with "fluxo", and change it to just "flux"!!!
   logical              :: flfluxplot           ! run fluxplot stuff or not?
+  logical              :: flfluxplotall        ! run fluxplot for material irrespective
+  logical              :: flfluxplotmat        ! run fluxplot for material respective
   real(8), allocatable :: fluxall(:,:)         ! flux of a method, all mats, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (fluxnumbins,numRealz)
