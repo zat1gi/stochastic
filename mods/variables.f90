@@ -23,7 +23,7 @@ module genRealzvars
   
   integer              :: pltgenrealznumof     !
   character(7)         :: pltgenrealz(4)       !
-  character(7)         :: plotmatdxs           !
+  character(7)         :: plotmatdxs           ! !get rid of me! old designator for plotting irr flux
   integer, allocatable :: pltgenrealzwhich(:)  !
   !non inputs
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
@@ -125,13 +125,15 @@ module MCvars
   integer              :: numParts             ! number of particles
   integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen
-  integer              :: pfnumcells           ! number of cells for flux profile (?)
+  integer              :: fluxnumcells         ! number of cells for flux profile
+  integer              :: pfnumcells           ! number of cells for flux profile (?) !get rid of me
 
   character(6)         :: rodOrplanar          ! transport geometry mode
   character(6)         :: sourceType           ! 'intern' or 'left', distributed or beam source
   character(6)         :: plotflux(2)          ! 
   character(6)         :: results              !
-  character(7)         :: pltflux(4)           ! 
+  character(7)         :: pltflux(4)           ! plot material irrespective flux
+  character(7)         :: pltmatflux           ! plot material respective fluxes
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview'
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview'
@@ -151,7 +153,15 @@ module MCvars
   integer              :: radtrans_int         !
 
   real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
-  real(8), allocatable :: flux(:,:)            ! flux tally both mats, TMC over binary mixtures
+  real(8), allocatable :: flux(:,:)            ! flux tally both mats, TMC over binary mixtures !rid of me!replace me with "fluxo", and change it to just "flux"!!!
+  real(8), allocatable :: fluxo(:,:)           ! flux of a method, both mats, (numbins,realznumber)
+  real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (numbins, realznumber)
+  real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (numbins,realznumber)
+  real(8), allocatable :: stocMC_flux(:,:)     ! flux of MC meths in bins, mean & var in stoc space
+  real(8), allocatable :: stocMC_mat1flux(:,:) ! flux of MC meths in mat1, mean & var in stoc space
+  real(8), allocatable :: stocMC_mat2flux(:,:) ! flux of MC meths in mat2, mean & var in stoc space
+
+
   real(8), allocatable :: Woodf(:,:)           ! flux tally both mats, generic Woodcock
   real(8), allocatable :: radWoodf(:,:)        ! flux tally both mats, WMC over binary mixtures
   real(8), allocatable :: KLWoodf(:,:)         ! flux tally both mats, WMC over KL reconstruction

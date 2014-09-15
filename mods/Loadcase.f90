@@ -47,7 +47,7 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
                                   plotflux, results, pltflux, allowneg, distneg, radMC, radWood, &
-                                  KLWood, LPMC, atmixMC, LPamnumParts
+                                  KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
 
@@ -161,8 +161,10 @@ CONTAINS
 
   read(2,*) dumchar    !Plotting flux
   read(2,*) pltflux(1),pltflux(2),pltflux(3),pltflux(4)
+  read(2,*) pltmatflux
   read(2,*) plotmatdxs
   read(2,*) plotflux(1),plotflux(2)
+  read(2,*) fluxnumcells
   read(2,*) pfnumcells
 
 
@@ -362,7 +364,8 @@ CONTAINS
                     bradWoodf, fKLWoodf, bKLWoodf, radWoodf, KLWoodf, Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
-                    numPosMCmeths, LPMC, atmixMC, LPamnumParts
+                    numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_flux, &
+                    stocMC_mat1flux, stocMC_mat2flux, pltflux, pltmatflux
 
   use mcnp_random, only: rang
   integer :: i,seed,icase
@@ -425,6 +428,17 @@ CONTAINS
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
 
+  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then !mat irrespective flux allocations
+    allocate(stocMC_flux(numPosMCmeths,2))
+    stocMC_flux = 0.0d0
+  endif
+  if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then !mat respective flux allocations
+    allocate(stocMC_mat1flux(numPosMCmeths,2))
+    allocate(stocMC_mat2flux(numPosMCmeths,2))
+    stocMC_mat1flux = 0.0d0
+    stocMC_mat2flux = 0.0d0
+  endif
+
 
   !allocate and initialize timevars
   allocate(time(ntime))
@@ -442,6 +456,7 @@ CONTAINS
       endif
     endif
   enddo
+
 
 
   !allocate fluxplot variables
@@ -479,6 +494,7 @@ CONTAINS
   endif
 
   end subroutine global_allocate
+
 
 
 
