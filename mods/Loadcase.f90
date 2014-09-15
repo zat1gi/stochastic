@@ -232,11 +232,6 @@ CONTAINS
     endif
   enddo
 
-  if( KLnoise == 'yes' .AND. KLres == 'no' ) then !Test KLnoise w/o KLres
-    print *,"--User tryint to perform KLnoise without KLres"
-    flstopstatus = 'yes'
-  endif
-
                               !Test KLreconstruct print frequency
   if( (KLrprintat>KLrnumRealz .or. mod(KLrnumRealz,KLrprintat)/=0) .AND. KLrec=='yes' ) then 
     print *,"--Print to screen frequency for KLreconstruct must be factor of number of KLrealizations"
@@ -269,7 +264,7 @@ CONTAINS
     endif
   endif
   if( KLres=='no' .AND. KLrec=='yes' ) then
-    KLrec = 'yes'
+    KLres = 'yes'
     print *,"--User attempting KLrec  w/o        KLres,          KLres has been set to 'yes'"
     flsleep = 'yes'
   endif
@@ -344,6 +339,13 @@ CONTAINS
 !    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
 !    flstopstatus = 'yes'
 !  endif
+
+  if( KLnoise == 'yes' .AND. KLres == 'no' ) then !Test KLnoise w/o KLres
+    print *,"--User trying to perform KLnoise without KLres"
+    flstopstatus = 'yes'
+  endif
+
+
 
   if( flstopstatus=='yes' ) STOP 'killed'
   if( flsleep=='yes' ) call sleep(4)
