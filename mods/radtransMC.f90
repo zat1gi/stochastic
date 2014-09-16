@@ -937,6 +937,33 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
 
 
 
+  subroutine MCfluxPrint
+  !This subroutine prints the results of MC transport methods to '.out' files
+  !in order to be printed.  It also clears out previous data and plot files.
+
+  !template
+  !660 format("#cell center,       ave flux,        flux dev")
+  !661 format(f15.7,f15.7,f15.7)
+  !open(unit=24, file="radWood_cellflux.txt")
+  !write(24,660)
+  !do i=1,pfnumcells
+  !  write(24,661) (fluxfaces(i+1)+fluxfaces(i))/2.0d0,Woodfave(i),sqrt(Woodfvar(i))
+  !enddo
+  !close(unit=24)
+
+
+  end subroutine MCfluxPrint
+
+
+
+
+  subroutine MCfluxPlot
+  !Builds gnus and plots with them.
+
+  end subroutine MCfluxPlot
+
+
+
 
   subroutine MCallocate( icase,tnumparts,tnumRealz )
   !This subroutine allocates and initializes variables that will be passed
