@@ -854,7 +854,7 @@ CONTAINS
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    MCcases, fluxnumcells, pltflux, pltmatflux, fluxall, &
+                    MCcases, fluxnumcells, fluxall, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplotall, flfluxplotmat
   integer :: icase,ibin,tnumRealz,j
