@@ -12,7 +12,7 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data in UQ space
   use timevars, only: time
   use genRealzvars, only: numRealz
-  use MCvars, only: MCcases, numParts, trannprt
+  use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat
   use genRealz, only: genReal
   integer :: icase
 
@@ -29,6 +29,10 @@ CONTAINS
     call genReal( j,'binary ' )               !gen binary geometry
       if(MCcases(icase)=='atmixMC') &
     call genReal( j,'atmixMC' )               !gen atomic mix geometry
+
+      if(flfluxplotmat .and. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) &
+    call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
+
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
@@ -625,6 +629,91 @@ CONTAINS
 
 
 
+  subroutine MCprecalc_fluxmatnorm( j )
+  !This subroutine calculates how much of each material type fills each bin in a realization.
+  !This is determined once geometry is created, so for 'radMC' and 'radWood', this can be
+  !done right after each initial geometry calculation.  It marches through the geometry of a 
+  !realization, deciding if a fluxface is next, or a material face, calculates that contribution
+  !and continues, terminating when the last sub-cell has been accounted for.
+  !For 'LPMC' it must be collected while the algorithm runs, since the geometry is generated
+  !as part of the algorithm ('MCLPcalc_fluxmatnorm').
+  use genRealzvars, only: matLength, matType
+  use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells
+  integer :: i, ibin, j, matnumsegs
+  real(8) :: nextboundary,lastboundary
+  character(8) :: flnextboundary,fllastboundary
+
+  fllastboundary = 'matface '
+  matnumsegs = size(matType)
+
+  i    = 1
+  ibin = 1
+  do
+    !which comes next?
+    if(matLength(i+1)<=fluxfaces(ibin+1)) then
+      flnextboundary = 'matface '
+    else
+      flnextboundary = 'fluxface'
+    endif
+    nextboundary = merge(matLength(i+1),fluxfaces(ibin+1),flnextboundary=='matface')
+    lastboundary = merge(matLength(i)  ,fluxfaces(ibin)  ,fllastboundary=='matface')
+
+    !add contribution of 'sub-cell', which is the distance between faces of either kind
+    fluxmatnorm(ibin,j,matType(i)) = fluxmatnorm(ibin,j,matType(i)) + nextboundary - lastboundary
+
+    !update parameters
+    if(flnextboundary=='fluxface') then
+      ibin = ibin + 1
+    elseif(flnextboundary=='matface') then
+      i    = i    + 1
+    endif
+    fllastboundary = flnextboundary
+
+    !test if over
+    if(ibin==fluxnumcells .and. i==matnumsegs) exit
+  enddo
+  end subroutine MCprecalc_fluxmatnorm
+
+
+
+  subroutine MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
+  !This subroutine tallies material abundances in each flux cell for LPMC so that 
+  !the flux tallies can be normalized on a per material basis.  It is on the fly
+  !since LP calculates geometry on the fly.
+  !This routine is called from 'MCfluxtallywrapper' and highly resembles 'MCfluxtally',
+  !with the only notable difference being that distances are not divided by absu(mu)
+  use genRealzvars, only: matType
+  use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells, position, oldposition, &
+                    pltfluxtype
+  integer :: i, ibin
+  real(8) :: minpos,maxpos,dx, point,length
+  character(8) :: flnextboundary,fllastboundary
+
+  if( pltfluxtype=='point' ) then       !point selection
+    point  = rang()*(maxpos-minpos) + minpos
+    length = (maxpos-minpos)
+    ibin   = ceiling(point/dx)
+    fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + length
+  elseif( pltfluxtype=='track' ) then   !whole tracklength
+    ibin = ceiling(minpos/dx)
+    fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + fluxfaces(ibin+1)-minpos
+                                                                              !first bin
+    do
+      ibin = ibin + 1
+      if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
+        fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + dx  !mid bins
+      else
+        fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + maxpos-fluxfaces(ibin)
+                                                                              !last bin
+        exit
+      endif
+    enddo
+  endif !point or track
+
+  end subroutine MCLPcalc_fluxmatnorm
+
+
+
   subroutine MCfluxtallywrapper( j,icase )
   !This subroutine is the outer wrapper for flux tallies.
   !First it calculates quantities related to this tally.
@@ -656,7 +745,7 @@ CONTAINS
     call MCfluxtally( j,i,minpos,maxpos,'irrespective' )
   endif
 
-  !fluxtally irrespective of mat
+  !fluxtally respective of mat
   if(MCcases(icase)=='radWood' .and. flfluxplotmat) then
     !tally length through cells
     if(matLength(i)<maxpos .and. maxpos<=matLength(i+1)) then       !first cell = last cell
@@ -675,6 +764,7 @@ CONTAINS
     endif
   elseif(flfluxplotmat) then
     call MCfluxtally( j,i,minpos,maxpos,'respective  ' )
+    if(MCcases(icase)=='LPMC') call MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
   endif
 
   end subroutine MCfluxtallywrapper
@@ -823,7 +913,8 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
-                    fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat
+                    fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
+                    fluxmatnorm
   integer :: icase,tnumParts,tnumRealz
 
   !number of realizations allocation
@@ -868,13 +959,16 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
     case ("radWood")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
     case ("KLWood")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      !if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      flfluxplotall = .true.
     case ("LPMC")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
     case ("atmixMC")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      !if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
+      flfluxplotall = .true.
   end select
   if(flfluxplotall) then
     if(allocated(fluxall)) deallocate(fluxall)
@@ -888,8 +982,11 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     allocate(fluxmat2(fluxnumcells,tnumRealz))
     fluxmat1 = 0.0d0
     fluxmat2 = 0.0d0
-  endif
-    
+    if(allocated(fluxmatnorm)) deallocate(fluxmatnorm)
+    allocate(fluxmatnorm(fluxnumcells,numRealz,2))
+    fluxmatnorm = 0.0d0
+  endif    
+
   end subroutine MCallocate
 
 

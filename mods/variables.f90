@@ -161,6 +161,7 @@ module MCvars
   real(8), allocatable :: fluxall(:,:)         ! flux of a method, all mats, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (fluxnumbins,numRealz)
+  real(8), allocatable :: fluxmatnorm(:,:,:)   ! amount of material in bins, (fluxnumbins,numRealz,2) 
   real(8), allocatable :: stocMC_fluxall(:,:,:) ! flux of MC meths in cells, (fluxnumbins,nummeths,2)
   real(8), allocatable :: stocMC_fluxmat1(:,:,:)! flux of MC meths in mat1, '2' is mean and var
   real(8), allocatable :: stocMC_fluxmat2(:,:,:)! flux of MC meths in mat2
