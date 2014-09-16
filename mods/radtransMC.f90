@@ -855,8 +855,10 @@ CONTAINS
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
                     MCcases, fluxnumcells, pltflux, pltmatflux, fluxall, &
-                    fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2
-  integer :: icase,ifluxcell,tnumRealz
+                    fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
+                    fluxmatnorm, fluxfaces, flfluxplotall, flfluxplotmat
+  integer :: icase,ibin,tnumRealz,j
+  real(8) :: dx,p1,p2
 
   !leakage/absorption stats
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
@@ -877,26 +879,58 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
   endif
 
+
   !flux stats
-!still need to normalize, either here or when taking tally.  The more here the better
+  dx = fluxfaces(2) - fluxfaces(1)
+  fluxall(ibin,:) = fluxall(ibin,:) / dx / numRealz !normalize part 1
+
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
-    if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then
-      do ifluxcell=1,fluxnumcells
-        call mean_and_var_s( fluxall(ifluxcell,:),numRealz, &
-                 stocMC_fluxall(ifluxcell,icase,1),stocMC_fluxall(ifluxcell,icase,2) )
+    if( flfluxplotall ) then
+      do ibin=1,fluxnumcells
+        call mean_and_var_s( fluxall(ibin,:),numRealz, &
+                 stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
       enddo
     endif
-    if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then
-      do ifluxcell=1,fluxnumcells
-        call mean_and_var_s( fluxmat1(ifluxcell,:),numRealz, &
-                  stocMC_fluxmat1(ifluxcell,icase,1),stocMC_fluxmat1(ifluxcell,icase,2) )
-        call mean_and_var_s( fluxmat2(ifluxcell,:),numRealz, &
-                  stocMC_fluxmat2(ifluxcell,icase,1),stocMC_fluxmat2(ifluxcell,icase,2) )
+    if( flfluxplotmat ) then
+      do ibin=1,fluxnumcells
+        do j=1,numRealz
+          p1 = fluxmatnorm(ibin,j,1) / sum(fluxmatnorm(ibin,j,:))
+          p2 = 1.0d0 - p1
+          fluxmat1(ibin,j) = fluxmat1(ibin,j) / p1    !normalize part 2 for mat specific
+          fluxmat2(ibin,j) = fluxmat1(ibin,j) / p2    !normalize part 2 for mat specific
+        enddo
+
+        call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
+                  stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )
+        call mean_and_var_s( fluxmat2(ibin,:),numRealz, &
+                  stocMC_fluxmat2(ibin,icase,1),stocMC_fluxmat2(ibin,icase,2) )
       enddo
     endif
 
-  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
-!any normalization required here, but the average will be a function of that, and there will be nor var
+  elseif(MCcases(icase)=='LPMC') then
+    if(flfluxplotall) then
+      do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
+        stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
+      enddo
+    endif
+    if(flfluxplotmat) then
+      do ibin=1,fluxnumcells
+        p1 = fluxmatnorm(ibin,1,1) / sum(fluxmatnorm(ibin,1,:))
+        p2 = 1.0d0 - p1
+        fluxmat1(ibin,1) = fluxmat1(ibin,1) / p1    !normalize part 2 for mat specific
+        fluxmat2(ibin,1) = fluxmat1(ibin,1) / p2    !normalize part 2 for mat specific
+        stocMC_fluxmat1(ibin,icase,1) = fluxmat1(ibin,1) !store mean 
+        stocMC_fluxmat2(ibin,icase,1) = fluxmat2(ibin,1) !store mean
+      enddo
+    endif
+
+  elseif(MCcases(icase)=='atmixMC') then
+    if(flfluxplotall) then
+      do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
+        stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
+      enddo
+    endif
+
   endif
 
   end subroutine stocMC_stats
