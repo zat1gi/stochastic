@@ -5,16 +5,16 @@
   0.5,0.5,       Scattering Ratios
   0.8,0.01,      Lambda path length vals
   1.0,           slab thickness
-  1000,100,         Number of realizations/how often to print
+  10,10,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
-  no,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   1,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  no,yes,no,no,no    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   100,            Number of particles to simulate on each realization
   100000,          Number of particles for LP or atomic mix calculations
 
@@ -84,9 +84,9 @@
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  plot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #get rid of me
-  whole,           "track" "point", type of flux binning, over whole track or a point on it 
+  track,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me
   100,           Number of cells collect and plot flux over
   100,           Number of cells to plot flux/ensemble mat type over #get rid of me!

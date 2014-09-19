@@ -91,6 +91,7 @@ CONTAINS
 !print *," starting particle: ",o
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
+print *,"matLength:",matLength,"matType:",matType,"i:",i
 
     do ! simulate one pathlength of a particle
 !print *
@@ -100,7 +101,7 @@ CONTAINS
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
 
-
+print *,"matLength:",matLength,"matType:",matType,"i:",i
       !calculate distance to boundary
       select case (MCcases(icase))
         case ("radMC")
@@ -731,7 +732,7 @@ CONTAINS
 
   !set value for 'i'
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
-    i=0
+    i=1
     do
       if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
       i = i+1
@@ -775,9 +776,10 @@ CONTAINS
   !This subroutine accepts arguments from its wrapper, then tallies flux contributions accordingly.
   !It can keep full tracklength tallies, or choose one bin in which to place the entire contribution.
   !Flux can be calculated for the tracklength w/ or w/o respect to which material the tallies are in.
-  use MCvars, only: mu, fluxall, fluxmat1, fluxmat2, fluxfaces, pltfluxtype
+  use MCvars, only: mu, fluxall, fluxmat1, fluxmat2, fluxfaces, pltfluxtype, fluxnumcells
   integer :: j, i, ibin
   real(8) :: minpos,maxpos,absmu,dx, length,point
+  character(7) :: flcontribtype
   character(12) :: flfluxtallytype
 
   absmu  = abs(mu)
@@ -789,19 +791,28 @@ CONTAINS
       point  = rang()*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
       ibin   = ceiling(point/dx)
+      if(ibin==0) ibin=1  !adjust if at ends
       fluxall(ibin,j) = fluxall(ibin,j) + length
     elseif( pltfluxtype=='track' ) then   !whole tracklength
       ibin = ceiling(minpos/dx)
-      fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first bin
+      if(ibin==0) ibin=1  !adjust if at ends
+
       do
+        call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+        select case (flcontribtype)
+          case ("neither")
+            fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !mid bins
+          case ("first")
+            fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first bin
+          case ("last")
+            fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin))   / absmu !last bin
+          case ("both")
+            fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !last bin
+        end select
+        if( flcontribtype=='last' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
-        if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
-          fluxall(ibin,j) = fluxall(ibin,j) + dx / absmu !mid bins
-        else
-          fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin)) / absmu !last bin
-          exit
-        endif
       enddo
+
     endif !point or track
   endif !mat irrespective
 
@@ -811,19 +822,28 @@ CONTAINS
       point  = rang()*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
       ibin   = ceiling(point/dx)
+      if(ibin==0) ibin=1  !adjust if at ends
       call MCfluxtallycontribute( j,ibin,i,length )
     elseif( pltfluxtype=='track' ) then   !whole tracklength
       ibin = ceiling(minpos/dx)
-      call MCfluxtallycontribute( j,ibin,i,(fluxfaces(ibin+1)-minpos)/absmu )   !first bin
+      if(ibin==0) ibin=1  !adjust if at ends
+
       do
+        call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+        select case (flcontribtype)
+          case ("neither")
+            call MCfluxtallycontribute( j,ibin,i,dx/absmu )
+          case ("first")
+            call MCfluxtallycontribute( j,ibin,i,(fluxfaces(ibin+1)-minpos)/absmu )
+          case ("last")
+            call MCfluxtallycontribute( j,ibin,i,(maxpos-fluxfaces(ibin))/absmu )
+          case ("both")
+            call MCfluxtallycontribute( j,ibin,i,(maxpos-minpos)/absmu )
+        end select
+        if( flcontribtype=='last' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
-        if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
-          call MCfluxtallycontribute( j,ibin,i,dx/absmu )                       !mid bins
-        else
-          call MCfluxtallycontribute( j,ibin,i,(maxpos-fluxfaces(ibin))/absmu ) !last bin
-          exit
-        endif
       enddo
+
     endif !point or track
   endif !mat respective
 
@@ -848,6 +868,29 @@ CONTAINS
 
 
 
+  subroutine MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+  use MCvars, only: fluxfaces
+  integer :: ibin
+  real(8) :: minpos, maxpos
+  character(7) :: flcontribtype
+  if( minpos<fluxfaces(ibin) ) then
+    if( maxpos>fluxfaces(ibin+1) ) then
+      flcontribtype = 'neither'
+    else
+      flcontribtype = 'last'
+    endif
+  else
+    if( maxpos>fluxfaces(ibin+1) ) then
+      flcontribtype = 'first'
+    else
+      flcontribtype = 'both'
+    endif
+  endif
+  end subroutine MCfluxtallysetflag
+
+
+
+
   subroutine stocMC_stats( icase,tnumRealz )
   !This subroutine calculates mean and standard deviation for leakage values over stochastic
   !space for each MC transport solver.
@@ -856,7 +899,7 @@ CONTAINS
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
                     MCcases, fluxnumcells, fluxall, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
-                    fluxmatnorm, fluxfaces, flfluxplotall, flfluxplotmat
+                    fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
   integer :: icase,ibin,tnumRealz,j
   real(8) :: dx,p1,p2
 
@@ -881,8 +924,10 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
 
 
   !flux stats
-  dx = fluxfaces(2) - fluxfaces(1)
-  fluxall(ibin,:) = fluxall(ibin,:) / dx / numRealz !normalize part 1
+  if(flfluxplot) then
+    dx = fluxfaces(2) - fluxfaces(1)
+    fluxall(ibin,:) = fluxall(ibin,:) / dx / numRealz !normalize part 1
+  endif
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if( flfluxplotall ) then
@@ -940,17 +985,131 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
   subroutine MCfluxPrint
   !This subroutine prints the results of MC transport methods to '.out' files
   !in order to be printed.  It also clears out previous data and plot files.
+  use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, numPosMCmeths, &
+                    fluxfaces, fluxnumcells, MCcases, MCcaseson, pltflux, pltmatflux
+  integer :: icase, ibin
 
-  !template
-  !660 format("#cell center,       ave flux,        flux dev")
-  !661 format(f15.7,f15.7,f15.7)
-  !open(unit=24, file="radWood_cellflux.txt")
-  !write(24,660)
-  !do i=1,pfnumcells
-  !  write(24,661) (fluxfaces(i+1)+fluxfaces(i))/2.0d0,Woodfave(i),sqrt(Woodfvar(i))
-  !enddo
-  !close(unit=24)
+  call system("rm plots/fluxplots/*.out")
 
+  370 format("#cell center,       ave flux,        flux dev")
+  371 format(f15.7,f15.7,f15.7)
+
+  372 format("#cell center,       ave mat1 flux,   flux mat1 dev,   ave mat2 flux,   flux mat2 dev")
+  373 format(f15.7,f15.7,f15.7,f15.7,f15.7)
+
+  374 format("#cell center,       ave flux")
+  375 format(f15.7,f15.7)
+
+  do icase=1,numPosMCmeths
+    if(MCcaseson(icase)==1) then
+      select case (MCcases(icase))
+        case ("radMC")
+          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+            open(unit=24, file="radMC_fluxall.out")
+            write(24,370)
+            do ibin=1,fluxnumcells
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+            open(unit=24, file="radMC_fluxmat.out")
+            write(24,372)
+            do ibin=1,fluxnumcells
+              write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
+                            stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+
+        case ("radWood")
+          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+            open(unit=24, file="radWood_fluxall.out")
+            write(24,370)
+            do ibin=1,fluxnumcells
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+            open(unit=24, file="radWood_fluxmat.out")
+            write(24,372)
+            do ibin=1,fluxnumcells
+              write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
+                            stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+
+        case ("KLWood")
+          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+            open(unit=24, file="KLWood_fluxall.out")
+            write(24,370)
+            do ibin=1,fluxnumcells
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+!This combination cannot currently be.
+!          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+!            open(unit=24, file="KLWood_fluxmat.out")
+!            write(24,372)
+!            do ibin=1,fluxnumcells
+!              write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+!                            stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
+!                            stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+!            enddo
+!            close(unit=24)
+!          endif
+
+        case ("LPMC")
+          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+            open(unit=24, file="LPMC_fluxall.out")
+            write(24,374)
+            do ibin=1,fluxnumcells
+              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1)
+            enddo
+            close(unit=24)
+          endif
+          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+            open(unit=24, file="LPMC_fluxmat.out")
+            write(24,374)
+            do ibin=1,fluxnumcells
+              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1)
+            enddo
+            close(unit=24)
+          endif
+
+        case ("atmixMC")
+          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+            open(unit=24, file="atmixMC_fluxall.out")
+            write(24,374)
+            do ibin=1,fluxnumcells
+              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1)
+            enddo
+            close(unit=24)
+          endif
+          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+            open(unit=24, file="atmixMC_fluxmat.out")
+            write(24,374)
+            do ibin=1,fluxnumcells
+              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1)
+            enddo
+            close(unit=24)
+          endif
+
+      end select
+    endif
+  enddo
 
   end subroutine MCfluxPrint
 
