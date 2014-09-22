@@ -1007,7 +1007,7 @@ print *,"flfluxplotall: ",flfluxplotall
   !This subroutine prints the results of MC transport methods to '.out' files
   !in order to be printed.  It also clears out previous data and plot files.
   use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, numPosMCmeths, &
-                    fluxfaces, fluxnumcells, MCcases, MCcaseson, pltflux, pltmatflux
+                    fluxfaces, fluxnumcells, MCcases, MCcaseson, pltflux, pltmatflux, flfluxplot
   integer :: icase, ibin
 
   call system("rm plots/fluxplots/*.out")
@@ -1022,7 +1022,7 @@ print *,"flfluxplotall: ",flfluxplotall
   375 format(f15.7,f15.7)
 
   do icase=1,numPosMCmeths
-    if(MCcaseson(icase)==1) then
+    if(flfluxplot) then
       select case (MCcases(icase))
         case ("radMC")
           if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
@@ -1076,17 +1076,15 @@ print *,"flfluxplotall: ",flfluxplotall
             enddo
             close(unit=24)
           endif
-!This combination cannot currently be.
-!          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-!            open(unit=24, file="KLWood_fluxmat.out")
-!            write(24,372)
-!            do ibin=1,fluxnumcells
-!              write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-!                            stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
-!                            stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
-!            enddo
-!            close(unit=24)
-!          endif
+          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+            open(unit=24, file="KLWood_fluxmat.out")
+            write(24,370)
+            do ibin=1,fluxnumcells
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
 
         case ("LPMC")
           if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
@@ -1131,6 +1129,8 @@ print *,"flfluxplotall: ",flfluxplotall
       end select
     endif
   enddo
+
+  call system("mv *.out plots/fluxplots")
 
   end subroutine MCfluxPrint
 
