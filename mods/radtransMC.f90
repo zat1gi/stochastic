@@ -989,6 +989,7 @@ print *,"begin flux stats, flfluxplot: ",flfluxplot
     endif
 
   elseif(MCcases(icase)=='atmixMC') then
+print *,"flfluxplotall: ",flfluxplotall
     if(flfluxplotall) then
       do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
         stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
@@ -1206,8 +1207,8 @@ print *,"begin flux stats, flfluxplot: ",flfluxplot
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
     case ("atmixMC")
-      !if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
-      flfluxplotall = .true.
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
+         pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
   end select
   if(flfluxplotall) then
     if(allocated(fluxall)) deallocate(fluxall)

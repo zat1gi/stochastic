@@ -453,7 +453,9 @@ print *,"pltflux(1): ",pltflux(1)
       fluxfaces(i) = (s/fluxnumcells) * (i-1)
     enddo
   endif
-  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' ) then !mat irrespective flux allocations
+  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &!mat irrespective flux allocations
+    (flfluxplot .and. atmixMC=='yes') ) then !atmixMC, respective stored here (actually irresective)
+                                                           
     allocate(stocMC_fluxall(fluxnumcells,numPosMCmeths,2))
     stocMC_fluxall = 0.0d0
   endif

@@ -83,7 +83,7 @@
   20,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #get rid of me
   track,           "track" "point", type of flux binning, over whole track or a point on it 
