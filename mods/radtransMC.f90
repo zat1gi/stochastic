@@ -91,7 +91,6 @@ CONTAINS
 !print *," starting particle: ",o
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
-print *,"1) matLength:",matLength,"matType:",matType,"i:",i
 
     do ! simulate one pathlength of a particle
 !print *
@@ -104,7 +103,6 @@ print *,"1) matLength:",matLength,"matType:",matType,"i:",i
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
 
-print *,"2) matLength:",matLength,"matType:",matType,"i:",i
       !calculate distance to boundary
       select case (MCcases(icase))
         case ("radMC")
@@ -174,7 +172,6 @@ print *,"2) matLength:",matLength,"matType:",matType,"i:",i
           select case (MCcases(icase))
             case ("radMC")
               call MCinc_pos( matLength(i) )
-print *,"i: ",i,"nummatSegs:",nummatSegs
               if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
 !if(i==nummatSegs+1) print *,"radMC tally transmit here"
               if(i==nummatSegs) flExit='exit'
@@ -391,13 +388,9 @@ print *,"i: ",i,"nummatSegs:",nummatSegs
       !increment material position
       if(MCcases(icase)=='radMC') then
         if(flEscapeDir=='transmit') i = i+1
-if(flEscapeDir=='transmit') print *,"I incremented transmission direction"
         if(flEscapeDir=='reflect')  i = i-1
-if(flEscapeDir=='reflect') print *,"I incremented reflection direction"
       endif
 
-print *,"flExit: ",flExit
-if(flExit=='exit') print *,"I am about to exit this do loop"
       if(flExit=='exit') exit
 !print *,"flExit      : ",flExit
 !print *,"fldist      : ",fldist
@@ -666,6 +659,10 @@ if(flExit=='exit') print *,"I am about to exit this do loop"
 
     !add contribution of 'sub-cell', which is the distance between faces of either kind
     fluxmatnorm(ibin,j,matType(i)) = fluxmatnorm(ibin,j,matType(i)) + nextboundary - lastboundary
+!print *,"fluxmatnorm(",ibin,",",j,",",matType(i),"):",fluxmatnorm(ibin,j,matType(i))
+
+    !test if over
+    if(ibin==fluxnumcells .and. i==matnumsegs) exit
 
     !update parameters
     if(flnextboundary=='fluxface') then
@@ -674,10 +671,10 @@ if(flExit=='exit') print *,"I am about to exit this do loop"
       i    = i    + 1
     endif
     fllastboundary = flnextboundary
+!print *,"i: ",i,"ibin: ",ibin,"flnextboundary: ",flnextboundary
 
-    !test if over
-    if(ibin==fluxnumcells .and. i==matnumsegs) exit
   enddo
+!print *,"size(matType): ",size(matType)
   end subroutine MCprecalc_fluxmatnorm
 
 
@@ -705,7 +702,6 @@ if(flExit=='exit') print *,"I am about to exit this do loop"
   elseif( pltfluxtype=='track' ) then   !whole tracklength
     ibin = ceiling(minpos/dx)
     if(ibin==0) ibin=1  !adjust if at ends
-
     do
       call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
       select case (flcontribtype)
@@ -939,7 +935,6 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
   endif
 
-print *,"begin flux stats, flfluxplot: ",flfluxplot
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
   if(flfluxplotall) fluxall = fluxall / dx / numRealz !normalize part 1
@@ -949,7 +944,7 @@ print *,"begin flux stats, flfluxplot: ",flfluxplot
   endif    
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
-print *,"flfluxplotall: ",flfluxplotall
+!print *,"flfluxplotall: ",flfluxplotall
     if( flfluxplotall ) then
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
@@ -959,8 +954,10 @@ print *,"flfluxplotall: ",flfluxplotall
     if( flfluxplotmat ) then
       do ibin=1,fluxnumcells
         do j=1,numRealz
+!print *,"fluxmatnorm(",ibin,",",j,",1-2)",fluxmatnorm(ibin,j,1),fluxmatnorm(ibin,j,2)
           p1 = fluxmatnorm(ibin,j,1) / sum(fluxmatnorm(ibin,j,:))
           p2 = 1.0d0 - p1
+!print *,"p1,p2: ",p1,p2
           fluxmat1(ibin,j) = fluxmat1(ibin,j) / p1    !normalize part 2 for mat specific
           fluxmat2(ibin,j) = fluxmat1(ibin,j) / p2    !normalize part 2 for mat specific
         enddo
@@ -990,7 +987,6 @@ print *,"flfluxplotall: ",flfluxplotall
     endif
 
   elseif(MCcases(icase)=='atmixMC') then
-print *,"flfluxplotall: ",flfluxplotall
     if(flfluxplotall) then
       do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
         stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
@@ -1011,7 +1007,7 @@ print *,"flfluxplotall: ",flfluxplotall
   integer :: icase, ibin
 
   call system("rm plots/fluxplots/*.out")
-
+print *,"removing here"
   370 format("#cell center,       ave flux,        flux dev")
   371 format(f15.7,f15.7,f15.7)
 
@@ -1022,7 +1018,7 @@ print *,"flfluxplotall: ",flfluxplotall
   375 format(f15.7,f15.7)
 
   do icase=1,numPosMCmeths
-    if(flfluxplot) then
+    if(MCcaseson(icase)==1 .and. flfluxplot) then
       select case (MCcases(icase))
         case ("radMC")
           if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
@@ -1226,7 +1222,6 @@ print *,"flfluxplotall: ",flfluxplotall
     if(allocated(fluxmatnorm)) deallocate(fluxmatnorm)
     allocate(fluxmatnorm(fluxnumcells,numRealz,2))
     fluxmatnorm = 0.0d0
-print *,"fluxmatnorm: ",fluxmatnorm
   endif    
 
   end subroutine MCallocate
