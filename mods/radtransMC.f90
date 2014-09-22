@@ -922,12 +922,14 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
   endif
 
-
+print *,"begin flux stats, flfluxplot: ",flfluxplot
   !flux stats
-  if(flfluxplot) then
-    dx = fluxfaces(2) - fluxfaces(1)
-    fluxall(ibin,:) = fluxall(ibin,:) / dx / numRealz !normalize part 1
-  endif
+  dx = fluxfaces(2) - fluxfaces(1)
+  if(flfluxplotall) fluxall = fluxall / dx / numRealz !normalize part 1
+  if(flfluxplotmat) then
+                    fluxmat1= fluxmat1/ dx / numRealz !normalize part 1
+                    fluxmat2= fluxmat2/ dx / numRealz !normalize part 1
+  endif    
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if( flfluxplotall ) then

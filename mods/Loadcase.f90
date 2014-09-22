@@ -443,6 +443,7 @@ CONTAINS
   flfluxplot = .false.  !flux variable allocations
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
       pltmatflux=='plot' .or. pltmatflux=='preview' ) flfluxplot = .true.
+print *,"flfluxplot: ",flfluxplot
   if(flfluxplot) then
     allocate(fluxfaces(fluxnumcells+1))
     fluxfaces = 0.0d0
