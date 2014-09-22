@@ -1019,6 +1019,8 @@ print *,"removing here"
   374 format("#cell center,       ave flux")
   375 format(f15.7,f15.7)
 
+  376 format("#cell center,       ave mat1 flux,   ave mat2 flux")
+
   do icase=1,numPosMCmeths
     if(MCcaseson(icase)==1 .and. flfluxplot) then
       select case (MCcases(icase))
@@ -1087,7 +1089,7 @@ print *,"removing here"
         case ("LPMC")
           if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
             open(unit=24, file="LPMC_fluxall.out")
-            write(24,374)
+            write(24,371)
             do ibin=1,fluxnumcells
               write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
                             stocMC_fluxall(ibin,icase,1)
@@ -1096,10 +1098,11 @@ print *,"removing here"
           endif
           if(pltmatflux=='plot' .or. pltmatflux=='preview') then
             open(unit=24, file="LPMC_fluxmat.out")
-            write(24,374)
+            write(24,376)
             do ibin=1,fluxnumcells
-              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1)
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxmat1(ibin,icase,1),&
+                            stocMC_fluxmat2(ibin,icase,1)
             enddo
             close(unit=24)
           endif
