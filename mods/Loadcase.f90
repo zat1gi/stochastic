@@ -454,8 +454,8 @@ print *,"pltflux(1): ",pltflux(1)
     enddo
   endif
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &!mat irrespective flux allocations
-    (flfluxplot .and. atmixMC=='yes') ) then !atmixMC, respective stored here (actually irresective)
-                                                           
+    (flfluxplot .and. (KLWood=='yes' .or. atmixMC=='yes')) ) then !KLWood, atmixMC, respective stored
+                                                                  !here (actually irresective)
     allocate(stocMC_fluxall(fluxnumcells,numPosMCmeths,2))
     stocMC_fluxall = 0.0d0
   endif

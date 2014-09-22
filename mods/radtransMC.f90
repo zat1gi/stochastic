@@ -949,6 +949,7 @@ print *,"begin flux stats, flfluxplot: ",flfluxplot
   endif    
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+print *,"flfluxplotall: ",flfluxplotall
     if( flfluxplotall ) then
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
@@ -1201,8 +1202,8 @@ print *,"flfluxplotall: ",flfluxplotall
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
     case ("KLWood")
-      !if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
-      flfluxplotall = .true.
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
+         pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
     case ("LPMC")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
