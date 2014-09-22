@@ -36,7 +36,7 @@
 
 
   !!--All Plotting Option
-  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+  default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
 
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
@@ -66,7 +66,7 @@
   967,1,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
-  preview,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of Eig/type combos to plot (up to 4)
   1,1            Which Eigenmode to plot/"1" for CoEffExp, "2" for CoEffAct
   3,1
@@ -83,8 +83,8 @@
   20,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  plot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #get rid of me
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me

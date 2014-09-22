@@ -924,7 +924,7 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
 
 print *,"begin flux stats, flfluxplot: ",flfluxplot
   !flux stats
-  dx = fluxfaces(2) - fluxfaces(1)
+  if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
   if(flfluxplotall) fluxall = fluxall / dx / numRealz !normalize part 1
   if(flfluxplotmat) then
                     fluxmat1= fluxmat1/ dx / numRealz !normalize part 1

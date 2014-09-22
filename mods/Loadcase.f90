@@ -162,6 +162,7 @@ CONTAINS
 
   read(2,*) dumchar    !Plotting flux
   read(2,*) pltflux(1),pltflux(2),pltflux(3),pltflux(4)
+print *,"pltflux(1): ",pltflux(1)
   read(2,*) pltmatflux
   read(2,*) plotmatdxs
   read(2,*) pltfluxtype
@@ -185,8 +186,9 @@ CONTAINS
     pltgenrealz(1) = pltallopt
     pltCo(1)       = pltallopt
     pltflux(1)     = pltallopt
+    pltmatflux     = pltallopt
   endif
-
+print *,"pltflux(1): ",pltflux(1)
   end subroutine readinputstoc
 
 
@@ -443,7 +445,6 @@ CONTAINS
   flfluxplot = .false.  !flux variable allocations
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
       pltmatflux=='plot' .or. pltmatflux=='preview' ) flfluxplot = .true.
-print *,"flfluxplot: ",flfluxplot
   if(flfluxplot) then
     allocate(fluxfaces(fluxnumcells+1))
     fluxfaces = 0.0d0
