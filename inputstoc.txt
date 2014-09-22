@@ -14,7 +14,7 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,yes,no,no,no    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,no,no,no,no    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   100,            Number of particles to simulate on each realization
   100000,          Number of particles for LP or atomic mix calculations
 

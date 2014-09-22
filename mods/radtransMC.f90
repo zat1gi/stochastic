@@ -91,17 +91,20 @@ CONTAINS
 !print *," starting particle: ",o
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
-print *,"matLength:",matLength,"matType:",matType,"i:",i
+print *,"1) matLength:",matLength,"matType:",matType,"i:",i
 
     do ! simulate one pathlength of a particle
 !print *
 !print *,"   starting pathlength"
-      flExit='clean'
+      fldist      = 'clean'
+      flIntType   = 'clean'
+      flEscapeDir = 'clean'
+      flExit      = 'clean'
 
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
 
-print *,"matLength:",matLength,"matType:",matType,"i:",i
+print *,"2) matLength:",matLength,"matType:",matType,"i:",i
       !calculate distance to boundary
       select case (MCcases(icase))
         case ("radMC")
@@ -142,7 +145,6 @@ print *,"matLength:",matLength,"matType:",matType,"i:",i
 
 
       !select distance limiter (add another later with LP)
-      fldist = 'clean'
       dist   = min(db,dc)
       fldist = merge('boundary ','collision',db<dc)
       if(MCcases(icase)=='LPMC') then
@@ -161,7 +163,6 @@ print *,"matLength:",matLength,"matType:",matType,"i:",i
 
       !if boundary chosen
       if(fldist=='boundary') then
-        flEscapeDir = 'clean'
         !set direction flag
         flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
 !print *,"mu: ",mu," flEscapeDir: ",flEscapeDir
@@ -173,9 +174,10 @@ print *,"matLength:",matLength,"matType:",matType,"i:",i
           select case (MCcases(icase))
             case ("radMC")
               call MCinc_pos( matLength(i) )
-              if(i+1==nummatSegs+1) transmit(j)=transmit(j) + 1.0d0
+print *,"i: ",i,"nummatSegs:",nummatSegs
+              if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
 !if(i==nummatSegs+1) print *,"radMC tally transmit here"
-              if(i+1==nummatSegs+1) flExit='exit'
+              if(i==nummatSegs) flExit='exit'
             case ("radWood")
               call MCinc_pos( s )
               transmit(j) = transmit(j) + 1.0d0
@@ -233,7 +235,6 @@ print *,"matLength:",matLength,"matType:",matType,"i:",i
 
       !if collision chosen
       if(fldist=='collision') then
-        flIntType = 'clean'
         !Advance position for all outcomes
         call MCinc_pos( position + dc*mu )
 
@@ -390,9 +391,13 @@ print *,"matLength:",matLength,"matType:",matType,"i:",i
       !increment material position
       if(MCcases(icase)=='radMC') then
         if(flEscapeDir=='transmit') i = i+1
+if(flEscapeDir=='transmit') print *,"I incremented transmission direction"
         if(flEscapeDir=='reflect')  i = i-1
+if(flEscapeDir=='reflect') print *,"I incremented reflection direction"
       endif
 
+print *,"flExit: ",flExit
+if(flExit=='exit') print *,"I am about to exit this do loop"
       if(flExit=='exit') exit
 !print *,"flExit      : ",flExit
 !print *,"fldist      : ",fldist
