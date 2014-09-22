@@ -9,12 +9,12 @@
   10,10,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
-  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   1,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,no,no,no,no    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   10,            Number of particles to simulate on each realization
   100,          Number of particles for LP or atomic mix calculations
 

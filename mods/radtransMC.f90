@@ -954,12 +954,14 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     if( flfluxplotmat ) then
       do ibin=1,fluxnumcells
         do j=1,numRealz
-!print *,"fluxmatnorm(",ibin,",",j,",1-2)",fluxmatnorm(ibin,j,1),fluxmatnorm(ibin,j,2)
+print *
+print *,"fluxmatnorm(",ibin,",",j,",1-2)",fluxmatnorm(ibin,j,1),fluxmatnorm(ibin,j,2)
           p1 = fluxmatnorm(ibin,j,1) / sum(fluxmatnorm(ibin,j,:))
           p2 = 1.0d0 - p1
-!print *,"p1,p2: ",p1,p2
-          fluxmat1(ibin,j) = fluxmat1(ibin,j) / p1    !normalize part 2 for mat specific
-          fluxmat2(ibin,j) = fluxmat1(ibin,j) / p2    !normalize part 2 for mat specific
+print *,"p1,p2: ",p1,p2
+          fluxmat1(ibin,j) = fluxmat1(ibin,j) * p1    !normalize part 2 for mat specific
+          fluxmat2(ibin,j) = fluxmat1(ibin,j) * p2    !normalize part 2 for mat specific
+print *,"fluxmat1:",fluxmat1(ibin,j),"fluxmat2:",fluxmat2(ibin,j)
         enddo
 
         call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
