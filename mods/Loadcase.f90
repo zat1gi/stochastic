@@ -208,7 +208,7 @@ print *,"pltflux(1): ",pltflux(1)
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
-                    pltfluxtype
+                    pltfluxtype, LPMC, atmixMC
   integer :: fpointorxi(2)
 
   integer :: i
@@ -281,7 +281,8 @@ print *,"pltflux(1): ",pltflux(1)
   endif
 
                               !Test plotting flux
-  if( pltflux(1)/='noplot' .AND. radMC=='no' .AND. radWood=='no' .AND. KLWood=='no' ) then
+  if( pltflux(1)/='noplot' .AND. radMC=='no' .AND. radWood=='no' .AND. KLWood=='no' &
+      .and. LPMC=='no' .and. atmixMC=='no' ) then
     print *,"--User attempting to plot flux when no transport calculations are made"
     flstopstatus = 'yes'
   endif

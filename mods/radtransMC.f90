@@ -693,27 +693,39 @@ if(flExit=='exit') print *,"I am about to exit this do loop"
                     pltfluxtype
   integer :: i, ibin
   real(8) :: minpos,maxpos,dx, point,length
+  character(7) :: flcontribtype
   character(8) :: flnextboundary,fllastboundary
 
   if( pltfluxtype=='point' ) then       !point selection
     point  = rang()*(maxpos-minpos) + minpos
     length = (maxpos-minpos)
     ibin   = ceiling(point/dx)
+    if(ibin==0) ibin=1  !adjust if at ends
     fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + length
   elseif( pltfluxtype=='track' ) then   !whole tracklength
     ibin = ceiling(minpos/dx)
-    fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + fluxfaces(ibin+1)-minpos
-                                                                              !first bin
+    if(ibin==0) ibin=1  !adjust if at ends
+
     do
+      call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+      select case (flcontribtype)
+        case ("neither")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                            dx                                !mid bins
+        case ("first")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                           (fluxfaces(ibin+1)-minpos)         !first bin
+        case ("last")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                           (maxpos-fluxfaces(ibin))           !last bin
+        case ("both")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                           (maxpos-minpos)                    !last bin
+      end select
+      if( flcontribtype=='last' .or. ibin==fluxnumcells ) exit
       ibin = ibin + 1
-      if(maxpos>=fluxfaces(ibin+1)) then !may get trouble at 's', but don't think so
-        fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + dx  !mid bins
-      else
-        fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + maxpos-fluxfaces(ibin)
-                                                                              !last bin
-        exit
-      endif
     enddo
+
   endif !point or track
 
   end subroutine MCLPcalc_fluxmatnorm
@@ -1212,6 +1224,7 @@ print *,"begin flux stats, flfluxplot: ",flfluxplot
     if(allocated(fluxmatnorm)) deallocate(fluxmatnorm)
     allocate(fluxmatnorm(fluxnumcells,numRealz,2))
     fluxmatnorm = 0.0d0
+print *,"fluxmatnorm: ",fluxmatnorm
   endif    
 
   end subroutine MCallocate
