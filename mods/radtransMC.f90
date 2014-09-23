@@ -1141,6 +1141,29 @@ print *,"removing here"
   subroutine MCfluxPlot
   !Builds gnus and plots with them.
 
+  !First part of file and title
+  call ("cat plots/fluxplots/gnubuilding/gen1.txt plots/fluxplots/gnubuilding/titleall.txt > plots/fluxplots/gnubuilding/tempold.txt")
+
+  !Add second general part
+  call ("cat plots/fluxplots/gnubuilding/tempold.txt plots/fluxplots/gnubuilding/gen2.txt > plots/fluxplots/gnubuilding/tempnew.txt")
+  call ("mv plots/fluxplots/gnubuilding/tempnew.txt plots/fluxplots/gnubuilding/tempold.txt")
+
+  !Add everything that is to be plotted (options)
+  call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/thingstoplot > plots/fluxplots/gnubuilding/tempnew.txt")
+  call ("mv plots/fluxplots/gnubuilding/tempnew.txt plots/fluxplots/gnubuilding/tempold.txt")
+
+  !Add third general part
+  call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/gen3.txt > plots/fluxplots/gnubuilding/tempnew.txt")
+  call ("mv plots/fluxplots/gnubuilding/tempnew.txt plots/fluxplots/gnubuilding/tempold.txt")
+
+  !Add either pause or print final line (options)
+  if( pltflux(1)=='preview' ) then
+    call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/preview.txt > plots/fluxplots/gnubuilding/tempnew.txt")
+  elseif( pltflux(1)=='plot' ) then
+    call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/pause.txt > plots/fluxplots/gnubuilding/tempnew.txt")
+  endif
+
+
   end subroutine MCfluxPlot
 
 
