@@ -62,7 +62,7 @@ program stochastic
     enddo
   endif
   call MCfluxPrint
-!  call MCfluxPlot
+  call MCfluxPlot
 
   !!print final reports
   call Acase_print

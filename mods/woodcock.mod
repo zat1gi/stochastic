@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/Woodcock.f90
-MD5:e0b8d8647b8655ac03d2c5ac92184a75 -- If you edit this, you'll get what you deserve.
+MD5:9b680115f09d7fccf300df3e6649c212 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -111,8 +111,8 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 106 0 (107) ()
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ())
 109 0 (110 111 112) () 0 () () () 0 0)
 113 'mcfluxplot' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (UNKNOWN 0 0 0 0
-UNKNOWN ()) 0 0 () () 0 () () () 0 0)
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
+0 () () 0 () () () 0 0)
 114 'mcfluxprint' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)

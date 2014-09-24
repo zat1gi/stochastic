@@ -1,0 +1,1 @@
+  "plots/fluxplots/radMC_fluxall.out" u 1:2:3 t "Markov Mix, TMC" with yerrorbars,\

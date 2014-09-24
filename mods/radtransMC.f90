@@ -1139,30 +1139,197 @@ print *,"removing here"
 
 
   subroutine MCfluxPlot
-  !Builds gnus and plots with them.
+  !Builds gnus and plots with them.  Copies gnubuilding tools to local temporary 'gnu' directory,
+  !which is deleted at the end.  Builds based on options like title type, plotting lines, and
+  !pause or preview.  Can perform three builds, one for material irrespective, one for each material
+  !of material respective.
+  use MCvars, only: pltflux, radMC, radWood, KLWood, LPMC, atmixMC, pltfluxtype, pltmatflux
 
-  !First part of file and title
-  call ("cat plots/fluxplots/gnubuilding/gen1.txt plots/fluxplots/gnubuilding/titleall.txt > plots/fluxplots/gnubuilding/tempold.txt")
+  !Clean from previous runs
+  call system("rm plots/fluxplots/*.ps plots/fluxplots/*.pdf plots/fluxplots/*.gnu")
 
-  !Add second general part
-  call ("cat plots/fluxplots/gnubuilding/tempold.txt plots/fluxplots/gnubuilding/gen2.txt > plots/fluxplots/gnubuilding/tempnew.txt")
-  call ("mv plots/fluxplots/gnubuilding/tempnew.txt plots/fluxplots/gnubuilding/tempold.txt")
+  !Bring building blocks near (shorter lines of code)
+  call system("cp -r plots/fluxplots/gnubuilding gnu")
 
-  !Add everything that is to be plotted (options)
-  call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/thingstoplot > plots/fluxplots/gnubuilding/tempnew.txt")
-  call ("mv plots/fluxplots/gnubuilding/tempnew.txt plots/fluxplots/gnubuilding/tempold.txt")
+  if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+    !First part of file and title
+    if(pltfluxtype=='track') then
+      call system("cat gnu/gen1.txt gnu/titlealltrack.txt > gnu/tempold.txt")
+    elseif(pltfluxtype=='point') then
+      call system("cat gnu/gen1.txt gnu/titleallpoint.txt > gnu/tempold.txt")
+    endif
 
-  !Add third general part
-  call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/gen3.txt > plots/fluxplots/gnubuilding/tempnew.txt")
-  call ("mv plots/fluxplots/gnubuilding/tempnew.txt plots/fluxplots/gnubuilding/tempold.txt")
+    !Add second general part
+    call system("cat gnu/tempold.txt gnu/gen2.txt > gnu/tempnew.txt")
+    call system("mv gnu/tempnew.txt gnu/tempold.txt")
 
-  !Add either pause or print final line (options)
-  if( pltflux(1)=='preview' ) then
-    call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/preview.txt > plots/fluxplots/gnubuilding/tempnew.txt")
-  elseif( pltflux(1)=='plot' ) then
-    call ("cat plots/fluxplots/gnubuilding/final plots/fluxplots/gnubuilding/pause.txt > plots/fluxplots/gnubuilding/tempnew.txt")
-  endif
+    !Add everything that is to be plotted (options)
+    if(radMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/radMCall.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(radWood=='yes') then
+      call system("cat gnu/tempold.txt gnu/radWoodall.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(KLWood=='yes') then
+      call system("cat gnu/tempold.txt gnu/KLWoodall.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(LPMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/LPMCall.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(atmixMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/atmixMCall.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
 
+    !Add third general part
+    call system("cat gnu/tempold.txt gnu/gen3.txt > gnu/tempnew.txt")
+    call system("mv gnu/tempnew.txt gnu/tempold.txt")
+
+    !Add either pause or print final line (options)
+    if( pltflux(1)=='preview' ) then
+      call system("cat gnu/tempold.txt gnu/preview.txt > gnu/tempnew.txt")
+    elseif( pltflux(1)=='plot' ) then
+      call system("cat gnu/tempold.txt gnu/plot.txt > gnu/tempnew.txt")
+    endif
+
+    !Update gnu to final name
+    call system("mv gnu/tempnew.txt gnu/fluxall.gnu")
+    !plot!
+    call system("gnuplot gnu/fluxall.gnu")
+
+    !Store and clean up
+    call system("mv flux.ps fluxall.ps")
+    call system("ps2pdf fluxall.ps")
+    call system("mv fluxall.ps fluxall.pdf gnu/fluxall.gnu plots/fluxplots/")
+    
+  endif !end pltflux(1)
+
+
+
+  if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+    !First part of file and title
+    if(pltfluxtype=='track') then
+      call system("cat gnu/gen1.txt gnu/titlemat1track.txt > gnu/tempold.txt")
+    elseif(pltfluxtype=='point') then
+      call system("cat gnu/gen1.txt gnu/titlemat1point.txt > gnu/tempold.txt")
+    endif
+
+    !Add second general part
+    call system("cat gnu/tempold.txt gnu/gen2.txt > gnu/tempnew.txt")
+    call system("mv gnu/tempnew.txt gnu/tempold.txt")
+
+    !Add everything that is to be plotted (options)
+    if(radMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/radMCmat1.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(radWood=='yes') then
+      call system("cat gnu/tempold.txt gnu/radWoodmat1.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(KLWood=='yes') then
+      call system("cat gnu/tempold.txt gnu/KLWoodmat1.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(LPMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/LPMCmat1.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(atmixMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/atmixMCmat1.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+
+    !Add third general part
+    call system("cat gnu/tempold.txt gnu/gen3.txt > gnu/tempnew.txt")
+    call system("mv gnu/tempnew.txt gnu/tempold.txt")
+
+    !Add either pause or print final line (options)
+    if( pltflux(1)=='preview' ) then
+      call system("cat gnu/tempold.txt gnu/preview.txt > gnu/tempnew.txt")
+    elseif( pltflux(1)=='plot' ) then
+      call system("cat gnu/tempold.txt gnu/plot.txt > gnu/tempnew.txt")
+    endif
+
+    !Update gnu to final name
+    call system("mv gnu/tempnew.txt gnu/fluxmat1.gnu")
+    !plot!
+    call system("gnuplot gnu/fluxmat1.gnu")
+
+    !Store and clean up
+    call system("mv flux.ps fluxmat1.ps")
+    call system("ps2pdf fluxmat1.ps")
+    call system("mv fluxmat1.ps fluxmat1.pdf gnu/fluxmat1.gnu plots/fluxplots/")
+    
+  endif !end pltmatflux for material 1
+
+
+
+  if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+    !First part of file and title
+    if(pltfluxtype=='track') then
+      call system("cat gnu/gen1.txt gnu/titlemat2track.txt > gnu/tempold.txt")
+    elseif(pltfluxtype=='point') then
+      call system("cat gnu/gen1.txt gnu/titlemat2point.txt > gnu/tempold.txt")
+    endif
+
+    !Add second general part
+    call system("cat gnu/tempold.txt gnu/gen2.txt > gnu/tempnew.txt")
+    call system("mv gnu/tempnew.txt gnu/tempold.txt")
+
+    !Add everything that is to be plotted (options)
+    if(radMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/radMCmat2.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(radWood=='yes') then
+      call system("cat gnu/tempold.txt gnu/radWoodmat2.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(KLWood=='yes') then
+      call system("cat gnu/tempold.txt gnu/KLWoodmat2.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(LPMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/LPMCmat2.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(atmixMC=='yes') then
+      call system("cat gnu/tempold.txt gnu/atmixMCmat2.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+
+    !Add third general part
+    call system("cat gnu/tempold.txt gnu/gen3.txt > gnu/tempnew.txt")
+    call system("mv gnu/tempnew.txt gnu/tempold.txt")
+
+    !Add either pause or print final line (options)
+    if( pltflux(1)=='preview' ) then
+      call system("cat gnu/tempold.txt gnu/preview.txt > gnu/tempnew.txt")
+    elseif( pltflux(1)=='plot' ) then
+      call system("cat gnu/tempold.txt gnu/plot.txt > gnu/tempnew.txt")
+    endif
+
+    !Update gnu to final name
+    call system("mv gnu/tempnew.txt gnu/fluxmat2.gnu")
+    !plot!
+    call system("gnuplot gnu/fluxmat2.gnu")
+
+    !Store and clean up
+    call system("mv flux.ps fluxmat2.ps")
+    call system("ps2pdf fluxmat2.ps")
+    call system("mv fluxmat2.ps fluxmat2.pdf gnu/fluxmat2.gnu plots/fluxplots/")
+    
+  endif !end pltmatflux for material 2
+
+
+
+  !Final clean up
+  call system("rm -r gnu")
 
   end subroutine MCfluxPlot
 

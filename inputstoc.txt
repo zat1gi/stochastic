@@ -14,7 +14,7 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,no,no,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   10,            Number of particles to simulate on each realization
   100,          Number of particles for LP or atomic mix calculations
 
@@ -83,7 +83,7 @@
   20,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   plot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #get rid of me
   track,           "track" "point", type of flux binning, over whole track or a point on it 

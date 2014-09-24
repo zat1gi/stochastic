@@ -1,1 +1,0 @@
-set title "Flux Over Domain Contained in Material 2"

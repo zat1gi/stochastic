@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/radtransMC.f90
-MD5:891d8d41a6143c4215a646a2798627d5 -- If you edit this, you'll get what you deserve.
+MD5:adef049483ae1fd2c10ee8028c2335dd -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -72,8 +72,8 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 68 0 (69) () 0
 DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 71 0 (72 73 74)
 () 0 () () () 0 0)
 75 'mcfluxplot' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (UNKNOWN 0 0 0 0 UNKNOWN ())
-0 0 () () 0 () () () 0 0)
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 ()
+() () 0 0)
 76 'mcfluxprint' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)

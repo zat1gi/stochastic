@@ -1,1 +1,0 @@
-set title "Flux Over Domain, Irrespective of Material"
