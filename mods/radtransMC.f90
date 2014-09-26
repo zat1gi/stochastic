@@ -739,7 +739,7 @@ CONTAINS
                     fluxfaces
   integer :: j, i, ibin, icase
   real(8) :: minpos, maxpos, dx
-
+!Debug notes: satisfied for everything here for radMC
   minpos = min(oldposition,position)
   maxpos = max(oldposition,position)
   dx     = fluxfaces(2)-fluxfaces(1)
@@ -755,6 +755,10 @@ CONTAINS
   else                                                                !send dummy var for 'i'
     i=1
   endif
+!print *,"matLength: ",matLength
+!print *,"i:",i
+!print *
+!print *
 
   !fluxtally irrespective of mat
   if(flfluxplotall) then
@@ -796,7 +800,7 @@ CONTAINS
   real(8) :: minpos,maxpos,absmu,dx, length,point
   character(7) :: flcontribtype
   character(12) :: flfluxtallytype
-!print *,"minpos/maxpos",minpos,maxpos
+
   absmu  = abs(mu)
   dx     = fluxfaces(2)-fluxfaces(1)
 
@@ -811,13 +815,16 @@ CONTAINS
     elseif( pltfluxtype=='track' ) then   !whole tracklength
       ibin = ceiling(minpos/dx)
       if(ibin==0) ibin=1  !adjust if at ends
-!print *,"ibin chosen:",ibin
+print *,"ibin chosen:",ibin
 print *
 print *
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)," min/maxpos:",minpos,maxpos
+print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
+print *,"min/maxpos: ",minpos,maxpos
 print *,"flcontribtype chosen: ",flcontribtype
+!Debug notes: satisfied to here radMC
+print *,"before fluxall(ibin,j):",fluxall(ibin,j),"   dx/absmu:",dx/absmu
         select case (flcontribtype)
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
@@ -828,6 +835,8 @@ print *,"flcontribtype chosen: ",flcontribtype
           case ("both")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !both in bin
         end select
+print *,"after fluxall(ibin,j):",fluxall(ibin,j)
+
         if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
       enddo
