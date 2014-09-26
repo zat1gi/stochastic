@@ -6,10 +6,10 @@
   subroutine radWood_binmaxes2( numArrSz ) !make simply '1' when other gone from Woodcock
   subroutine MCinc_pos( newposition )
   subroutine MCprecalc_fluxmatnorm( j )
-  subroutine MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
   subroutine MCfluxtallywrapper( j,icase )
   subroutine MCfluxtally( j,i,minpos,maxpos,flfluxtallytype )
   subroutine MCfluxtallycontribute( j,ibin,i,contribution )
+  subroutine MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
   subroutine MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
   subroutine stocMC_stats( icase,tnumRealz )
   subroutine MCfluxPrint

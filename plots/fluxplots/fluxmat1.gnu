@@ -5,7 +5,7 @@ set bars small
 
 
 
-set title "Flux Over Domain, Material 1, Whole Tracklength Binning"
+set title "Flux Over Domain, Material 1, Point on Tracklength Binning"
 set key left bottom
 set autoscale
 set logscale y
@@ -19,7 +19,6 @@ set xlabel "Position in Slab"
 plot \
   "plots/fluxplots/radMC_fluxmat.out" u 1:2 t "Markov Mix, TMC",\
   "plots/fluxplots/radWood_fluxmat.out" u 1:2 t "Markov Mix, WMC",\
-  "plots/fluxplots/LPMC_fluxmat.out" u 1:2 t "Levermore-Pomraning MC",\
 #Postscript info
 set size 1.0,0.6
 set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 11

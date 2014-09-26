@@ -571,7 +571,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
   real(8) :: pos,neg
 
-  call system("rm texts/Woodnegstats.out")
   open(unit=100,file="Woodnegstats.out")
 
   if(distneg=='no')  write(100,*) "--Negative smoothing stats, neg smoothing off--"

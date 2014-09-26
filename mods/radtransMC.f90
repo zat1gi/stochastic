@@ -376,12 +376,10 @@ CONTAINS
 
       !if(flIntType=='interfa') &        !interface change (LP)
       if(fldist=='interface') then
-!print *,"LPMC interface option chosen"
-!print *,"matType(1): ",matType(1)
         call MCinc_pos( position + di*mu )
         matType(1) = merge(1,2,matType(1)==2)
-!print *,"matType(1): ",matType(1)
       endif !endif fldist=='interface'
+
 !print *,"before wrapper, oldpos/pos",oldposition,position
       !tally flux
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
@@ -680,53 +678,6 @@ CONTAINS
 
 
 
-  subroutine MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
-  !This subroutine tallies material abundances in each flux cell for LPMC so that 
-  !the flux tallies can be normalized on a per material basis.  It is on the fly
-  !since LP calculates geometry on the fly.
-  !This routine is called from 'MCfluxtallywrapper' and highly resembles 'MCfluxtally',
-  !with the only notable difference being that distances are not divided by absu(mu)
-  use genRealzvars, only: matType
-  use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells, position, oldposition, &
-                    pltfluxtype
-  integer :: i, ibin
-  real(8) :: minpos,maxpos,dx, point,length
-  character(7) :: flcontribtype
-  character(8) :: flnextboundary,fllastboundary
-
-  if( pltfluxtype=='point' ) then       !point selection
-    point  = rang()*(maxpos-minpos) + minpos
-    length = (maxpos-minpos)
-    ibin   = ceiling(point/dx)
-    if(ibin==0) ibin=1  !adjust if at ends
-    fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + length
-  elseif( pltfluxtype=='track' ) then   !whole tracklength
-    ibin = ceiling(minpos/dx)
-    if(ibin==0) ibin=1  !adjust if at ends
-    do
-      call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-      select case (flcontribtype)
-        case ("neither")
-          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
-                                            dx                                !mid bins
-        case ("first")
-          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
-                                           (fluxfaces(ibin+1)-minpos)         !first bin
-        case ("last")
-          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
-                                           (maxpos-fluxfaces(ibin))           !last bin
-        case ("both")
-          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
-                                           (maxpos-minpos)                    !last bin
-      end select
-      if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
-      ibin = ibin + 1
-    enddo
-
-  endif !point or track
-
-  end subroutine MCLPcalc_fluxmatnorm
-
 
 
   subroutine MCfluxtallywrapper( j,icase )
@@ -740,20 +691,19 @@ CONTAINS
   integer :: j, i, ibin, icase
   real(8) :: minpos, maxpos, dx
 !Debug notes: satisfied for everything here for radMC
+
   minpos = min(oldposition,position)
   maxpos = max(oldposition,position)
   dx     = fluxfaces(2)-fluxfaces(1)
 !print *,"oldposition/position:",oldposition,position
 !print *,"minpox/maxpos:",minpos,maxpos
   !set value for 'i'
+  i=1
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
-    i=1
     do
       if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
       i = i+1
     enddo
-  else                                                                !send dummy var for 'i'
-    i=1
   endif
 !print *,"matLength: ",matLength
 !print *,"i:",i
@@ -814,29 +764,34 @@ CONTAINS
       if(ibin==0) ibin=1  !adjust if at ends
       fluxall(ibin,j) = fluxall(ibin,j) + length
     elseif( pltfluxtype=='track' ) then   !whole tracklength
-      ibin = ceiling(minpos/dx)
+      ibin   = ceiling(minpos/dx)
       if(ibin==0) ibin=1  !adjust if at ends
 !print *,"ibin chosen:",ibin
 !print *
 !print *
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-!print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
-!print *,"min/maxpos: ",minpos,maxpos
-!print *,"flcontribtype chosen: ",flcontribtype
+print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
+print *,"min/maxpos: ",minpos,maxpos
+print *,"flcontribtype chosen: ",flcontribtype
 !Debug notes: satisfied to here radMC
-!print *,"before fluxall(ibin,j):",fluxall(ibin,j),"   dx/absmu:",dx/absmu
+print *,"before fluxall(ibin,j):",fluxall(ibin,j)
         select case (flcontribtype)
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
+print *,"contribute: ",dx/absmu
           case ("first")
             fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first in bin
+print *,"contribute: ",(fluxfaces(ibin+1)-minpos)/absmu
           case ("last")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin))   / absmu !last in bin
+print *,"contribute: ",(maxpos-fluxfaces(ibin))/absmu
           case ("both")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !both in bin
+print *,"contribute: ",(maxpos-minpos)/absmu
         end select
-
+print *,"before fluxall(ibin,j):",fluxall(ibin,j)
+read *
         if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
       enddo
@@ -852,20 +807,20 @@ CONTAINS
       if(ibin==0) ibin=1  !adjust if at ends
       call MCfluxtallycontribute( j,ibin,i,length )
     elseif( pltfluxtype=='track' ) then   !whole tracklength
-      ibin = ceiling(minpos/dx)
+      ibin   = ceiling(minpos/dx)
       if(ibin==0) ibin=1  !adjust if at ends
 
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
         select case (flcontribtype)
           case ("neither")
-            call MCfluxtallycontribute( j,ibin,i,dx/absmu )
+            call MCfluxtallycontribute( j,ibin,i, dx                        / absmu )
           case ("first")
-            call MCfluxtallycontribute( j,ibin,i,(fluxfaces(ibin+1)-minpos)/absmu )
+            call MCfluxtallycontribute( j,ibin,i,(fluxfaces(ibin+1)-minpos) / absmu )
           case ("last")
-            call MCfluxtallycontribute( j,ibin,i,(maxpos-fluxfaces(ibin))/absmu )
+            call MCfluxtallycontribute( j,ibin,i,(maxpos-fluxfaces(ibin))   / absmu )
           case ("both")
-            call MCfluxtallycontribute( j,ibin,i,(maxpos-minpos)/absmu )
+            call MCfluxtallycontribute( j,ibin,i,(maxpos-minpos)            / absmu )
         end select
         if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
@@ -892,6 +847,59 @@ CONTAINS
     fluxmat2(ibin,j) = fluxmat2(ibin,j) + contribution
   endif
   end subroutine MCfluxtallycontribute
+
+
+
+
+  subroutine MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
+  !This subroutine tallies material abundances in each flux cell for LPMC so that 
+  !the flux tallies can be normalized on a per material basis.  It is on the fly
+  !since LP calculates geometry on the fly.
+  !This routine is called from 'MCfluxtallywrapper' and highly resembles 'MCfluxtally',
+  !with the only notable difference being that distances are not divided by absu(mu)
+  use genRealzvars, only: matType
+  use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells, position, &
+                    pltfluxtype
+  integer :: i, ibin
+  real(8) :: minpos,maxpos,dx, point,length
+  character(7) :: flcontribtype
+  character(8) :: flnextboundary,fllastboundary
+
+  if( pltfluxtype=='point' ) then       !point selection
+    point  = rang()*(maxpos-minpos) + minpos
+    length = (maxpos-minpos)
+    ibin   = ceiling(point/dx)
+    if(ibin==0) ibin=1  !adjust if at ends
+    fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + length
+  elseif( pltfluxtype=='track' ) then   !whole tracklength
+    ibin = ceiling(minpos/dx)
+    if(ibin==0) ibin=1  !adjust if at ends
+    do
+      call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+      select case (flcontribtype)
+        case ("neither")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                            dx                                !mid bins
+        case ("first")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                           (fluxfaces(ibin+1)-minpos)         !first bin
+        case ("last")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                           (maxpos-fluxfaces(ibin))           !last bin
+        case ("both")
+          fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
+                                           (maxpos-minpos)                    !last bin
+      end select
+      if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
+      ibin = ibin + 1
+    enddo
+
+  endif !point or track
+
+  end subroutine MCLPcalc_fluxmatnorm
+
+
+
 
 
 
@@ -2219,8 +2227,6 @@ enddo
                     stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
                     numPosMCmeths, LPMC, atmixMC
   integer :: icase
-
-  call system("rm texts/MCleakage.out")
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")

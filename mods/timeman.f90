@@ -154,8 +154,6 @@ CONTAINS
   real(8) :: t2,othertime,otherpercent
   real(8),allocatable :: pertime(:)
 
-  call system("rm texts/timereport.out")
-
   open(unit=100,file="timereport.out")
 
   call calc_time( t1,t2,runtime )
