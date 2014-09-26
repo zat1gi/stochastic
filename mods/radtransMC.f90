@@ -171,7 +171,8 @@ CONTAINS
         if(flEscapeDir=='transmit') then   !transmit
           select case (MCcases(icase))
             case ("radMC")
-              call MCinc_pos( matLength(i) )
+              call MCinc_pos( matLength(i+1) )
+!print *,"oldpos/pos",oldposition,position
               if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
 !if(i==nummatSegs+1) print *,"radMC tally transmit here"
               if(i==nummatSegs) flExit='exit'
@@ -381,7 +382,7 @@ CONTAINS
         matType(1) = merge(1,2,matType(1)==2)
 !print *,"matType(1): ",matType(1)
       endif !endif fldist=='interface'
-
+!print *,"before wrapper, oldpos/pos",oldposition,position
       !tally flux
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
 
@@ -718,7 +719,7 @@ CONTAINS
           fluxmatnorm(ibin,1,matType(1)) = fluxmatnorm(ibin,1,matType(1)) + &
                                            (maxpos-minpos)                    !last bin
       end select
-      if( flcontribtype=='last' .or. ibin==fluxnumcells ) exit
+      if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
       ibin = ibin + 1
     enddo
 
@@ -742,7 +743,8 @@ CONTAINS
   minpos = min(oldposition,position)
   maxpos = max(oldposition,position)
   dx     = fluxfaces(2)-fluxfaces(1)
-
+!print *,"oldposition/position:",oldposition,position
+!print *,"minpox/maxpos:",minpos,maxpos
   !set value for 'i'
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
     i=1
@@ -794,7 +796,7 @@ CONTAINS
   real(8) :: minpos,maxpos,absmu,dx, length,point
   character(7) :: flcontribtype
   character(12) :: flfluxtallytype
-
+!print *,"minpos/maxpos",minpos,maxpos
   absmu  = abs(mu)
   dx     = fluxfaces(2)-fluxfaces(1)
 
@@ -809,23 +811,27 @@ CONTAINS
     elseif( pltfluxtype=='track' ) then   !whole tracklength
       ibin = ceiling(minpos/dx)
       if(ibin==0) ibin=1  !adjust if at ends
-
+!print *,"ibin chosen:",ibin
+print *
+print *
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)," min/maxpos:",minpos,maxpos
+print *,"flcontribtype chosen: ",flcontribtype
         select case (flcontribtype)
           case ("neither")
-            fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !mid bins
+            fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
           case ("first")
-            fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first bin
+            fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first in bin
           case ("last")
-            fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin))   / absmu !last bin
+            fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin))   / absmu !last in bin
           case ("both")
-            fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !last bin
+            fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !both in bin
         end select
-        if( flcontribtype=='last' .or. ibin==fluxnumcells ) exit
+        if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
       enddo
-
+!stop
     endif !point or track
   endif !mat irrespective
 
@@ -853,7 +859,7 @@ CONTAINS
           case ("both")
             call MCfluxtallycontribute( j,ibin,i,(maxpos-minpos)/absmu )
         end select
-        if( flcontribtype=='last' .or. ibin==fluxnumcells ) exit
+        if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
       enddo
 
@@ -882,6 +888,11 @@ CONTAINS
 
 
   subroutine MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
+  !This subroutine sets what type of flux contribution should be tallied.
+  !The word 'first' means the first end length of the track considered is in this cell.
+  !'last means the second, or last, end of the track length is in the cell.
+  !'neither' means both ends of the tracklength are not in this cell.
+  !'both' means both ends of the tracklength are in the cell.
   use MCvars, only: fluxfaces
   integer :: ibin
   real(8) :: minpos, maxpos
@@ -906,7 +917,8 @@ CONTAINS
 
   subroutine stocMC_stats( icase,tnumRealz )
   !This subroutine calculates mean and standard deviation for leakage values over stochastic
-  !space for each MC transport solver.
+  !space for each MC transport solver.  It also calculates ensemble averaged flux values in
+  !each cell for material irrespective and material respective flux tallies.
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
@@ -935,13 +947,29 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
   endif
 
+
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
-  if(flfluxplotall) fluxall = fluxall / dx / numRealz !normalize part 1
-  if(flfluxplotmat) then
-                    fluxmat1= fluxmat1/ dx / numRealz !normalize part 1
-                    fluxmat2= fluxmat2/ dx / numRealz !normalize part 1
-  endif    
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+    if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
+    if(flfluxplotmat) then
+                      fluxmat1= fluxmat1/ dx / numParts !normalize part 1
+                      fluxmat2= fluxmat2/ dx / numParts !normalize part 1
+    endif    
+  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+    if(flfluxplotall) fluxall = fluxall / dx / LPamnumParts !normalize part 1
+    if(flfluxplotmat) then
+                      fluxmat1= fluxmat1/ dx / LPamnumParts !normalize part 1
+                      fluxmat2= fluxmat2/ dx / LPamnumParts !normalize part 1
+    endif    
+  endif
+
+do ibin=1,fluxnumcells
+  do j=1,numRealz
+    print *,"fluxall(ibin=",ibin,",j=",j,"):",fluxall(ibin,j)
+  enddo
+enddo
+!stop
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
 !print *,"flfluxplotall: ",flfluxplotall
@@ -954,20 +982,22 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     if( flfluxplotmat ) then
       do ibin=1,fluxnumcells
         do j=1,numRealz
-print *
-print *,"fluxmatnorm(",ibin,",",j,",1-2)",fluxmatnorm(ibin,j,1),fluxmatnorm(ibin,j,2)
+!print *
+!print *,"fluxmatnorm(",ibin,",",j,",1-2)",fluxmatnorm(ibin,j,1),fluxmatnorm(ibin,j,2)
           p1 = fluxmatnorm(ibin,j,1) / sum(fluxmatnorm(ibin,j,:))
           p2 = 1.0d0 - p1
-print *,"p1,p2: ",p1,p2
+!print *,"p1,p2: ",p1,p2
           fluxmat1(ibin,j) = fluxmat1(ibin,j) * p1    !normalize part 2 for mat specific
           fluxmat2(ibin,j) = fluxmat1(ibin,j) * p2    !normalize part 2 for mat specific
-print *,"fluxmat1:",fluxmat1(ibin,j),"fluxmat2:",fluxmat2(ibin,j)
+!print *,"fluxmat1:",fluxmat1(ibin,j),"fluxmat2:",fluxmat2(ibin,j)
         enddo
 
         call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
                   stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )
         call mean_and_var_s( fluxmat2(ibin,:),numRealz, &
                   stocMC_fluxmat2(ibin,icase,1),stocMC_fluxmat2(ibin,icase,2) )
+ 
+
       enddo
     endif
 
@@ -1009,7 +1039,6 @@ print *,"fluxmat1:",fluxmat1(ibin,j),"fluxmat2:",fluxmat2(ibin,j)
   integer :: icase, ibin
 
   call system("rm plots/fluxplots/*.out")
-print *,"removing here"
   370 format("#cell center,       ave flux,        flux dev")
   371 format(f15.7,f15.7,f15.7)
 
@@ -1420,6 +1449,11 @@ print *,"removing here"
   endif    
 
   end subroutine MCallocate
+
+
+
+
+
 
 
 

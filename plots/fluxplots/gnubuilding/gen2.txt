@@ -1,5 +1,6 @@
 set key left
 set autoscale
+set logscale y
 
 #Label axes
 set ylabel "Flux"
