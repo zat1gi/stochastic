@@ -672,7 +672,7 @@ CONTAINS
       i    = i    + 1
     endif
     fllastboundary = flnextboundary
-!print *,"i: ",i,"ibin: ",ibin,"flnextboundary: ",flnextboundary
+!print *,"flnextboundary: ",flnextboundary
 
   enddo
 !print *,"size(matType): ",size(matType)
@@ -994,6 +994,7 @@ CONTAINS
       do ibin=1,fluxnumcells
         p1 = sum(fluxmatnorm(ibin,:,1)) / sum(fluxmatnorm(ibin,:,:))
         p2 = 1.0d0 - p1
+print *,"p1:",p1,"  p2:",p2
         fluxmat1(ibin,:) = fluxmat1(ibin,:) / p1
         fluxmat2(ibin,:) = fluxmat2(ibin,:) / p2
 !        do j=1,numRealz

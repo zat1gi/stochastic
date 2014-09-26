@@ -522,6 +522,11 @@ CONTAINS
 
 
 
+  subroutine clearreports
+  call system("rm texts/*.out")
+  end subroutine clearreports
+
+
 
   subroutine finalreport
   call system("rm texts/finalreport.out")

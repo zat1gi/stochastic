@@ -65,8 +65,9 @@ program stochastic
   call MCfluxPlot
 
   !!print final reports
+  call clearreports
   call Acase_print
-  if((radWood=='yes' .or. KLWood=='yes') .and. allowneg=='yes') call Woodnegstats
+  if(KLWood=='yes' .and. allowneg=='yes') call Woodnegstats
   if(sum(MCcaseson)/=0) call MCprintstats
   call timereport
   call finalreport

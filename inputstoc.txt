@@ -1,6 +1,6 @@
-  22211,         Advance random see how far?
+  211111,         Advance random see how far?
   !--- Geometry ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
+  9.1,           Adamscase option, if==0, then user input for next three parameters
   1.89,1.9        Sigma cross section vals
   0.99,0.99,       Scattering Ratios
   0.8,0.01,      Lambda path length vals
@@ -14,7 +14,7 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,yes,no,yes,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   100,            Number of particles to simulate on each realization
   100000,          Number of particles for LP or atomic mix calculations
 
@@ -29,7 +29,7 @@
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
+  no,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   remove,         Choose to 'remove' old results and use new, or 'add' to existing results
   
