@@ -800,6 +800,7 @@ CONTAINS
   real(8) :: minpos,maxpos,absmu,dx, length,point
   character(7) :: flcontribtype
   character(12) :: flfluxtallytype
+!Debug notes: satisfied here radMC
 
   absmu  = abs(mu)
   dx     = fluxfaces(2)-fluxfaces(1)
@@ -815,16 +816,16 @@ CONTAINS
     elseif( pltfluxtype=='track' ) then   !whole tracklength
       ibin = ceiling(minpos/dx)
       if(ibin==0) ibin=1  !adjust if at ends
-print *,"ibin chosen:",ibin
-print *
-print *
+!print *,"ibin chosen:",ibin
+!print *
+!print *
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
-print *,"min/maxpos: ",minpos,maxpos
-print *,"flcontribtype chosen: ",flcontribtype
+!print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
+!print *,"min/maxpos: ",minpos,maxpos
+!print *,"flcontribtype chosen: ",flcontribtype
 !Debug notes: satisfied to here radMC
-print *,"before fluxall(ibin,j):",fluxall(ibin,j),"   dx/absmu:",dx/absmu
+!print *,"before fluxall(ibin,j):",fluxall(ibin,j),"   dx/absmu:",dx/absmu
         select case (flcontribtype)
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
@@ -835,12 +836,10 @@ print *,"before fluxall(ibin,j):",fluxall(ibin,j),"   dx/absmu:",dx/absmu
           case ("both")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !both in bin
         end select
-print *,"after fluxall(ibin,j):",fluxall(ibin,j)
 
         if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
       enddo
-!stop
     endif !point or track
   endif !mat irrespective
 
@@ -939,10 +938,10 @@ print *,"after fluxall(ibin,j):",fluxall(ibin,j)
 
   !leakage/absorption stats
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
-print *,"reflect         : ",sum(reflect)
-print *,"transmit        : ",sum(transmit)
-print *,"absorb          : ",sum(absorb)
-print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
+!print *,"reflect         : ",sum(reflect)
+!print *,"transmit        : ",sum(transmit)
+!print *,"absorb          : ",sum(absorb)
+!print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
@@ -959,6 +958,8 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
 
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
+!print *,"dx: ",dx,"numParts: ",numParts
+!print *,"fluxall before normalize",fluxall
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
     if(flfluxplotmat) then
@@ -972,12 +973,13 @@ print *,"conservation test: ",sum(reflect)+sum(transmit)+sum(absorb)
                       fluxmat2= fluxmat2/ dx / LPamnumParts !normalize part 1
     endif    
   endif
-
-do ibin=1,fluxnumcells
-  do j=1,numRealz
-    print *,"fluxall(ibin=",ibin,",j=",j,"):",fluxall(ibin,j)
-  enddo
-enddo
+!print *,"fluxall after  normalize",fluxall
+!Debug notes, normalization looks good
+!do ibin=1,fluxnumcells
+!  do j=1,numRealz
+!    print *,"fluxall(ibin=",ibin,",j=",j,"):",fluxall(ibin,j)
+!  enddo
+!enddo
 !stop
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
@@ -990,16 +992,20 @@ enddo
     endif
     if( flfluxplotmat ) then
       do ibin=1,fluxnumcells
-        do j=1,numRealz
+        p1 = sum(fluxmatnorm(ibin,:,1)) / sum(fluxmatnorm(ibin,:,:))
+        p2 = 1.0d0 - p1
+        fluxmat1(ibin,:) = fluxmat1(ibin,:) / p1
+        fluxmat2(ibin,:) = fluxmat2(ibin,:) / p2
+!        do j=1,numRealz
 !print *
 !print *,"fluxmatnorm(",ibin,",",j,",1-2)",fluxmatnorm(ibin,j,1),fluxmatnorm(ibin,j,2)
-          p1 = fluxmatnorm(ibin,j,1) / sum(fluxmatnorm(ibin,j,:))
-          p2 = 1.0d0 - p1
+!          p1 = fluxmatnorm(ibin,j,1) / sum(fluxmatnorm(ibin,j,:))
+!          p2 = 1.0d0 - p1
 !print *,"p1,p2: ",p1,p2
-          fluxmat1(ibin,j) = fluxmat1(ibin,j) * p1    !normalize part 2 for mat specific
-          fluxmat2(ibin,j) = fluxmat1(ibin,j) * p2    !normalize part 2 for mat specific
+!          fluxmat1(ibin,j) = fluxmat1(ibin,j) * p1    !normalize part 2 for mat specific
+!          fluxmat2(ibin,j) = fluxmat1(ibin,j) * p2    !normalize part 2 for mat specific
 !print *,"fluxmat1:",fluxmat1(ibin,j),"fluxmat2:",fluxmat2(ibin,j)
-        enddo
+!        enddo
 
         call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
                   stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )

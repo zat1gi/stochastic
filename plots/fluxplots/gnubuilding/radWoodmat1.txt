@@ -1,1 +1,1 @@
-  "plots/fluxplots/radWood_fluxmat.out" u 1:2:3 t "Markov Mix, WMC" with yerrorbars,\
+  "plots/fluxplots/radWood_fluxmat.out" u 1:2 t "Markov Mix, WMC",\

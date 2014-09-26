@@ -1,4 +1,4 @@
-set key left
+set key left bottom
 set autoscale
 set logscale y
 

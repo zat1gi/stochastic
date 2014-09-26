@@ -1,21 +1,21 @@
-  210,         Advance random see how far?
+  22211,         Advance random see how far?
   !--- Geometry ---!
-  1.2,           Adamscase option, if==0, then user input for next three parameters
-  0.9,0.9        Sigma cross section vals
-  0.0,0.0,       Scattering Ratios
+  0,           Adamscase option, if==0, then user input for next three parameters
+  1.89,1.9        Sigma cross section vals
+  0.99,0.99,       Scattering Ratios
   0.8,0.01,      Lambda path length vals
   1.0,           slab thickness
-  1000,10,         Number of realizations/how often to print
-  10,10,         KLr Number of realizations/how often to print
+  1000,100,         Number of realizations/how often to print
+  1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
-  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   1,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,no,no,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
-  1000,            Number of particles to simulate on each realization
+  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  100,            Number of particles to simulate on each realization
   100000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
@@ -41,9 +41,9 @@
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
   3,             Number of realizations to plot (up to 3)
-  4,             Which realizations to plot
-  5,
-  6,
+  868,             Which realizations to plot
+  606,
+  587,
 
 
   !!--Plotting Eigenfunctions                [in sub KL_eigenvalue]
@@ -84,7 +84,7 @@
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  preview,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #get rid of me
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me

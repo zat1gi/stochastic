@@ -1,5 +1,5 @@
 set autoscale
-set yrange[  -1.69697:  10.88889]
+set yrange[  -0.37228:   2.37228]
 
 #Main graph frame
 set ytics border
@@ -22,3 +22,4 @@ set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 11
 set output './genRealzplot.ps'
 #Screen output
 replot
+pause -1
