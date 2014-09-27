@@ -74,8 +74,6 @@ CONTAINS
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot
   use genRealz, only: genReal
 
-  use Woodcock, only: radWood_actsig, radWood_actscatrat, KLrxi_point
-                      !above only here because of politics, rid when you finish merging!
   integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
 
   !local variables
@@ -94,7 +92,7 @@ CONTAINS
 
     do ! simulate one pathlength of a particle
 !print *
-!print *,"   starting pathlength"
+!print *,"   startingpathlength"
       fldist      = 'clean'
       flIntType   = 'clean'
       flEscapeDir = 'clean'
@@ -241,14 +239,14 @@ CONTAINS
           case ("radMC")
             flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
           case ("radWood")
-            woodrat = radWood_actsig(position,sig)/ceilsig
+            woodrat = radWood_actsig2(position,sig)/ceilsig
             if(woodrat>1.0d0) then
               !print *,"j: ",j,"  woodrat: ",woodrat
               stop 'Higher sig samples in radWood than ceiling, exiting program'
             endif
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              if(radWood_actscatrat(position,scatrat)>rang()) then
+              if(radWood_actscatrat2(position,scatrat)>rang()) then
                 flIntType = 'scatter'
               else
                 flIntType = 'absorb'
@@ -256,7 +254,7 @@ CONTAINS
             endif
           case ("KLWood")
             !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point(j,position)/ceilsig
+            woodrat = KLrxi_point2(j,position)/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               !print *,"j: ",j,"  woodrat: ",woodrat
@@ -383,6 +381,7 @@ CONTAINS
 !print *,"before wrapper, oldpos/pos",oldposition,position
       !tally flux
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
+!      if(flfluxplot) print *,"call MCfluxtallywrapper"
 
       !increment material position
       if(MCcases(icase)=='radMC') then
@@ -463,8 +462,6 @@ CONTAINS
   use genRealzvars, only: s, lamc, nummatSegs, sig
   use KLvars, only: numEigs
   use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
-
-  use Woodcock, only: KLWood_binmaxes
   integer :: j,icase
 
   integer :: i
@@ -516,7 +513,6 @@ CONTAINS
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave
   use MCvars, only: binmaxind, binmaxes, nceilbin
 
-  use Woodcock, only: KLrxi_point !rid of when done with Woodcock version
   integer :: j
 
   integer :: i,k
@@ -531,7 +527,7 @@ CONTAINS
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,xpos)
+      xsig= KLrxi_point2(j,xpos)
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -540,9 +536,9 @@ CONTAINS
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,xpos1)
+      xsig1= KLrxi_point2(j,xpos1)
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,xpos2)
+      xsig2= KLrxi_point2(j,xpos2)
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1
@@ -597,6 +593,25 @@ CONTAINS
 
 
 
+  function radWood_actsig2(position,sig)
+  use genRealzvars, only: matType, matLength
+  real(8) :: position,sig(2),radWood_actsig2
+
+  integer :: i
+
+  i=1
+  do
+    if(matLength(i)<=position .AND. matLength(i+1)>position) then
+      radWood_actsig2=sig(matType(i))
+      exit
+    endif 
+    i=i+1
+  enddo
+
+  end function radWood_actsig2
+
+
+
 
   function ceilsigfunc2(position,binmax) ! make '1' when done with Woodcock version
   use MCvars, only: nceilbin, binmaxind
@@ -612,6 +627,47 @@ CONTAINS
   enddo
 !print *,"ceilsigfunc2 spot 2"
   end function ceilsigfunc2
+
+
+
+  function radWood_actscatrat2(position,scatrat)
+  use genRealzvars, only: matType, matLength
+  real(8) :: position,scatrat(2),radWood_actscatrat2
+
+  integer :: i
+
+  i=1
+  do
+    if(matLength(i)<=position .AND. matLength(i+1)>position) then
+      radWood_actscatrat2=scatrat(matType(i))
+      exit
+    endif
+    i=i+1
+  enddo
+
+  end function radWood_actscatrat2
+
+
+
+  function KLrxi_point2(j,xpos)
+  ! Evaluates KL reconstructed realizations at a given point
+  use genRealzvars, only: lamc
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
+  use KLmeanadjust, only: meanadjust, Eigfunc
+  integer :: j
+  real(8) :: xpos
+  real(8) :: KLrxi_point2
+
+  integer :: curEig
+  real(8) :: Eigfterm
+
+  KLrxi_point2 = sigave + meanadjust
+  do curEig=1,numEigs
+    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
+    KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+  enddo
+
+  end function KLrxi_point2
 
 
 
@@ -698,7 +754,7 @@ CONTAINS
 !print *,"oldposition/position:",oldposition,position
 !print *,"minpox/maxpos:",minpos,maxpos
   !set value for 'i'
-  i=1
+  i=1   !can probably do this part with a ceiling function, once debugged look at again
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
     do
       if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
@@ -771,27 +827,28 @@ CONTAINS
 !print *
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
-print *,"min/maxpos: ",minpos,maxpos
-print *,"flcontribtype chosen: ",flcontribtype
+!print *,"bin bounds: ",fluxfaces(ibin),fluxfaces(ibin+1)
+!print *,"min/maxpos: ",minpos,maxpos
+!print *,"flcontribtype chosen: ",flcontribtype
 !Debug notes: satisfied to here radMC
-print *,"before fluxall(ibin,j):",fluxall(ibin,j)
+!print *,"before fluxall(:,j):",fluxall(:,j)
+!#flag
         select case (flcontribtype)
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
-print *,"contribute: ",dx/absmu
+!print *,"contribute/absmu: ",dx/absmu,absmu
           case ("first")
             fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first in bin
-print *,"contribute: ",(fluxfaces(ibin+1)-minpos)/absmu
+!print *,"contribute/absmu: ",(fluxfaces(ibin+1)-minpos)/absmu,absmu
           case ("last")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin))   / absmu !last in bin
-print *,"contribute: ",(maxpos-fluxfaces(ibin))/absmu
+!print *,"contribute/absmu: ",(maxpos-fluxfaces(ibin))/absmu,absmu
           case ("both")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !both in bin
-print *,"contribute: ",(maxpos-minpos)/absmu
+!print *,"contribute/absmu: ",(maxpos-minpos)/absmu,absmu
         end select
-print *,"before fluxall(ibin,j):",fluxall(ibin,j)
-read *
+!print *,"before fluxall(:,j):",fluxall(:,j)
+!read *
         if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
       enddo
@@ -968,6 +1025,7 @@ read *
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
 !print *,"dx: ",dx,"numParts: ",numParts
 !print *,"fluxall before normalize",fluxall
+!#flag
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
     if(flfluxplotmat) then
@@ -1085,6 +1143,7 @@ print *,"p1:",p1,"  p2:",p2
               write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
                             stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
             enddo
+print *,"stocMC_fluxall(:,1,1): ",stocMC_fluxall(:,1,1)
             close(unit=24)
           endif
           if(pltmatflux=='plot' .or. pltmatflux=='preview') then

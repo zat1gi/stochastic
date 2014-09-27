@@ -1,11 +1,11 @@
-  21111,         Advance random see how far?
+  511,         Advance random see how far?
   !--- Geometry ---!
-  9.1,           Adamscase option, if==0, then user input for next three parameters
-  1.89,1.9        Sigma cross section vals
-  0.99,0.99,       Scattering Ratios
-  0.8,0.01,      Lambda path length vals
+  0,           Adamscase option, if==0, then user input for next three parameters
+  0.7969,0.3815        Sigma cross section vals
+  0.9071,0.9071,       Scattering Ratios
+  0.5,2.0,             Lambda path length vals
   1.0,           slab thickness
-  100,10,         Number of realizations/how often to print
+  1000,100,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
@@ -84,11 +84,11 @@
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  preview,          "preview" "plot" "noplot", for stochastic ensemble flux in material
-  noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #get rid of me
-  point,           "track" "point", type of flux binning, over whole track or a point on it 
+  noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #maybe keep me
+  track,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me
-  40,           Number of cells collect and plot flux over
+  100,           Number of cells collect and plot flux over
   100,           Number of cells to plot flux/ensemble mat type over #get rid of me!
 
 

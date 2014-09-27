@@ -5,7 +5,7 @@ set bars small
 
 
 
-set title "Flux Over Domain, Irrespective of Material, Point on Tracklength Binning"
+set title "Flux Over Domain, Irrespective of Material, Whole Tracklength Binning"
 set key left bottom
 set autoscale
 set logscale y
