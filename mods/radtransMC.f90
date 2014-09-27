@@ -49,9 +49,6 @@ CONTAINS
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
 
-  !add plotter here.
-
-
   end subroutine UQ_MC
 
 
@@ -91,8 +88,9 @@ CONTAINS
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
 
     do ! simulate one pathlength of a particle
-!print *
-!print *,"   startingpathlength"
+print *
+print *
+print *,"   startingpathlength"
       fldist      = 'clean'
       flIntType   = 'clean'
       flEscapeDir = 'clean'
@@ -148,13 +146,13 @@ CONTAINS
         dist   = min(di,dist)
       endif
 !print *,"db: ",db," dc: ",dc," di: ",di
-!print *,"fldist: ",fldist
+print *,"fldist: ",fldist
 !print *
 !print *
 !print *,"first decision, do I go to boundary or have a collision?"
-!print *,"position:",position,"mu:",mu
+print *,"position:",position,"mu:",mu
 !print *,"  db: ",db,"  dc: ",dc
-!print *,"Decision made: ",fldist
+print *,"Decision made: ",fldist
 
 
       !if boundary chosen
@@ -171,6 +169,7 @@ CONTAINS
             case ("radMC")
               call MCinc_pos( matLength(i+1) )
 !print *,"oldpos/pos",oldposition,position
+print *,"transmit from segment"
               if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
 !if(i==nummatSegs+1) print *,"radMC tally transmit here"
               if(i==nummatSegs) flExit='exit'
@@ -200,6 +199,7 @@ CONTAINS
           select case (MCcases(icase))
             case ("radMC")
               call MCinc_pos( matLength(i) )
+print *,"reflect from segment"
 !if(i==1) print *,"radMC tally reflect here"
               if(i==1)            reflect(j)=reflect(j) + 1.0d0
               if(i==1)            flExit='exit'
@@ -327,6 +327,7 @@ CONTAINS
         if(flIntType=='scatter') then     !scatter
           select case (MCcases(icase))
             case ("radMC")
+print *,"scatter in cell"
               if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
               if(rodOrplanar=='planar') mu = newmu()
             case ("radWood")
@@ -350,7 +351,7 @@ CONTAINS
           select case (MCcases(icase))
             case ("radMC")
               absorb(j)     = absorb(j)     + 1.0d0
-!print *,"radMC tally absorb here"
+print *,"radMC tally absorb here"
               flExit='exit'
             case ("radWood")
               absorb(j)     = absorb(j)     + 1.0d0
@@ -378,7 +379,8 @@ CONTAINS
         matType(1) = merge(1,2,matType(1)==2)
       endif !endif fldist=='interface'
 
-!print *,"before wrapper, oldpos/pos",oldposition,position
+print *,"before wrapper, oldpos/pos",oldposition,position
+print *,"mu: ",mu
       !tally flux
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
 !      if(flfluxplot) print *,"call MCfluxtallywrapper"
@@ -831,23 +833,24 @@ CONTAINS
 !print *,"min/maxpos: ",minpos,maxpos
 !print *,"flcontribtype chosen: ",flcontribtype
 !Debug notes: satisfied to here radMC
-!print *,"before fluxall(:,j):",fluxall(:,j)
+print *
+print *,"before fluxall(:,j):",fluxall(:,j)
 !#flag
         select case (flcontribtype)
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
-!print *,"contribute/absmu: ",dx/absmu,absmu
+print *,"neither contribute/absmu: ",dx/absmu,absmu
           case ("first")
             fluxall(ibin,j) = fluxall(ibin,j) + (fluxfaces(ibin+1)-minpos) / absmu !first in bin
-!print *,"contribute/absmu: ",(fluxfaces(ibin+1)-minpos)/absmu,absmu
+print *,"first contribute/absmu: ",(fluxfaces(ibin+1)-minpos)/absmu,absmu
           case ("last")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-fluxfaces(ibin))   / absmu !last in bin
-!print *,"contribute/absmu: ",(maxpos-fluxfaces(ibin))/absmu,absmu
+print *,"last contribute/absmu: ",(maxpos-fluxfaces(ibin))/absmu,absmu
           case ("both")
             fluxall(ibin,j) = fluxall(ibin,j) + (maxpos-minpos)            / absmu !both in bin
-!print *,"contribute/absmu: ",(maxpos-minpos)/absmu,absmu
+print *,"both contribute/absmu: ",(maxpos-minpos)/absmu,absmu
         end select
-!print *,"before fluxall(:,j):",fluxall(:,j)
+print *,"after  fluxall(:,:):",fluxall(:,:)
 !read *
         if( flcontribtype=='last' .or. flcontribtype=='both' .or. ibin==fluxnumcells ) exit
         ibin = ibin + 1
@@ -1023,8 +1026,8 @@ CONTAINS
 
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
-!print *,"dx: ",dx,"numParts: ",numParts
-!print *,"fluxall before normalize",fluxall
+print *,"dx: ",dx,"numParts: ",numParts
+print *,"fluxall:",fluxall
 !#flag
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
@@ -1039,7 +1042,6 @@ CONTAINS
                       fluxmat2= fluxmat2/ dx / LPamnumParts !normalize part 1
     endif    
   endif
-!print *,"fluxall after  normalize",fluxall
 !Debug notes, normalization looks good
 !do ibin=1,fluxnumcells
 !  do j=1,numRealz
@@ -1050,11 +1052,15 @@ CONTAINS
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
 !print *,"flfluxplotall: ",flfluxplotall
+print *,"In stocMC_stats"
+print *,"fluxall:",fluxall
     if( flfluxplotall ) then
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
                  stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
       enddo
+print *,"MCcases(icase):",MCcases(icase)
+print *,"stocMC_fluxall(:,",icase,",1): ",stocMC_fluxall(:,icase,1)
     endif
     if( flfluxplotmat ) then
       do ibin=1,fluxnumcells
@@ -1132,6 +1138,7 @@ print *,"p1:",p1,"  p2:",p2
 
   376 format("#cell center,       ave mat1 flux,   ave mat2 flux")
 
+print *,"This is where the value are printed to the output."
   do icase=1,numPosMCmeths
     if(MCcaseson(icase)==1 .and. flfluxplot) then
       select case (MCcases(icase))
@@ -1143,7 +1150,8 @@ print *,"p1:",p1,"  p2:",p2
               write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
                             stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
             enddo
-print *,"stocMC_fluxall(:,1,1): ",stocMC_fluxall(:,1,1)
+print *,"MCcases(icase):",MCcases(icase)
+print *,"stocMC_fluxall(:,",icase,",1): ",stocMC_fluxall(:,icase,1)
             close(unit=24)
           endif
           if(pltmatflux=='plot' .or. pltmatflux=='preview') then
@@ -1165,6 +1173,8 @@ print *,"stocMC_fluxall(:,1,1): ",stocMC_fluxall(:,1,1)
               write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
                             stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
             enddo
+print *,"MCcases(icase):",MCcases(icase)
+print *,"stocMC_fluxall(:,",icase,",1): ",stocMC_fluxall(:,icase,1)
             close(unit=24)
           endif
           if(pltmatflux=='plot' .or. pltmatflux=='preview') then
