@@ -1,22 +1,33 @@
 
-  Values loaded for special Adamscase :  0.0
-    sig(1)    :  0.796900   sig(2)    :  0.381500
-    scatrat(1):  0.91       scatrat(2):  0.91
-    lam(1)    :  0.50       lam(2)    :  2.00
-    s         :  1.00       lamc      :  0.40
+  Values loaded for special Adamscase :  1.2
+    sig(1)    :  0.101010   sig(2)    :  9.090909
+    scatrat(1):  0.00       scatrat(2):  1.00
+    lam(1)    :  0.99       lam(2)    :  0.11
+    s         :  1.00       lamc      :  0.10
 
 
 
- |--------------- Reflection and Transmission Results ------|
+ |-case:1.2-|---- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |radMC  :  | 0.00000  +-  0.00000    | 1.00000  +-  0.00000|
- |radWood:  | 0.00000  +-  0.00000    | 1.00000  +-  0.00000|
+ |AdamsMC:  | 0.2495   +-  0.2354     | 0.5950   +-  0.2143 |
+ |BrantMC:  | 0.25069                 | 0.59607             |
+ |radMC  :  | 0.25120  +-  0.23481    | 0.59513  +-  0.21545|
+ |radWood:  | 0.26372  +-  0.23792    | 0.58789  +-  0.21523|
+ |----------|-------------------------|---------------------|
+ |AdamsLP:  | 0.2187                  | 0.6254              |
+ |BrantLP:  | 0.21888                 | 0.62741             |
+ |LPMC   :  | 0.21840                 | 0.62809             |
+ |----------|-------------------------|---------------------|
+ |BrAtMix:  | 0.36040                 | 0.48096             |
+ |atmixMC:  | 0.36331                 | 0.47978             |
  |----------------------------------------------------------|
 
-  total runtime:      0.00 min
-    genRealz   :      0.00 min     per:  0.96 % --- genRealz in other meths,
+  total runtime:      0.24 min
+    genRealz   :      0.00 min     per:  1.40 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.00 min     per: 22.25 %
-    radWood    :      0.00 min     per: 27.80 %
-    other      :      0.00 min     per: 49.94 %
+    radMC      :      0.07 min     per: 28.54 %
+    radWood    :      0.15 min     per: 64.39 %
+    LPMC       :      0.01 min     per:  5.47 %
+    atmixMC    :      0.00 min     per:  1.46 %
+    other      :      0.00 min     per:  0.13 %

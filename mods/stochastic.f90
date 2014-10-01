@@ -81,7 +81,7 @@ program stochastic
   call timereport
   call finalreport
 
-
+stop
 
 
   !!test loop for MCfluxtally, comparing to older version
