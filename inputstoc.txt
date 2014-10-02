@@ -1,6 +1,6 @@
-  2000,         Advance random see how far?
+  134000,         Advance random see how far?
   !--- Geometry ---!
-  4.3,           Adamscase option, if==0, then user input for next three parameters
+  3.1,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals
   0.9071,0.9071,       Scattering Ratios
   0.5,2.0,             Lambda path length vals
@@ -9,13 +9,13 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
-  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  1,             Number of eigenvalues
+  yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  2,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,no,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
-  100,            Number of particles to simulate on each realization
+  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
@@ -29,7 +29,7 @@
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  no,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
+  yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   remove,         Choose to 'remove' old results and use new, or 'add' to existing results
   
@@ -84,7 +84,7 @@
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  preview,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #maybe keep me
   point,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me
