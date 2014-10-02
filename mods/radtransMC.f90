@@ -42,7 +42,6 @@ CONTAINS
       if(mod( j,trannprt )==0 .or. MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') &
     call radtrans_timeupdate( j,icase,tt1 )   !print time updates
 
-!    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') exit !only 1 'realization' for each
   enddo !loops over realizations
 
   call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
@@ -75,29 +74,20 @@ CONTAINS
 
   !local variables
   integer :: i,o
-  real(8) :: db,dc,di,dist,  sigma,  ceilsig,woodrat,disthold
+  real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat,disthold
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
-!print *
-!print *
-!print *
-!print *
-!print *," starting particle: ",o
+
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
-!print *,"mu: ",mu,"     at beginning of particle history"
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
 
     do ! simulate one pathlength of a particle
-!print *,"mu: ",mu,"     at beginning of tracklength"
-
-!print *
-!print *
-!print *,"   startingpathlength"
       fldist      = 'clean'
       flIntType   = 'clean'
       flEscapeDir = 'clean'
       flExit      = 'clean'
+      newpos      = 101010.0d0 !later throw error if still equal this
 
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
@@ -130,16 +120,12 @@ CONTAINS
           dc = -log(rang())/ceilsig                   !calc dc
         case ("LPMC")
           dc = -log(rang())/sig(matType(1))
-!          dc = -log(rang()) / ( sig(matType(1)) + 1.0d0/lam(matType(1)) ) !combines dc and di
         case ("atmixMC")
           dc = -log(rang())/atmixsig
       end select
 
-
       !calculate distance to interface
       if(MCcases(icase)=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
-
-
 
       !select distance limiter (add another later with LP)
       dist   = min(db,dc)
@@ -148,21 +134,13 @@ CONTAINS
         fldist = merge('interface',fldist,di<dist)
         dist   = min(di,dist)
       endif
-!print *,"db: ",db," dc: ",dc," di: ",di
-!print *,"fldist: ",fldist
-!print *
-!print *
-!print *,"first decision, do I go to boundary or have a collision?"
-!print *,"position:",position,"mu:",mu
-!print *,"  db: ",db,"  dc: ",dc
-!print *,"Decision made: ",fldist
 
 
-      !if boundary chosen
+
+      !If 'boundary' event, and evaluate/flag transmission and reflection effects
       if(fldist=='boundary') then
         !set direction flag
         flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
-!print *,"mu: ",mu," flEscapeDir: ",flEscapeDir
         if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej(1)=Wood_rej(1)+1
                                                                     !accept path tal
 
@@ -170,30 +148,24 @@ CONTAINS
         if(flEscapeDir=='transmit') then   !transmit
           select case (MCcases(icase))
             case ("radMC")
-              call MCinc_pos( matLength(i+1) )
-!print *,"oldpos/pos",oldposition,position
-!print *,"transmit from segment"
+              newpos = matLength(i+1)
               if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
-!if(i==nummatSegs+1) print *,"radMC tally transmit here"
               if(i==nummatSegs) flExit='exit'
             case ("radWood")
-              call MCinc_pos( s )
+              newpos = s
               transmit(j) = transmit(j) + 1.0d0
               flExit='exit'
             case ("KLWood")
-              call MCinc_pos( s )
+              newpos = s
               transmit(j) = transmit(j) + 1.0d0
-!print *,"KLWood tally transmit here"
               flExit='exit'
             case ("LPMC")
-              call MCinc_pos( s )
+              newpos = s
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
-!print *,"LPMC tally transmit here"
               flExit='exit'
             case ("atmixMC")
-              call MCinc_pos( s )
+              newpos = s
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
-!print *,"atmixMC tally transmit here"
               flExit='exit'
           end select
         endif
@@ -201,29 +173,23 @@ CONTAINS
         if(flEscapeDir=='reflect') then    !reflect
           select case (MCcases(icase))
             case ("radMC")
-              call MCinc_pos( matLength(i) )
-!print *,"reflect from segment"
-!if(i==1) print *,"radMC tally reflect here"
+              newpos = matLength(i)
               if(i==1)            reflect(j)=reflect(j) + 1.0d0
               if(i==1)            flExit='exit'
             case ("radWood")
-              call MCinc_pos( 0.0d0 )
-!print *,"radWood tally reflect here"
+              newpos = 0.0d0
               reflect(j)  = reflect(j) + 1.0d0
               flExit='exit'
             case ("KLWood")
-              call MCinc_pos( 0.0d0 )
-!print *,"KLWood tally reflect here"
+              newpos = 0.0d0
               reflect(j)  = reflect(j) + 1.0d0
               flExit='exit'
             case ("LPMC")
-              call MCinc_pos( 0.0d0 )
-!print *,"LPMC tally reflect here"
+              newpos = 0.0d0
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
             case ("atmixMC")
-              call MCinc_pos( 0.0d0 )
-!print *,"atmixMC tally reflect here"
+              newpos = 0.0d0
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
           end select
@@ -232,19 +198,18 @@ CONTAINS
       endif !endif fldist=='boundary'
 
 
-      !if collision chosen
+      !If 'collision' event, set position and flag 'absorb', 'scatter', or 'reject'
       if(fldist=='collision') then
-        !Advance position for all outcomes
-        call MCinc_pos( position + dc*mu )
+        !Set new position at which to advance
+        newpos = position + dc*mu
 
-        !Choose scatter, absorb, 'interfa'ce (LP), or reject (Woodcock) interaction
+        !Choose scatter, absorb, or reject (Woodcock) interaction
         select case (MCcases(icase))
           case ("radMC")
             flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
           case ("radWood")
             woodrat = radWood_actsig2(position,sig)/ceilsig
             if(woodrat>1.0d0) then
-              !print *,"j: ",j,"  woodrat: ",woodrat
               stop 'Higher sig samples in radWood than ceiling, exiting program'
             endif
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
@@ -260,7 +225,6 @@ CONTAINS
             woodrat = KLrxi_point2(j,position)/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
-              !print *,"j: ",j,"  woodrat: ",woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
             if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
@@ -295,16 +259,10 @@ CONTAINS
               endif
             endif
           case ("LPMC")
-!            if( rang()<( sig(matType(1)) / (sig(matType(1))+1.0d0/lam(matType(1))) ) ) then
               flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
-!print *,"flIntType: ",flIntType
-!            else
-!              flIntType = 'interfa'
-!            endif
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
         end select
-
 
         !Tally for neg stats
         select case (MCcases(icase))
@@ -327,20 +285,24 @@ CONTAINS
 
       endif !endif fldist=='collision'
 
+      !If 'interface' interaction, set new position (LP)
+      if(fldist=='interface') then
+        newpos = position + di*mu
+      endif
 
-!print *,"before wrapper, oldpos/pos",oldposition,position
-!print *,"mu: ",mu
+
+      !increment position
+      if(newpos==101010.0d0) stop 'newpos was not set in MCtransport'
+      call MCinc_pos( newpos )
+
       !tally flux
-!print *,"mu: ",mu,"     before fluxtallywrapper"
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
-!print *,"mu: ",mu,"     after fluxtallywrapper"
 
 
-      !Evaluate scatter, absorb, or interface change (LP)
+      !Evaluate scatter
       if(flIntType=='scatter') then     !scatter
         select case (MCcases(icase))
           case ("radMC")
-!print *,"scatter in cell"
             if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
             if(rodOrplanar=='planar') mu = newmu()
           case ("radWood")
@@ -352,60 +314,45 @@ CONTAINS
           case ("LPMC")
             if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
             if(rodOrplanar=='planar') mu = newmu()
-!print *,"LPMC scatter chosen, new mu: ",mu
           case ("atmixMC")
             if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
             if(rodOrplanar=='planar') mu = newmu()
-!print *,"atmixMC scatter here"
         end select
       endif
 
+      !Evaluate absorption
       if(flIntType=='absorb') then      !absorb
         select case (MCcases(icase))
           case ("radMC")
             absorb(j)     = absorb(j)     + 1.0d0
-!print *,"radMC tally absorb here"
             flExit='exit'
           case ("radWood")
             absorb(j)     = absorb(j)     + 1.0d0
             flExit='exit'
           case ("KLWood")
             absorb(j)     = absorb(j)     + 1.0d0
-!print *,"KLWood tally absorb here"
             flExit='exit'
           case ("LPMC")
             LPamMCsums(3) = LPamMCsums(3) + 1.0d0
-!print *,"LPMC absorb tally here"
             flExit='exit'
           case ("atmixMC")
             LPamMCsums(3) = LPamMCsums(3) + 1.0d0
-!print *,"atmixMC absorb tally here"
             flExit='exit'
         end select
       endif
 
-
-      !if(flIntType=='interfa') &        !interface change (LP)
-      if(fldist=='interface') then
-        call MCinc_pos( position + di*mu )
-        matType(1) = merge(1,2,matType(1)==2)
-      endif !endif fldist=='interface'
-
-
-!      if(flfluxplot) print *,"call MCfluxtallywrapper"
-
-      !increment material position
+      !increment material type indices
       if(MCcases(icase)=='radMC') then
         if(flEscapeDir=='transmit') i = i+1
         if(flEscapeDir=='reflect')  i = i-1
       endif
-!print *,"mu: ",mu,"     at end of MCtransport"
+      if(fldist=='interface') then
+        matType(1) = merge(1,2,matType(1)==2)
+      endif
 
+      !Exit if particle history ended
       if(flExit=='exit') exit
-!print *,"flExit      : ",flExit
-!print *,"fldist      : ",fldist
-!print *,"flIntType   : ",flIntType
-!print *,"flEscapeDir : ",flEscapeDir
+
     enddo !simulate one pathlength
   enddo !loop over particles
 
@@ -898,7 +845,7 @@ CONTAINS
 
     endif !point or track
   endif !mat respective
-!print *,"mu: ",mu,"     in fluxtallyend"
+
   end subroutine MCfluxtally
 
 

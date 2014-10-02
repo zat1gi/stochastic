@@ -1,11 +1,11 @@
   2000,         Advance random see how far?
   !--- Geometry ---!
-  1.2,           Adamscase option, if==0, then user input for next three parameters
+  4.3,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals
   0.9071,0.9071,       Scattering Ratios
   0.5,2.0,             Lambda path length vals
   1.0,           slab thickness
-  1000,10,         Number of realizations/how often to print
+  1000,100,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
@@ -15,8 +15,8 @@
 
   !--- Large MCtrans Options ---!
   yes,yes,no,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
-  1000,            Number of particles to simulate on each realization
-  100000,          Number of particles for LP or atomic mix calculations
+  100,            Number of particles to simulate on each realization
+  1000000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
   30,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
@@ -84,7 +84,7 @@
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  preview,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #maybe keep me
   point,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me
