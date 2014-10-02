@@ -1,37 +1,43 @@
 
-  Values loaded for special Adamscase :  3.2
+  Values loaded for special Adamscase :  3.1
     sig(1)    :  0.101010   sig(2)    :  9.090909
     scatrat(1):  0.90       scatrat(2):  0.90
     lam(1)    :  0.99       lam(2)    :  0.11
-    s         :  1.00       lamc      :  0.10
+    s         :  0.10       lamc      :  0.10
 
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   :  0.39300%,                   393 /                 1000
-  Neg samples :  0.10575%,                346539 /              3276876
-  Neg area    :  0.00511%
-  Ave neg samp:     -0.0745   Ave pos samp:      1.7157
-  Max neg samp:     -0.1143   Max pos samp:     10.0733
+  Neg realz   :  0.12800%,                   128 /                 1000
+  Neg samples :  0.14004%,                106876 /               763179
+  Neg area    :  0.08345%
+  Ave neg samp:     -2.8700   Ave pos samp:      5.1335
+  Max neg samp:     -5.2706   Max pos samp:     13.9278
 
 
- |-case:3.2-|---- Reflection and Transmission Results ------|
+ |-case:3.1-|---- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |AdamsMC:  | 0.2563   +-  0.1546     | 0.5985   +-  0.2832 |
- |BrantMC:  | 0.25419                 | 0.60114             |
- |radMC  :  | 0.25634  +-  0.15470    | 0.59717  +-  0.28269|
- |KLWood :  | 0.31616  +-  0.05732    | 0.51314  +-  0.18434|
+ |AdamsMC:  | 0.0480   +-  0.0935     | 0.9341   +-  0.1339 |
+ |BrantMC:  | 0.04812                 | 0.93394             |
+ |radMC  :  | 0.04972  +-  0.09453    | 0.93158  +-  0.13546|
+ |radWood:  | 0.05454  +-  0.10983    | 0.92456  +-  0.15352|
+ |KLWood :  | 0.06913  +-  0.09626    | 0.90637  +-  0.13685|
  |----------|-------------------------|---------------------|
- |AdamsLP:  | 0.2178                  | 0.6267              |
- |BrantLP:  | 0.21677                 | 0.62755             |
+ |AdamsLP:  | 0.0473                  | 0.9344              |
+ |BrantLP:  | 0.04702                 | 0.93468             |
+ |LPMC   :  | 0.04682                 | 0.93503             |
  |----------|-------------------------|---------------------|
- |BrAtMix:  | 0.35288                 | 0.47477             |
+ |BrAtMix:  | 0.07455                 | 0.90602             |
+ |atmixMC:  | 0.07454                 | 0.90597             |
  |----------------------------------------------------------|
 
-  total runtime:      0.14 min
-    genRealz   :      0.00 min     per:  0.20 % --- genRealz in other meths,
+  total runtime:      0.24 min
+    genRealz   :      0.03 min     per: 11.86 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.06 min     per: 42.83 %
-    KLWood     :      0.08 min     per: 55.20 %
-    KLcol      :      0.00 min     per:  0.13 %
-    KLrec      :      0.00 min     per:  1.42 %
-    other      :      0.00 min     per:  0.43 %
+    radMC      :      0.05 min     per: 19.07 %
+    radWood    :      0.05 min     per: 19.13 %
+    KLWood     :      0.05 min     per: 20.09 %
+    LPMC       :      0.08 min     per: 33.10 %
+    atmixMC    :      0.02 min     per:  6.90 %
+    KLcol      :      0.00 min     per:  0.07 %
+    KLrec      :      0.00 min     per:  1.31 %
+    other      :      0.00 min     per:  0.33 %

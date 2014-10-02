@@ -1,3 +1,13 @@
+-things I could improve... worth it??
+	-interaction tallies, do something with them?
+	-make ‘dx’ a global variable?
+	-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
+	-deal with genRealz printing/plotting only in first call
+	-take a look at bins for ceiling determination for Woodcock sampling
+	-in 'MCfluxPrint' consider removing these plots somewhere else, like 'clearreports'
+
+
+Contents of 'radtransMC.f90'
   subroutine UQ_MC( icase )
   subroutine MCtransport( j,icase,tnumParts )
   subroutine genSourcePart( i,icase )

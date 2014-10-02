@@ -9,7 +9,8 @@ CONTAINS
 
   subroutine UQ_MC( icase )
   !This subroutine perfoms Monte Carlo in the uncertain space, currently for binary mixtures.
-  !'MCtransport' handles the spatial MC, but this subroutine collects data in UQ space
+  !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
+  !in UQ space.
   use timevars, only: time
   use genRealzvars, only: numRealz
   use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat
@@ -60,8 +61,6 @@ CONTAINS
   !'j' denotes which realization over which the MC transport is performed.
   !'icase' denotes which predefined transport method over which the MC transport is performed.
   !'tnumParts' is the number of particles over which the MC transport is performed.
-  !It may in the future make more sense to have flags which do or do not use certain functionality,
-  !but for the time being each operation is simply chosen as a function of which case is selected.
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
@@ -81,16 +80,12 @@ CONTAINS
 
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
-!print *
-!print *
-!print *,"mu: ",mu,"   after new sourceparticle"
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
       flEscapeDir = 'clean'
       flExit      = 'clean'
       newpos      = 101010.0d0 !later throw error if still equal this
-!print *,"mu: ",mu," after new pathlength"
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
 
@@ -299,7 +294,6 @@ CONTAINS
 
       !tally flux
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
-!print *,"mu: ",mu," after fluxtally"
 
       !Evaluate scatter
       if(flIntType=='scatter') then     !scatter
@@ -320,7 +314,6 @@ CONTAINS
             if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
             if(rodOrplanar=='planar') mu = newmu()
         end select
-!print *,"mu: ",mu,"   after scatter event"
       endif
 
       !Evaluate absorption
@@ -387,7 +380,7 @@ CONTAINS
 
 
   subroutine genSourcePart( i,icase )
-  !This subroutine generates a position and direction, and bin if needed
+  !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
   use genRealzvars, only: s, nummatSegs
   use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases
@@ -589,7 +582,6 @@ CONTAINS
   function radWood_actscatrat2(position,scatrat)
   use genRealzvars, only: matType, matLength
   real(8) :: position,scatrat(2),radWood_actscatrat2
-
   integer :: i
 
   i=1
@@ -600,7 +592,6 @@ CONTAINS
     endif
     i=i+1
   enddo
-
   end function radWood_actscatrat2
 
 
@@ -630,7 +621,7 @@ CONTAINS
 
 
   subroutine MCinc_pos( newposition )
-  !This subroutine stores position in new position and reference passed value as position
+  !This subroutine stores position in old position and reference passed value as position
   use MCvars, only: oldposition, position
   real(8) :: newposition
   oldposition = position
@@ -692,7 +683,7 @@ CONTAINS
   subroutine MCfluxtallywrapper( j,icase )
   !This subroutine is the outer wrapper for flux tallies.
   !First it calculates quantities related to this tally.
-  !Then for most methods it passes that info the the tally taker, but for 'radWood'
+  !Then for most methods it passes that info the the tallier, but for 'radWood'
   !it steps through the tracklength passing on segments at a time to be tallied.
   use genRealzvars, only: matLength, matType
   use MCvars, only: position, oldposition, flfluxplotall, flfluxplotmat, MCcases, &
@@ -704,7 +695,7 @@ CONTAINS
   maxpos = max(oldposition,position)
   dx     = fluxfaces(2)-fluxfaces(1)
   !set value for 'i'
-  i=1   !can probably do this part with a ceiling function, once debugged look at again
+  i=1
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
     do
       if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
@@ -745,7 +736,8 @@ CONTAINS
 
   subroutine MCfluxtally( j,i,minpos,maxpos,flfluxtallytype )
   !This subroutine accepts arguments from its wrapper, then tallies flux contributions accordingly.
-  !It can keep full tracklength tallies, or choose one bin in which to place the entire contribution.
+  !It can keep full 'track'length tallies, or choose one bin (at a 'point' on the tracklength) in
+  !which to place the entire contribution.
   !Flux can be calculated for the tracklength w/ or w/o respect to which material the tallies are in.
   use MCvars, only: mu, fluxall, fluxmat1, fluxmat2, fluxfaces, pltfluxtype, fluxnumcells
   integer :: j, i, ibin
@@ -754,7 +746,6 @@ CONTAINS
   character(12) :: flfluxtallytype
   absmu  = abs(mu)
   dx     = fluxfaces(2)-fluxfaces(1)
-!print *,"mu: ",mu," fluxtally start"
 
   !material irrespective
   if( flfluxtallytype=='irrespective' ) then
@@ -784,7 +775,6 @@ CONTAINS
       enddo
     endif !point or track
   endif !mat irrespective
-!print *,"mu: ",mu," fluxtally end"
 
   !material respective
   if( flfluxtallytype=='respective') then
@@ -844,7 +834,7 @@ CONTAINS
   !the flux tallies can be normalized on a per material basis.  It is on the fly
   !since LP calculates geometry on the fly.
   !This routine is called from 'MCfluxtallywrapper' and highly resembles 'MCfluxtally',
-  !with the only notable difference being that distances are not divided by absu(mu)
+  !with the only notable difference being that distances are not divided by absu(mu).
   use genRealzvars, only: matType
   use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells, position, &
                     pltfluxtype
@@ -894,7 +884,7 @@ CONTAINS
   subroutine MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
   !This subroutine sets what type of flux contribution should be tallied.
   !The word 'first' means the first end length of the track considered is in this cell.
-  !'last means the second, or last, end of the track length is in the cell.
+  !'last' means the second, or last, end of the track length is in the cell.
   !'neither' means both ends of the tracklength are not in this cell.
   !'both' means both ends of the tracklength are in the cell.
   use MCvars, only: fluxfaces
@@ -1020,7 +1010,7 @@ CONTAINS
 
   subroutine MCfluxPrint
   !This subroutine prints the results of MC transport methods to '.out' files
-  !in order to be printed.  It also clears out previous data and plot files.
+  !in order to be printed to the screen.  It also clears out previous plot files.
   use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, numPosMCmeths, &
                     fluxfaces, fluxnumcells, MCcases, MCcaseson, pltflux, pltmatflux, flfluxplot
   integer :: icase, ibin
@@ -1157,8 +1147,8 @@ CONTAINS
   subroutine MCfluxPlot
   !Builds gnus and plots with them.  Copies gnubuilding tools to local temporary 'gnu' directory,
   !which is deleted at the end.  Builds based on options like title type, plotting lines, and
-  !pause or preview.  Can perform three builds, one for material irrespective, one for each material
-  !of material respective.
+  !pause or preview.  Can perform three builds, one for material irrespective flux tallying, and 
+  !one for each material using material respective flux plotting.
   use MCvars, only: pltflux, radMC, radWood, KLWood, LPMC, atmixMC, pltfluxtype, pltmatflux
 
   !Clean from previous runs
@@ -1214,7 +1204,7 @@ CONTAINS
 
     !Update gnu to final name
     call system("mv gnu/tempnew.txt gnu/fluxall.gnu")
-    !plot!
+    !plot
     call system("gnuplot gnu/fluxall.gnu")
 
     !Store and clean up
@@ -1271,7 +1261,7 @@ CONTAINS
 
     !Update gnu to final name
     call system("mv gnu/tempnew.txt gnu/fluxmat1.gnu")
-    !plot!
+    !plot
     call system("gnuplot gnu/fluxmat1.gnu")
 
     !Store and clean up
@@ -1328,7 +1318,7 @@ CONTAINS
 
     !Update gnu to final name
     call system("mv gnu/tempnew.txt gnu/fluxmat2.gnu")
-    !plot!
+    !plot
     call system("gnuplot gnu/fluxmat2.gnu")
 
     !Store and clean up

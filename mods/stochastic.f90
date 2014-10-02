@@ -22,13 +22,6 @@ program stochastic
   integer :: j,icase !current realization, current MCtransport case
   integer :: seed    !random number seed for overall problem, used once.
 
-!These here only for a test
-  real(8) :: minpos, maxpos
-  integer :: i,loop
-  character(12) :: flfluxtallytype
-  integer :: ibin
-!end test vars
-
   !!read parameters
   call cpu_time(t1)
   call readinputstoc( seed )
@@ -80,80 +73,6 @@ program stochastic
   if(sum(MCcaseson)/=0) call MCprintstats
   call timereport
   call finalreport
-
-stop
-
-
-  !!test loop for MCfluxtally, comparing to older version
-  if(allocated(matLength)) deallocate(matLength)
-  allocate(matLength(4))
-  matLength = (/ 0.0d0, 0.2d0, 0.7d0, 1.0d0 /)
-  if(allocated(fluxall)) deallocate(fluxall)
-  allocate(fluxall(10,2))
-  fluxall = 0.0d0
-  if(allocated(fluxfaces)) deallocate(fluxfaces)
-  allocate(fluxfaces(11))
-  fluxfaces = (/ 0.0d0, 0.1d0, 0.2d0, 0.3d0, 0.4d0, 0.5d0, 0.6d0, 0.7d0, 0.8d0, 0.9d0, 1.0d0 /)
-  print *,"fluxall: ",fluxall
-  do loop=1,5
-    j=1
-    flfluxtallytype = 'irrespective'
-    if(loop==1) then
-      minpos = 0.5d0
-      maxpos = 0.71d0
-      mu = 0.73d0
-    elseif(loop==2) then
-      minpos = 0.11d0
-      maxpos = 0.99d0
-      mu = 0.412d0
-    elseif(loop==3) then
-      minpos = 0.0d0
-      maxpos = 1.0d0
-      mu = -0.88d0
-    elseif(loop==4) then
-      minpos = 0.143d0
-      maxpos = 0.205d0
-      mu = 0.011d0
-    elseif(loop==5) then
-      minpos = 0.799d0
-      maxpos = 0.95d0
-      mu = -0.6d0
-    endif
-    i=1   !can probably do this part with a ceiling function, once debugged look at again
-    do
-      if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
-      i = i+1
-    enddo
-
-    call MCfluxtally( j,i,minpos,maxpos,flfluxtallytype )
-  enddo
-  print *,"fluxall: ",fluxall/(fluxfaces(2)-fluxfaces(1))
-
-  fluxall = fluxall / (fluxfaces(2)-fluxfaces(1))
-  fluxall(1,2)  = 1.2d0
-  fluxall(2,2)  = 1.2d0
-  fluxall(3,2)  = 1.3d0
-  fluxall(4,2)  = 1.4d0
-  fluxall(5,2)  = 1.2d0
-  fluxall(6,2)  = 1.4d0
-  fluxall(7,2)  = 1.0d0
-  fluxall(8,2)  = 0.9d0
-  fluxall(9,2)  = 0.7d0
-  fluxall(10,2) = 0.3d0
-
-  if(allocated(stocMC_fluxall)) deallocate(stocMC_fluxall)
-  allocate(stocMC_fluxall(10,1,2))
-  stocMC_fluxall = 0.0d0
-
-  fluxall = fluxall / 5.0d0
-  do ibin=1,10
-    call mean_and_var_s( fluxall(ibin,:),2, &
-         stocMC_fluxall(ibin,1,1),stocMC_fluxall(ibin,1,2) )
-  enddo
-
-  print *,"stocMC_fluxall(:,1,1): ",stocMC_fluxall(:,1,1)
-  print *,"stocMC_fluxall(:,1,2): ",stocMC_fluxall(:,1,2)
-
 
 stop
 
