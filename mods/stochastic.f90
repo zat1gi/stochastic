@@ -66,6 +66,9 @@ program stochastic
   call MCfluxPrint
   call MCfluxPlot
 
+!  call MCLeakage_pdfplot !bin for radMC,radWood, needs to be updated
+
+
   !!print final reports
   call clearreports
   call Acase_print
@@ -103,11 +106,9 @@ stop
 !  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
 
   !!MC stats and plots.  Some of this needs to be in UQ wrapper, some just passed to 'MCprintstats'
-  if(radMC=='yes') call radtrans_MCoutstats
   if(radWood=='yes') call WoodcockMCoutstats
   if(KLWood=='yes') call WoodcockKLoutstats
   if(pltflux(1)/='noplot') call plot_flux
-  call MCLeakage_pdfplot !bin for radMC,radWood
 
 
 end program stochastic

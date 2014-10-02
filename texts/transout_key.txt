@@ -1,9 +1,0 @@
-# plot reflection:    plot "transAdams_plot.txt" using 1:2:3 t 'Adams Set 2' w errorbars, "transAdams_plot.txt" using 1:7:6:8 t 'Adams Set 1' w boxxyerrorbars, "transout_results.txt" using 1:4:5 t 'Realization 1' w errorbars
-# set title  "Reflection Values for Adams and Pomraning Cases"
-# set xlabel "Index of Adams Case"
-# set ylabel "Reflection (out of 1)"
-# plot transmission:  plot "transAdams_plot.txt" using 1:4:5 t 'Adams Set 2' w errorbars, "transAdams_plot.txt" using 1:9:6:10 t 'Adams Set 1' w boxxyerrorbars, "transout_results.txt" using 1:6:7 t 'Realization 1' w errorbars
-# set title  "Transmission Values for Adams and Pomraning Cases"
-# set xlabel "Index of Adams Case"
-# set ylabel "Transmission (out of 1)"
-#Adamscase#   #ofgeoms      #ofDarts  reflection     refldev        transmission   transdev       absorption     absdev         sig1           sig2           c1             c2             lam1           lam2           s

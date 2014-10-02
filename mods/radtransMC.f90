@@ -1422,6 +1422,146 @@ CONTAINS
   end subroutine MCallocate
 
 
+  subroutine MCLeakage_pdfplot
+  !Plots pdfs of transmission and reflection for chosen methods
+  use genRealzvars, only: numRealz
+  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, radWoodr, &
+                          KLWoodr, radWoodt, KLWoodt, transmit
+
+  real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
+
+  !find reflection binning/plotting bounds
+  smrefl = 1d0
+  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') smrefl = min(smrefl,minval(reflect))
+  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') smrefl = min(smrefl,minval(radWoodr))
+  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') smrefl = min(smrefl,minval(KLWoodr))
+  lgrefl = 0d0
+  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') lgrefl = max(lgrefl,maxval(reflect))
+  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') lgrefl = max(lgrefl,maxval(radWoodr))
+  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') lgrefl = max(lgrefl,maxval(KLWoodr))
+  boundbuff = (lgrefl-smrefl)/8d0
+  smrefl = merge(smrefl-boundbuff,0d0,smrefl-boundbuff>0d0)
+  lgrefl = merge(lgrefl+boundbuff,1d0,lgrefl+boundbuff<1d0)
+  smrefl = smrefl - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
+  lgrefl = lgrefl + 0.0000001d0
+
+  !find tranmission binning/plotting bounds
+  smtran = 1d0
+  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') smtran = min(smtran,minval(transmit))
+  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') smtran = min(smtran,minval(radWoodt))
+  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') smtran = min(smtran,minval(KLWoodt))
+  lgtran = 0d0
+  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') lgtran = max(lgtran,maxval(transmit))
+  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') lgtran = max(lgtran,maxval(radWoodt))
+  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') lgtran = max(lgtran,maxval(KLWoodt))  
+  boundbuff = (lgtran-smtran)/8d0
+  smtran = merge(smtran-boundbuff,0d0,smtran-boundbuff>0d0)
+  lgtran = merge(lgtran+boundbuff,1d0,lgtran+boundbuff<1d0)
+  smtran = smtran - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
+  lgtran = lgtran + 0.0000001d0
+
+  !radMC binning and printing
+  call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
+  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') then
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+    call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
+    call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
+  endif
+
+  !radWood binning and printing
+  call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
+  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') then
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+    call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
+    call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
+  endif
+
+  !KLWood binning and printing
+  call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') then
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+    call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
+    call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
+  endif
+
+  !plot, convert, and store
+  if(radMCbinplot=='preview' .or. radWoodbinplot=='preview' .or. KLWoodbinplot=='preview') then
+    call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
+    call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
+  else
+    call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
+    call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
+  endif
+  call system("ps2pdf tranprofile.ps")
+  call system("ps2pdf reflprofile.ps")
+  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
+  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
+
+  end subroutine MCLeakage_pdfplot
+
+
+
+  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+  !Heart of radtrans_resultplot, loads values to bin, and prints to generic text file
+  !for each method
+  use genRealzvars,         only: numRealz
+  use MCvars,               only: trprofile_binnum, reflect, transmit
+  real(8) :: smrefl,lgrefl,smtran,lgtran
+
+  !local vars
+  integer :: ibin
+  integer,allocatable,dimension(:) :: reflcounts,trancounts  
+  real(8),allocatable,dimension(:) :: reflprob,  tranprob
+  real(8),allocatable,dimension(:) :: reflbounds,tranbounds
+
+  !prepare variables
+  if(allocated(reflcounts)) deallocate(reflcounts)
+  if(allocated(trancounts)) deallocate(trancounts)
+  if(allocated(reflprob))   deallocate(reflprob)
+  if(allocated(tranprob))   deallocate(tranprob)
+  if(allocated(reflbounds)) deallocate(reflbounds)
+  if(allocated(tranbounds)) deallocate(tranbounds)
+
+  if(.not. allocated(reflcounts)) allocate(reflcounts(trprofile_binnum))
+  if(.not. allocated(trancounts)) allocate(trancounts(trprofile_binnum))
+  if(.not. allocated(reflprob))   allocate(reflprob(trprofile_binnum))
+  if(.not. allocated(tranprob))   allocate(tranprob(trprofile_binnum))
+  if(.not. allocated(reflbounds)) allocate(reflbounds(trprofile_binnum+1))
+  if(.not. allocated(tranbounds)) allocate(tranbounds(trprofile_binnum+1))
+  reflcounts = 0
+  trancounts = 0
+  reflprob   = 0d0
+  tranprob   = 0d0
+  reflbounds = 0d0
+  tranbounds = 0d0
+  
+  !actually store in binned fashion
+  call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,reflect,numRealz )
+  call store_in_bins( smtran,lgtran,trprofile_binnum,trancounts,tranbounds,transmit,numRealz )
+
+  tranprob = real(trancounts,8)/numRealz/((lgtran-smtran)/(trprofile_binnum-1))
+  reflprob = real(reflcounts,8)/numRealz/((lgrefl-smrefl)/(trprofile_binnum-1))
+
+  !print to generic file
+  open(unit=100,file="tranreflprofile.txt")
+  310 format("#         tranbounds      trancounts        reflbounds        relfcounts")
+  311 format(f20.10,f20.10,f20.10,f20.10)
+  write(100,310)
+  do ibin=1,trprofile_binnum
+    write(100,311) (tranbounds(ibin)+tranbounds(ibin+1))/2d0,tranprob(ibin),&
+                   (reflbounds(ibin)+reflbounds(ibin+1))/2d0,reflprob(ibin)
+  enddo
+  close(unit=100)
+
+  end subroutine radtrans_bin
+
+
+
+
+
+
+
+
 
 
 
@@ -1537,188 +1677,6 @@ CONTAINS
   time(2) = time(2) + (tt2-tt1)
 
   end subroutine radtrans_MCsim
-
-
-
-
-
-
-
-
-
-  subroutine radtrans_MCoutstats
-  use genRealzvars, only: Adamscase, sig, scatrat, lam, s, numRealz, P
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, plotflux, &
-                    results, pltflux, reflect, transmit, absorb, initcur, fluxfaces, &
-                    fflux, bflux, flux
-
-  integer :: j,i
-  real(8) :: reflection,transmission,absorption
-  real(8) :: reflectionvar,transmissionvar,absorptionvar
-  real(8),allocatable :: fluxave(:),fluxvar(:),fluxinput(:)
-  real(8),allocatable :: fluxavemat1(:),fluxvarmat1(:),fluxavemat2(:),fluxvarmat2(:)
-
-  333 format("reflection        :   ",f8.5," +-    ",f8.5," +-  ",f10.7)
-  334 format("transmission      :   ",f8.5," +-    ",f8.5," +-  ",f10.7)
-  335 format("absorption        :   ",f8.5," +-    ",f8.5," +-  ",f10.7)
-  336 format(f4.1,"     ",i9,"     ",i9,"     ",f10.7,"     ",f10.7)
-  337 format("     ",f10.7,"     ",f10.7,"     ",f10.7,"     ",f10.7)
-  338 format("     ",f10.7,"     ",f10.7,"     ",f10.7)
-  339 format("absorption        :   ",f8.5)
-
-  do j=1,numRealz
-    reflect(j) = reflect(j) / initcur(j)
-    transmit(j)= transmit(j)/ initcur(j)
-  enddo
-
-  call mean_and_var_s( reflect,numRealz,reflection,reflectionvar )
-  call mean_and_var_s( transmit,numRealz,transmission,transmissionvar )
-  call mean_and_var_s( absorb/numParts,numRealz,absorption,absorptionvar )
-  if(rodOrplanar=='planar') absorption = 1.0d0 - reflection - transmission
-
-  write(*,*)
-  write(*,*) "--- Transport: radtrans ---"
-  write(*,*) "                        mean           stdev         relerr   "
-  write(*,333) reflection,sqrt(reflectionvar),sqrt(reflectionvar)/reflection
-  write(*,334) transmission,sqrt(transmissionvar),sqrt(transmissionvar)/transmission
-  if(rodOrplanar=='rod') write(*,335)    absorption,sqrt(absorptionvar),&
-                                                    sqrt(absorptionvar)/absorption
-  if(rodOrplanar=='planar') write(*,339) absorption
-
-  340 format(" interactions     :  ",f5.1," % accept  ",f5.2," ac/p    ",f5.2," rj/p")
-
-  write(*,340) 1.0d0*100,real(radtrans_int,8)/numParts/numRealz,0.0d0
-
-
-  open(unit=16, file="radtrans.txt")
-  341 format(f5.2,"   ",f10.4,f10.4,f10.4,f10.4,"   ",f5.2)
-
-  write(16,*) "#Adamscase refl      refldev   trans     transdev  plot"
-  write(16,341) Adamscase+0.01d0,reflection,sqrt(reflectionvar),&
-                transmission,sqrt(transmissionvar),Adamscase+0.07d0
-  close(unit=16)
-  call system("mv radtrans.txt plots")
-
-
-
-  !print to file in order to plot
-  open(unit=2, file="transout.txt")
-  write(2,336,advance="no") Adamscase,numRealz,numParts,reflection,reflectionvar
-  write(2,337,advance="no") transmission,transmissionvar,absorption,absorptionvar
-  write(2,337,advance="no") sig(1),sig(2),scatrat(1),scatrat(2)
-  write(2,338,advance="no") lam(1),lam(2),s
-  write(2,*)
-  CALL system("mv transout.txt texts")
-  if( results=='remove' ) then
-    CALL system("cat texts/transout_key.txt texts/transout.txt &
-                 > texts/transout_results.txt")
-    write(*,*) "Radtrans results written over (texts/transout_results.txt)"
-  elseif( results=='add' ) then
-    CALL system("cat texts/transout_results.txt texts/transout.txt &
-                 > texts/transout_results2.txt")
-    CALL system("mv texts/transout_results2.txt texts/transout_results.txt")
-    write(*,*) "Radtrans results added to old (texts/transout_results.txt)"
-  endif
-
-
-  !stats for flux
-  if(pltflux(1)/='noplot') then
-
-    if(plotflux(1)=='cell') then  !for cell flux calculations
-      allocate(fluxvar(pfnumcells))
-      allocate(fluxave(pfnumcells))
-      allocate(fluxinput(numRealz))
-
-      if(plotflux(2)=='tot') then
-        do i=1,pfnumcells
-          do j=1,numRealz
-            fluxinput(j) = flux(j,i)/numParts
-          enddo
-          call mean_and_var_s( fluxinput,numRealz,fluxave(i),fluxvar(i) )
-        enddo
-      endif
-
-      if(plotflux(2)=='fb') then
-        allocate(fluxvarmat1(pfnumcells))
-        allocate(fluxvarmat2(pfnumcells))
-        allocate(fluxavemat1(pfnumcells))
-        allocate(fluxavemat2(pfnumcells))
-
-        do i=1,pfnumcells
-          do j=1,numRealz
-            fluxinput(j) = fflux(j,i)/numParts/P(1)
-          enddo
-          call mean_and_var_s( fluxinput,numRealz,fluxavemat1(i),fluxvarmat1(i) )
-        enddo
-
-        do i=1,pfnumcells
-          do j=1,numRealz
-            fluxinput(j) = bflux(j,i)/numParts/P(2)
-          enddo
-          call mean_and_var_s( fluxinput,numRealz,fluxavemat2(i),fluxvarmat2(i) )
-        enddo
-do i=1,4
-  do j=1,numRealz
-    10000 format("fflux(",i3,",",i6,"): ",f18.2,"  bflux(",i3,",",i6,"): ",f18.2)
-    write(*,10000) j,i,fflux(j,i),j,i,bflux(j,i)
-  enddo
-enddo
-
-
-        do i=1,pfnumcells
-          do j=1,numRealz
-            fluxinput(j) = fflux(j,i)/numParts + bflux(j,i)/numParts
-          enddo
-          call mean_and_var_s( fluxinput,numRealz,fluxave(i),fluxvar(i) )
-        enddo
-      endif
-
-    
-      350 format("#cell center,       ave flux,        flux dev")
-      351 format(f15.7,f15.7,f15.7)
-      open(unit=22, file="radMC_cellflux.txt")
-      write(22,350)
-      do i=1,pfnumcells
-        write(22,351) (fluxfaces(i+1)+fluxfaces(i))/2.0d0,fluxave(i),sqrt(fluxvar(i))
-      enddo    
-      close(unit=22)
-
-      if(plotflux(2)=='fb') then
-        360 format("#cell center,    ave flux mat1,   flux dev mat1,    ave flux mat2,   flux dev mat2")
-        361 format(f15.7,f15.7,f15.7,f15.7,f15.7)
-        open(unit=23, file="radMC_fbcellflux.txt")
-        write(23,360)
-        do i=1,pfnumcells
-          write(23,361) (fluxfaces(i+1)+fluxfaces(i))/2.0d0,fluxavemat1(i),sqrt(fluxvarmat1(i)),&
-                                                          fluxavemat2(i),sqrt(fluxvarmat2(i))
-        enddo    
-        close(unit=23)
-      endif
-
-      deallocate(fluxvar)
-      deallocate(fluxave)
-      deallocate(fluxinput)
-      if(plotflux(2)=='fb') then
-        deallocate(fluxvarmat1)
-        deallocate(fluxvarmat2)
-        deallocate(fluxavemat1)
-        deallocate(fluxavemat2)
-      endif
-
-      call system("mv radMC_cellflux.txt plots")
-      if(plotflux(2)=='fb') call system("mv radMC_fbcellflux.txt plots")
-    endif
-
-
-
-  endif
-
-  end subroutine radtrans_MCoutstats
-
-
-
-
-
 
 
   subroutine plot_flux
@@ -2018,146 +1976,6 @@ enddo
   oldpos = newpos !set 'position' in the outer loops to the new position
 !if(larpos==1.0d0) STOP
   end subroutine col_fbflux
-
-
-
-
-
-
-  subroutine MCLeakage_pdfplot
-  !Plots pdfs of transmission and reflection for chosen methods
-  use genRealzvars, only: numRealz
-  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, radWoodr, &
-                          KLWoodr, radWoodt, KLWoodt, transmit
-
-  real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
-
-  !find reflection binning/plotting bounds
-  smrefl = 1d0
-  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') smrefl = min(smrefl,minval(reflect))
-  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') smrefl = min(smrefl,minval(radWoodr))
-  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') smrefl = min(smrefl,minval(KLWoodr))
-  lgrefl = 0d0
-  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') lgrefl = max(lgrefl,maxval(reflect))
-  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') lgrefl = max(lgrefl,maxval(radWoodr))
-  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') lgrefl = max(lgrefl,maxval(KLWoodr))
-  boundbuff = (lgrefl-smrefl)/8d0
-  smrefl = merge(smrefl-boundbuff,0d0,smrefl-boundbuff>0d0)
-  lgrefl = merge(lgrefl+boundbuff,1d0,lgrefl+boundbuff<1d0)
-  smrefl = smrefl - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
-  lgrefl = lgrefl + 0.0000001d0
-
-  !find tranmission binning/plotting bounds
-  smtran = 1d0
-  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') smtran = min(smtran,minval(transmit))
-  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') smtran = min(smtran,minval(radWoodt))
-  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') smtran = min(smtran,minval(KLWoodt))
-  lgtran = 0d0
-  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') lgtran = max(lgtran,maxval(transmit))
-  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') lgtran = max(lgtran,maxval(radWoodt))
-  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') lgtran = max(lgtran,maxval(KLWoodt))  
-  boundbuff = (lgtran-smtran)/8d0
-  smtran = merge(smtran-boundbuff,0d0,smtran-boundbuff>0d0)
-  lgtran = merge(lgtran+boundbuff,1d0,lgtran+boundbuff<1d0)
-  smtran = smtran - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
-  lgtran = lgtran + 0.0000001d0
-
-  !radMC binning and printing
-  call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
-  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') then
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-    call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
-    call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
-  endif
-
-  !radWood binning and printing
-  call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
-  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') then
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-    call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
-    call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
-  endif
-
-  !KLWood binning and printing
-  call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') then
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-    call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
-    call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
-  endif
-
-  !plot, convert, and store
-  if(radMCbinplot=='preview' .or. radWoodbinplot=='preview' .or. KLWoodbinplot=='preview') then
-    call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
-    call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
-  else
-    call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
-    call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
-  endif
-  call system("ps2pdf tranprofile.ps")
-  call system("ps2pdf reflprofile.ps")
-  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
-  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
-
-  end subroutine MCLeakage_pdfplot
-
-
-
-  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-  !Heart of radtrans_resultplot, loads values to bin, and prints to generic text file
-  !for each method
-  use genRealzvars,         only: numRealz
-  use MCvars,               only: trprofile_binnum, reflect, transmit
-  real(8) :: smrefl,lgrefl,smtran,lgtran
-
-  !local vars
-  integer :: ibin
-  integer,allocatable,dimension(:) :: reflcounts,trancounts  
-  real(8),allocatable,dimension(:) :: reflprob,  tranprob
-  real(8),allocatable,dimension(:) :: reflbounds,tranbounds
-
-  !prepare variables
-  if(allocated(reflcounts)) deallocate(reflcounts)
-  if(allocated(trancounts)) deallocate(trancounts)
-  if(allocated(reflprob))   deallocate(reflprob)
-  if(allocated(tranprob))   deallocate(tranprob)
-  if(allocated(reflbounds)) deallocate(reflbounds)
-  if(allocated(tranbounds)) deallocate(tranbounds)
-
-  if(.not. allocated(reflcounts)) allocate(reflcounts(trprofile_binnum))
-  if(.not. allocated(trancounts)) allocate(trancounts(trprofile_binnum))
-  if(.not. allocated(reflprob))   allocate(reflprob(trprofile_binnum))
-  if(.not. allocated(tranprob))   allocate(tranprob(trprofile_binnum))
-  if(.not. allocated(reflbounds)) allocate(reflbounds(trprofile_binnum+1))
-  if(.not. allocated(tranbounds)) allocate(tranbounds(trprofile_binnum+1))
-  reflcounts = 0
-  trancounts = 0
-  reflprob   = 0d0
-  tranprob   = 0d0
-  reflbounds = 0d0
-  tranbounds = 0d0
-  
-  !actually store in binned fashion
-  call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,reflect,numRealz )
-  call store_in_bins( smtran,lgtran,trprofile_binnum,trancounts,tranbounds,transmit,numRealz )
-
-  tranprob = real(trancounts,8)/numRealz/((lgtran-smtran)/(trprofile_binnum-1))
-  reflprob = real(reflcounts,8)/numRealz/((lgrefl-smrefl)/(trprofile_binnum-1))
-
-  !print to generic file
-  open(unit=100,file="tranreflprofile.txt")
-  310 format("#         tranbounds      trancounts        reflbounds        relfcounts")
-  311 format(f20.10,f20.10,f20.10,f20.10)
-  write(100,310)
-  do ibin=1,trprofile_binnum
-    write(100,311) (tranbounds(ibin)+tranbounds(ibin+1))/2d0,tranprob(ibin),&
-                   (reflbounds(ibin)+reflbounds(ibin+1))/2d0,reflprob(ibin)
-  enddo
-  close(unit=100)
-
-  end subroutine radtrans_bin
-
-
 
 
 
