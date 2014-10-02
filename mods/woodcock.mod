@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/Woodcock.f90
-MD5:dd2edbfca437b2e4335d60eca71ddaf7 -- If you edit this, you'll get what you deserve.
+MD5:8b06d1f0d90e4d08c7a4280b6b1e2d71 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -287,19 +287,16 @@ UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 305 0 (306
 308 'woodcock' 'woodcock' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-309 'woodcockkloutstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
-0 () () 0 () () () 0 0)
-310 'woodcockmc' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 311 0 (312) ()
+309 'woodcockmc' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 310 0 (311) ()
 0 () () () 0 0)
-313 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
+312 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)
-314 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+313 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-315 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+314 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 8 'oldpos' '' '' 7 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
@@ -666,7 +663,7 @@ ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 307 'numofvalues' '' '' 305 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-312 'j' '' '' 311 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+311 'j' '' '' 310 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 )
 
@@ -696,5 +693,5 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 'select_from_pdf' 0 262 'step' 0 269 'stocmc_stats' 0 270 'stol' 0 274
 'store_in_bins' 0 275 'time_report' 0 284 'timeman' 0 291 'timereport' 0
 292 'transplot' 0 293 'uq_mc' 0 296 'utilities' 0 299 'var_p' 0 300
-'var_s' 0 304 'woodcock' 0 308 'woodcockkloutstats' 0 309 'woodcockmc' 0
-310 'woodnegstats' 0 313 'xl' 0 314 'xr' 0 315)
+'var_s' 0 304 'woodcock' 0 308 'woodcockmc' 0 309 'woodnegstats' 0 312
+'xl' 0 313 'xr' 0 314)

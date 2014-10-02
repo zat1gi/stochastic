@@ -106,7 +106,6 @@ stop
 !  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
 
   !!MC stats and plots.  Some of this needs to be in UQ wrapper, some just passed to 'MCprintstats'
-  if(KLWood=='yes') call WoodcockKLoutstats
   if(pltflux(1)/='noplot') call plot_flux
 
 
