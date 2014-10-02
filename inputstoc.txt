@@ -1,6 +1,6 @@
-  134000,         Advance random see how far?
+  1000,         Advance random see how far?
   !--- Geometry ---!
-  3.1,           Adamscase option, if==0, then user input for next three parameters
+  3.2,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals
   0.9071,0.9071,       Scattering Ratios
   0.5,2.0,             Lambda path length vals
@@ -10,11 +10,11 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  2,             Number of eigenvalues
+  1,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,no,yes,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
 

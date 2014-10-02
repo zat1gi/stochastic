@@ -81,14 +81,16 @@ CONTAINS
 
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
-
+!print *
+!print *
+!print *,"mu: ",mu,"   after new sourceparticle"
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
       flEscapeDir = 'clean'
       flExit      = 'clean'
       newpos      = 101010.0d0 !later throw error if still equal this
-
+!print *,"mu: ",mu," after new pathlength"
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
 
@@ -297,7 +299,7 @@ CONTAINS
 
       !tally flux
       if(flfluxplot) call MCfluxtallywrapper( j,icase )
-
+!print *,"mu: ",mu," after fluxtally"
 
       !Evaluate scatter
       if(flIntType=='scatter') then     !scatter
@@ -318,6 +320,7 @@ CONTAINS
             if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
             if(rodOrplanar=='planar') mu = newmu()
         end select
+!print *,"mu: ",mu,"   after scatter event"
       endif
 
       !Evaluate absorption
@@ -751,6 +754,7 @@ CONTAINS
   character(12) :: flfluxtallytype
   absmu  = abs(mu)
   dx     = fluxfaces(2)-fluxfaces(1)
+!print *,"mu: ",mu," fluxtally start"
 
   !material irrespective
   if( flfluxtallytype=='irrespective' ) then
@@ -780,6 +784,7 @@ CONTAINS
       enddo
     endif !point or track
   endif !mat irrespective
+!print *,"mu: ",mu," fluxtally end"
 
   !material respective
   if( flfluxtallytype=='respective') then
