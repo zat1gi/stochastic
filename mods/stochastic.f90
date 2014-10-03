@@ -100,7 +100,6 @@ stop
     Wood='KL'
     do j=1,KLrnumRealz !for Woodcockreconstruct later
       call WoodcockMC( j )
-      if(mod(j,KLrprintat)==0) call KLWood_time( j )
     enddo
   endif
 

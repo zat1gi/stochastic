@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/timeman.f90
-MD5:dcb1dc453e1741f3a1b92d8b4e6b0b31 -- If you edit this, you'll get what you deserve.
+MD5:834a175310c0e22a9aab98f861d50e58 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -20,21 +20,18 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 3 0 (4 5 6) ()
 7 'klr_time' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 8 0 (9) () 0 () ()
 () 0 0)
-10 'klwood_time' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+10 'radtrans_time' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
 DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 11 0 (12) () 0
 () () () 0 0)
-13 'radtrans_time' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 14 0 (15) () 0
-() () () 0 0)
-16 'radtrans_timeupdate' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 17
-0 (18 19 20) () 0 () () () 0 0)
-21 'time_report' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 22 0 (23 24 25
-26 27) () 0 () () () 0 0)
-28 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+13 'radtrans_timeupdate' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 14
+0 (15 16 17) () 0 () () () 0 0)
+18 'time_report' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 19 0 (20 21 22
+23 24) () 0 () () () 0 0)
+25 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
-29 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+26 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
 DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 ()
 () () 0 0)
 4 'j' '' '' 3 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
@@ -50,25 +47,23 @@ DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 15 'j' '' '' 14 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-18 'j' '' '' 17 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
-0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-19 'icase' '' '' 17 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+16 'icase' '' '' 14 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-20 'tt1' '' '' 17 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
+17 'tt1' '' '' 14 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-23 'type' '' '' 22 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+20 'type' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 0 CHARACTER ((CONSTANT (INTEGER 4 0
 0 0 INTEGER ()) 0 '19'))) 0 0 () () 0 () () () 0 0)
-24 'timedone' '' '' 22 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+21 'timedone' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-25 'j' '' '' 22 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
+22 'j' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-26 'numj' '' '' 22 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+23 'numj' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-27 'esttime' '' '' 22 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+24 'esttime' '' '' 19 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 )
 
-('kl_timeupdate' 0 2 'klr_time' 0 7 'klwood_time' 0 10 'radtrans_time' 0
-13 'radtrans_timeupdate' 0 16 'time_report' 0 21 'timeman' 0 28
-'timereport' 0 29)
+('kl_timeupdate' 0 2 'klr_time' 0 7 'radtrans_time' 0 10
+'radtrans_timeupdate' 0 13 'time_report' 0 18 'timeman' 0 25 'timereport'
+0 26)

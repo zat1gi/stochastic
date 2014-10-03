@@ -241,22 +241,6 @@ CONTAINS
 
 
 
-  subroutine KLWood_time( j )
-  use timevars, only: time
-  use KLvars, only: KLrnumRealz
-  integer :: j
-
-  real(8) :: timedone,esttime
-  character(19) :: type='KLWood              '
-
-  timedone=time(7)/60.0d0
-  esttime = timedone*KLrnumRealz/j
-  call time_report( type,timedone,j,KLrnumRealz,esttime )
-
-  end subroutine KLWood_time
-
-
-
 
   subroutine KLr_time( j )
   use timevars, only: time
