@@ -103,7 +103,6 @@ stop
       if(mod(j,KLrprintat)==0) call KLWood_time( j )
     enddo
   endif
-!  if(radMC=='yes' .OR. radWood=='yes' .OR. KLWood=='yes')  call transplot( Adamscase )
 
 
 end program stochastic

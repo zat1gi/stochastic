@@ -331,25 +331,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
 
 
 
-  subroutine transplot( Adamscase )
-  real(8) :: Adamscase
-
-  open(unit=17, file="tempAdams")                                  !create script
-  650 format("grep '",f3.1,"         ' 'texts/transAdams_plot.txt' > plots/transAdams.txt")
-  write(17,650) Adamscase
-  close(unit=17)
-  call system("chmod u+x tempAdams")
-  call system("./tempAdams")                                       !use script
-  call system("rm tempAdams")                                      !discard script
-
-  call system("gnuplot plots/transportgnus/transport.gnu")         !create plot
-  call system("ps2pdf transport.ps transport.pdf")                 !other formats
-  call system("ps2eps transport.ps")
-  call system("mv transport.ps transport.pdf transport.eps plots") !archive
-
-  end subroutine transplot
-
-
 
   subroutine KLWood_binmaxes( j )
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave
