@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/KLreconstruct.f90
-MD5:08cdfc2d4377a2c6d461bb4479bd71f2 -- If you edit this, you'll get what you deserve.
+MD5:38c540cdfc4b7bcd21731283e719ffc0 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -17,11 +17,11 @@ MD5:08cdfc2d4377a2c6d461bb4479bd71f2 -- If you edit this, you'll get what you de
 (2 'rn_seed' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 3 ()
 () 0 () () () 0 0)
-4 'rn_nps' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
-UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 0 ()
-() 0 () () () 0 0)
 3 'rn_count' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 4 ()
+() 0 () () () 0 0)
+4 'rn_nps' 'mcnp_random' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0 IN_COMMON) (INTEGER 8 0 0 0 INTEGER ()) 0 0 ()
 () 0 () () () 0 0)
 5 '__convert_r4_r8' '(intrinsic)' '' 1 ((PROCEDURE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0 FUNCTION ELEMENTAL PURE) (REAL 8 0 0 0
@@ -157,28 +157,25 @@ UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 143 'store_in_bins' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (UNKNOWN 0 0 0 0
 UNKNOWN ()) 144 0 (145 146 147 148 149 150 151) () 0 () () () 0 0)
-152 'time_report' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 153 0 (154 155
-156 157 158) () 0 () () () 0 0)
-159 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+152 'timeman' 'timeman' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-160 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
+153 'timereport' 'timeman' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
 DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 ()
 () () 0 0)
-161 'utilities' 'utilities' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
+154 'utilities' 'utilities' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-162 'var_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
-UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 163 0 (164
-165) () 162 () () () 0 0)
-166 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
-UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 167 0 (168
-169) () 166 () () () 0 0)
-170 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+155 'var_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 156 0 (157
+158) () 155 () () () 0 0)
+159 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
+UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 160 0 (161
+162) () 159 () () () 0 0)
+163 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-171 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+164 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 10 't1' '' '' 9 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
@@ -356,29 +353,18 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '1') (VARIABLE (INTEGER 4 0 0 0 INTEGER ())
 0 151 ())) 0 () () () 0 0)
 151 'numvar' '' '' 144 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-154 'type' '' '' 153 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (CHARACTER 1 0 0 0 CHARACTER ((CONSTANT (INTEGER 4 0
-0 0 INTEGER ()) 0 '19'))) 0 0 () () 0 () () () 0 0)
-155 'timedone' '' '' 153 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-156 'j' '' '' 153 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
-0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-157 'numj' '' '' 153 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
-158 'esttime' '' '' 153 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-UNKNOWN 0 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
-164 'values' '' '' 163 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+157 'values' '' '' 156 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 () 0 0)
-165 'numofvalues' '' '' 163 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+158 'numofvalues' '' '' 156 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-168 'values' '' '' 167 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+161 'values' '' '' 160 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0 DIMENSION DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 () 0 0)
-169 'numofvalues' '' '' 167 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+162 'numofvalues' '' '' 160 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
 )
@@ -396,5 +382,5 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 'rn_query_first' 0 117 'rn_set' 0 120 'rn_test_basic' 0 124
 'rn_test_mixed' 0 127 'rn_test_skip' 0 130 'rn_update_stats' 0 133
 'select_from_pdf' 0 134 'step' 0 141 'stol' 0 142 'store_in_bins' 0 143
-'time_report' 0 152 'timeman' 0 159 'timereport' 0 160 'utilities' 0 161
-'var_p' 0 162 'var_s' 0 166 'xl' 0 170 'xr' 0 171)
+'timeman' 0 152 'timereport' 0 153 'utilities' 0 154 'var_p' 0 155 'var_s'
+0 159 'xl' 0 163 'xr' 0 164)

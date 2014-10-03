@@ -201,30 +201,5 @@ CONTAINS
 
 
 
-
-
-
-
-
-
-
-  subroutine time_report( type,timedone,j,numj,esttime )
-  use timevars, only: t1
-  integer :: j,numj
-  real(8) :: timedone,esttime
-  character(19) :: type
-
-  real(8) :: tottime,t2
-
-  call cpu_time(t2)
-  tottime = (t2-t1)/60.0d0
-
-  1101 format(A19,i10," of",i10," realz       tot:",f7.2," time/est:",f7.2,"/",f7.2," min")
-  write(*,1101) type,j,numj,tottime,timedone,esttime
-
-  end subroutine time_report
-
-
-
 end module timeman
 
