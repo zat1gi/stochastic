@@ -208,25 +208,6 @@ CONTAINS
 
 
 
-
-  subroutine KLr_time( j )
-  use timevars, only: time
-  use KLvars, only: KLrnumRealz
-  integer :: j
-
-  real(8) :: timedone,esttime
-  character(19) :: type='KLrec              '
-
-  timedone=time(6)/60.0d0
-  esttime = timedone*KLrnumRealz/j
-  call time_report( type,timedone,j,KLrnumRealz,esttime )
-
-  end subroutine KLr_time
-
-
-
-
-
   subroutine time_report( type,timedone,j,numj,esttime )
   use timevars, only: t1
   integer :: j,numj
