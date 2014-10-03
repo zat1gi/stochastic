@@ -90,14 +90,12 @@ stop
     if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( j )
     if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
-    if(radMC=='yes' .or. KLres=='yes' .or. radWood=='yes') call radtrans_time( j )
   enddo
   call genReal_stats
   if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
 
   !!radKL transport
   if(KLWood=='yes') then
-    Wood='KL'
     do j=1,KLrnumRealz !for Woodcockreconstruct later
       call WoodcockMC( j )
     enddo

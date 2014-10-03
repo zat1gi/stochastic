@@ -209,39 +209,6 @@ CONTAINS
 
 
 
-  subroutine radtrans_time( j )
-  use timevars, only: time
-  use genRealzvars, only: numRealz
-  use KLvars, only: KLres
-  use MCvars, only: trannprt, radMC, radWood
-  integer :: j
-
-  real(8) :: timedone,esttime
-  character(19) :: type
-
-  if( mod(j,trannprt)==0 ) then
-    if(radMC=='yes' .AND. KLres=='yes' .AND. radWood=='yes') type='radMC,KLres,radWood'
-    if(radMC=='yes' .AND. KLres=='yes' .AND. radWood=='no')  type='radMC,KLres        '
-    if(radMC=='yes' .AND. KLres=='no' .AND. radWood=='yes')  type='radMC,radWood      '
-    if(radMC=='yes' .AND. KLres=='no' .AND. radWood=='no')   type='radMC              '
-    if(radMC=='no' .AND. KLres=='yes' .AND. radWood=='yes')  type='KLres,radWood      '
-    if(radMC=='no' .AND. KLres=='yes' .AND. radWood=='no')   type='KLres              '
-    if(radMC=='no' .AND. KLres=='no' .AND. radWood=='yes')   type='radWood            '
-
-    timedone=time(1)
-    if(radMC=='yes') timedone=timedone+time(2)
-    if(KLres=='yes') timedone=timedone+time(5)
-    if(radWood=='yes') timedone=timedone+time(3)
-    timedone=timedone/60.0d0
-    esttime = timedone*numRealz/j
-    call time_report( type,timedone,j,numRealz,esttime )
-  endif
-
-  end subroutine radtrans_time
-
-
-
-
   subroutine KLr_time( j )
   use timevars, only: time
   use KLvars, only: KLrnumRealz
