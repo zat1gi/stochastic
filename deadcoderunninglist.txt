@@ -7,9 +7,6 @@ plotflux?
 initcur
 flux?
 
-Woodt
-Woodr
-Wooda
 Wood_rej?
 radWood_rej?
 KLWood_rej?
@@ -17,9 +14,6 @@ numpnSamp?
 areapnSamp?
 fWoodf
 bWoodf
-fKLWoodf
-bKLWoodf
-KLWoodf
 Woodf
 binmaxind?
 binmaxes?
