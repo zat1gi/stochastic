@@ -145,7 +145,6 @@ if(print=='yes') print *,
         exit
       endif
 
-      if(Wood=='rad') woodrat= radWood_actsig(position,sig)/ceilsig
       if(Wood=='KL')  woodrat= KLrxi_point(j,position)/ceilsig
       if(woodrat>1.0d0) then
         print *,"j: ",j,"  woodrat: ",woodrat
@@ -312,25 +311,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   close(unit=100)
   call system("mv Woodnegstats.out texts")
   end subroutine Woodnegstats
-
-
-
-  function radWood_actsig(position,sig)
-  use genRealzvars, only: matType, matLength
-  real(8) :: position,sig(2),radWood_actsig
-
-  integer :: i
-
-  i=1
-  do
-    if(matLength(i)<=position .AND. matLength(i+1)>position) then
-      radWood_actsig=sig(matType(i))
-      exit
-    endif 
-    i=i+1
-  enddo
-
-  end function radWood_actsig
 
 
 end module
