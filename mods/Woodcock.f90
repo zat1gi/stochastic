@@ -89,7 +89,6 @@ CONTAINS
     if(print=='yes') print *,"i:",i,"binmaxind(i):",binmaxind(i),"   nceilbin",nceilbin
   enddo
 
-  if(Wood=='KL')  call KLWood_binmaxes( j )
 
   !create forward/backward motion max vectors
   bbinmax(1)=binmaxes(1)
@@ -318,58 +317,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   close(unit=100)
   call system("mv Woodnegstats.out texts")
   end subroutine Woodnegstats
-
-
-
-
-
-
-
-  subroutine KLWood_binmaxes( j )
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
-  use MCvars, only: binmaxind, binmaxes, nceilbin
-  integer :: j
-
-  integer :: i,k
-  integer :: numinnersteps = 7
-  integer :: numrefine     = 5
-  real(8) :: safetyfactor  = 1.1d0
-  real(8) :: innerstep,maxsig,maxpos,xpos,xsig,xpos1,xsig1,xpos2,xsig2
-
-  do i=1,nceilbin
-    innerstep = (binmaxind(2)-binmaxind(1)) / (numinnersteps-1)
-    maxsig=0.0d0             !find initial max val
-    maxpos=0.0d0
-    do k=1,numinnersteps
-      xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,xpos)
-      if(xsig>maxsig) then
-        maxsig=xsig
-        maxpos=xpos
-      endif
-    enddo
-    do k=1,numrefine     !refine
-      innerstep=innerstep/2
-      xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,xpos1)
-      xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,xpos2)
-      if(xsig1>maxsig .AND. xsig1>xsig2) then
-        maxsig=xsig1
-        maxpos=xpos1
-      elseif(xsig2>maxsig .AND. xsig2>xsig1) then
-        maxsig=xsig2
-        maxpos=xpos2
-      else
-        maxpos=xpos
-      endif
-    enddo
-    binmaxes(i)=maxsig*safetyfactor   !assign maxsig
-
-  enddo
-
-  end subroutine KLWood_binmaxes
-
 
 
 
