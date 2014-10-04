@@ -7,12 +7,18 @@
 	-efficiency
 		-make ‘dx’ a global variable?
 		-take a look at bins for ceiling determination for Woodcock sampling
+		-set each func/sub to only load when actually needed
 
 	-better code practice
-		-set each func/sub to only load when actually needed
 		-get rid of dual functions KLrxi_point(2)
 		-'!consider using internal_init_i' in several places
 		-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
 		-in 'MCfluxPrint' consider removing these plots somewhere else, like 'clearreports'
 		-consolidate 'KLmeanadjust.f90' into 'KLreconstruct.f90'
 		-maybe remove in-module global variable style from 'KLmeanadjust.f90'
+
+	-new functionality
+		-reconstructions material based, not total xs based
+		-add MLMC_UQ in new UQ module with new UQvars variable module
+		-interface with Sn code, so that this code is the UQ wrapper, and that code a dir here
+		-in MLMC_UQ wrapper, load geometries as in Sandia code, implement using flux as QoI
