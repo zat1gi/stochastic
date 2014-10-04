@@ -224,48 +224,6 @@ CONTAINS
 
 
 
-  subroutine matdxs_collect( j )
-  !This subroutine collects how much of each material is in each segment defined by
-  !fluxfaces.
-  use genRealzvars, only: numRealz, nummatSegs, matType, matLength, matdxs
-  use MCvars, only: pfnumcells, fluxfaces
-  integer :: j
-
-  integer :: i,f
-  real(8) :: dx
-
-  if(j==1) allocate(matdxs(numRealz,pfnumcells,2))
-
-  dx = fluxfaces(2)-fluxfaces(1)
-
-  do i=1,nummatSegs
-    do f=1,pfnumcells
-      !whole bin                  i  f      f   i
-      if(     matLength(i)<=fluxfaces(f) .and. matLength(i+1)>=fluxfaces(f+1) ) then
-        matdxs(j,f,matType(i)) = matdxs(j,f,matType(i)) + &
-                               (fluxfaces(f+1) - fluxfaces(f) ) / (dx * numRealz)
-      !some on right of bin          f   i  f   i
-      elseif( matLength(i)>=fluxfaces(f) .and. matLength(i)<fluxfaces(f+1) &
-                                         .and. matLength(i+1)>fluxfaces(f+1) )  then
-        matdxs(j,f,matType(i)) = matdxs(j,f,matType(i)) + &
-                               ( fluxfaces(f+1) - matLength(i) ) / (dx * numRealz)
-      !some on left of bin        i  f   i  f
-      elseif( matLength(i)<fluxfaces(f)  .and. matLength(i+1)>fluxfaces(f) &
-                                         .and. matLength(i+1)<=fluxfaces(f+1) ) then
-        matdxs(j,f,matType(i)) = matdxs(j,f,matType(i)) + &
-                               ( matLength(i+1) - fluxfaces(f) ) / (dx * numRealz)
-      !or some in middle of bin.     f i  i f
-      elseif( matLength(i)>=fluxfaces(f) .and. matLength(i+1)<=fluxfaces(f+1) ) then
-        matdxs(j,f,matType(i)) = matdxs(j,f,matType(i)) + &
-                               ( matLength(i+1) - matLength(i) ) / (dx * numRealz)
-      endif
-    enddo
-  enddo
-
-
-  end subroutine matdxs_collect
-
-
 
 
   subroutine matdxs_stats_plot
