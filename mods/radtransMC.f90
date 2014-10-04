@@ -1643,25 +1643,21 @@ CONTAINS
         if( mu>=0 ) then
           i=i+1
 !print *,"particle: ",o,"  transmit"
-          if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fflux,bflux,j,mu)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
 !print *,"particle: ",o,"  reflect"
-          if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fflux,bflux,j,mu)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
           if(i==1)              exit
           i=i-1
         endif
       elseif( sc_ab<scatrat(matType(i)) ) then          !scatter
 !print *,"particle: ",o,"  scatter"
-        if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fflux,bflux,j,mu)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
 !print *,"particle: ",o,"  absorb"
                                 absorb(j)=absorb(j)+1.0d0 !absorb
-        if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fflux,bflux,j,mu)
                                 exit
       endif
 
@@ -1715,105 +1711,6 @@ CONTAINS
 
   end function internal_init_i
 
-
-
-!! Radtrans and Woodcock funcs and subs
-
-
-  subroutine col_fbflux( oldpos,newpos,fflux,bflux,j,mu )
-  !tallies flux contribution in each material withing fluxface bins 
-  use genRealzvars, only: matType, matLength
-  use MCvars, only: pfnumcells, plotflux, pltflux, fluxfaces
-  integer :: j
-  real(8) :: fflux(:,:),bflux(:,:)
-  real(8) :: oldpos,newpos,mu,absmu
-
-  integer :: i,k
-  real(8) :: smallpos,larpos,dx,fhit,mhit,lasthit
-  logical :: endflag
-  character(6) :: status !'before','middle'
-  if(pltflux(1)/='noplot') then
-    endflag  = .false.
-    status   = 'before'
-    smallpos = merge(oldpos,newpos,oldpos<newpos)
-    larpos   = merge(oldpos,newpos,oldpos>=newpos)
-
-!print *, "oldpos  : ",oldpos,"     newpos: ",newpos
-!print *,"mu          : ",mu
-!print *,"fluxfaces(1): ",fluxfaces(1),"   fluxfaces(2): ",fluxfaces(2)
-!print *,"flux(j,1)   : ",flux(j,1),"    flux(j,2)   : ",flux(j,2)
-    absmu    = abs(mu)
-    dx       = fluxfaces(2)-fluxfaces(1)
-!    do i=1,pfnumcells
-      if(plotflux(1)=='cell') then  !cell flux calculation, so far only one
-        k=0 !find initial fluxface
-        do
-          k=k+1
-          if(fluxfaces(k)>smallpos) then
-            fhit = fluxfaces(k)
-            exit
-          endif
-        enddo
-        i=0 !find initial material face
-        do
-          i=i+1
-          if(matLength(i)>smallpos) then
-            mhit = matLength(i)
-            exit
-          endif
-        enddo
-!print *,"matLength()s: ",matLength(1)," ",matLength(2)," ",matLength(3)," ",matLength(4)
-!print *,"fluxfaces   : ",fluxfaces(1)," ",fluxfaces(2)," ",fluxfaces(3)
-!print *,"oldpos      : ",oldpos," newpos: ",newpos
-!print *,"fhit        : ",fhit,"   mhit: ",mhit,"   smallpos: ",smallpos,"  larpos: ",larpos
-        lasthit = smallpos
-!print *
-!print *
-!print *,"smallpos:",smallpos,"  larpos:",larpos
-!print *
-        do
-!print *,"    fhit:",fhit,"    mhit:",mhit
-          if(fhit<mhit) then
-            if(matType(i-1)==1) fflux(j,k-1) = fflux(j,k-1) + (fhit-lasthit)/absmu/dx
-            if(matType(i-1)==2) bflux(j,k-1) = bflux(j,k-1) + (fhit-lasthit)/absmu/dx
-
-!print *,"fhit: ",fhit,"    fflux(j,k-1): ",fflux(j,k-1)
-            lasthit=fhit
-
-            if(fhit<larpos) then
-              k=k+1
-              fhit=fluxfaces(k)
-            elseif(fhit>=larpos) then
-              fhit=larpos
-            endif
-
-          elseif(mhit<=fhit) then
-            if(matType(i-1)==1) fflux(j,k-1) = fflux(j,k-1) + (mhit-lasthit)/absmu/dx
-            if(matType(i-1)==2) bflux(j,k-1) = bflux(j,k-1) + (mhit-lasthit)/absmu/dx
-            lasthit=mhit
-
-            if(mhit<larpos) then
-              i=i+1
-              mhit=matLength(i)
-            elseif(mhit>=larpos) then
-              mhit=larpos
-            endif
-
-          endif
-!print *,"fhit: ",fhit,"   larpos: ",larpos,"    mhit: ",mhit
-        if(endflag) exit
-        endflag = fhit .ge. larpos .AND. mhit .ge. larpos
-!        if(fhit>=larpos .AND. mhit>=larpos) endflag = .true.
-        enddo
-      endif
-
-    !enddo
-  endif
-!print *,"fflux(1,1)   : ",fflux(1,1),"    bflux(1,1)   : ",bflux(1,1)
-!print *
-  oldpos = newpos !set 'position' in the outer loops to the new position
-!if(larpos==1.0d0) STOP
-  end subroutine col_fbflux
 
 
 
