@@ -1643,13 +1643,11 @@ CONTAINS
         if( mu>=0 ) then
           i=i+1
 !print *,"particle: ",o,"  transmit"
-          if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),flux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fflux,bflux,j,mu)
           if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
           if(i==nummatSegs+1) exit
         else
 !print *,"particle: ",o,"  reflect"
-          if(plotflux(2)=='tot') call adv_pos_col_flux(position,matLength(i),flux,j,mu)
           if(plotflux(2)=='fb') call col_fbflux(position,matLength(i),fflux,bflux,j,mu)
           if(i==1)              reflect(j)=reflect(j)+1        !reflect
           if(i==1)              exit
@@ -1657,13 +1655,11 @@ CONTAINS
         endif
       elseif( sc_ab<scatrat(matType(i)) ) then          !scatter
 !print *,"particle: ",o,"  scatter"
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,flux,j,mu)
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fflux,bflux,j,mu)
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
         if(rodOrplanar=='planar') mu = newmu()
       else
 !print *,"particle: ",o,"  absorb"
-        if(plotflux(2)=='tot') call adv_pos_col_flux(position,position+dc*mu,flux,j,mu)
                                 absorb(j)=absorb(j)+1.0d0 !absorb
         if(plotflux(2)=='fb') call col_fbflux(position,position+dc*mu,fflux,bflux,j,mu)
                                 exit
@@ -1722,60 +1718,6 @@ CONTAINS
 
 
 !! Radtrans and Woodcock funcs and subs
-
-
-  subroutine adv_pos_col_flux( oldpos,newpos,flux,j,mu )
-  use MCvars, only: pfnumcells, plotflux, pltflux, fluxfaces
-  integer :: j
-  real(8) :: oldpos,newpos,mu,absmu
-  real(8) :: flux(:,:)
-
-  integer :: i
-  real(8) :: smallpos,larpos,dx
-  character(6) :: status !'before','middle'
-
-  if(pltflux(1)/='noplot') then
-    status   = 'before'
-    smallpos = merge(oldpos,newpos,oldpos<newpos)
-    larpos   = merge(oldpos,newpos,oldpos>newpos)
-
-!print *, "oldpos  : ",oldpos,"     newpos: ",newpos
-!print *,"mu          : ",mu
-!print *,"fluxfaces(1): ",fluxfaces(1),"   fluxfaces(2): ",fluxfaces(2)
-!print *,"flux(j,1)   : ",flux(j,1),"    flux(j,2)   : ",flux(j,2)
-    absmu    = abs(mu)
-    dx       = fluxfaces(2)-fluxfaces(1)
-    do i=1,pfnumcells
-
-      if(plotflux(1)=='cell') then  !cell flux calculation, so far only one
-        if(status=='before') then
-          if(fluxfaces(i)<=smallpos .AND. smallpos<fluxfaces(i+1)) then
-            if(larpos<=fluxfaces(i+1)) then
-              flux(j,i)=flux(j,i)+(larpos-smallpos)*1.0d0/absmu/dx
-              exit
-            else
-              flux(j,i)=flux(j,i)+(fluxfaces(i+1)-smallpos)*1.0d0/absmu/dx
-              status = 'middle'
-            endif
-          endif
-        elseif(status=='middle') then
-          if(fluxfaces(i+1)<=larpos) then
-              flux(j,i)=flux(j,i)+1.0d0/absmu
-          else
-              flux(j,i)=flux(j,i)+(larpos-fluxfaces(i))*1.0d0/absmu/dx
-              exit
-          endif
-        endif
-      endif 
-
-    enddo
-  endif
-!print *,"flux(j,1)   : ",flux(j,1),"    flux(j,2)   : ",flux(j,2)
-!print *
-  oldpos = newpos !set 'position' in the outer loops to the new position
-
-  end subroutine adv_pos_col_flux
-
 
 
   subroutine col_fbflux( oldpos,newpos,fflux,bflux,j,mu )

@@ -83,21 +83,10 @@ stop
 
 
 
-  !!genRealz, KLresearch, radtrans, radWood
-  if(radWood=='yes') Wood='rad'
-  do j=1,numRealz
-    call genReal( j,'binary ' )
     if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
-  enddo
-  call genReal_stats
 
-  !!radKL transport
-  if(KLWood=='yes') then
-    do j=1,KLrnumRealz !for Woodcockreconstruct later
-      call WoodcockMC( j )
-    enddo
-  endif
+    call WoodcockMC( j )
 
 
 end program stochastic
