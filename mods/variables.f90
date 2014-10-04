@@ -163,8 +163,6 @@ module MCvars
   real(8), allocatable :: stocMC_fluxmat1(:,:,:)! flux of MC meths in mat1, '2' is mean and var
   real(8), allocatable :: stocMC_fluxmat2(:,:,:)! flux of MC meths in mat2
 
-  real(8), allocatable :: initcur(:) !here for politics only, finish new MC driver, get rid of me
-
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: transmit(:)          ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: absorb(:)            ! slab absorption tally, TMC on binary mixtures

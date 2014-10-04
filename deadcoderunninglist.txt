@@ -3,7 +3,6 @@ radtrans_int?
 sourceType?
 plotflux?
 initcur
-flux?
 
 
 Wood_rej?
