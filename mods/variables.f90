@@ -1,7 +1,8 @@
 module timevars
   implicit none
   real(8), allocatable :: time(:)              ! keeps cumulative time data for everything
-                                               ! genR,radMC,radWood,KLnoise,KLcol,KLrec,KLWood,LPMC,atmixMC
+                                               ! 1)genR, 2)radMC, 3)radWood, 4)KLnoise, 
+                                               ! 5)KLcol, 6)KLrec, 7)KLWood, 8)LPMC, 9)atmixMC
   integer, parameter   :: ntime = 9            ! size of 'time' array
   real(8)              :: t1                   ! initial computer time for run
   real(8)              :: runtime              ! total cpu time code has been running
