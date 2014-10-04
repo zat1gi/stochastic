@@ -548,7 +548,7 @@ CONTAINS
   real(8) :: position,sig(2),radWood_actsig2
 
   integer :: i
-
+  !consider using internal_init_i
   i=1
   do
     if(matLength(i)<=position .AND. matLength(i+1)>position) then
@@ -569,6 +569,7 @@ CONTAINS
 
   integer :: i
 
+  !consider using internal_init_i
   do i=1,nceilbin
     if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
       ceilsigfunc2 = binmax(i)
@@ -583,7 +584,7 @@ CONTAINS
   use genRealzvars, only: matType, matLength
   real(8) :: position,scatrat(2),radWood_actscatrat2
   integer :: i
-
+  !consider using internal_init_i
   i=1
   do
     if(matLength(i)<=position .AND. matLength(i+1)>position) then
@@ -695,6 +696,7 @@ CONTAINS
   maxpos = max(oldposition,position)
   dx     = fluxfaces(2)-fluxfaces(1)
   !set value for 'i'
+  !consider using internal_init_i
   i=1
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
     do
@@ -1558,122 +1560,6 @@ CONTAINS
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  subroutine radtrans_MCsim( j )
-!this is the old subroutine for radMC, doomed to be deleted when UQ_MC and MCtransport overshadow it
-  use timevars, only: time
-  use genRealzvars, only: sig, scatrat, numRealz, nummatSegs, matType, matLength, s
-  use MCvars, only: numParts, radtrans_int, pfnumcells, rodOrplanar, sourceType, &
-                    plotflux, pltflux, reflect, transmit, absorb, initcur, fluxfaces, &
-                    fflux, bflux, flux
-  integer  :: j
-  real(8)  :: tt1,tt2
-
-  integer  :: i,z,o
-  real(8)  :: mu,db,dc,position,sc_ab,sigma
-
-  call cpu_time(tt1)
-  if( j==1 ) then
-    allocate(transmit(numRealz))
-    allocate(reflect(numRealz))
-    allocate(absorb(numRealz))
-    allocate(initcur(numRealz))
-    transmit     =0.0d0
-    reflect      =0.0d0
-    absorb       =0.0d0
-    initcur      =0.0d0
-    radtrans_int =0
-  endif
-  do o=1,numParts !o-loop, through per particle
-
-    if( sourceType=='left' ) then
-      position = 0.0d0
-      i        = 1
-      mu       = 1.0d0
-      if(rodOrplanar=='planar') mu = isoboundmu()
-    elseif( sourceType=='intern') then
-      position = s * rang()
-      i        = internal_init_i(nummatSegs)
-      mu       = merge(1.0d0,-1.0d0,rang()>0.5d0)
-      if(rodOrplanar=='planar') mu = newmu()
-    endif
-
-                                initcur(j) = initcur(j) + 1d0    !initial current 
-    do            ! through per part interaction
-      radtrans_int=radtrans_int+1 !used to calc num of interactions
-
-      db = merge(matLength(i+1)-position,position-matLength(i),mu>=0)/abs(mu)  !calculate db
-
-      dc=-log(1-rang())/sig(matType(i))      !calculate dc
-      sc_ab=rang()
-      if( dc>db ) then                                  !escape
-        if( mu>=0 ) then
-          i=i+1
-!print *,"particle: ",o,"  transmit"
-          if(i==nummatSegs+1) transmit(j)=transmit(j)+1      !transmit
-          if(i==nummatSegs+1) exit
-        else
-!print *,"particle: ",o,"  reflect"
-          if(i==1)              reflect(j)=reflect(j)+1        !reflect
-          if(i==1)              exit
-          i=i-1
-        endif
-      elseif( sc_ab<scatrat(matType(i)) ) then          !scatter
-!print *,"particle: ",o,"  scatter"
-        if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !dir of scatter
-        if(rodOrplanar=='planar') mu = newmu()
-      else
-!print *,"particle: ",o,"  absorb"
-                                absorb(j)=absorb(j)+1.0d0 !absorb
-                                exit
-      endif
-
-    enddo
-
-  enddo
-
-  call cpu_time(tt2)
-  time(2) = time(2) + (tt2-tt1)
-
-  end subroutine radtrans_MCsim
-
-
-
-
-
   function newmu()
   !use this for sampling a new mu within a slab
   real(8) :: newmu
@@ -1708,9 +1594,7 @@ CONTAINS
     endif
   enddo
 
-
   end function internal_init_i
-
 
 
 
@@ -1802,8 +1686,6 @@ CONTAINS
   call system("mv MCleakage.out texts")
 
   end subroutine MCprintstats
-
-
 
 
 end module radtransMC

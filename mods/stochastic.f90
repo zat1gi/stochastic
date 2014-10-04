@@ -80,12 +80,7 @@ program stochastic
 stop
 
 
-
-
-
-    if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
-
     call WoodcockMC( j )
 
 

@@ -45,7 +45,6 @@ nceilbin?
 
 
 functions and subroutines:
-radtrans_MCsim
 WoodcockMC
 KLWood_binmaxes
 ceilsigfunc
