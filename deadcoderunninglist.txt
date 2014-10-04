@@ -2,8 +2,6 @@ variables:
 radtrans_int?
 sourceType?
 plotflux?
-initcur
-
 
 Wood_rej?
 radWood_rej?

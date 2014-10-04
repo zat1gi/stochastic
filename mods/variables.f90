@@ -128,7 +128,6 @@ module MCvars
 
   character(6)         :: rodOrplanar          ! transport geometry mode
   character(6)         :: sourceType           ! 'intern' or 'left', distributed or beam source
-  character(6)         :: plotflux(2)          ! 
   character(6)         :: results              !
   character(7)         :: pltflux(4)           ! plot material irrespective flux
   character(7)         :: pltmatflux           ! plot material respective fluxes
