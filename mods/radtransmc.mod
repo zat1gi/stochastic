@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/radtransMC.f90
-MD5:c241953ad5fc074fb32397088f75fc0c -- If you edit this, you'll get what you deserve.
+MD5:3a9b61d5a49ba73a93c18236147ce904 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -188,6 +188,9 @@ UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 203 0 (204
 206 'var_s' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 207 0 (208
 209) () 206 () () () 0 0)
+210 'woodnegstats' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
+0 () () 0 () () () 0 0)
 7 't1' '' '' 6 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
 0 DUMMY) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
 8 't2' '' '' 6 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
@@ -462,4 +465,4 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 'rn_test_mixed' 0 169 'rn_test_skip' 0 172 'rn_update_stats' 0 175
 'select_from_pdf' 0 176 'stocmc_stats' 0 183 'store_in_bins' 0 187
 'timeman' 0 196 'timereport' 0 197 'uq_mc' 0 198 'utilities' 0 201 'var_p'
-0 202 'var_s' 0 206)
+0 202 'var_s' 0 206 'woodnegstats' 0 210)
