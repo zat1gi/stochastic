@@ -165,11 +165,6 @@ module MCvars
   real(8), allocatable :: stocMC_fluxmat1(:,:,:)! flux of MC meths in mat1, '2' is mean and var
   real(8), allocatable :: stocMC_fluxmat2(:,:,:)! flux of MC meths in mat2
 
-
-  real(8), allocatable :: Woodf(:,:)           ! flux tally both mats, generic Woodcock
-  real(8), allocatable :: fWoodf(:,:)          ! flux tally in 1st mat, generic Woodcock
-  real(8), allocatable :: bWoodf(:,:)          ! flux tally in 2nd mat, generic Woodcock
-
   real(8), allocatable :: initcur(:) !here for politics only, finish new MC driver, get rid of me
 
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures

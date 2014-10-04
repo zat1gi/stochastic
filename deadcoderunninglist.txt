@@ -7,14 +7,12 @@ plotflux?
 initcur
 flux?
 
+
 Wood_rej?
 radWood_rej?
 KLWood_rej?
 numpnSamp?
 areapnSamp?
-fWoodf
-bWoodf
-Woodf
 binmaxind?
 binmaxes?
 nceilbin?
