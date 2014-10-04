@@ -126,10 +126,6 @@ if(print=='yes') print *,
     if(print=='yes') print *,"starting particle ",o
     do    !p-loop, through per particle interaction
       db = merge(s-position,position,mu>=0)/abs(mu) !calc db
-      
-      ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
-             ceilsigfunc(position,bbinmax),mu>=0)
-
       dc = -log(1-rang())/ceilsig                   !calc dc
 
       if(print=='yes') print *,"  position   :",position,"    mu     :",mu,&
@@ -318,22 +314,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   call system("mv Woodnegstats.out texts")
   end subroutine Woodnegstats
 
-
-
-  function ceilsigfunc(position,binmax)
-  use MCvars, only: nceilbin, binmaxind
-  real(8) :: position,ceilsigfunc,binmax(:)
-
-  integer :: i
-
-  do i=1,nceilbin
-    if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
-      ceilsigfunc = binmax(i)
-      exit
-    endif
-  enddo
-
-  end function ceilsigfunc
 
 
   function radWood_actsig(position,sig)
