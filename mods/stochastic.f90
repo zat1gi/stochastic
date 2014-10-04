@@ -12,7 +12,7 @@ program stochastic
 
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
-  use MCvars, only: pltflux, Wood, radMC, radWood, KLWood, MCcaseson, &
+  use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, &
                     numPosMCmeths, &
                     fluxfaces, fluxall, mu, stocMC_fluxall !for test
   use genRealzvars, only: matLength !for test

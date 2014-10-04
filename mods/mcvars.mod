@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:b46e191f1de181515f06b277485ef0cb -- If you edit this, you'll get what you deserve.
+MD5:06ea236378ba5049cd03882e7e4f86b5 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -204,10 +204,7 @@ UNKNOWN IMPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 0 REAL ())
 62 'trprofile_binnum' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0
 () () 0 () () () 0 0)
-63 'wood' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-IMPLICIT-SAVE 0 0) (CHARACTER 1 0 0 0 CHARACTER ((CONSTANT (INTEGER 4 0
-0 0 INTEGER ()) 0 '3'))) 0 0 () () 0 () () () 0 0)
-64 'wood_rej' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+63 'wood_rej' 'mcvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 0 INTEGER ()) 0 0 ()
 (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
@@ -228,4 +225,4 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 'rodorplanar' 0 52 'sourcetype' 0 53 'stocmc_absorption' 0 54
 'stocmc_fluxall' 0 55 'stocmc_fluxmat1' 0 56 'stocmc_fluxmat2' 0 57
 'stocmc_reflection' 0 58 'stocmc_transmission' 0 59 'trannprt' 0 60
-'transmit' 0 61 'trprofile_binnum' 0 62 'wood' 0 63 'wood_rej' 0 64)
+'transmit' 0 61 'trprofile_binnum' 0 62 'wood_rej' 0 63)

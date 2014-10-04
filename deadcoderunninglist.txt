@@ -1,5 +1,4 @@
 variables:
-Wood
 radtrans_int?
 sourceType?
 plotflux?
