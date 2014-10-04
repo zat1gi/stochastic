@@ -85,7 +85,6 @@
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
-  noplot,          "preview" "plot" "noplot", for ensemble mat type in bin #maybe keep me
   point,           "track" "point", type of flux binning, over whole track or a point on it 
   cell,fb,       Choose 'cell', or 'no' for type, 'fb' or 'tot' for each mat flux or tot flux #get rid of me
   40,           Number of cells collect and plot flux over

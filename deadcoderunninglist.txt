@@ -1,16 +1,10 @@
 variables:
 Wood
-plotmatdxs
 radtrans_int?
 pfnumcells
 sourceType?
 plotflux?
-reflect
-transmit
-absorb
 initcur
-fflux
-bflux
 flux?
 
 Woodt

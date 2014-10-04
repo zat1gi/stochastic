@@ -35,7 +35,7 @@ CONTAINS
 
   subroutine readinputstoc( seed )
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
-                                  pltgenrealz, plotmatdxs, pltgenrealzwhich
+                                  pltgenrealz, pltgenrealzwhich
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -162,7 +162,6 @@ CONTAINS
   read(2,*) dumchar    !Plotting flux
   read(2,*) pltflux(1),pltflux(2),pltflux(3),pltflux(4)
   read(2,*) pltmatflux
-  read(2,*) plotmatdxs
   read(2,*) pltfluxtype
   read(2,*) plotflux(1),plotflux(2)
   read(2,*) fluxnumcells
