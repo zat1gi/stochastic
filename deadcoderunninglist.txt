@@ -1,8 +1,4 @@
 variables:
-radtrans_int?
-sourceType?
-plotflux?
-
 Wood_rej?
 radWood_rej?
 KLWood_rej?

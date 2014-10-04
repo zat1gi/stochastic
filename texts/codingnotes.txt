@@ -3,6 +3,7 @@
 	-'!consider using internal_init_i' in several places
 	-interaction tallies, do something with them?
 	-make ‘dx’ a global variable?
+	-combine radtrans_int and Wood_rej, which tally interactions, into one global variable
 	-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
 	-deal with genRealz printing/plotting only in first call
 	-take a look at bins for ceiling determination for Woodcock sampling
