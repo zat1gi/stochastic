@@ -31,7 +31,6 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   yes, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  remove,         Choose to 'remove' old results and use new, or 'add' to existing results
   
 
 

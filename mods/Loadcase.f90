@@ -45,7 +45,7 @@ CONTAINS
                                   KLres, KLrec, KLnoise
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, rodOrplanar, sourceType, &
-                                  results, pltflux, allowneg, distneg, radMC, radWood, &
+                                  pltflux, allowneg, distneg, radMC, radWood, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype
   use KLmeanadjust,         only: KLadjust, meanadjust_tol
@@ -99,7 +99,6 @@ CONTAINS
   read(2,*) sourceType
   read(2,*) allowneg,distneg
   read(2,*) KLadjust,meanadjust_tol
-  read(2,*) results
 
 
 
