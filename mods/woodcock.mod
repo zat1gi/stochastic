@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/Woodcock.f90
-MD5:369714308599bb65355af7dae8dc7d79 -- If you edit this, you'll get what you deserve.
+MD5:428a58173c998e7208a11ce453609378 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -245,16 +245,13 @@ UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0 REAL ()) 249 0 (250
 252 'woodcock' 'woodcock' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-253 'woodcockmc' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
-DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 254 0 (255) ()
-0 () () () 0 0)
-256 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
+253 'woodnegstats' 'woodcock' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
 0 () () 0 () () () 0 0)
-257 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+254 'xl' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
-258 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+255 'xr' 'klmeanadjust' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
 0)
 10 't1' '' '' 9 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN 0
@@ -550,8 +547,6 @@ ASSUMED_SHAPE (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') ()) 0 () ()
 251 'numofvalues' '' '' 249 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
-255 'j' '' '' 254 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN
-0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('__convert_r4_r8' 0 5 'avenegarea' 0 6 'aveposarea' 0 7 'calc_time' 0 8
@@ -576,4 +571,4 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 'select_from_pdf' 0 216 'step' 0 223 'stocmc_stats' 0 224 'stol' 0 228
 'store_in_bins' 0 229 'timeman' 0 238 'timereport' 0 239 'uq_mc' 0 240
 'utilities' 0 243 'var_p' 0 244 'var_s' 0 248 'woodcock' 0 252
-'woodcockmc' 0 253 'woodnegstats' 0 256 'xl' 0 257 'xr' 0 258)
+'woodnegstats' 0 253 'xl' 0 254 'xr' 0 255)

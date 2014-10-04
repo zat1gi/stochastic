@@ -77,11 +77,4 @@ program stochastic
   call timereport
   call finalreport
 
-stop
-
-
-    if(radWood=='yes') call WoodcockMC( j )
-    call WoodcockMC( j )
-
-
 end program stochastic
