@@ -1,9 +1,0 @@
-variables:
-Wood_rej?
-radWood_rej?
-KLWood_rej?
-numpnSamp?
-areapnSamp?
-binmaxind?
-binmaxes?
-nceilbin?

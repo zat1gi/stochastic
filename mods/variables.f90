@@ -175,13 +175,13 @@ module MCvars
 
 
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
-  integer              :: numpnSamp(2)         ! tally of positive and negative KL reconstructions (?)
-  real(8)              :: areapnSamp(4)        ! tals pos&neg area: tot pos, tot neg, max pos, max neg
+  integer              :: numpnSamp(2)         ! number of pos, neg samples (in KL reconstuctions)
+  real(8)              :: areapnSamp(4)        ! area pos,neg sampled: totpos, totneg, maxpos, maxneg
 
   real(8),allocatable  :: binmaxind(:)         ! These are used in ceilings for WMC
-  real(8),allocatable  :: binmaxes(:)          ! 
-  real(8),allocatable  :: fbinmax(:)           ! 
-  real(8),allocatable  :: bbinmax(:)           ! 
+  real(8),allocatable  :: binmaxes(:)          ! max value in each bin
+  real(8),allocatable  :: fbinmax(:)           ! forward  facing bin max values
+  real(8),allocatable  :: bbinmax(:)           ! backward facing bin max values
   real(8)              :: disthold             ! used in a workaround for neg vals in KLWood
 
   real(8)              :: position             ! 'current' position of particle

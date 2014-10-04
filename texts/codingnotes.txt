@@ -1,10 +1,14 @@
 -things I could improve... worth it??
-	-plots of pdfs, need this one!!
-	-'!consider using internal_init_i' in several places
-	-interaction tallies, do something with them?
-	-make ‘dx’ a global variable?
-	-combine radtrans_int and Wood_rej, which tally interactions, into one global variable
-	-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
-	-deal with genRealz printing/plotting only in first call
-	-take a look at bins for ceiling determination for Woodcock sampling
-	-in 'MCfluxPrint' consider removing these plots somewhere else, like 'clearreports'
+	-stunted functionality
+		-plots of pdfs, need this one!!
+		-combine radtrans_int and Wood_rej, into one global variable and use data
+		-deal with genRealz printing/plotting only in first call
+
+	-efficiency
+		-make ‘dx’ a global variable?
+		-take a look at bins for ceiling determination for Woodcock sampling
+
+	-better code practice
+		-'!consider using internal_init_i' in several places
+		-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
+		-in 'MCfluxPrint' consider removing these plots somewhere else, like 'clearreports'
