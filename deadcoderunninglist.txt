@@ -9,13 +9,7 @@ flux?
 
 Woodt
 Woodr
-radWoodr
-KLWoodr
-radWoodt
-KLWoodt
 Wooda
-radWooda
-KLWooda
 Wood_rej?
 radWood_rej?
 KLWood_rej?
