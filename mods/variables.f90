@@ -153,7 +153,6 @@ module MCvars
   integer              :: radtrans_int         !
 
   real(8), allocatable :: fluxfaces(:)         ! mesh for flux tallies
-  real(8), allocatable :: flux(:,:)            ! flux tally both mats, TMC over binary mixtures !rid of me!replace me with "fluxo", and change it to just "flux"!!!
   logical              :: flfluxplot           ! run fluxplot stuff or not?
   logical              :: flfluxplotall        ! run fluxplot for material irrespective
   logical              :: flfluxplotmat        ! run fluxplot for material respective

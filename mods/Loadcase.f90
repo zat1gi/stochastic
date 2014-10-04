@@ -370,7 +370,7 @@ CONTAINS
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, &
-                    flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
+                    radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
@@ -478,22 +478,6 @@ CONTAINS
       endif
     endif
   enddo
-
-
-
-  !allocate fluxplot variables
-  if(radMC/='no' .or. radWood/='no' .or. KLWood/='no') then
-!    allocate(fluxfaces(pfnumcells+1))
-!    fluxfaces = 0.0d0
-!    do i=1,pfnumcells+1
-!      fluxfaces(i) = (s/pfnumcells) * (i-1)
-!    enddo
-  endif
-  if(radMC=='yes') then
-    !i.e. different length for surface flux tally
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') allocate(flux(numRealz,pfnumcells))
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') flux  = 0.0d0
-  endif
 
   end subroutine global_allocate
 
