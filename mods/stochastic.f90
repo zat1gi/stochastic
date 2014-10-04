@@ -87,12 +87,10 @@ stop
   if(radWood=='yes') Wood='rad'
   do j=1,numRealz
     call genReal( j,'binary ' )
-    if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_collect( j )
     if(radMC=='yes') call radtrans_MCsim( j )
     if(radWood=='yes') call WoodcockMC( j )
   enddo
   call genReal_stats
-  if(plotmatdxs/='noplot' .or. pltflux(1)/='noplot') call matdxs_stats_plot
 
   !!radKL transport
   if(KLWood=='yes') then

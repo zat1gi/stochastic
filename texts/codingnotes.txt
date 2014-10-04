@@ -1,4 +1,5 @@
 -things I could improve... worth it??
+	-plots of pdfs, need this one!!
 	-interaction tallies, do something with them?
 	-make ‘dx’ a global variable?
 	-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
