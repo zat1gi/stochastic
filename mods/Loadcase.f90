@@ -370,7 +370,7 @@ CONTAINS
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: pfnumcells, plotflux, fluxfaces, &
-                    fKLWoodf, bKLWoodf, KLWoodf, Woodf, &
+                    Woodf, &
                     flux, radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
@@ -494,14 +494,6 @@ CONTAINS
     !i.e. different length for surface flux tally
     if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') allocate(flux(numRealz,pfnumcells))
     if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') flux  = 0.0d0
-  endif
-  if(KLWood=='yes') then
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') allocate(KLWoodf(numRealz,pfnumcells))
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='tot') KLWoodf  = 0.0d0
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') allocate(fKLWoodf(numRealz,pfnumcells))
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') fKLWoodf = 0.0d0
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') allocate(bKLWoodf(numRealz,pfnumcells))
-    if(plotflux(1)=='cell' .AND. plotflux(2)=='fb') bKLWoodf = 0.0d0
   endif
 
   end subroutine global_allocate

@@ -17,15 +17,10 @@ numpnSamp?
 areapnSamp?
 fWoodf
 bWoodf
-fradWoodf
-bradWoodf
 fKLWoodf
 bKLWoodf
-radWoodf
 KLWoodf
 Woodf
 binmaxind?
 binmaxes?
-fbinmax
-bbinmax
 nceilbin?
