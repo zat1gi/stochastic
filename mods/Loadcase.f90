@@ -44,7 +44,7 @@ CONTAINS
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
-                                  numParts, trannprt, pfnumcells, rodOrplanar, sourceType, &
+                                  numParts, trannprt, rodOrplanar, sourceType, &
                                   plotflux, results, pltflux, allowneg, distneg, radMC, radWood, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype
@@ -165,7 +165,6 @@ CONTAINS
   read(2,*) pltfluxtype
   read(2,*) plotflux(1),plotflux(2)
   read(2,*) fluxnumcells
-  read(2,*) pfnumcells
 
 
 
@@ -369,7 +368,7 @@ CONTAINS
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
-  use MCvars, only: pfnumcells, plotflux, fluxfaces, &
+  use MCvars, only: plotflux, fluxfaces, &
                     radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &

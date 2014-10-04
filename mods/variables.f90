@@ -125,7 +125,6 @@ module MCvars
   integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen
   integer              :: fluxnumcells         ! number of cells for flux profile
-  integer              :: pfnumcells           ! number of cells for flux profile (?) !get rid of me
 
   character(6)         :: rodOrplanar          ! transport geometry mode
   character(6)         :: sourceType           ! 'intern' or 'left', distributed or beam source

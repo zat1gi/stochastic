@@ -1,7 +1,6 @@
 variables:
 Wood
 radtrans_int?
-pfnumcells
 sourceType?
 plotflux?
 initcur
