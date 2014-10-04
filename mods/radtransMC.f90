@@ -108,12 +108,12 @@ CONTAINS
         case ("radMC")
           dc = -log(rang())/sig(matType(i))
         case ("radWood")
-          ceilsig=merge(ceilsigfunc2(position,fbinmax),& !sel max sig
-                        ceilsigfunc2(position,bbinmax),mu>=0)
+          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
+                        ceilsigfunc(position,bbinmax),mu>=0)
           dc = -log(rang())/ceilsig                   !calc dc
         case ("KLWood")
-          ceilsig=merge(ceilsigfunc2(position,fbinmax),& !sel max sig
-                        ceilsigfunc2(position,bbinmax),mu>=0)
+          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
+                        ceilsigfunc(position,bbinmax),mu>=0)
           dc = -log(rang())/ceilsig                   !calc dc
         case ("LPMC")
           dc = -log(rang())/sig(matType(1))
@@ -205,13 +205,13 @@ CONTAINS
           case ("radMC")
             flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
           case ("radWood")
-            woodrat = radWood_actsig2(position,sig)/ceilsig
+            woodrat = radWood_actsig(position,sig)/ceilsig
             if(woodrat>1.0d0) then
               stop 'Higher sig samples in radWood than ceiling, exiting program'
             endif
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              if(radWood_actscatrat2(position,scatrat)>rang()) then
+              if(radWood_actscatrat(position,scatrat)>rang()) then
                 flIntType = 'scatter'
               else
                 flIntType = 'absorb'
@@ -444,8 +444,8 @@ CONTAINS
       binmaxind(i)=binmaxind(i-1)+binlength
     enddo
 
-    if(MCcases(icase)=='radWood') call radWood_binmaxes2( nummatSegs )
-    if(MCcases(icase)=='KLWood' ) call KLWood_binmaxes2( j )
+    if(MCcases(icase)=='radWood') call radWood_binmaxes( nummatSegs )
+    if(MCcases(icase)=='KLWood' ) call KLWood_binmaxes( j )
 
     !create forward/backward motion max vectors
     bbinmax(1)=binmaxes(1)
@@ -460,7 +460,7 @@ CONTAINS
 
 
 
-  subroutine KLWood_binmaxes2( j ) ! make '1' when done with Woodcock version
+  subroutine KLWood_binmaxes( j ) ! make '1' when done with Woodcock version
   use KLvars, only: alpha, Ak, Eig, numEigs, sigave
   use MCvars, only: binmaxind, binmaxes, nceilbin
 
@@ -504,13 +504,13 @@ CONTAINS
 
   enddo
 
-  end subroutine KLWood_binmaxes2
+  end subroutine KLWood_binmaxes
 
 
 
 
 
-  subroutine radWood_binmaxes2( numArrSz ) !make simply '1' when other gone from Woodcock
+  subroutine radWood_binmaxes( numArrSz ) !make simply '1' when other gone from Woodcock
   !subroutine starts to set up ceiling for WoodcockMC by mapping highest point in each bin
   use genRealzvars, only: matType, matLength, sig
   use MCvars, only: nceilbin, binmaxind, binmaxes
@@ -539,61 +539,61 @@ CONTAINS
 
     enddo
   enddo
-  end subroutine radWood_binmaxes2
+  end subroutine radWood_binmaxes
 
 
 
-  function radWood_actsig2(position,sig)
+  function radWood_actsig(position,sig)
   use genRealzvars, only: matType, matLength
-  real(8) :: position,sig(2),radWood_actsig2
+  real(8) :: position,sig(2),radWood_actsig
 
   integer :: i
   !consider using internal_init_i
   i=1
   do
     if(matLength(i)<=position .AND. matLength(i+1)>position) then
-      radWood_actsig2=sig(matType(i))
+      radWood_actsig=sig(matType(i))
       exit
     endif 
     i=i+1
   enddo
 
-  end function radWood_actsig2
+  end function radWood_actsig
 
 
 
 
-  function ceilsigfunc2(position,binmax) ! make '1' when done with Woodcock version
+  function ceilsigfunc(position,binmax) ! make '1' when done with Woodcock version
   use MCvars, only: nceilbin, binmaxind
-  real(8) :: position,ceilsigfunc2,binmax(:)
+  real(8) :: position,ceilsigfunc,binmax(:)
 
   integer :: i
 
   !consider using internal_init_i
   do i=1,nceilbin
     if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
-      ceilsigfunc2 = binmax(i)
+      ceilsigfunc = binmax(i)
       exit
     endif
   enddo
-  end function ceilsigfunc2
+  end function ceilsigfunc
 
 
 
-  function radWood_actscatrat2(position,scatrat)
+  function radWood_actscatrat(position,scatrat)
   use genRealzvars, only: matType, matLength
-  real(8) :: position,scatrat(2),radWood_actscatrat2
+  real(8) :: position,scatrat(2),radWood_actscatrat
   integer :: i
   !consider using internal_init_i
   i=1
   do
     if(matLength(i)<=position .AND. matLength(i+1)>position) then
-      radWood_actscatrat2=scatrat(matType(i))
+      radWood_actscatrat=scatrat(matType(i))
       exit
     endif
     i=i+1
   enddo
-  end function radWood_actscatrat2
+  end function radWood_actscatrat
 
 
 

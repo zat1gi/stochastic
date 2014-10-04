@@ -41,14 +41,3 @@ binmaxes?
 fbinmax
 bbinmax
 nceilbin?
-
-
-
-functions and subroutines:
-WoodcockMC
-KLWood_binmaxes
-ceilsigfunc
-radWood_actscatrat
-radWood_binmaxes
-
-move somewhere else: Woodnegstats

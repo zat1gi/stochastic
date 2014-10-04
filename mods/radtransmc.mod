@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/radtransMC.f90
-MD5:3a9b61d5a49ba73a93c18236147ce904 -- If you edit this, you'll get what you deserve.
+MD5:bc7e49cf18bd7b692067bdd878ed05f1 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () ()
 () () () ())
@@ -29,7 +29,7 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 6 0 (7 8 9) ()
 10 'calc_time_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
 DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 11 0 (12 13 14)
 () 0 () () () 0 0)
-15 'ceilsigfunc2' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
+15 'ceilsigfunc' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION ALWAYS_EXPLICIT) (REAL 8 0 0 0
 REAL ()) 16 0 (17 18) () 15 () () () 0 0)
 19 'dev_p' 'utilities' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
@@ -56,7 +56,7 @@ DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 42 0 (43 44 45)
 46 'klrxi_point2' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION) (REAL 8 0 0 0 REAL ()) 47 0 (48
 49) () 46 () () () 0 0)
-50 'klwood_binmaxes2' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
+50 'klwood_binmaxes' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 51
 0 (52) () 0 () () () 0 0)
 53 'mcallocate' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
@@ -122,13 +122,13 @@ MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ())
 133 'radtransmc' 'radtransmc' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0
 0)
-134 'radwood_actscatrat2' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
+134 'radwood_actscatrat' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION) (REAL 8 0 0 0 REAL ()) 135 0 (
 136 137) () 134 () () () 0 0)
-138 'radwood_actsig2' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
+138 'radwood_actsig' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 FUNCTION) (REAL 8 0 0 0 REAL ()) 139 0 (
 140 141) () 138 () () () 0 0)
-142 'radwood_binmaxes2' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
+142 'radwood_binmaxes' 'radtransmc' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ())
 143 0 (144) () 0 () () () 0 0)
 145 'rang' 'mcnp_random' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC
@@ -449,17 +449,17 @@ UNKNOWN UNKNOWN 0 0 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
 () 0 0)
 )
 
-('calc_time' 0 5 'calc_time_p' 0 10 'ceilsigfunc2' 0 15 'dev_p' 0 19
+('calc_time' 0 5 'calc_time_p' 0 10 'ceilsigfunc' 0 15 'dev_p' 0 19
 'dev_s' 0 23 'generic_plotter' 0 27 'gensourcepart' 0 33 'internal_init_i'
 0 37 'isoboundmu' 0 40 'kl_timeupdate' 0 41 'klrxi_point2' 0 46
-'klwood_binmaxes2' 0 50 'mcallocate' 0 53 'mcfluxplot' 0 58 'mcfluxprint'
+'klwood_binmaxes' 0 50 'mcallocate' 0 53 'mcfluxplot' 0 58 'mcfluxprint'
 0 59 'mcfluxtally' 0 60 'mcfluxtallycontribute' 0 67 'mcfluxtallysetflag'
 0 73 'mcfluxtallywrapper' 0 79 'mcinc_pos' 0 83 'mcleakage_pdfplot' 0 86
 'mclpcalc_fluxmatnorm' 0 87 'mcprecalc_fluxmatnorm' 0 92 'mcprintstats'
 0 95 'mctransport' 0 96 'mcwood_setceils' 0 101 'mean' 0 105
 'mean_and_var_p' 0 109 'mean_and_var_s' 0 115 'newmu' 0 121 'radtrans_bin'
-0 122 'radtrans_timeupdate' 0 128 'radtransmc' 0 133 'radwood_actscatrat2'
-0 134 'radwood_actsig2' 0 138 'radwood_binmaxes2' 0 142 'rang' 0 145
+0 122 'radtrans_timeupdate' 0 128 'radtransmc' 0 133 'radwood_actscatrat'
+0 134 'radwood_actsig' 0 138 'radwood_binmaxes' 0 142 'rang' 0 145
 'rn_init_particle' 0 146 'rn_init_problem' 0 149 'rn_query' 0 156
 'rn_query_first' 0 159 'rn_set' 0 162 'rn_test_basic' 0 166
 'rn_test_mixed' 0 169 'rn_test_skip' 0 172 'rn_update_stats' 0 175
