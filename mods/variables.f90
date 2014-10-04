@@ -180,17 +180,14 @@ module MCvars
 
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodr(:)             ! generic reflection tally for Woodcock routines
-  real(8), allocatable :: radWoodr(:)          ! slab reflection tally, WMC on binary mixtures
 
   character(3)         :: Wood                 ! toggle flag between 'rad' and 'KL'
 
   real(8), allocatable :: transmit(:)          ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: Woodt(:)             ! generic transmission tally for Woodcock routines
-  real(8), allocatable :: radWoodt(:)          ! slab transmission tally, WMC on binary mixtures
 
   real(8), allocatable :: absorb(:)            ! slab absorption tally, TMC on binary mixtures
   real(8), allocatable :: Wooda(:)             ! generic absorption tally for Woodcock routines
-  real(8), allocatable :: radWooda(:)          ! slab absorption tally, WMC on binary mixtures
 
   real(8), allocatable :: LPamMCsums(:)        ! for LP or atomic mix, sum of tallies, refl, tran, abs
 
