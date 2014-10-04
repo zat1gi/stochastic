@@ -183,7 +183,6 @@ if(print=='yes') print *,
 
       Wood_rej(1)=Wood_rej(1)+1   !accept path
 
-      if(Wood=='rad') tscatrat=radWood_actscatrat(position,scatrat)
       if(Wood=='KL')  tscatrat=scatrat(1)
       if(rang()<tscatrat) then !scat or absorb
         if(print=='yes') print *,"                      scatter (cycle)"
@@ -332,26 +331,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   enddo
 
   end function radWood_actsig
-
-
-  function radWood_actscatrat(position,scatrat)
-  use genRealzvars, only: matType, matLength
-  real(8) :: position,scatrat(2),radWood_actscatrat
-
-  integer :: i
-
-  i=1
-  do
-    if(matLength(i)<=position .AND. matLength(i+1)>position) then
-      radWood_actscatrat=scatrat(matType(i))
-      exit
-    endif
-    i=i+1
-  enddo
-
-  end function radWood_actscatrat
-
-
 
 
 end module
