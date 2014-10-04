@@ -89,7 +89,6 @@ CONTAINS
     if(print=='yes') print *,"i:",i,"binmaxind(i):",binmaxind(i),"   nceilbin",nceilbin
   enddo
 
-  if(Wood=='rad') call radWood_binmaxes( nummatSegs )
   if(Wood=='KL')  call KLWood_binmaxes( j )
 
   !create forward/backward motion max vectors
@@ -424,40 +423,6 @@ if(print=='yes') print *,"radWood abs   :",real(radWooda(j),8)/numParts,"   radW
   enddo
 
   end function radWood_actscatrat
-
-
-  subroutine radWood_binmaxes( numArrSz )
-  !subroutine starts to set up ceiling for WoodcockMC by mapping highest point in each bin
-  use genRealzvars, only: matType, matLength, sig
-  use MCvars, only: nceilbin, binmaxind, binmaxes
-  integer :: numArrSz
-
-  integer :: i,k
-  real(8) :: smallersig,largersig
-
-  smallersig=minval(sig)
-  largersig =maxval(sig)
-
-  do i=1,nceilbin
-    do k=1,numArrSz
-
-      !contains both
-      if(matLength(k)>binmaxind(i) .AND. matLength(k)<binmaxind(i+1)) then
-        binmaxes(i)=largersig
-        exit
-      endif
-
-      !contains only one
-      if(matLength(k)<=binmaxind(i) .AND. matLength(k+1)>=binmaxind(i+1)) then
-        binmaxes(i)=sig(matType(k))
-        exit
-      endif
-
-    enddo
-  enddo
-
-  end subroutine radWood_binmaxes
-
 
 
 
