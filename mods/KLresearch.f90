@@ -315,7 +315,10 @@ CONTAINS
 
 
   subroutine KL_collect
-  !This subroutine collects xi values from a set of distributions.
+  !This subroutine calculates xi values from binary Markov realizations.
+  !Currently it does so by integrating over the total cross section in each region,
+  !soon it will by integrating over a factor which only considers information that 
+  !distinguishes one material from another.
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength
   use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, sigave
@@ -339,6 +342,7 @@ CONTAINS
         xl=matLength(i-1)                                         !set xl and xr for calculations
         xr=matLength(i)
         sigma=sig(matType(i-1))                                   !set sig to the correct sig
+            !#change me# !choose either sig() as above, or sqrt(p1/p2), etc. for new method
 
         xiterm= (sigma-sigave)*&                                  !actual calculation
                 (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &

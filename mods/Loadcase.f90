@@ -316,7 +316,7 @@ CONTAINS
       print *,"--User attempting KLWood w/o either KLres or KLrec, both have been set to 'yes'"
       flsleep = 'yes'
     endif
-    if( scatrat(1)<scatrat(2)-eps .or. scatrat(1)>scatrat(2)+eps ) then
+    if( scatrat(1)<scatrat(2)-eps .or. scatrat(1)>scatrat(2)+eps ) then !#change me# !allow if material based
       print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
       flstopstatus = 'yes'
     endif

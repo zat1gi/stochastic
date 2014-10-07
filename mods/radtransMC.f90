@@ -249,7 +249,7 @@ CONTAINS
             !decide fate of particle
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              if(scatrat(1)>rang()) then !this will need amending when scatrat is changed
+              if(scatrat(1)>rang()) then !#change me# !evaluate functional scatrat from new 'KLWood_actscatrat'
                 flIntType = 'scatter'    !could make a 'merge'
               else
                 flIntType = 'absorb'
@@ -594,6 +594,9 @@ CONTAINS
     i=i+1
   enddo
   end function radWood_actscatrat
+
+
+  !#change me# !add function KLWood_actscatrat
 
 
 
