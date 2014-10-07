@@ -205,13 +205,13 @@ CONTAINS
           case ("radMC")
             flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
           case ("radWood")
-            woodrat = radWood_actsig(position,sig)/ceilsig
+            woodrat = radWood_actsig(newpos,sig)/ceilsig
             if(woodrat>1.0d0) then
               stop 'Higher sig samples in radWood than ceiling, exiting program'
             endif
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              if(radWood_actscatrat(position,scatrat)>rang()) then
+              if(radWood_actscatrat(newpos,scatrat)>rang()) then
                 flIntType = 'scatter'
               else
                 flIntType = 'absorb'
@@ -219,7 +219,7 @@ CONTAINS
             endif
           case ("KLWood")
             !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point2(j,position)/ceilsig
+            woodrat = KLrxi_point2(j,newpos)/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
