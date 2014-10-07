@@ -6,11 +6,11 @@
     s         :  1.00       lamc      :  0.99
 
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   :  0.80000%,                   800 /                 1000
-  Neg samples :  0.18060%,                402418 /              2228284
-  Neg area    :  0.10441%
-  Ave neg samp:     -2.1468   Ave pos samp:      4.0584
-  Max neg samp:     -5.2350   Max pos samp:     14.0402
+  Neg realz   :  0.82600%,                   826 /                 1000
+  Neg samples :  0.20797%,                430087 /              2068032
+  Neg area    :  0.13347%
+  Ave neg samp:     -2.3061   Ave pos samp:      3.9314
+  Max neg samp:     -5.2350   Max pos samp:     13.3937
 
 
  |-case:6.2-|---- Reflection and Transmission Results ------|
@@ -18,9 +18,9 @@
  |----------|-------------------------|---------------------|
  |AdamsMC:  | 0.1440   +-  0.1452     | 0.7666   +-  0.3011 |
  |BrantMC:  | 0.14248                 | 0.76855             |
- |radMC  :  | 0.13184  +-  0.13637    | 0.79012  +-  0.28171|
- |radWood:  | 0.14014  +-  0.14326    | 0.77364  +-  0.29535|
- |KLWood :  | 0.17123  +-  0.17741    | 0.71166  +-  0.34586|
+ |radMC  :  | 0.14445  +-  0.14815    | 0.76210  +-  0.31143|
+ |radWood:  | 0.14499  +-  0.14727    | 0.76421  +-  0.30329|
+ |KLWood :  | 0.15703  +-  0.16827    | 0.73915  +-  0.32783|
  |----------|-------------------------|---------------------|
  |AdamsLP:  | 0.1255                  | 0.7733              |
  |BrantLP:  | 0.12426                 | 0.77434             |
@@ -31,9 +31,9 @@
   total runtime:      0.15 min
     genRealz   :      0.00 min     per:  0.29 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.03 min     per: 21.22 %
-    radWood    :      0.05 min     per: 31.97 %
-    KLWood     :      0.06 min     per: 44.31 %
+    radMC      :      0.03 min     per: 22.44 %
+    radWood    :      0.05 min     per: 33.79 %
+    KLWood     :      0.06 min     per: 41.31 %
     KLcol      :      0.00 min     per:  0.11 %
-    KLrec      :      0.00 min     per:  1.82 %
+    KLrec      :      0.00 min     per:  1.78 %
     other      :      0.00 min     per:  0.57 %

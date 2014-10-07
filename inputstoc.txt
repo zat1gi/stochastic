@@ -1,4 +1,4 @@
-  1000,         Advance random see how far?
+  99000,         Advance random see how far?
   !--- Geometry ---!
   6.2,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals
