@@ -106,7 +106,7 @@ CONTAINS
           curGam=curGam+refstepGam
         enddo
       enddo
-      AllEig(curEig)     =2d0*Co*lamc/(Allgam(curEig)**2+1d0) !#change me#
+      AllEig(curEig)     =2d0/(Allgam(curEig)**2+1d0)
       Eigvalsum = Eigvalsum + AllEig(curEig)
     enddo
     Eigval = AllEig(newsize)
@@ -145,7 +145,7 @@ CONTAINS
     !Calc other values like alpha, norm const (Ak), eigenvalue, etc.
     alpha(curEig)   =gam(curEig)/lamc
     Ak(curEig)      =sqrt(1d0/(  s/2d0*(gam(curEig)**2+1d0)+lamc  ))
-    !Eig(curEig)     =2d0*Co*lamc/(gam(curEig)**2+1d0)  !#change me#
+    !Eig(curEig)     =2d0/(gam(curEig)**2+1d0)
     sqrtEig(curEig) =sqrt(Eig(curEig))
     !integrate to 1 tests
     427 format("  ",f13.7,"   Ak:",f13.7)
@@ -418,7 +418,7 @@ CONTAINS
     else
       Co=CoAct
       do curEig=1,numEigs
-        Eig(curEig)=2*Co*lamc/(gam(curEig)**2+1) !#change me#
+        Eig(curEig)=2.0d0/(gam(curEig)**2.0d0+1.0d0)
       enddo
     endif
 

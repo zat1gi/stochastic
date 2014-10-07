@@ -158,7 +158,7 @@ CONTAINS
   function KLrxi_point(j,xpos)
   ! Evaluates KL reconstructed realizations at a given point
   use genRealzvars, only: lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
   integer :: j
   real(8) :: xpos
   real(8) :: KLrxi_point
@@ -169,7 +169,7 @@ CONTAINS
   KLrxi_point = sigave + meanadjust
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig) !#change me#
+    KLrxi_point = KLrxi_point + sqrt(CoExp*lamc) * sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
   enddo
 
   end function KLrxi_point
@@ -191,7 +191,7 @@ CONTAINS
   function KLrxi_integral(j,xl,xr)
   ! This function integrates on KL reconstructed realizations from xl to xr
   use genRealzvars, only: lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
   integer :: j
   real(8) :: xl,xr
   real(8) :: KLrxi_integral
@@ -202,7 +202,8 @@ CONTAINS
   KLrxi_integral = (sigave + meanadjust) * (xr - xl)
   do curEig=1,numEigs
     Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-    KLrxi_integral = KLrxi_integral + sqrt(Eig(curEig)) * Eigfintterm * KLrxivals(j,curEig) !#change me#
+    KLrxi_integral = KLrxi_integral + sqrt(CoExp*lamc) * sqrt(Eig(curEig)) * &
+                                           Eigfintterm * KLrxivals(j,curEig)
   enddo
 
   end function KLrxi_integral

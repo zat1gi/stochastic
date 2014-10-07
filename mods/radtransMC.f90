@@ -600,7 +600,7 @@ CONTAINS
   function KLrxi_point2(j,xpos)
   ! Evaluates KL reconstructed realizations at a given point
   use genRealzvars, only: lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
   use KLmeanadjust, only: meanadjust, Eigfunc
   integer :: j
   real(8) :: xpos
@@ -612,7 +612,7 @@ CONTAINS
   KLrxi_point2 = sigave + meanadjust
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig) !#change me#
+    KLrxi_point2 = KLrxi_point2 + sqrt(CoExp*lamc) * sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
   enddo
 
   end function KLrxi_point2
