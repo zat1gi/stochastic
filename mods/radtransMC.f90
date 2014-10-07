@@ -612,7 +612,7 @@ CONTAINS
   KLrxi_point2 = sigave + meanadjust
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+    KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig) !#change me#
   enddo
 
   end function KLrxi_point2

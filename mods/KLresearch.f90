@@ -106,7 +106,7 @@ CONTAINS
           curGam=curGam+refstepGam
         enddo
       enddo
-      AllEig(curEig)     =2d0*Co*lamc/(Allgam(curEig)**2+1d0)
+      AllEig(curEig)     =2d0*Co*lamc/(Allgam(curEig)**2+1d0) !#change me#
       Eigvalsum = Eigvalsum + AllEig(curEig)
     enddo
     Eigval = AllEig(newsize)
@@ -145,7 +145,7 @@ CONTAINS
     !Calc other values like alpha, norm const (Ak), eigenvalue, etc.
     alpha(curEig)   =gam(curEig)/lamc
     Ak(curEig)      =sqrt(1d0/(  s/2d0*(gam(curEig)**2+1d0)+lamc  ))
-    !Eig(curEig)     =2d0*Co*lamc/(gam(curEig)**2+1d0)
+    !Eig(curEig)     =2d0*Co*lamc/(gam(curEig)**2+1d0)  !#change me#
     sqrtEig(curEig) =sqrt(Eig(curEig))
     !integrate to 1 tests
     427 format("  ",f13.7,"   Ak:",f13.7)
@@ -231,7 +231,7 @@ CONTAINS
   character(22) :: Corre    = '"Correlation Expected"'
   character(22) :: Corry    = '"Correlation Yielded "'
 
-  CoExp= P(1)*P(2) * (sig(1)-sig(2))**2 !first calc of vairance
+  CoExp= P(1)*P(2) * (sig(1)-sig(2))**2 !first calc of variance
 
   if( Corropts(1) .NE. "noplot" ) then  !only perform if "plot" or "preview"
 
@@ -418,7 +418,7 @@ CONTAINS
     else
       Co=CoAct
       do curEig=1,numEigs
-        Eig(curEig)=2*Co*lamc/(gam(curEig)**2+1)
+        Eig(curEig)=2*Co*lamc/(gam(curEig)**2+1) !#change me#
       enddo
     endif
 
