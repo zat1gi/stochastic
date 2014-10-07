@@ -320,12 +320,12 @@ CONTAINS
   !soon it will by integrating over a factor which only considers information that 
   !distinguishes one material from another.
   use timevars, only: time
-  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength
-  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, sigave
+  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P
+  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, sigave, KLxigentype
   use MCvars, only: trannprt
   use genRealz, only: genReal
   integer :: i,j,k,curEig
-  real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1
+  real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
 
   call cpu_time(tt1)
@@ -341,10 +341,16 @@ CONTAINS
       do i=2,nummatSegs+1
         xl=matLength(i-1)                                         !set xl and xr for calculations
         xr=matLength(i)
-        sigma=sig(matType(i-1))                                   !set sig to the correct sig
+        if( KLxigentype=='totxs' ) then                           !set variables to integrate
+          hilowterm = sig(matType(i-1))
+          aveterm   = sigave
+        elseif( KLxigentype=='material' ) then
+          hilowterm = merge(sqrt(P(2)/P(1)),-sqrt(P(1)/P(2)),matType(i-1)==1)
+          aveterm   = 0d0
+        endif
             !#change me# !choose either sig() as above, or sqrt(p1/p2), etc. for new method
 
-        xiterm= (sigma-sigave)*&                                  !actual calculation
+        xiterm= (hilowterm-aveterm)*&                                  !actual calculation
                 (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
                 -lamc*sin(alpha(curEig)*xl)+cos(alpha(curEig)*xl)/alpha(curEig))
 

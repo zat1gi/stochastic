@@ -101,7 +101,8 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: tnumEigs             ! temp numEigs, local use "KLreval", nice to get rid of
   real(8)              :: binSize              !
   real(8)              :: CoExp                ! variance of materials in KL expansion
-                                               !#change me# ! add Coscat and Coabs here
+  real(8)              :: Coscat               ! variance of scattering xs in KL expansion, 'material' mode
+  real(8)              :: Coabs                ! variance of absorption xs in KL expansion, 'material' mode
   integer              :: negcnt               ! tally of number of realizations that have gone neg
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !
