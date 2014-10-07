@@ -73,7 +73,7 @@ CONTAINS
 
   !local variables
   integer :: i,o
-  real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat,disthold
+  real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat,disthold, tempscatrat
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
@@ -219,7 +219,7 @@ CONTAINS
             endif
           case ("KLWood")
             !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point2(j,newpos)/ceilsig
+            woodrat = KLrxi_point2(j,newpos,'total  ')/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
@@ -249,7 +249,8 @@ CONTAINS
             !decide fate of particle
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              if(scatrat(1)>rang()) then !#change me# !evaluate functional scatrat from new 'KLWood_actscatrat'
+              tempscatrat = KLWood_actscatrat(j,xpos)
+              if(tempscatrat>rang()) then !#change me# !evaluate functional scatrat from new 'KLWood_actscatrat'
                 flIntType = 'scatter'    !could make a 'merge'
               else
                 flIntType = 'absorb'
@@ -478,7 +479,7 @@ CONTAINS
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point2(j,xpos)
+      xsig= KLrxi_point2(j,xpos,'total  ')
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -487,9 +488,9 @@ CONTAINS
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point2(j,xpos1)
+      xsig1= KLrxi_point2(j,xpos1,'total  ')
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point2(j,xpos2)
+      xsig2= KLrxi_point2(j,xpos2,'total  ')
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1
@@ -596,26 +597,57 @@ CONTAINS
   end function radWood_actscatrat
 
 
-  !#change me# !add function KLWood_actscatrat
+  function KLWood_actscatrat(j,xpos)
+  !For 'totxs' type xi generation, this function returns the shared scattering ratio of the materials.
+  !For 'material' type xi generation, it generates tot, scat, and abs xs values,
+  !uses them to assert the same total xs and produce the local scattering ratio.  
+  use genRealzvars, only: scatrat
+  use KLvars, only: KLxigentype
+  real(8) :: eps = 0.00001d0
+  real(8) :: KLWood_actscatrat, scatxs, absxs, totxs
+
+  if( KLxigentype .eq. 'totxs' ) then
+    KLWood_actscatrat = scatrat(1)
+  elseif( KLxigentype .eq. 'material' ) then
+    scatxs = KLrxi_point2(j,xpos,'scatter')
+    absxs  = KLrxi_point2(j,xpos,'absorb ')
+    totxs  = KLrxi_point2(j,xpos,'total  ')
+    if( abs(scatxs+absxs-totxs)>eps ) stop 'in KLWood_actscatrat, xs recreation not conserved'
+    KLWood_actscatrat = scatxs/(scatxs+absxs)
+  endif
+  end function KLWood_actscatrat
 
 
 
-  function KLrxi_point2(j,xpos)
+  function KLrxi_point2(j,xpos,flxstype)
   ! Evaluates KL reconstructed realizations at a given point
-  use genRealzvars, only: lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
+  use genRealzvars, only: lamc, P, sig, scatrat
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp, Coscat, Coabs
   use KLmeanadjust, only: meanadjust, Eigfunc
   integer :: j
   real(8) :: xpos
   real(8) :: KLrxi_point2
+  character(7) :: flxstype
 
   integer :: curEig
-  real(8) :: Eigfterm
+  real(8) :: Eigfterm, Coterm, avesigval
 
-  KLrxi_point2 = sigave + meanadjust
+  select case (flxstype)
+    case ("total")
+      avesigval = sigave
+      Coterm    = CoExp
+    case ("scatter")
+      avesigval = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2) !consider precomputing these
+      Coterm    = Coscat
+    case ("absorb")
+      avesigval = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+      Coterm    = Coabs
+  end select
+
+  KLrxi_point2 = avesigval + meanadjust
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point2 = KLrxi_point2 + sqrt(CoExp*lamc) * sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+    KLrxi_point2 = KLrxi_point2 + sqrt(Coterm*lamc) * sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
   enddo
 
   end function KLrxi_point2

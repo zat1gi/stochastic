@@ -221,7 +221,8 @@ CONTAINS
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s, P, lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp, Corropts
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp, Corropts, &
+                    Coscat, Coabs
 
   integer :: x,y,curEig
   real(8) :: stepsize,curx,cury,Eigfx,Eigfy
@@ -231,7 +232,9 @@ CONTAINS
   character(22) :: Corre    = '"Correlation Expected"'
   character(22) :: Corry    = '"Correlation Yielded "'
 
-  CoExp= P(1)*P(2) * (sig(1)-sig(2))**2 !first calc of variance
+  CoExp  = P(1)*P(2) * (sig(1)                  - sig(2)                ) **2 !first calc of variance
+  Coscat = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
+  Coabs  = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
 
   if( Corropts(1) .NE. "noplot" ) then  !only perform if "plot" or "preview"
 
@@ -348,7 +351,6 @@ CONTAINS
           hilowterm = merge(sqrt(P(2)/P(1)),-sqrt(P(1)/P(2)),matType(i-1)==1)
           aveterm   = 0d0
         endif
-            !#change me# !choose either sig() as above, or sqrt(p1/p2), etc. for new method
 
         xiterm= (hilowterm-aveterm)*&                                  !actual calculation
                 (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
@@ -414,7 +416,6 @@ CONTAINS
     sliceval(curCS)=sliceval(curCS-1)+slicesize
   enddo
 
-  !CoExp     = P(1)       *P(2)       *(sig(1)-sig(2))**2 !already calced
   CoAct     = totLPer(1) *totLPer(2) *(sig(1)-sig(2))**2
   CoPerDiff = abs( ( CoExp - CoAct ) / CoExp ) * 100
   write(*,446) CoAct
