@@ -42,7 +42,7 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
-                                  KLres, KLrec, KLnoise
+                                  KLres, KLrec, KLnoise, KLxigentype
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, &
@@ -86,6 +86,7 @@ CONTAINS
 
   !--- Lesser KL Options ---!
   read(2,*) dumchar
+  read(2,*) KLxigentype
   read(2,*) KLrnumpoints(2),KLrnumpoints(1)     !fixed xi, fixed point
   read(2,*) levsrefEig
   read(2,*) binSmallBound,binLargeBound
@@ -199,7 +200,7 @@ CONTAINS
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise
+                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
                     pltfluxtype, LPMC, atmixMC
   integer :: fpointorxi(2)
@@ -316,7 +317,7 @@ CONTAINS
       print *,"--User attempting KLWood w/o either KLres or KLrec, both have been set to 'yes'"
       flsleep = 'yes'
     endif
-    if( scatrat(1)<scatrat(2)-eps .or. scatrat(1)>scatrat(2)+eps ) then !#change me# !allow if material based
+    if( KLxigentype .ne. 'material' .and. abs(scatrat(1)-scatrat(2))>eps ) then
       print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
       flstopstatus = 'yes'
     endif

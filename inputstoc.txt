@@ -19,6 +19,7 @@
   1000000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
+  material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
   30,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
   11,             Levels of refinement for eigenvalue solving
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose

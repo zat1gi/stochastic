@@ -19,20 +19,14 @@
  |radMC  :  | 0.23609  +-  0.03646    | 0.68404  +-  0.05477|
  |radWood:  | 0.23870  +-  0.03820    | 0.67997  +-  0.05742|
  |KLWood :  | 0.23948  +-  0.01325    | 0.67998  +-  0.01453|
- |----------|-------------------------|---------------------|
- |LPMC   :  | 0.23601                 | 0.68372             |
- |----------|-------------------------|---------------------|
- |atmixMC:  | 0.23918                 | 0.67999             |
  |----------------------------------------------------------|
 
-  total runtime:      0.17 min
-    genRealz   :      0.05 min     per: 31.33 % --- genRealz in other meths,
+  total runtime:      0.06 min
+    genRealz   :      0.00 min     per:  7.27 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.02 min     per: 13.79 %
-    radWood    :      0.02 min     per: 11.18 %
-    KLWood     :      0.02 min     per: 13.04 %
-    LPMC       :      0.09 min     per: 52.88 %
-    atmixMC    :      0.01 min     per:  7.62 %
-    KLcol      :      0.00 min     per:  0.08 %
-    KLrec      :      0.00 min     per:  1.18 %
-    other      :      0.00 min     per:  0.23 %
+    radMC      :      0.02 min     per: 32.63 %
+    radWood    :      0.02 min     per: 29.95 %
+    KLWood     :      0.02 min     per: 33.40 %
+    KLcol      :      0.00 min     per:  0.26 %
+    KLrec      :      0.00 min     per:  3.28 %
+    other      :      0.00 min     per:  0.48 %
