@@ -220,9 +220,8 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: sig, s, P, lamc, scatrat
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp, Corropts, &
-                    Coscat, Coabs
+  use genRealzvars, only: sig, s, P, lamc, scatrat, Coscat, Coabs
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp, Corropts
 
   integer :: x,y,curEig
   real(8) :: stepsize,curx,cury,Eigfx,Eigfy

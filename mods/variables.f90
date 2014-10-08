@@ -32,6 +32,10 @@ module genRealzvars
   real(8), allocatable :: matLength(:)         ! material boundaries
   real(8)              :: atmixsig             ! atomically mixed cross section value
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
+  real(8)              :: Coscat               ! variance of scat xs in KL expansion, 'material' mode
+  real(8)              :: Coabs                ! variance of abs  xs in KL expansion, 'material' mode
+  real(8)              :: sigscatave           ! average scattering xs
+  real(8)              :: sigabsave            ! average absorption xs
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
@@ -101,8 +105,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: tnumEigs             ! temp numEigs, local use "KLreval", nice to get rid of
   real(8)              :: binSize              !
   real(8)              :: CoExp                ! variance of materials in KL expansion
-  real(8)              :: Coscat               ! variance of scattering xs in KL expansion, 'material' mode
-  real(8)              :: Coabs                ! variance of absorption xs in KL expansion, 'material' mode
   integer              :: negcnt               ! tally of number of realizations that have gone neg
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !

@@ -363,7 +363,7 @@ CONTAINS
   !This subroutine allocates and initializes all global variables
   use timevars, only: time, ntime, totparts, cumparts
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength, lamc, sig
+                          totLength, lamc, sig, sigscatave, sigabsave, scatrat
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
@@ -384,15 +384,17 @@ CONTAINS
   enddo
 
   !allocate and initialize genRealzvars
-  numPath   = 0  !setup Markov material tallies
-  sumPath   = 0d0
-  sqrPath   = 0d0
-  largesti  = 0d0
-  totLength = 0d0
-  P(1)      = lam(1)/(lam(1)+lam(2)) !calc probabilities
-  P(2)      = lam(2)/(lam(1)+lam(2))
-  sigave    = P(1)*sig(1)+P(2)*sig(2)
-  lamc      = (lam(1)*lam(2))/(lam(1)+lam(2))
+  numPath    = 0  !setup Markov material tallies
+  sumPath    = 0d0
+  sqrPath    = 0d0
+  largesti   = 0d0
+  totLength  = 0d0
+  P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
+  P(2)       = lam(2)/(lam(1)+lam(2))
+  lamc       = (lam(1)*lam(2))/(lam(1)+lam(2))
+  sigave     = P(1)*                 sig(1) + P(2)*                 sig(2)
+  sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
+  sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
 
 
   !allocate  KLresearch variables

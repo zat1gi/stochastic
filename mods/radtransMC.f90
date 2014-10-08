@@ -628,8 +628,8 @@ CONTAINS
 
   function KLrxi_point2(j,xpos,flxstype)
   ! Evaluates KL reconstructed realizations at a given point
-  use genRealzvars, only: lamc, P, sig, scatrat
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp, Coscat, Coabs
+  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave
+  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
   use KLmeanadjust, only: meanadjust, Eigfunc
   integer :: j
   real(8) :: xpos
@@ -644,10 +644,10 @@ CONTAINS
       avesigval = sigave
       Coterm    = CoExp
     case ("scatter")
-      avesigval = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2) !consider precomputing
+      avesigval = sigscatave
       Coterm    = Coscat
     case ("absorb")
-      avesigval = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+      avesigval = sigabsave
       Coterm    = Coabs
   end select
 
