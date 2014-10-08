@@ -249,12 +249,13 @@ CONTAINS
             !decide fate of particle
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              tempscatrat = KLWood_actscatrat(j,xpos)
-              if(tempscatrat>rang()) then !#change me# !evaluate functional scatrat from new 'KLWood_actscatrat'
-                flIntType = 'scatter'    !could make a 'merge'
-              else
-                flIntType = 'absorb'
-              endif
+              tempscatrat = KLWood_actscatrat(j,newpos)
+              flIntType = merge('scatter','absorb ',tempscatrat>rang())
+!              if(tempscatrat>rang()) then
+!                flIntType = 'scatter'    !could make a 'merge'
+!              else
+!                flIntType = 'absorb'
+!              endif
             endif
           case ("LPMC")
               flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
@@ -603,8 +604,9 @@ CONTAINS
   !uses them to assert the same total xs and produce the local scattering ratio.  
   use genRealzvars, only: scatrat
   use KLvars, only: KLxigentype
-  real(8) :: eps = 0.00001d0
-  real(8) :: KLWood_actscatrat, scatxs, absxs, totxs
+  integer :: j
+  real(8) :: eps = 0.05d0
+  real(8) :: KLWood_actscatrat, xpos, scatxs, absxs, totxs
 
   if( KLxigentype .eq. 'totxs' ) then
     KLWood_actscatrat = scatrat(1)
@@ -612,7 +614,12 @@ CONTAINS
     scatxs = KLrxi_point2(j,xpos,'scatter')
     absxs  = KLrxi_point2(j,xpos,'absorb ')
     totxs  = KLrxi_point2(j,xpos,'total  ')
+!if(j==1) print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
+!if(j==1) print *,"totxs         :                                                     ",totxs
+    if( scatxs*absxs<0d0 ) print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
     if( abs(scatxs+absxs-totxs)>eps ) stop 'in KLWood_actscatrat, xs recreation not conserved'
+    if( scatxs<0d0 ) scatxs = 0d0
+    if( absxs <0d0 ) absxs  = 0d0
     KLWood_actscatrat = scatxs/(scatxs+absxs)
   endif
   end function KLWood_actscatrat
@@ -637,7 +644,7 @@ CONTAINS
       avesigval = sigave
       Coterm    = CoExp
     case ("scatter")
-      avesigval = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2) !consider precomputing these
+      avesigval = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2) !consider precomputing
       Coterm    = Coscat
     case ("absorb")
       avesigval = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)

@@ -17,7 +17,11 @@ set xlabel "Position in Slab"
 #Enter Plotline
 
 plot \
+  "plots/fluxplots/radMC_fluxall.out" u 1:2 t "Markov Mix, TMC",\
+  "plots/fluxplots/radWood_fluxall.out" u 1:2 t "Markov Mix, WMC",\
   "plots/fluxplots/KLWood_fluxall.out" u 1:2 t "KL Reconstructions, WMC" ,\
+  "plots/fluxplots/LPMC_fluxall.out" u 1:2 t "Levermore-Pomraning MC",\
+  "plots/fluxplots/atmixMC_fluxall.out" u 1:2 t "Atomic Mix, TMC",\
 #Postscript info
 set size 1.0,0.6
 set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 11
