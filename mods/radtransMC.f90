@@ -462,8 +462,8 @@ CONTAINS
 
 
 
-  subroutine KLWood_binmaxes( j ) ! make '1' when done with Woodcock version
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
+  subroutine KLWood_binmaxes( j )
+  use KLvars, only: alpha, Ak, Eig, numEigs
   use MCvars, only: binmaxind, binmaxes, nceilbin
 
   integer :: j
@@ -628,8 +628,8 @@ CONTAINS
 
   function KLrxi_point2(j,xpos,flxstype)
   ! Evaluates KL reconstructed realizations at a given point
-  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
+  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
   use KLmeanadjust, only: meanadjust, Eigfunc
   integer :: j
   real(8) :: xpos

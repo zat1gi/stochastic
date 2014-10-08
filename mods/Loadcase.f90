@@ -363,10 +363,10 @@ CONTAINS
   !This subroutine allocates and initializes all global variables
   use timevars, only: time, ntime, totparts, cumparts
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength, lamc, sig, sigscatave, sigabsave, scatrat
+                          totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
-                    xi, sigave, KLrxivals, pltKLrrealzarray, KLrnumRealz
+                    xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: fluxfaces, &
                     radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
                     stocMC_reflection, stocMC_transmission, stocMC_absorption, &

@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from mods/variables.f90
-MD5:b0b19862a40a8b1dd3c08694944db3a4 -- If you edit this, you'll get what you deserve.
+MD5:730a1aa6313109c2d60896a09a342cb6 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -105,18 +105,21 @@ INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 28 'sigabsave' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () ()
 0 () () () 0 0)
-29 'sigscatave' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
+29 'sigave' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () () 0 () () () 0
+0)
+30 'sigscatave' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0) (REAL 8 0 0 0 REAL ()) 0 0 () ()
 0 () () () 0 0)
-30 'sqrpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+31 'sqrpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-31 'sumpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+32 'sumpath' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ()) 0 0 () (1 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (
 INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-32 'totlength' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
+33 'totlength' 'genrealzvars' '' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 0 REAL ())
 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
@@ -128,5 +131,5 @@ CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 'matlength' 0 15 'mattype' 0 16 'nummatsegs' 0 17 'numpath' 0 18
 'numrealz' 0 19 'p' 0 20 'perfirsttally' 0 21 'pltgenrealz' 0 22
 'pltgenrealznumof' 0 23 'pltgenrealzwhich' 0 24 's' 0 25 'scatrat' 0 26
-'sig' 0 27 'sigabsave' 0 28 'sigscatave' 0 29 'sqrpath' 0 30 'sumpath' 0
-31 'totlength' 0 32)
+'sig' 0 27 'sigabsave' 0 28 'sigave' 0 29 'sigscatave' 0 30 'sqrpath' 0
+31 'sumpath' 0 32 'totlength' 0 33)

@@ -34,6 +34,7 @@ module genRealzvars
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
   real(8)              :: Coscat               ! variance of scat xs in KL expansion, 'material' mode
   real(8)              :: Coabs                ! variance of abs  xs in KL expansion, 'material' mode
+  real(8)              :: sigave               ! weighted average sigma value for binary mixtures
   real(8)              :: sigscatave           ! average scattering xs
   real(8)              :: sigabsave            ! average absorption xs
 
@@ -93,7 +94,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
   real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
-  real(8)              :: sigave               ! weighted average sigma value for binary mixtures
 
   integer              :: mostinBin            !
   integer              :: Corrnumpoints        !

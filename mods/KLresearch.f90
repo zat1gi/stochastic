@@ -18,10 +18,10 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates variance maintained with # of eigvals if input specifies
-  use genRealzvars, only: sig, lam, s, numRealz, P, lamc
+  use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
-                          levsrefEig, sigave, pltEigf, KLrnumRealz
+                          levsrefEig, pltEigf, KLrnumRealz
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: index,l,level,curEig,i,j
@@ -221,7 +221,7 @@ CONTAINS
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s, P, lamc, scatrat, Coscat, Coabs
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, sigave, CoExp, Corropts
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, CoExp, Corropts
 
   integer :: x,y,curEig
   real(8) :: stepsize,curx,cury,Eigfx,Eigfy
@@ -322,8 +322,9 @@ CONTAINS
   !soon it will by integrating over a factor which only considers information that 
   !distinguishes one material from another.
   use timevars, only: time
-  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P
-  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, sigave, KLxigentype
+  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P, &
+                          sigave
+  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, KLxigentype
   use MCvars, only: trannprt
   use genRealz, only: genReal
   integer :: i,j,k,curEig
@@ -384,7 +385,7 @@ CONTAINS
   !This subroutine calculates both, then prints those that are chosen in the input.
   use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          sigave, CoExp, pltCo
+                          CoExp, pltCo
 
   integer :: curCS,curEig,twice,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)

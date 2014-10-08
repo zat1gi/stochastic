@@ -20,8 +20,8 @@ CONTAINS
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
-  use genRealzvars, only: s
-  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
+  use genRealzvars, only: s, sigave
+  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
@@ -82,8 +82,8 @@ CONTAINS
   function findnextpoint(j)
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
-  use genRealzvars, only: s
-  use KLvars,       only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
+  use genRealzvars, only: s, sigave
+  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
   integer :: j
 
   real(8) :: findnextpoint
@@ -114,8 +114,8 @@ CONTAINS
 
   function refinenextpoint(j,oldx,curx)
   !This function takes a range and zeroes in on transision in sign of cross section within tolerance
-  use genRealzvars, only: s
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrnumRealz
+  use genRealzvars, only: s, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
   integer :: j
   real(8) :: oldx,curx
 
@@ -157,8 +157,8 @@ CONTAINS
 
   function KLrxi_point(j,xpos)
   ! Evaluates KL reconstructed realizations at a given point
-  use genRealzvars, only: lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
+  use genRealzvars, only: lamc, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
   integer :: j
   real(8) :: xpos
   real(8) :: KLrxi_point
@@ -190,8 +190,8 @@ CONTAINS
 
   function KLrxi_integral(j,xl,xr)
   ! This function integrates on KL reconstructed realizations from xl to xr
-  use genRealzvars, only: lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave, KLrxivals, CoExp
+  use genRealzvars, only: lamc, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
   integer :: j
   real(8) :: xl,xr
   real(8) :: KLrxi_integral

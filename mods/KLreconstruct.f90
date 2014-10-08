@@ -46,8 +46,8 @@ CONTAINS
   !It reconstructs based upon the fixed point and fixed xi methods.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
   use timevars, only: time
-  use genRealzvars, only: s, lamc
-  use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, sigave, &
+  use genRealzvars, only: s, lamc, sigave
+  use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
@@ -123,9 +123,9 @@ CONTAINS
   subroutine KLrplotrealz
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use genRealzvars, only: lamc
+  use genRealzvars, only: lamc, sigave
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
-                         sigave, KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
+                         KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
                          KLrsig, KLrxisig, pltKLrrealzPointorXi
 
@@ -194,7 +194,7 @@ CONTAINS
 
   subroutine KLr_negsearch( j,neg )
   use genRealzvars, only: s
-  use KLvars, only: alpha, Ak, Eig, numEigs, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs
   integer :: j
   character(3) :: neg
 
