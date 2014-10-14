@@ -654,7 +654,8 @@ CONTAINS
   KLrxi_point2 = avesigval + meanadjust
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point2 = KLrxi_point2 + sqrt(Coterm*lamc) * sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+    KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+                                !^ sqrt(Coterm*lamc), to remove Co and lamc
   enddo
 
   end function KLrxi_point2

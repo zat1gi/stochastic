@@ -106,7 +106,8 @@ CONTAINS
           curGam=curGam+refstepGam
         enddo
       enddo
-      AllEig(curEig)     =2d0/(Allgam(curEig)**2+1d0)
+      AllEig(curEig)     = 2d0*Co*lamc/(Allgam(curEig)**2+1d0)
+                              !x Co*lamc  to remove Co and lamc
       Eigvalsum = Eigvalsum + AllEig(curEig)
     enddo
     Eigval = AllEig(newsize)
@@ -145,7 +146,8 @@ CONTAINS
     !Calc other values like alpha, norm const (Ak), eigenvalue, etc.
     alpha(curEig)   =gam(curEig)/lamc
     Ak(curEig)      =sqrt(1d0/(  s/2d0*(gam(curEig)**2+1d0)+lamc  ))
-    !Eig(curEig)     =2d0/(gam(curEig)**2+1d0)
+    !Eig(curEig)     =2d0*lamc/(gam(curEig)**2+1d0)
+                         !x Co*lamc  to remove Co and lamc
     sqrtEig(curEig) =sqrt(Eig(curEig))
     !integrate to 1 tests
     427 format("  ",f13.7,"   Ak:",f13.7)
@@ -420,7 +422,7 @@ CONTAINS
   CoPerDiff = abs( ( CoExp - CoAct ) / CoExp ) * 100
   write(*,446) CoAct
   write(*,447) CoExp,CoPerDiff
-
+print *,"CoExp: ",CoExp
 
   do twice=1,2
 
@@ -429,7 +431,8 @@ CONTAINS
     else
       Co=CoAct
       do curEig=1,numEigs
-        Eig(curEig)=2.0d0/(gam(curEig)**2.0d0+1.0d0)
+        Eig(curEig)=2.0d0*Co*lamc/(gam(curEig)**2.0d0+1.0d0)
+                         !x Co*lamc  to remove Co and lamc
       enddo
     endif
 
@@ -493,7 +496,8 @@ CONTAINS
 
 
   do curEig=1,numEigs  !return 'Eig' to original values
-    Eig(curEig)=2*CoExp*lamc/(gam(curEig)**2+1)
+    Eig(curEig)=2d0*CoExp*lamc/(gam(curEig)**2+1)
+                  !remove Co and lamc
   enddo
 
   end subroutine KL_Cochart

@@ -1,4 +1,4 @@
-  21000,         Advance random see how far?
+  2000,         Advance random see how far?
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals #0.7969,0.3815
@@ -10,11 +10,11 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  3,             Number of eigenvalues
+  2,             Number of eigenvalues
   100,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,yes,yes,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   1000,            Number of particles to simulate on each realization
   100000,          Number of particles for LP or atomic mix calculations
 
@@ -45,7 +45,6 @@
   2,
   3,
 
-
   !!--Plotting Eigenfunctions                [in sub KL_eigenvalue]
   noplot,lines,#x,funcval,   "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   1,             Number of Eigs to plot Eigenfunction for (up to 4)
@@ -61,10 +60,10 @@
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
   preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  9,1,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
-  10,1,fxi
-  11,1,fxi
-  12,1,fxi
+  1,1,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
+  2,1,fxi
+  3,1,fxi
+  4,1,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

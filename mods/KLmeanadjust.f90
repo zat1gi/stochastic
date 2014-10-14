@@ -169,7 +169,8 @@ CONTAINS
   KLrxi_point = sigave + meanadjust
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point = KLrxi_point + sqrt(CoExp*lamc) * sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+                              !^ sqrt(CoExp*lamc), to remove Co and lamc
   enddo
 
   end function KLrxi_point
@@ -202,8 +203,9 @@ CONTAINS
   KLrxi_integral = (sigave + meanadjust) * (xr - xl)
   do curEig=1,numEigs
     Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-    KLrxi_integral = KLrxi_integral + sqrt(CoExp*lamc) * sqrt(Eig(curEig)) * &
+    KLrxi_integral = KLrxi_integral + sqrt(Eig(curEig)) * &
                                            Eigfintterm * KLrxivals(j,curEig)
+                                    !^ sqrt(CoExp), to remove Co and lamc
   enddo
 
   end function KLrxi_integral

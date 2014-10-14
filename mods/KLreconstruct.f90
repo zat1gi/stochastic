@@ -50,7 +50,7 @@ CONTAINS
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
-                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
+                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, CoExp
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
@@ -74,6 +74,7 @@ CONTAINS
         enddo
         call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
         KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
+                                ! to remove Co and lamc
       enddo
     enddo
     612 format("  ",f14.8)     !print sigma values to text file, fixed point
@@ -127,7 +128,7 @@ CONTAINS
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
                          KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
-                         KLrsig, KLrxisig, pltKLrrealzPointorXi
+                         KLrsig, KLrxisig, pltKLrrealzPointorXi, CoExp
 
   integer :: i,curEig,m,KLrnumpts
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
@@ -151,6 +152,7 @@ CONTAINS
             call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
             !print *,rand,xiterm,Eigfterm,sqrt(Eig(curEig)),KLrsig(i)
             KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
+                                   !to remove Co and lamc
           enddo
           pltKLrrealzarray(i,1)   = KLrx(i)    !record x values
           pltKLrrealzarray(i,m+1) = KLrsig(i)  !record that realization

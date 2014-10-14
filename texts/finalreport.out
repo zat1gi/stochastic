@@ -7,32 +7,26 @@
 
  --Negative smoothing stats, neg smoothing off--
   Neg realz   :  0.00000%,                     0 /                 1000
-  Neg samples :  0.00000%,                     0 /               956600
+  Neg samples :  0.00000%,                     0 /              1105109
   Neg area    : -0.00000%
-  Ave neg samp:         NaN   Ave pos samp:      0.4646
-  Max neg samp:      0.0000   Max pos samp:      0.4712
+  Ave neg samp:         NaN   Ave pos samp:      0.4946
+  Max neg samp:      0.0000   Max pos samp:      0.9871
 
 
  |--------------- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |radMC  :  | 0.23587  +-  0.03612    | 0.68424  +-  0.05447|
- |radWood:  | 0.23650  +-  0.03682    | 0.68315  +-  0.05565|
- |KLWood :  | 0.23962  +-  0.01333    | 0.67994  +-  0.01482|
- |----------|-------------------------|---------------------|
- |LPMC   :  | 0.23535                 | 0.68605             |
- |----------|-------------------------|---------------------|
- |atmixMC:  | 0.23975                 | 0.67837             |
+ |radMC  :  | 0.23608  +-  0.03735    | 0.68357  +-  0.05609|
+ |radWood:  | 0.23877  +-  0.03811    | 0.67994  +-  0.05734|
+ |KLWood :  | 0.23860  +-  0.03781    | 0.68060  +-  0.05705|
  |----------------------------------------------------------|
 
-  total runtime:      0.14 min
-    genRealz   :      0.00 min     per:  2.29 % --- genRealz in other meths,
+  total runtime:      0.06 min
+    genRealz   :      0.00 min     per:  8.02 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.04 min     per: 29.56 %
-    radWood    :      0.04 min     per: 26.01 %
-    KLWood     :      0.05 min     per: 31.94 %
-    LPMC       :      0.01 min     per:  7.10 %
-    atmixMC    :      0.00 min     per:  1.83 %
-    KLcol      :      0.00 min     per:  0.13 %
-    KLrec      :      0.00 min     per:  2.79 %
-    other      :      0.00 min     per:  0.65 %
+    radMC      :      0.02 min     per: 34.22 %
+    radWood    :      0.02 min     per: 29.90 %
+    KLWood     :      0.02 min     per: 33.03 %
+    KLcol      :      0.00 min     per:  0.21 %
+    KLrec      :      0.00 min     per:  2.03 %
+    other      :      0.00 min     per:  0.61 %
