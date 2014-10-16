@@ -51,7 +51,6 @@ CONTAINS
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, CoExp
-  use radtransMC, only: KLrxi_point
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
@@ -131,7 +130,6 @@ CONTAINS
                          KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
                          KLrsig, KLrxisig, pltKLrrealzPointorXi, CoExp
-  use radtransMC, only: KLrxi_point
 
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
@@ -199,7 +197,6 @@ CONTAINS
   subroutine KLr_negsearch( j,neg )
   use genRealzvars, only: s
   use KLvars, only: alpha, Ak, Eig, numEigs
-  use radtransMC, only: KLrxi_point
   integer :: j
   character(3) :: neg
 
@@ -248,6 +245,51 @@ print *,"minpos",minpos,"minsig",minsig
   enddo
 
   end subroutine KLr_negsearch
+
+
+
+  function KLrxi_point(j,xpos,flxstype,tnumEigsin)
+  ! Evaluates KL reconstructed realizations at a given point.
+  ! It has options for total, scattering only, or absorption only cross sectional values.
+  ! It has an option to solve for less than the available number of eigenvalues.
+  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, sigave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
+  use KLmeanadjust, only: meanadjust, Eigfunc
+  integer :: j
+  real(8) :: xpos
+  real(8) :: KLrxi_point
+  character(7), optional :: flxstype
+  integer, optional :: tnumEigsin
+
+  integer :: curEig,tnumEigs
+  real(8) :: Eigfterm, Coterm, avesigval
+
+  tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
+
+  if(present(flxstype)) then
+    select case (flxstype)
+      case ("total")
+        avesigval = sigave
+        Coterm    = CoExp
+      case ("scatter")
+        avesigval = sigscatave
+        Coterm    = Coscat
+      case ("absorb")
+        avesigval = sigabsave
+        Coterm    = Coabs
+    end select
+  else
+    avesigval = sigave
+    Coterm    = CoExp
+  endif   
+
+  KLrxi_point = avesigval + meanadjust
+  do curEig=1,tnumEigs
+    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
+    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+  enddo
+
+  end function KLrxi_point
 
 
 

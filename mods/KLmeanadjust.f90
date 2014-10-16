@@ -22,7 +22,7 @@ CONTAINS
   !chosen tolerance
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
-  use radtransMC, only: KLrxi_point
+  use KLreconstruct, only: KLrxi_point
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
@@ -85,7 +85,7 @@ CONTAINS
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
-  use radtransMC, only: KLrxi_point
+  use KLreconstruct, only: KLrxi_point
   integer :: j
 
   real(8) :: findnextpoint
@@ -118,7 +118,7 @@ CONTAINS
   !This function takes a range and zeroes in on transision in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
-  use radtransMC, only: KLrxi_point
+  use KLreconstruct, only: KLrxi_point
   integer :: j
   real(8) :: oldx,curx
 

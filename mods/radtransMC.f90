@@ -68,6 +68,7 @@ CONTAINS
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot
   use genRealz, only: genReal
+  use KLreconstruct, only: KLrxi_point
 
   integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
 
@@ -465,6 +466,7 @@ CONTAINS
   subroutine KLWood_binmaxes( j )
   use KLvars, only: alpha, Ak, Eig, numEigs
   use MCvars, only: binmaxind, binmaxes, nceilbin
+  use KLreconstruct, only: KLrxi_point
 
   integer :: j
 
@@ -604,6 +606,7 @@ CONTAINS
   !uses them to assert the same total xs and produce the local scattering ratio.  
   use genRealzvars, only: scatrat
   use KLvars, only: KLxigentype
+  use KLreconstruct, only: KLrxi_point
   integer :: j
   real(8) :: eps = 0.05d0
   real(8) :: KLWood_actscatrat, xpos, scatxs, absxs, totxs
@@ -623,53 +626,6 @@ CONTAINS
     KLWood_actscatrat = scatxs/(scatxs+absxs)
   endif
   end function KLWood_actscatrat
-
-
-
-  function KLrxi_point(j,xpos,flxstype,tnumEigsin)
-  ! Evaluates KL reconstructed realizations at a given point.
-  ! It has options for total, scattering only, or absorption only cross sectional values.
-  ! It has an option to solve for less than the available number of eigenvalues.
-  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
-  use KLmeanadjust, only: meanadjust, Eigfunc
-  integer :: j
-  real(8) :: xpos
-  real(8) :: KLrxi_point
-  character(7), optional :: flxstype
-  integer, optional :: tnumEigsin
-
-  integer :: curEig,tnumEigs
-  real(8) :: Eigfterm, Coterm, avesigval
-
-  tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
-
-  if(present(flxstype)) then
-    select case (flxstype)
-      case ("total")
-        avesigval = sigave
-        Coterm    = CoExp
-      case ("scatter")
-        avesigval = sigscatave
-        Coterm    = Coscat
-      case ("absorb")
-        avesigval = sigabsave
-        Coterm    = Coabs
-    end select
-  else
-    avesigval = sigave
-    Coterm    = CoExp
-  endif   
-
-  KLrxi_point = avesigval + meanadjust
-  do curEig=1,tnumEigs
-    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-  enddo
-
-  end function KLrxi_point
-
-
 
 
 
