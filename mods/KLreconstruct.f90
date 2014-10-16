@@ -63,6 +63,8 @@ CONTAINS
 
     KLrsig = 0          !create a realization, fixed point
     do i=1,KLrnumpoints(1)
+      !This process not collapsed because KLrrandarray is needed, and does not fit
+      !the form of the function.
       KLrsig(i) = sigave
       do curEig=1,numEigs
         Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
@@ -74,7 +76,6 @@ CONTAINS
         enddo
         call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
         KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
-                               !^ sqrt(CoExp) to remove Co
       enddo
     enddo
     612 format("  ",f14.8)     !print sigma values to text file, fixed point
@@ -146,13 +147,14 @@ CONTAINS
         KLrnumpts=KLrnumpoints(1)
         KLrsig = 0
         do i=1,KLrnumpoints(1)
+          !This process not collapsed because KLrrandarray is needed, and does not fit
+          !the form of the function.
           KLrsig(i) = sigave
           do curEig=1,tnumEigs
             Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
             rand = KLrrandarray(i,curEig,m+1)
             call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
             KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
-                                   !^ sqrt(CoExp) to remove Co
           enddo
           pltKLrrealzarray(i,1)   = KLrx(i)    !record x values
           pltKLrrealzarray(i,m+1) = KLrsig(i)  !record that realization

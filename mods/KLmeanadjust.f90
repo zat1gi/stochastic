@@ -170,7 +170,6 @@ CONTAINS
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-                              !^ sqrt(CoExp), to remove Co
   enddo
 
   end function KLrxi_point
@@ -205,7 +204,6 @@ CONTAINS
     Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
     KLrxi_integral = KLrxi_integral + sqrt(Eig(curEig)) * &
                                            Eigfintterm * KLrxivals(j,curEig)
-                                    !^ sqrt(CoExp), to remove Co
   enddo
 
   end function KLrxi_integral

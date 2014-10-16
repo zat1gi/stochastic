@@ -106,9 +106,8 @@ CONTAINS
           curGam=curGam+refstepGam
         enddo
       enddo
-      AllEig(curEig)     = 2d0*lamc/(Allgam(curEig)**2+1d0)
-                              !x Co  to remove Co
-      Eigvalsum = Eigvalsum + AllEig(curEig)
+      AllEig(curEig) = Eigenvalue( Allgam(curEig) )
+      Eigvalsum      = Eigvalsum + AllEig(curEig)
     enddo
     Eigval = AllEig(newsize)
 
@@ -146,8 +145,6 @@ CONTAINS
     !Calc other values like alpha, norm const (Ak), eigenvalue, etc.
     alpha(curEig)   =gam(curEig)/lamc
     Ak(curEig)      =sqrt(1d0/(  s/2d0*(gam(curEig)**2+1d0)+lamc  ))
-    !Eig(curEig)     =2d0*lamc/(gam(curEig)**2+1d0)
-                         !x Co  to remove Co
     sqrtEig(curEig) =sqrt(Eig(curEig))
     !integrate to 1 tests
     427 format("  ",f13.7,"   Ak:",f13.7)
@@ -431,8 +428,10 @@ print *,"CoExp: ",CoExp
     else
       Co=CoAct
       do curEig=1,numEigs
-        Eig(curEig)=2.0d0*lamc/(gam(curEig)**2.0d0+1.0d0)
-                         !x Co to remove Co
+        !I think I can get rid of this now that variance has been taken out of the 
+        !eigenvalue calculations.  This would include the instance at the end of this
+        !subroutine as well.
+        Eig(curEig) = Eigenvalue( gam(curEig) )
       enddo
     endif
 
@@ -496,8 +495,7 @@ print *,"CoExp: ",CoExp
 
 
   do curEig=1,numEigs  !return 'Eig' to original values
-    Eig(curEig)=2d0*lamc/(gam(curEig)**2+1)
-                   !x to remove Co
+    Eig(curEig) = Eigenvalue( gam(curEig) )
   enddo
 
   end subroutine KL_Cochart
@@ -505,6 +503,13 @@ print *,"CoExp: ",CoExp
 
 
 
+  function Eigenvalue( gam )
+  !Solves value of eigenvalues based on transcendental solution gamma.
+  use genRealzvars, only: lamc
+  real(8) :: gam, Eigenvalue
+  Eigenvalue = 2d0 * lamc / (gam**2 + 1d0)
+                   !^ previously had Co term here.  Cancels out in the end anyway, but may want.
+  end function Eigenvalue
 
 
 

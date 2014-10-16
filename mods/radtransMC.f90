@@ -665,7 +665,6 @@ CONTAINS
   do curEig=1,tnumEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-                                !^ sqrt(Coterm), to remove Co
   enddo
 
   end function KLrxi_point2
