@@ -51,7 +51,7 @@ CONTAINS
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, CoExp
-  use radtransMC, only: KLrxi_point2
+  use radtransMC, only: KLrxi_point
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
@@ -103,7 +103,7 @@ CONTAINS
     endif
 
     do i=1,KLrnumpoints(2)  !create realization
-      KLrxisig(i) = KLrxi_point2(j,KLrxi(i))
+      KLrxisig(i) = KLrxi_point(j,KLrxi(i))
     enddo
     open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
     do i=1,KLrnumpoints(2)
@@ -131,7 +131,7 @@ CONTAINS
                          KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
                          KLrsig, KLrxisig, pltKLrrealzPointorXi, CoExp
-  use radtransMC, only: KLrxi_point2
+  use radtransMC, only: KLrxi_point
 
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
@@ -168,7 +168,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point2(pltKLrrealzwhich(1,m),KLrxi(i),tnumEigsin=tnumEigs)
+          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),KLrxi(i),tnumEigsin=tnumEigs)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
@@ -199,7 +199,7 @@ CONTAINS
   subroutine KLr_negsearch( j,neg )
   use genRealzvars, only: s
   use KLvars, only: alpha, Ak, Eig, numEigs
-  use radtransMC, only: KLrxi_point2
+  use radtransMC, only: KLrxi_point
   integer :: j
   character(3) :: neg
 
@@ -215,10 +215,10 @@ CONTAINS
 
   do i=1,numEigs
     minpos=(outerstep*(i-1))
-    minsig=KLrxi_point2(j,minpos)
+    minsig=KLrxi_point(j,minpos)
     do k=2,nminnersteps
       xpos=(outerstep*(i-1)+innerstep*(k-1))
-      xsig= KLrxi_point2(j,xpos)
+      xsig= KLrxi_point(j,xpos)
       if(xsig<minsig) then
         minsig=xsig
         minpos=xpos
@@ -232,7 +232,7 @@ CONTAINS
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
         if(xpos<0) xpos=0.0d0
         if(xpos>s) xpos=s
-        xsig= KLrxi_point2(j,xpos)
+        xsig= KLrxi_point(j,xpos)
         if(xsig<minsig) then
           minsig=xsig
           minpos=xpos
