@@ -6,27 +6,25 @@
     s         :  1.00       lamc      :  0.40
 
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   :  0.00000%,                     0 /                 1000
-  Neg samples :  0.00000%,                     0 /              1110359
-  Neg area    : -0.00000%
-  Ave neg samp:         NaN   Ave pos samp:      0.4956
-  Max neg samp:      0.0000   Max pos samp:      1.0051
+  Neg realz   :  0.00400%,                     4 /                 1000
+  Neg samples :  0.00032%,                   373 /              1171588
+  Neg area    :  0.00001%
+  Ave neg samp:     -0.0149   Ave pos samp:      0.4909
+  Max neg samp:     -0.0488   Max pos samp:      1.0549
 
 
  |--------------- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |radMC  :  | 0.23590  +-  0.03605    | 0.68465  +-  0.05374|
- |radWood:  | 0.23510  +-  0.03594    | 0.68499  +-  0.05379|
- |KLWood :  | 0.23803  +-  0.03786    | 0.68139  +-  0.05743|
+ |radMC  :  | 0.23564  +-  0.03688    | 0.68449  +-  0.05552|
+ |KLWood :  | 0.23556  +-  0.03747    | 0.68445  +-  0.05678|
  |----------------------------------------------------------|
 
-  total runtime:      0.05 min
-    genRealz   :      0.01 min     per: 14.70 % --- genRealz in other meths,
+  total runtime:      0.04 min
+    genRealz   :      0.00 min     per:  9.64 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.02 min     per: 33.81 %
-    radWood    :      0.01 min     per: 29.03 %
-    KLWood     :      0.02 min     per: 33.59 %
-    KLcol      :      0.00 min     per:  0.80 %
-    KLrec      :      0.00 min     per:  2.07 %
-    other      :      0.00 min     per:  0.70 %
+    radMC      :      0.02 min     per: 40.34 %
+    KLWood     :      0.02 min     per: 52.18 %
+    KLcol      :      0.00 min     per:  1.24 %
+    KLrec      :      0.00 min     per:  4.95 %
+    other      :      0.00 min     per:  1.30 %

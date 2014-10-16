@@ -129,6 +129,7 @@ CONTAINS
                          KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
                          KLrsig, KLrxisig, pltKLrrealzPointorXi, CoExp
+  use radtransMC, only: KLrxi_point2
 
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
@@ -150,7 +151,6 @@ CONTAINS
             Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
             rand = KLrrandarray(i,curEig,m+1)
             call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
-            !print *,rand,xiterm,Eigfterm,sqrt(Eig(curEig)),KLrsig(i)
             KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
                                    !^ sqrt(CoExp) to remove Co
           enddo
@@ -165,7 +165,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),KLrxi(i))
+          KLrxisig(i) = KLrxi_point2(pltKLrrealzwhich(1,m),KLrxi(i),'total  ',tnumEigsin=tnumEigs)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo

@@ -626,8 +626,10 @@ CONTAINS
 
 
 
-  function KLrxi_point2(j,xpos,flxstype)
-  ! Evaluates KL reconstructed realizations at a given point
+  function KLrxi_point2(j,xpos,flxstype,tnumEigsin)
+  ! Evaluates KL reconstructed realizations at a given point.
+  ! It has options for total, scattering only, or absorption only cross sectional values.
+  ! It has an option to solve for less than the available number of eigenvalues.
   use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
   use KLmeanadjust, only: meanadjust, Eigfunc
@@ -635,9 +637,12 @@ CONTAINS
   real(8) :: xpos
   real(8) :: KLrxi_point2
   character(7) :: flxstype
+  integer, optional :: tnumEigsin
 
-  integer :: curEig
+  integer :: curEig,tnumEigs
   real(8) :: Eigfterm, Coterm, avesigval
+
+  tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
   select case (flxstype)
     case ("total")
@@ -652,7 +657,7 @@ CONTAINS
   end select
 
   KLrxi_point2 = avesigval + meanadjust
-  do curEig=1,numEigs
+  do curEig=1,tnumEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
                                 !^ sqrt(Coterm), to remove Co
