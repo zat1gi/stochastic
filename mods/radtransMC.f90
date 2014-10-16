@@ -22,7 +22,7 @@ CONTAINS
 
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
-print *,"flag this is a testing flag"
+
   call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
   do j=1,tnumRealz
 
@@ -655,7 +655,7 @@ print *,"flag this is a testing flag"
   do curEig=1,numEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point2 = KLrxi_point2 + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-                                !^ sqrt(Coterm*lamc), to remove Co and lamc
+                                !^ sqrt(Coterm), to remove Co
   enddo
 
   end function KLrxi_point2
@@ -1719,10 +1719,14 @@ print *,"flag this is a testing flag"
     if(MCcaseson(icase)==1) then
       if(MCcases(icase)=='radMC')   write(100,326) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+!if(MCcases(icase)=='radMC') print *,"flagradMC  :",stocMC_reflection(icase,1),& !used with 'compare.sh'
+!sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
       if(MCcases(icase)=='radWood') write(100,327) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
       if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+!if(MCcases(icase)=='KLWood') print *,"flagKLWood:",stocMC_reflection(icase,1),&
+!sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
     endif
   enddo
 

@@ -102,7 +102,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: AllEig(:)            ! many more Eigs than used, for variance kept calcs
   real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
   real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
-  integer              :: tnumEigs             ! temp numEigs, local use "KLreval", nice to get rid of
   real(8)              :: binSize              !
   real(8)              :: CoExp                ! variance of materials in KL expansion
   integer              :: negcnt               ! tally of number of realizations that have gone neg

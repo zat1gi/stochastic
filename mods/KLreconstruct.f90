@@ -74,7 +74,7 @@ CONTAINS
         enddo
         call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
         KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
-                                ! to remove Co and lamc
+                               !^ sqrt(CoExp) to remove Co
       enddo
     enddo
     612 format("  ",f14.8)     !print sigma values to text file, fixed point
@@ -125,12 +125,12 @@ CONTAINS
   !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use genRealzvars, only: lamc, sigave
-  use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, tnumEigs, &
+  use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                          KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
                          KLrsig, KLrxisig, pltKLrrealzPointorXi, CoExp
 
-  integer :: i,curEig,m,KLrnumpts
+  integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
 
   call system("mv KLrsig.txt plots")
@@ -152,7 +152,7 @@ CONTAINS
             call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
             !print *,rand,xiterm,Eigfterm,sqrt(Eig(curEig)),KLrsig(i)
             KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
-                                   !to remove Co and lamc
+                                   !^ sqrt(CoExp) to remove Co
           enddo
           pltKLrrealzarray(i,1)   = KLrx(i)    !record x values
           pltKLrrealzarray(i,m+1) = KLrsig(i)  !record that realization
@@ -165,8 +165,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),&
-                                    KLrxi(i))
+          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),KLrxi(i))
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo

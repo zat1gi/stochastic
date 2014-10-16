@@ -7,24 +7,26 @@
 
  --Negative smoothing stats, neg smoothing off--
   Neg realz   :  0.00000%,                     0 /                 1000
-  Neg samples :  0.00000%,                     0 /              1101670
+  Neg samples :  0.00000%,                     0 /              1110359
   Neg area    : -0.00000%
-  Ave neg samp:         NaN   Ave pos samp:      0.4942
-  Max neg samp:      0.0000   Max pos samp:      0.9871
+  Ave neg samp:         NaN   Ave pos samp:      0.4956
+  Max neg samp:      0.0000   Max pos samp:      1.0051
 
 
  |--------------- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |radMC  :  | 0.23573  +-  0.03615    | 0.68441  +-  0.05420|
- |KLWood :  | 0.23680  +-  0.03665    | 0.68218  +-  0.05640|
+ |radMC  :  | 0.23590  +-  0.03605    | 0.68465  +-  0.05374|
+ |radWood:  | 0.23510  +-  0.03594    | 0.68499  +-  0.05379|
+ |KLWood :  | 0.23803  +-  0.03786    | 0.68139  +-  0.05743|
  |----------------------------------------------------------|
 
-  total runtime:      0.03 min
-    genRealz   :      0.00 min     per:  8.10 % --- genRealz in other meths,
+  total runtime:      0.05 min
+    genRealz   :      0.01 min     per: 14.70 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.02 min     per: 45.55 %
-    KLWood     :      0.02 min     per: 50.23 %
-    KLcol      :      0.00 min     per:  0.49 %
-    KLrec      :      0.00 min     per:  2.76 %
-    other      :      0.00 min     per:  0.98 %
+    radMC      :      0.02 min     per: 33.81 %
+    radWood    :      0.01 min     per: 29.03 %
+    KLWood     :      0.02 min     per: 33.59 %
+    KLcol      :      0.00 min     per:  0.80 %
+    KLrec      :      0.00 min     per:  2.07 %
+    other      :      0.00 min     per:  0.70 %
