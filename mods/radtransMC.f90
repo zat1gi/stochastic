@@ -22,7 +22,7 @@ CONTAINS
 
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
-
+print *,"flag this is a testing flag"
   call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
   do j=1,tnumRealz
 
