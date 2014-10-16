@@ -165,7 +165,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point2(pltKLrrealzwhich(1,m),KLrxi(i),'total  ',tnumEigsin=tnumEigs)
+          KLrxisig(i) = KLrxi_point2(pltKLrrealzwhich(1,m),KLrxi(i),tnumEigsin=tnumEigs)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
