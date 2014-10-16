@@ -22,6 +22,7 @@ CONTAINS
   !chosen tolerance
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
+  use radtransMC, only: KLrxi_point2
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
@@ -48,13 +49,13 @@ CONTAINS
 
     print *,"Beginning mean adjustment iteration ",adjustiter
     do j=1,KLrnumRealz
-      xr = KLrxi_point(j,0d0)
+      xr = KLrxi_point2(j,0d0)
       xl = 0d0
       do
         xr = findnextpoint(j)
         areacont = KLrxi_integral(j,xl,xr)/KLrnumRealz/s
 
-        xmid = KLrxi_point(j,(xr+xl)/2d0)
+        xmid = KLrxi_point2(j,(xr+xl)/2d0)
         if(xmid>0d0) then
           aveposarea = aveposarea + areacont
           perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
@@ -84,19 +85,20 @@ CONTAINS
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
+  use radtransMC, only: KLrxi_point2
   integer :: j
 
   real(8) :: findnextpoint
   real(8) :: curx,oldx,curs,olds !position, then sigma value
 
   curx = xl
-  curs = KLrxi_point(j,curx)
+  curs = KLrxi_point2(j,curx)
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
-    curs = KLrxi_point(j,curx)
+    curs = KLrxi_point2(j,curx)
     if(curs*olds<0d0) then
       curx = refinenextpoint(j,oldx,curx)
       exit
@@ -116,6 +118,7 @@ CONTAINS
   !This function takes a range and zeroes in on transision in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
+  use radtransMC, only: KLrxi_point2
   integer :: j
   real(8) :: oldx,curx
 
@@ -123,13 +126,13 @@ CONTAINS
 
   stepsign = -1d0
   curstep = step
-  curs = KLrxi_point(j,curx)
+  curs = KLrxi_point2(j,curx)
   do
     curstep = curstep/2d0
     oldx = curx
     olds = curs
     curx = curx + curstep*stepsign
-    curs = KLrxi_point(j,curx)
+    curs = KLrxi_point2(j,curx)
 
     if(abs(curs)<stol) then
       refinenextpoint = curx
@@ -155,25 +158,24 @@ CONTAINS
 
 
 
-  function KLrxi_point(j,xpos)
-  ! Evaluates KL reconstructed realizations at a given point
-  use genRealzvars, only: lamc, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
-  integer :: j
-  real(8) :: xpos
-  real(8) :: KLrxi_point
-
-  integer :: curEig
-  real(8) :: Eigfterm
-
-  KLrxi_point = sigave + meanadjust
-  do curEig=1,numEigs
-    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-  enddo
-
-  end function KLrxi_point
-
+!  function KLrxi_point(j,xpos)
+!  ! Evaluates KL reconstructed realizations at a given point
+!  use genRealzvars, only: lamc, sigave
+!  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
+!  integer :: j
+!  real(8) :: xpos
+!  real(8) :: KLrxi_point
+!
+!  integer :: curEig
+!  real(8) :: Eigfterm
+!
+!  KLrxi_point = sigave + meanadjust
+!  do curEig=1,numEigs
+!    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
+!    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+!  enddo
+!
+!  end function KLrxi_point
 
 
 

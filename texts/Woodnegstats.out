@@ -1,7 +1,7 @@
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   :  0.00400%,                     4 /                 1000
-  Neg samples :  0.00032%,                   373 /              1171588
-  Neg area    :  0.00001%
-  Ave neg samp:     -0.0149   Ave pos samp:      0.4909
-  Max neg samp:     -0.0488   Max pos samp:      1.0549
+  Neg realz   :  0.28000%,                   280 /                 1000
+  Neg samples :  0.08695%,                941415 /             10827355
+  Neg area    :  0.03332%
+  Ave neg samp:     -0.3435   Ave pos samp:      0.9489
+  Max neg samp:     -1.5800   Max pos samp:      3.6564
 
