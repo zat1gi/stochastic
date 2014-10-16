@@ -50,7 +50,7 @@ CONTAINS
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
-                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, CoExp
+                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
@@ -129,7 +129,7 @@ CONTAINS
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                          KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
-                         KLrsig, KLrxisig, pltKLrrealzPointorXi, CoExp
+                         KLrsig, KLrxisig, pltKLrrealzPointorXi
 
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
@@ -252,8 +252,9 @@ print *,"minpos",minpos,"minsig",minsig
   ! Evaluates KL reconstructed realizations at a given point.
   ! It has options for total, scattering only, or absorption only cross sectional values.
   ! It has an option to solve for less than the available number of eigenvalues.
-  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
+  use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, &
+                          sigave, CoExp
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals
   use KLmeanadjust, only: meanadjust
   integer :: j
   real(8) :: xpos

@@ -159,7 +159,7 @@ CONTAINS
   function KLrxi_integral(j,xl,xr)
   ! This function integrates on KL reconstructed realizations from xl to xr
   use genRealzvars, only: lamc, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals
   integer :: j
   real(8) :: xl,xr
   real(8) :: KLrxi_integral

@@ -32,6 +32,7 @@ module genRealzvars
   real(8), allocatable :: matLength(:)         ! material boundaries
   real(8)              :: atmixsig             ! atomically mixed cross section value
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
+  real(8)              :: CoExp                ! variance of total xs in KL expansion
   real(8)              :: Coscat               ! variance of scat xs in KL expansion, 'material' mode
   real(8)              :: Coabs                ! variance of abs  xs in KL expansion, 'material' mode
   real(8)              :: sigave               ! weighted average sigma value for binary mixtures
@@ -103,7 +104,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
   real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
   real(8)              :: binSize              !
-  real(8)              :: CoExp                ! variance of materials in KL expansion
   integer              :: negcnt               ! tally of number of realizations that have gone neg
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !

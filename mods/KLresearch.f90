@@ -220,8 +220,8 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: sig, s, P, lamc, scatrat, Coscat, Coabs
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, CoExp, Corropts
+  use genRealzvars, only: sig, s, P, lamc, scatrat, CoExp, Coscat, Coabs
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts
   use KLreconstruct, only: Eigfunc
 
   integer :: x,y,curEig
@@ -384,9 +384,9 @@ print *,"flag xitermtot:",xitermtot
   !probabilities.  Since the eigenvalue contains the variance, this baseline Co
   !actually divides itself out, so that the efficiency by either method is the same.
   !This subroutine calculates both, then prints those that are chosen in the input.
-  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
+  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength, CoExp
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          CoExp, pltCo
+                          pltCo
   use KLreconstruct, only: Eigfunc
 
   integer :: curCS,curEig,twice,check

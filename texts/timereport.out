@@ -1,8 +1,8 @@
-  total runtime:      0.19 min
-    genRealz   :      0.01 min     per:  3.92 % --- genRealz in other meths,
+  total runtime:      0.18 min
+    genRealz   :      0.01 min     per:  4.01 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.07 min     per: 36.45 %
-    KLWood     :      0.11 min     per: 60.64 %
-    KLcol      :      0.00 min     per:  0.37 %
-    KLrec      :      0.00 min     per:  0.78 %
-    other      :      0.00 min     per:  1.77 %
+    radMC      :      0.07 min     per: 37.79 %
+    KLWood     :      0.10 min     per: 59.21 %
+    KLcol      :      0.00 min     per:  0.33 %
+    KLrec      :      0.00 min     per:  0.82 %
+    other      :      0.00 min     per:  1.85 %
