@@ -254,7 +254,7 @@ print *,"minpos",minpos,"minsig",minsig
   ! It has an option to solve for less than the available number of eigenvalues.
   use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, CoExp
-  use KLmeanadjust, only: meanadjust, Eigfunc
+  use KLmeanadjust, only: meanadjust
   integer :: j
   real(8) :: xpos
   real(8) :: KLrxi_point
@@ -290,6 +290,17 @@ print *,"minpos",minpos,"minsig",minsig
   enddo
 
   end function KLrxi_point
+
+
+
+  function Eigfunc(Ak,alpha,lamc,xpos)
+  ! Used in KLrxi_point to call reconstructed realization at given point
+  real(8) :: Ak,alpha,lamc,xpos,Eigfunc
+
+  Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
+
+  end function Eigfunc
+
 
 
 

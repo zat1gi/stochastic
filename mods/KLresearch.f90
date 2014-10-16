@@ -22,6 +22,7 @@ CONTAINS
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
                           levsrefEig, pltEigf, KLrnumRealz
+  use KLreconstruct, only: Eigfunc
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: index,l,level,curEig,i,j
@@ -221,6 +222,7 @@ CONTAINS
   !It then plots in 3D if user has specified.
   use genRealzvars, only: sig, s, P, lamc, scatrat, Coscat, Coabs
   use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, CoExp, Corropts
+  use KLreconstruct, only: Eigfunc
 
   integer :: x,y,curEig
   real(8) :: stepsize,curx,cury,Eigfx,Eigfy
@@ -385,6 +387,7 @@ print *,"flag xitermtot:",xitermtot
   use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           CoExp, pltCo
+  use KLreconstruct, only: Eigfunc
 
   integer :: curCS,curEig,twice,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)

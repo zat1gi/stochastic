@@ -146,18 +146,6 @@ CONTAINS
 
 
 
-
-  function Eigfunc(Ak,alpha,lamc,xpos)
-  ! Used in KLrxi_point to call reconstructed realization at given point
-  real(8) :: Ak,alpha,lamc,xpos,Eigfunc
-
-  Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
-
-  end function Eigfunc
-
-
-
-
   function Eigfuncint(Ak,alpha,lamc,xl,xr)
   ! Used in KLrxi_integral to integrate on KL reconstructed realizations
   real(8) :: Ak,alpha,lamc,xl,xr,Eigfuncint
