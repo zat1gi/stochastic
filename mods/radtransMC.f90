@@ -1,7 +1,6 @@
 module radtransMC
   use mcnp_random
   use utilities
-  use timeman
   implicit none
 
 CONTAINS
@@ -15,6 +14,7 @@ CONTAINS
   use genRealzvars, only: numRealz
   use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat
   use genRealz, only: genReal
+  use timeman, only: radtrans_timeupdate
   integer :: icase
 
   integer :: j,tnumParts,tnumRealz !'j' is which realization

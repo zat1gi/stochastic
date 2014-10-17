@@ -1,6 +1,5 @@
 module KLreconstruct
   use utilities
-  use timeman
   use mcnp_random
   implicit none
 
@@ -50,6 +49,7 @@ CONTAINS
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
+  use timeman, only: KL_timeupdate
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg

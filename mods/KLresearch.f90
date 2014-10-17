@@ -1,6 +1,5 @@
 module KLresearch
   use utilities
-  use timeman
   implicit none
 
 CONTAINS
@@ -327,6 +326,7 @@ CONTAINS
   use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, KLxigentype
   use MCvars, only: trannprt
   use genRealz, only: genReal
+  use timeman, only: KL_timeupdate
   integer :: i,j,k,curEig
   real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
