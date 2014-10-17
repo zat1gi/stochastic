@@ -22,7 +22,7 @@ CONTAINS
   !chosen tolerance
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
-  use KLreconstruct, only: KLrxi_point
+  use KLreconstruct, only: KLrxi_point, KLrxi_integral
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
@@ -142,40 +142,6 @@ CONTAINS
   enddo
 
   end function refinenextpoint
-
-
-
-
-  function Eigfuncint(Ak,alpha,lamc,xl,xr)
-  ! Used in KLrxi_integral to integrate on KL reconstructed realizations
-  real(8) :: Ak,alpha,lamc,xl,xr,Eigfuncint
-
-  Eigfuncint = Ak * (         (-cos(alpha*xr)+cos(alpha*xl))/alpha &
-                       + lamc*( sin(alpha*xr)-sin(alpha*xl))           )
-  end function Eigfuncint
-
-
-
-  function KLrxi_integral(j,xl,xr)
-  ! This function integrates on KL reconstructed realizations from xl to xr
-  use genRealzvars, only: lamc, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals
-  integer :: j
-  real(8) :: xl,xr
-  real(8) :: KLrxi_integral
-
-  integer :: curEig
-  real(8) :: Eigfintterm
-
-  KLrxi_integral = (sigave + meanadjust) * (xr - xl)
-  do curEig=1,numEigs
-    Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-    KLrxi_integral = KLrxi_integral + sqrt(Eig(curEig)) * &
-                                           Eigfintterm * KLrxivals(j,curEig)
-  enddo
-
-  end function KLrxi_integral
-
 
 
 
