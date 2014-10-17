@@ -72,6 +72,9 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: levsrefEig           !
   real(8)              :: binSmallBound        ! smallest xi value for xi bins
   real(8)              :: binLargeBound        ! largest xi value for xi bins
+  character(3)         :: KLadjust             ! flag, perform or not
+  real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
+
 
   character(7)         :: pltxiBins(4)         !
   character(7)         :: pltxiBinsgauss       !

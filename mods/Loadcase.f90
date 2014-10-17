@@ -42,13 +42,12 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
-                                  KLres, KLrec, KLnoise, KLxigentype
+                                  KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype
-  use KLmeanadjust,         only: KLadjust, meanadjust_tol
   integer :: seed                                   !adv seed
 
   character(7) :: pltallopt                         !Plot all same opt

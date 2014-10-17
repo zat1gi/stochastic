@@ -11,7 +11,7 @@ program stochastic
   use KLmeanadjust
 
   use timevars, only: t1
-  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
+  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
   use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, &
                     numPosMCmeths
   implicit none

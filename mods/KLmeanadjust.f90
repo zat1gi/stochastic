@@ -1,9 +1,6 @@
 module KLmeanadjust
   implicit none
 
-  character(3) :: KLadjust             ! flag, perform or not
-  real(8) :: meanadjust_tol            ! tolerance for new mean adjustment
-
   real(8) :: xl,xr                     ! endpoints to integrate on
   real(8) :: step                      ! size of largest step when searching for next point
   real(8) :: stol = 0.00000001         ! refinestep cross section tolerance
@@ -20,7 +17,7 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s, sigave
-  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust
+  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol
   use KLreconstruct, only: KLrxi_point, KLrxi_integral
 
   integer :: j,adjustiter
