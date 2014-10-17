@@ -252,11 +252,6 @@ CONTAINS
             if(flIntType=='clean') then                !accept interaction
               tempscatrat = KLWood_actscatrat(j,newpos)
               flIntType = merge('scatter','absorb ',tempscatrat>rang())
-!              if(tempscatrat>rang()) then
-!                flIntType = 'scatter'    !could make a 'merge'
-!              else
-!                flIntType = 'absorb'
-!              endif
             endif
           case ("LPMC")
               flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
