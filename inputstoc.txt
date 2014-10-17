@@ -1,6 +1,6 @@
   5000,         Advance random see how far?
   !--- Geometry ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
+  3.3,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals #0.7969,0.3815
   0.9071,0.9071,       Scattering Ratios        #0.9071
   0.5,2.0,             Lambda path length vals  #0.5,2.0

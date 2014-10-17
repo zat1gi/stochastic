@@ -250,8 +250,8 @@ print *,"minpos",minpos,"minsig",minsig
   function KLrxi_integral(j,xl,xr)
   ! This function integrates on KL reconstructed realizations from xl to xr
   use genRealzvars, only: lamc, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals
-  use KLmeanadjust, only: meanadjust
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust
+
   integer :: j
   real(8) :: xl,xr
   real(8) :: KLrxi_integral
@@ -286,8 +286,8 @@ print *,"minpos",minpos,"minsig",minsig
   ! It has an option to solve for less than the available number of eigenvalues.
   use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, &
                           sigave, CoExp
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals
-  use KLmeanadjust, only: meanadjust
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust
+
   integer :: j
   real(8) :: xpos
   real(8) :: KLrxi_point

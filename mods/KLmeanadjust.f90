@@ -1,7 +1,6 @@
 module KLmeanadjust
   implicit none
 
-  real(8) :: meanadjust =0d0           ! positive translation of mean xs
   character(3) :: KLadjust             ! flag, perform or not
   real(8) :: meanadjust_tol            ! tolerance for new mean adjustment
 
@@ -21,7 +20,7 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s, sigave
-  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
+  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust
   use KLreconstruct, only: KLrxi_point, KLrxi_integral
 
   integer :: j,adjustiter
