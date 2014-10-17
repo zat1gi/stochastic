@@ -1,7 +1,6 @@
 module KLreconstruct
   use utilities
   use timeman
-  use KLmeanadjust
   use mcnp_random
   implicit none
 

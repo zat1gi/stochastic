@@ -1,6 +1,5 @@
 module KLresearch
   use utilities
-  use KLmeanadjust
   use timeman
   implicit none
 
