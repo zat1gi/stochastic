@@ -27,39 +27,6 @@ CONTAINS
 
 
 
-!  subroutine store_in_bins( binSmallBound,binLargeBound,binNumof,&
-!             binCounts,binBounds,vararray,numVar )
-  !Bins values between binSmallBound and binLargeBound with binNumof bins
-  !vararray is what you are binning, with numVar as the length of vararray
-  !binBounds is bounds with binNumof+1 size, counts in binCounts with binNumof as size
-!  integer, intent(in)  :: binNumof,numVar
-!  integer, allocatable, intent(out) :: binCounts(:)
-!  real(8), intent(in)  :: binSmallBound,binLargeBound,vararray(:)
-!  real(8), allocatable, intent(out) :: binBounds(:)
-
-!  integer :: binToStore,j,k
-!  real(8) :: binSize
-
-!  allocate(binCounts(binNumof))
-!  allocate(binBounds(binNumof+1))
-
-  !set up bins
-!  binSize = ( binLargeBound - binSmallBound ) / ( binNumof - 1 )
-!  binBounds(1)=binSmallBound
-!  do k=2,binNumof+1
-!    binBounds(k) = binBounds(k-1) + binSize
-!  enddo
-
-  !store in bins
-!  do j=1,numVar
-!    binToStore = ceiling(( vararray(j) - binSmallBound ) / binSize )
-!    binCounts(binToStore) = binCounts(binToStore) + 1
-!  enddo
-
-!  deallocate(binCounts)
-!  deallocate(binBounds)
-
-!  end subroutine store_in_bins
   subroutine store_in_bins( binSmallBound,binLargeBound,binNumof,&
              binCounts,binBounds,vararray,numVar )
   !Bins values between binSmallBound and binLargeBound with binNumof bins

@@ -47,7 +47,7 @@ CONTAINS
                                   numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype
+                                  pltfluxtype,LPMCbinplot,atmixMCbinplot
   integer :: seed                                   !adv seed
 
   character(7) :: pltallopt                         !Plot all same opt
@@ -155,7 +155,7 @@ CONTAINS
 
 
   read(2,*) dumchar    !Leakage pdf
-  read(2,*) radMCbinplot,radWoodbinplot,KLWoodbinplot
+  read(2,*) radMCbinplot,radWoodbinplot,KLWoodbinplot,LPMCbinplot,atmixMCbinplot
   read(2,*) trprofile_binnum
 
   read(2,*) dumchar    !Plotting flux

@@ -48,6 +48,8 @@ CONTAINS
   call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
+  call MCLeakage_pdfbinprint( icase )         !bin and print pdf of leakage values
+
 
   end subroutine UQ_MC
 
@@ -1427,67 +1429,82 @@ CONTAINS
   end subroutine MCallocate
 
 
-!  subroutine MCLeakage_pdfplot
-  !Plots pdfs of transmission and reflection for chosen methods
-!  use genRealzvars, only: numRealz
-!  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, radWoodr, &
-!                          KLWoodr, radWoodt, KLWoodt, transmit
 
-!  real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
+  subroutine MCLeakage_pdfbinprint(icase)
+  !This subroutine bins leakage data, and prints this data to files to later be plotted.
+  use genRealzvars, only: numRealz
+  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, transmit, &
+                          LPMCbinplot, atmixMCbinplot, MCcases, MCcaseson
+  integer :: icase
+  real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
-  !find reflection binning/plotting bounds
-!  smrefl = 1d0
-!  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') smrefl = min(smrefl,minval(reflect))
-!  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') smrefl = min(smrefl,minval(radWoodr))
-!  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') smrefl = min(smrefl,minval(KLWoodr))
-!  lgrefl = 0d0
-!  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') lgrefl = max(lgrefl,maxval(reflect))
-!  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') lgrefl = max(lgrefl,maxval(radWoodr))
-!  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') lgrefl = max(lgrefl,maxval(KLWoodr))
-!  boundbuff = (lgrefl-smrefl)/8d0
-!  smrefl = merge(smrefl-boundbuff,0d0,smrefl-boundbuff>0d0)
-!  lgrefl = merge(lgrefl+boundbuff,1d0,lgrefl+boundbuff<1d0)
-!  smrefl = smrefl - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
-!  lgrefl = lgrefl + 0.0000001d0
+  !this nasty if statement decides whether to proceed at all.
+  !from here only MCcases is needed.
+  if( (MCcaseson(icase) == 1     .and. MCcases(icase) =='radMC'     .and. &
+      (radMCbinplot     =='plot' .or.  radMCbinplot   =='preview')) .or.  &
+      (MCcaseson(icase) == 1     .and. MCcases(icase) =='radWood'   .and. &
+      (radWoodbinplot   =='plot' .or.  radWoodbinplot =='preview')) .or.  &
+      (MCcaseson(icase) == 1     .and. MCcases(icase) =='KLWood'    .and. &
+      (KLWoodbinplot    =='plot' .or.  KLWoodbinplot  =='preview')) .or.  &
+      (MCcaseson(icase) == 1     .and. MCcases(icase) =='LPMC'      .and. &
+      (LPMCbinplot      =='plot' .or.  LPMCbinplot    =='preview')) .or.  &
+      (MCcaseson(icase) == 1     .and. MCcases(icase) =='atmixMC'   .and. &
+      (atmixMCbinplot   =='plot' .or.  atmixMCbinplot =='preview'))         ) then
 
-  !find tranmission binning/plotting bounds
-!  smtran = 1d0
-!  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') smtran = min(smtran,minval(transmit))
-!  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') smtran = min(smtran,minval(radWoodt))
-!  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') smtran = min(smtran,minval(KLWoodt))
-!  lgtran = 0d0
-!  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') lgtran = max(lgtran,maxval(transmit))
-!  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') lgtran = max(lgtran,maxval(radWoodt))
-!  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') lgtran = max(lgtran,maxval(KLWoodt))  
-!  boundbuff = (lgtran-smtran)/8d0
-!  smtran = merge(smtran-boundbuff,0d0,smtran-boundbuff>0d0)
-!  lgtran = merge(lgtran+boundbuff,1d0,lgtran+boundbuff<1d0)
-!  smtran = smtran - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
-!  lgtran = lgtran + 0.0000001d0
+    !find reflection binning/plotting bounds
+    smrefl = 1d0
+    lgrefl = 0d0
+    smrefl = min(smrefl,minval(reflect))
+    lgrefl = max(lgrefl,maxval(reflect))
+    boundbuff = (lgrefl-smrefl)/8d0
+    smrefl = merge(smrefl-boundbuff,0d0,smrefl-boundbuff>0d0)
+    lgrefl = merge(lgrefl+boundbuff,1d0,lgrefl+boundbuff<1d0)
+    smrefl = smrefl - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
+    lgrefl = lgrefl + 0.0000001d0
 
-  !radMC binning and printing
-!  call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
-!  if(radMCbinplot  =='plot' .or. radMCbinplot  =='preview') then
-!    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-!    call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
-!    call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
-!  endif
+    !find tranmission binning/plotting bounds
+    smtran = 1d0
+    lgtran = 0d0
+    smtran = min(smtran,minval(transmit))
+    lgtran = max(lgtran,maxval(transmit))
+    boundbuff = (lgtran-smtran)/8d0
+    smtran = merge(smtran-boundbuff,0d0,smtran-boundbuff>0d0)
+    lgtran = merge(lgtran+boundbuff,1d0,lgtran+boundbuff<1d0)
+    smtran = smtran - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
+    lgtran = lgtran + 0.0000001d0
 
-  !radWood binning and printing
-!  call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
-!  if(radWoodbinplot=='plot' .or. radWoodbinplot=='preview') then
-!    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-!    call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
-!    call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
-!  endif
+    !remove old data files (do only first time)
+    if(sum(MCcaseson(1:icase))==1) then
+      call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
+      call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
+      call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+      call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+      call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+    endif
 
-  !KLWood binning and printing
-!  call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-!  if(KLWoodbinplot =='plot' .or. KLWoodbinplot =='preview') then
-!    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-!    call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
-!    call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
-!  endif
+    !bin and print data
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+
+    !give printed data files appropriate name
+    select case (MCcases(icase))
+      case("radMC")
+        call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
+        call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
+      case("radWood")
+        call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
+        call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
+      case("KLWood")
+        call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
+        call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
+      case("LPMC")
+        call system("mv tranreflprofile.txt LPtranreflprofile.txt")
+        call system("mv LPtranreflprofile.txt plots/tranreflprofile")
+      case("atmixMC")
+        call system("mv tranreflprofile.txt atmixtranreflprofile.txt")
+        call system("mv atmixtranreflprofile.txt plots/tranreflprofile")
+    end select
+
+  endif
 
   !plot, convert, and store
 !  if(radMCbinplot=='preview' .or. radWoodbinplot=='preview' .or. KLWoodbinplot=='preview') then
@@ -1502,7 +1519,7 @@ CONTAINS
 !  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
 !  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
 
-!  end subroutine MCLeakage_pdfplot
+  end subroutine MCLeakage_pdfbinprint
 
 
 

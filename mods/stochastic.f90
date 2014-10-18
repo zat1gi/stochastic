@@ -63,8 +63,6 @@ program stochastic
   call MCfluxPrint
   call MCfluxPlot
 
-!  call MCLeakage_pdfplot !bin for radMC,radWood, needs to be updated
-
 
   !!print final reports
   call clearreports
