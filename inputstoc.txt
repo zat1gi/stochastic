@@ -1,12 +1,12 @@
   5000,         Advance random see how far?
   !--- Geometry ---!
-  3.3,           Adamscase option, if==0, then user input for next three parameters
+  3.2,           Adamscase option, if==0, then user input for next three parameters
   0.7969,0.3815        Sigma cross section vals #0.7969,0.3815
   0.9071,0.9071,       Scattering Ratios        #0.9071
   0.5,2.0,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
-  100,100,         Number of realizations/how often to print
-  100,100,         KLr Number of realizations/how often to print
+  1000,100,         Number of realizations/how often to print
+  1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
@@ -15,8 +15,8 @@
 
   !--- Large MCtrans Options ---!
   yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
-  100,            Number of particles to simulate on each realization
-  100000,          Number of particles for LP or atomic mix calculations
+  500,            Number of particles to simulate on each realization
+  500000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
   totxs,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -78,7 +78,7 @@
 
   !!--Plotting Leakage Profile PDFs
   preview,preview,preview,preview,preview,    Plot Leakage profile?: radMC,radWood,KLWood,LPMC,atmixMC
-  20,             Numb of bins Leakage profiles
+  40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

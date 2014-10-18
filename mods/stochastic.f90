@@ -62,7 +62,7 @@ program stochastic
   endif
   call MCfluxPrint
   call MCfluxPlot
-
+  call MCLeakage_pdfplot
 
   !!print final reports
   call clearreports

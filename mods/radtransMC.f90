@@ -1478,8 +1478,8 @@ CONTAINS
       call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
       call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
       call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-      call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-      call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+      call system("rm plots/tranreflprofile/LPtranreflprofile.txt")
+      call system("rm plots/tranreflprofile/atmixtranreflprofile.txt")
     endif
 
     !bin and print data
@@ -1505,19 +1505,6 @@ CONTAINS
     end select
 
   endif
-
-  !plot, convert, and store
-!  if(radMCbinplot=='preview' .or. radWoodbinplot=='preview' .or. KLWoodbinplot=='preview') then
-!    call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
-!    call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
-!  else
-!    call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
-!    call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
-!  endif
-!  call system("ps2pdf tranprofile.ps")
-!  call system("ps2pdf reflprofile.ps")
-!  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
-!  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
 
   end subroutine MCLeakage_pdfbinprint
 
@@ -1577,6 +1564,33 @@ CONTAINS
 
   end subroutine radtrans_bin
 
+
+
+  subroutine MCLeakage_pdfplot
+  !This subroutine plots MC Leakage value pdfs from data files generated
+  !in MCLeakage_pdfbinprint.
+  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, &
+                          LPMCbinplot, atmixMCbinplot
+
+  !preview if at least one chose this, otherwise simply plot
+  if(    radMCbinplot  =='preview' .or. radWoodbinplot=='preview' .or. &
+         KLWoodbinplot =='preview' .or. LPMCbinplot   =='preview' .or. &
+         atmixMCbinplot=='preview'                                       ) then
+    call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
+    call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
+  elseif(radMCbinplot  =='plot' .or. radWoodbinplot=='plot' .or. &
+         KLWoodbinplot =='plot' .or. LPMCbinplot   =='plot' .or. &
+         atmixMCbinplot=='plot'                                       ) then
+    call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
+    call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
+  endif
+  !convert and store
+  call system("ps2pdf tranprofile.ps")
+  call system("ps2pdf reflprofile.ps")
+  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
+  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
+
+  end subroutine MCLeakage_pdfplot
 
 
 

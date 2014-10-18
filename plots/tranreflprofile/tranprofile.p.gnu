@@ -25,7 +25,9 @@ set key samplen 5 spacing 3.5 font "Times-Roman, 19"
 
 plot "plots/tranreflprofile/radMCtranreflprofile.txt"   u 1:2 w histeps t "TMC",\
      "plots/tranreflprofile/radWoodtranreflprofile.txt" u 1:2 w histeps t "WMC",\
-     "plots/tranreflprofile/KLWoodtranreflprofile.txt"  u 1:2 w histeps t "KLWMC"
+     "plots/tranreflprofile/KLWoodtranreflprofile.txt"  u 1:2 w histeps t "KLWMC",\
+     "plots/tranreflprofile/LPtranreflprofile.txt"      u 1:2 w histeps t "LPMC",\
+     "plots/tranreflprofile/atmixtranreflprofile.txt"   u 1:2 w histeps t "atmixTMC"
 
 #Postscript info
 set size 1.0,0.6
