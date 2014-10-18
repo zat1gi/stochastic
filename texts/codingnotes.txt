@@ -1,6 +1,9 @@
 -things I could improve... worth it??
 	-stunted functionality
-		-plots of pdfs, need this one!!
+		-plots of pdfs
+			- segfault with only atmix
+			- input checking, i.e. plot but no run...
+			- normalize correctly
 		-combine radtrans_int and Wood_rej, into one global variable and use data
 		-deal with genRealz printing/plotting only in first call
 
@@ -8,13 +11,14 @@
 		-make ‘dx’ a global variable?
 		-take a look at bins for ceiling determination for Woodcock sampling
 		-set each func/sub to only load when actually needed
+			-done all but in main and with utilities
 
 	-better code practice
-		-get rid of dual functions KLrxi_point(2)
 		-'!consider using internal_init_i' in several places
 		-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
 		-in 'MCfluxPrint' consider removing these plots somewhere else, like 'clearreports'
-		-consolidate 'KLmeanadjust.f90' into 'KLreconstruct.f90' - i.e. get Eigfunc out of 'KLm...'
+		-consolidate 'KLmeanadjust.f90' into 'KLreconstruct.f90'
+			- done a good portion of, maybe do more
 		-maybe remove in-module global variable style from 'KLmeanadjust.f90'
 
 	-new functionality
