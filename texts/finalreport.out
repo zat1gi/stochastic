@@ -24,20 +24,16 @@
  |----------|-------------------------|---------------------|
  |AdamsLP:  | 0.2178                  | 0.6267              |
  |BrantLP:  | 0.21677                 | 0.62755             |
- |LPMC   :  | 0.21647                 | 0.62766             |
  |----------|-------------------------|---------------------|
  |BrAtMix:  | 0.35288                 | 0.47477             |
- |atmixMC:  | 0.35363                 | 0.47463             |
  |----------------------------------------------------------|
 
-  total runtime:      0.24 min
-    genRealz   :      0.01 min     per:  6.08 % --- genRealz in other meths,
+  total runtime:      0.17 min
+    genRealz   :      0.00 min     per:  0.30 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.02 min     per:  9.93 %
-    radWood    :      0.06 min     per: 24.04 %
-    KLWood     :      0.05 min     per: 21.56 %
-    LPMC       :      0.05 min     per: 23.08 %
-    atmixMC    :      0.01 min     per:  5.54 %
-    KLcol      :      0.00 min     per:  0.40 %
-    KLrec      :      0.00 min     per:  1.49 %
-    other      :      0.03 min     per: 13.95 %
+    radMC      :      0.02 min     per: 13.69 %
+    radWood    :      0.06 min     per: 33.98 %
+    KLWood     :      0.05 min     per: 30.07 %
+    KLcol      :      0.00 min     per:  0.51 %
+    KLrec      :      0.00 min     per:  2.09 %
+    other      :      0.03 min     per: 19.66 %

@@ -201,7 +201,8 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
-                    pltfluxtype, LPMC, atmixMC
+                    pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
+                    LPMCbinplot,atmixMCbinplot
   integer :: fpointorxi(2)
 
   integer :: i
@@ -265,6 +266,36 @@ CONTAINS
     KLres = 'yes'
     print *,"--User attempting KLrec  w/o        KLres,          KLres has been set to 'yes'"
     flsleep = 'yes'
+  endif
+  !Tests for Leakage pdf plotting options
+  if(radMCbinplot  .ne. 'noplot'.or. radWoodbinplot .ne. 'noplot'.or. &
+     KLWoodbinplot .ne. 'noplot'.or. LPMCbinplot    .ne. 'noplot'.or. &
+     atmixMCbinplot.ne. 'noplot') then
+    if(radMCbinplot .ne. 'noplot' .and. radMC=='no') then
+      radMCbinplot = 'noplot'
+      print *,"--User attempting to plot radMC leakage values w/o radMC, set to 'noplot'"
+      flsleep = 'yes'
+    endif
+    if(radWoodbinplot .ne. 'noplot' .and. radWood=='no') then
+      radWoodbinplot = 'noplot'
+      print *,"--User attempting to plot radWood leakage values w/o radWood, set to 'noplot'"
+      flsleep = 'yes'
+    endif
+    if(KLWoodbinplot .ne. 'noplot' .and. KLWood=='no') then
+      KLWoodbinplot = 'noplot'
+      print *,"--User attempting to plot KLWood leakage values w/o KLWood, set to 'noplot'"
+      flsleep = 'yes'
+    endif
+    if(LPMCbinplot .ne. 'noplot' .and. LPMC=='no') then
+      LPMCbinplot = 'noplot'
+      print *,"--User attempting to plot LPMC leakage values w/o LPMC, set to 'noplot'"
+      flsleep = 'yes'
+    endif
+    if(atmixMCbinplot .ne. 'noplot' .and. atmixMC=='no') then
+      atmixMCbinplot = 'noplot'
+      print *,"--User attempting to plot atmixMC leakage values w/o atmixMC, set to 'noplot'"
+      flsleep = 'yes'
+    endif
   endif
 
                               !Test radtransMC print frequency

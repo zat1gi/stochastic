@@ -14,7 +14,7 @@
   100,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,yes,yes,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   500,            Number of particles to simulate on each realization
   500000,          Number of particles for LP or atomic mix calculations
 
@@ -51,7 +51,7 @@
   1,             Which Eigs to plot Eigenfunction for
   
   !!--Plotting xiBins                        [in sub KL_eval]
-  noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   nogauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
   2,             Number of Eig/realz# combos to plot xi for (up to 4)
   1,100,          Which Eigs to plot xi for/how many realz to plot at
