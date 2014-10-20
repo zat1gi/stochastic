@@ -6,11 +6,11 @@
     s         :  1.00       lamc      :  0.10
 
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   :  0.67800%,                   678 /                 1000
-  Neg samples :  0.31342%,                566088 /              1806187
-  Neg area    :  0.24002%
-  Ave neg samp:     -1.6829   Ave pos samp:      2.4324
-  Max neg samp:     -7.9378   Max pos samp:     10.6037
+  Neg realz   :  0.63667%,                   191 /                  300
+  Neg samples :  0.30884%,                167082 /               541003
+  Neg area    :  0.25389%
+  Ave neg samp:     -1.8988   Ave pos samp:      2.4934
+  Max neg samp:     -7.7020   Max pos samp:     11.3037
 
 
  |-case:3.2-|---- Reflection and Transmission Results ------|
@@ -18,22 +18,26 @@
  |----------|-------------------------|---------------------|
  |AdamsMC:  | 0.2563   +-  0.1546     | 0.5985   +-  0.2832 |
  |BrantMC:  | 0.25419                 | 0.60114             |
- |radMC  :  | 0.24732  +-  0.15361    | 0.61823  +-  0.27376|
- |radWood:  | 0.24932  +-  0.15344    | 0.61134  +-  0.27788|
- |KLWood :  | 0.25996  +-  0.16050    | 0.59459  +-  0.28085|
+ |radMC  :  | 0.26177  +-  0.15369    | 0.59029  +-  0.27970|
+ |radWood:  | 0.25869  +-  0.15462    | 0.59264  +-  0.28165|
+ |KLWood :  | 0.25128  +-  0.16813    | 0.60348  +-  0.29408|
  |----------|-------------------------|---------------------|
  |AdamsLP:  | 0.2178                  | 0.6267              |
  |BrantLP:  | 0.21677                 | 0.62755             |
+ |LPMC   :  | 0.21698                 | 0.62683             |
  |----------|-------------------------|---------------------|
  |BrAtMix:  | 0.35288                 | 0.47477             |
+ |atmixMC:  | 0.35306                 | 0.47523             |
  |----------------------------------------------------------|
 
-  total runtime:      0.17 min
-    genRealz   :      0.00 min     per:  0.30 % --- genRealz in other meths,
+  total runtime:      0.12 min
+    genRealz   :      0.01 min     per: 11.65 % --- genRealz in other meths,
     ----------------------------------------------- not part of sum
-    radMC      :      0.02 min     per: 13.69 %
-    radWood    :      0.06 min     per: 33.98 %
-    KLWood     :      0.05 min     per: 30.07 %
-    KLcol      :      0.00 min     per:  0.51 %
-    KLrec      :      0.00 min     per:  2.09 %
-    other      :      0.03 min     per: 19.66 %
+    radMC      :      0.01 min     per:  6.15 %
+    radWood    :      0.02 min     per: 14.83 %
+    KLWood     :      0.02 min     per: 12.51 %
+    LPMC       :      0.05 min     per: 45.08 %
+    atmixMC    :      0.01 min     per: 10.77 %
+    KLcol      :      0.00 min     per:  0.20 %
+    KLrec      :      0.00 min     per:  0.94 %
+    other      :      0.01 min     per:  9.53 %

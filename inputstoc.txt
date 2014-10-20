@@ -5,8 +5,8 @@
   0.9071,0.9071,       Scattering Ratios        #0.9071
   0.5,2.0,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
-  1000,100,         Number of realizations/how often to print
-  1000,100,         KLr Number of realizations/how often to print
+  300,100,         Number of realizations/how often to print
+  300,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
@@ -14,7 +14,7 @@
   100,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
   500,            Number of particles to simulate on each realization
   500000,          Number of particles for LP or atomic mix calculations
 
