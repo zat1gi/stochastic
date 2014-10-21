@@ -77,7 +77,7 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  preview,preview,preview,preview,preview,    Plot Leakage profile?: radMC,radWood,KLWood,LPMC,atmixMC
+  preview,preview,preview,    Plot Leakage profile?: radMC,radWood,KLWood
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)

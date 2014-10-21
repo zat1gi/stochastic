@@ -48,7 +48,6 @@ CONTAINS
   call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
-  call MCLeakage_pdfbinprint( icase )         !bin and print pdf of leakage values
 
 
   end subroutine UQ_MC
@@ -917,9 +916,13 @@ CONTAINS
 
 
   subroutine stocMC_stats( icase,tnumRealz )
-  !This subroutine calculates mean and standard deviation for leakage values over stochastic
-  !space for each MC transport solver.  It also calculates ensemble averaged flux values in
-  !each cell for material irrespective and material respective flux tallies.
+  !This subroutine:
+  !1) calculates mean and standard deviation for leakage values over stochastic
+  !   space for each MC transport solver.
+  !2) calculates ensemble averaged flux values in each cell for material
+  !   irrespective and material respective flux tallies.
+  !3) calls 'MCLeakage_pdfbinprint', which bins and prints leakage values for
+  !   later plotting.
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
@@ -1010,6 +1013,9 @@ CONTAINS
     endif
 
   endif
+
+  !leakage pdfs
+  call MCLeakage_pdfbinprint( icase )         !bin and print pdf of leakage values
 
   end subroutine stocMC_stats
 
@@ -1430,11 +1436,13 @@ CONTAINS
 
 
 
-  subroutine MCLeakage_pdfbinprint(icase)
-  !This subroutine bins leakage data, and prints this data to files to later be plotted.
+  subroutine MCLeakage_pdfbinprint( icase )
+  !This subroutine bins leakage data, and prints this data to files to later be plotted
+  !for methods which contain realizations (radMC, radWood, KLWood).
   use genRealzvars, only: numRealz
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, transmit, &
-                          LPMCbinplot, atmixMCbinplot, MCcases, MCcaseson
+                          MCcases, MCcaseson
+
   integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
@@ -1445,11 +1453,7 @@ CONTAINS
       (MCcaseson(icase) == 1     .and. MCcases(icase) =='radWood'   .and. &
       (radWoodbinplot   =='plot' .or.  radWoodbinplot =='preview')) .or.  &
       (MCcaseson(icase) == 1     .and. MCcases(icase) =='KLWood'    .and. &
-      (KLWoodbinplot    =='plot' .or.  KLWoodbinplot  =='preview')) .or.  &
-      (MCcaseson(icase) == 1     .and. MCcases(icase) =='LPMC'      .and. &
-      (LPMCbinplot      =='plot' .or.  LPMCbinplot    =='preview')) .or.  &
-      (MCcaseson(icase) == 1     .and. MCcases(icase) =='atmixMC'   .and. &
-      (atmixMCbinplot   =='plot' .or.  atmixMCbinplot =='preview'))         ) then
+      (KLWoodbinplot    =='plot' .or.  KLWoodbinplot  =='preview'))         ) then
 
     !find reflection binning/plotting bounds
     smrefl = 1d0
@@ -1478,14 +1482,12 @@ CONTAINS
       call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
       call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
       call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-      call system("rm plots/tranreflprofile/LPtranreflprofile.txt")
-      call system("rm plots/tranreflprofile/atmixtranreflprofile.txt")
     endif
 
     !bin and print data
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran ) 
 
-    !give printed data files appropriate name
+    !bin and print data, give printed data files appropriate name
     select case (MCcases(icase))
       case("radMC")
         call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
@@ -1497,11 +1499,7 @@ CONTAINS
         call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
         call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
       case("LPMC")
-        call system("mv tranreflprofile.txt LPtranreflprofile.txt")
-        call system("mv LPtranreflprofile.txt plots/tranreflprofile")
       case("atmixMC")
-        call system("mv tranreflprofile.txt atmixtranreflprofile.txt")
-        call system("mv atmixtranreflprofile.txt plots/tranreflprofile")
     end select
 
   endif
@@ -1510,11 +1508,12 @@ CONTAINS
 
 
 
+
   subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran )
-  !Heart of radtrans_resultplot, loads values to bin, and prints to generic text file
-  !for each method
-  use genRealzvars,         only: numRealz
-  use MCvars,               only: trprofile_binnum, reflect, transmit
+  !Heart of radtrans_resultplot, for methods with realizations,
+  !loads leakage values to bins (pdf), and prints to generic text file
+  use genRealzvars, only: numRealz
+  use MCvars, only: trprofile_binnum, reflect, transmit
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
   !local vars
@@ -1569,18 +1568,15 @@ CONTAINS
   subroutine MCLeakage_pdfplot
   !This subroutine plots MC Leakage value pdfs from data files generated
   !in MCLeakage_pdfbinprint.
-  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, &
-                          LPMCbinplot, atmixMCbinplot
+  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot
 
   !preview if at least one chose this, otherwise simply plot
   if(    radMCbinplot  =='preview' .or. radWoodbinplot=='preview' .or. &
-         KLWoodbinplot =='preview' .or. LPMCbinplot   =='preview' .or. &
-         atmixMCbinplot=='preview'                                       ) then
+         KLWoodbinplot =='preview'                                     ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
   elseif(radMCbinplot  =='plot' .or. radWoodbinplot=='plot' .or. &
-         KLWoodbinplot =='plot' .or. LPMCbinplot   =='plot' .or. &
-         atmixMCbinplot=='plot'                                       ) then
+         KLWoodbinplot =='plot'                                        ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
   endif

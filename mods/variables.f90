@@ -144,8 +144,6 @@ module MCvars
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview', pdf of leakage
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
   character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview', pdf of leakage
-  character(7)         :: LPMCbinplot          ! 'plot', 'noplot', 'preview', pdf of leakage
-  character(7)         :: atmixMCbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
 
   character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
