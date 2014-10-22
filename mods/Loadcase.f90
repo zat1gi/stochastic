@@ -379,7 +379,7 @@ CONTAINS
 
   subroutine global_allocate( seed )
   !This subroutine allocates and initializes all global variables
-  use timevars, only: time, ntime, totparts, cumparts
+  use timevars, only: time, ntime, totparts, cumparts, FOM, nFOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
@@ -483,6 +483,8 @@ CONTAINS
   !allocate and initialize timevars
   allocate(time(ntime))
   time = 0.0d0
+  allocate(FOM(nFOM,2))
+  FOM  = 0.0d0
   allocate(totparts(numPosMCmeths))
   allocate(cumparts(numPosMCmeths))
   totparts = 0

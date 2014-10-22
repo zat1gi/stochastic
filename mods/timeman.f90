@@ -144,13 +144,13 @@ CONTAINS
 
   subroutine timereport
   !This is the timereport that comes at the end of the whole code running, the final time report.
-  use timevars, only: t1, runtime
+  use timevars, only: t1, runtime, time, ntime, runtime, FOM
   use KLvars, only: KLres, KLrec, KLnoise
-  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC
-  use timevars, only: time, ntime, runtime
+  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, MCcases, MCcaseson, &
+                    stocMC_transmission, stocMC_reflection, numPosMCmeths
   use utilities, only: calc_time
 
-  integer :: i
+  integer :: i,icase
   real(8) :: t2,othertime,otherpercent
   real(8),allocatable :: pertime(:)
 
@@ -170,23 +170,46 @@ CONTAINS
   enddo
   otherpercent = othertime / runtime * 100
 
-  110 format("    genRealz   :",f10.2," min     per:",f6.2," % --- genRealz in other meths,")
-  121 format("    ----------------------------------------------- not part of sum")
-  111 format("    radMC      :",f10.2," min     per:",f6.2," %")
-  112 format("    radWood    :",f10.2," min     per:",f6.2," %")
-  113 format("    KLnoise    :",f10.2," min     per:",f6.2," %")
-  114 format("    KLcol      :",f10.2," min     per:",f6.2," %")
-  115 format("    KLrec      :",f10.2," min     per:",f6.2," %")
-  116 format("    KLWood     :",f10.2," min     per:",f6.2," %")
-  117 format("    other      :",f10.2," min     per:",f6.2," %")
-  118 format("    LPMC       :",f10.2," min     per:",f6.2," %")
-  120 format("    atmixMC    :",f10.2," min     per:",f6.2," %")
+  !calculate basic Figure of Merit, consider geometry generation?...
+  do icase=1,numPosMCmeths
+    if(MCcaseson(icase)==1) then
+      select case (MCcases(icase))
+        case ("radMC")
+          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(2))
+          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(2))
+        case ("radWood")
+          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(3))
+          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(3))
+        case ("KLWood")
+          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(7))
+          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(7))
+        case ("LPMC")
+          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(8))
+          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(8))
+        case ("atmixMC")
+          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(9))
+          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(9))
+      end select
+    endif
+  enddo
+
+  110 format("    genRealz   :",f7.2," min   per:",f6.2," % --- genRealz in others, not part of sum")
+  121 format("    ------------------------------------------------ refl ----- tran --")
+  111 format("    radMC      :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
+  112 format("    radWood    :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
+  113 format("    KLnoise    :",f7.2," min   per:",f6.2," %")
+  114 format("    KLcol      :",f7.2," min   per:",f6.2," %")
+  115 format("    KLrec      :",f7.2," min   per:",f6.2," %")
+  116 format("    KLWood     :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
+  117 format("    other      :",f7.2," min   per:",f6.2," %")
+  118 format("    LPMC       :",f7.2," min   per:",f6.2," %")
+  120 format("    atmixMC    :",f7.2," min   per:",f6.2," %")
 
                      write(100,110) time(1),pertime(1)
                      write(100,121)
-  if(radMC=='yes')   write(100,111) time(2),pertime(2)
-  if(radWood=='yes') write(100,112) time(3),pertime(3)
-  if(KLWood=='yes')  write(100,116) time(7),pertime(7)
+  if(radMC=='yes')   write(100,111) time(2),pertime(2),FOM(1,1),FOM(1,2)
+  if(radWood=='yes') write(100,112) time(3),pertime(3),FOM(2,1),FOM(2,2)
+  if(KLWood=='yes')  write(100,116) time(7),pertime(7),FOM(3,1),FOM(3,2)
   if(LPMC=='yes')    write(100,118) time(8),pertime(8)
   if(atmixMC=='yes') write(100,120) time(9),pertime(9)
   if(KLnoise=='yes') write(100,113) time(4),pertime(4)

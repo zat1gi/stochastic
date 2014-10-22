@@ -4,6 +4,10 @@ module timevars
                                                ! 1)genR, 2)radMC, 3)radWood, 4)KLnoise, 
                                                ! 5)KLcol, 6)KLrec, 7)KLWood, 8)LPMC, 9)atmixMC
   integer, parameter   :: ntime = 9            ! size of 'time' array
+  real(8), allocatable :: FOM(:,:)             ! Figure of Merit = (1/(Var*cputime))
+                                               ! (1==radMC/2==radWood/3==KLWood/4==LPMC/&
+                                               !  5==atmixMC, 1==refl/2==tran)     
+  integer, parameter   :: nFOM = 5             ! size of 'FOM' array
   real(8)              :: t1                   ! initial computer time for run
   real(8)              :: runtime              ! total cpu time code has been running
   integer, allocatable :: totparts(:)          ! total particles to be run in each method

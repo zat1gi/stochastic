@@ -6,7 +6,7 @@ CONTAINS
   subroutine calc_time_p( t1,t2,runtime )
   !Calculates runtime in minutes, does print
   real(8) :: t1,t2,runtime
-  1000 format("  total runtime:",f10.2," min")
+  1000 format("  total runtime:",f7.2," min")
 
   call cpu_time(t2)
   runtime=(t2-t1)/60
