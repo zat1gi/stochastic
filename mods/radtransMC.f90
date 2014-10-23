@@ -422,7 +422,8 @@ CONTAINS
   real(8) :: binlength
     !select local bin maxes
     if(MCcases(icase)=='radWood') nceilbin = ceiling(s/lamc)
-    if(MCcases(icase)=='KLWood' ) nceilbin = numEigs
+    if(MCcases(icase)=='radWood' .and. nceilbin>6)  nceilbin = 6
+    if(MCcases(icase)=='KLWood' ) nceilbin = numEigs 
 
     if(allocated(binmaxind)) deallocate(binmaxind)
     if(allocated(binmaxes)) deallocate(binmaxes)

@@ -1,0 +1,32 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    radMC      :   0.04 min   per: 83.62 %   FOM:  3.549E+04  2.647E+04
+    radWood    :   0.00 min   per:  7.87 %   FOM:  3.225E+05  2.594E+05
+    KLWood     :   0.00 min   per:  4.45 %   FOM:  7.067E+05  4.627E+05
+
+
+
+
+    radMC      :   0.01 min   per: 28.19 %   FOM:  5.327E+02  2.480E+02
+    radWood    :   0.01 min   per: 27.51 %   FOM:  5.639E+02  2.588E+02
+    KLWood     :   0.01 min   per: 30.54 %   FOM:  6.528E+02  2.968E+02
+

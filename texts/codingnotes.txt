@@ -1,9 +1,5 @@
 -things I could improve... worth it??
 	-stunted functionality
-		-plots of pdfs
-			- segfault with only atmix
-			- input checking, i.e. plot but no run...
-			- normalize correctly
 		-combine radtrans_int and Wood_rej, into one global variable and use data
 		-deal with genRealz printing/plotting only in first call
 
