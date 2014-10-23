@@ -399,7 +399,7 @@ CONTAINS
 
   if(MCcases(icase)=='radMC') then !if bin need be set
     if(sourceType=='left')   i = 1
-    if(sourceType=='intern') i = internal_init_i(nummatSegs)
+    if(sourceType=='intern') i = internal_init_i(position)
   endif
 
   end subroutine genSourcePart
@@ -547,18 +547,9 @@ CONTAINS
   function radWood_actsig(position,sig)
   use genRealzvars, only: matType, matLength
   real(8) :: position,sig(2),radWood_actsig
-
   integer :: i
-  !consider using internal_init_i
-  i=1
-  do
-    if(matLength(i)<=position .AND. matLength(i+1)>position) then
-      radWood_actsig=sig(matType(i))
-      exit
-    endif 
-    i=i+1
-  enddo
-
+  i = internal_init_i( position )
+  radWood_actsig=sig(matType(i))
   end function radWood_actsig
 
 
@@ -567,10 +558,7 @@ CONTAINS
   function ceilsigfunc(position,binmax) ! make '1' when done with Woodcock version
   use MCvars, only: nceilbin, binmaxind
   real(8) :: position,ceilsigfunc,binmax(:)
-
   integer :: i
-
-  !consider using internal_init_i
   do i=1,nceilbin
     if( binmaxind(i)<=position .AND. binmaxind(i+1)>position ) then
       ceilsigfunc = binmax(i)
@@ -585,15 +573,8 @@ CONTAINS
   use genRealzvars, only: matType, matLength
   real(8) :: position,scatrat(2),radWood_actscatrat
   integer :: i
-  !consider using internal_init_i
-  i=1
-  do
-    if(matLength(i)<=position .AND. matLength(i+1)>position) then
-      radWood_actscatrat=scatrat(matType(i))
-      exit
-    endif
-    i=i+1
-  enddo
+  i = internal_init_i( position )
+  radWood_actscatrat=scatrat(matType(i))
   end function radWood_actscatrat
 
 
@@ -701,14 +682,9 @@ CONTAINS
   maxpos = max(oldposition,position)
   dx     = fluxfaces(2)-fluxfaces(1)
   !set value for 'i'
-  !consider using internal_init_i
   i=1
-  if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) then   !find 'i'
-    do
-      if(matLength(i)<=minpos .and. minpos<matLength(i+1)) exit
-      i = i+1
-    enddo
-  endif
+  if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) &
+    i = internal_init_i( position )
 
   !fluxtally irrespective of mat
   if(flfluxplotall) then
@@ -1611,20 +1587,17 @@ CONTAINS
 
 
 
-  function internal_init_i( numArrSz )
+  function internal_init_i( position )
+  !Finds cell for 'radMC' that 'position' is located in.
   use genRealzvars, only: matLength
-  use MCvars, only: position
-  integer :: numArrSz
-
+  real(8) :: position
   integer :: i,internal_init_i
-
-  do i=1,numArrSz
+  do i=1,size(matLength)-1
     if( matLength(i)<=position .AND. matLength(i+1)>position ) then
       internal_init_i = i
       exit
     endif
   enddo
-
   end function internal_init_i
 
 
