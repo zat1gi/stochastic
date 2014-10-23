@@ -1,5 +1,4 @@
 program stochastic
-  use genRealzvars
   use mcnp_random
   use timeman
   use utilities
@@ -10,6 +9,7 @@ program stochastic
   use KLreconstruct
   use KLmeanadjust
 
+  use genRealzvars
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
   use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, &
