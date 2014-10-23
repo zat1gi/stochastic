@@ -171,18 +171,19 @@ CONTAINS
   otherpercent = othertime / runtime * 100
 
   !calculate basic Figure of Merit, consider geometry generation?...
+  !FOM here as 1/(R^2t) where R^2 is relative error and t is cpu time
   do icase=1,numPosMCmeths
     if(MCcaseson(icase)==1) then
       select case (MCcases(icase))
         case ("radMC")
-          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(2))
-          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(2))
+          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(2))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(2))
         case ("radWood")
-          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(3))
-          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(3))
+          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(3))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(3))
         case ("KLWood")
-          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(7))
-          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(7))
+          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(7))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(7))
         case ("LPMC")
           FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(8))
           FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(8))
