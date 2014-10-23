@@ -10,7 +10,6 @@
 			-done all but in main and with utilities
 
 	-better code practice
-		-'!consider using internal_init_i' in several places
 		-in 'MCfluxtallywrapper' standardize ‘radWood’ loop which doesn’t use flag method
 		-in 'MCfluxPrint' consider removing these plots somewhere else, like 'clearreports'
 		-consolidate 'KLmeanadjust.f90' into 'KLreconstruct.f90'
