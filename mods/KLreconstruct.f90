@@ -101,7 +101,7 @@ CONTAINS
     endif
 
     do i=1,KLrnumpoints(2)  !create realization
-      KLrxisig(i) = KLrxi_point(j,KLrxi(i))
+      KLrxisig(i) = KLrxi_point(j,KLrxi(i),flxstype='total  ')
     enddo
     open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
     do i=1,KLrnumpoints(2)
@@ -165,7 +165,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),KLrxi(i),tnumEigsin=tnumEigs)
+          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),KLrxi(i),flxstype='total  ',tnumEigsin=tnumEigs)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
@@ -211,10 +211,10 @@ CONTAINS
 
   do i=1,numEigs
     minpos=(outerstep*(i-1))
-    minsig=KLrxi_point(j,minpos)
+    minsig=KLrxi_point(j,minpos,flxstype='total  ')
     do k=2,nminnersteps
       xpos=(outerstep*(i-1)+innerstep*(k-1))
-      xsig= KLrxi_point(j,xpos)
+      xsig= KLrxi_point(j,xpos,flxstype='total  ')
       if(xsig<minsig) then
         minsig=xsig
         minpos=xpos
@@ -228,7 +228,7 @@ CONTAINS
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
         if(xpos<0) xpos=0.0d0
         if(xpos>s) xpos=s
-        xsig= KLrxi_point(j,xpos)
+        xsig= KLrxi_point(j,xpos,flxstype='total  ')
         if(xsig<minsig) then
           minsig=xsig
           minpos=xpos
@@ -286,7 +286,7 @@ print *,"minpos",minpos,"minsig",minsig
   ! It has an option to solve for less than the available number of eigenvalues.
   use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, &
                           sigave, CoExp
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, KLxigentype
 
   integer :: j
   real(8) :: xpos
@@ -299,7 +299,7 @@ print *,"minpos",minpos,"minsig",minsig
 
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
-  if(present(flxstype)) then
+  if(present(flxstype) .and. KLxigentype=='material') then
     select case (flxstype)
       case ("total")
         avesigval = sigave
@@ -313,14 +313,18 @@ print *,"minpos",minpos,"minsig",minsig
     end select
   else
     avesigval = sigave
-    Coterm    = CoExp
+    Coterm    = 1d0
   endif   
-
-  KLrxi_point = avesigval + meanadjust
+!print *,"sigave/sigscatave/sigavsave:",sigave,sigscatave,sigabsave
+!print *,"meanadjust:",meanadjust
+  KLrxi_point = 0d0
   do curEig=1,tnumEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+!if(present(flxstype)) print *,"sqrt(Eig)/Eigfterm/KLrxival",sqrt(Eig(curEig)),Eigfterm,KLrxivals(j,curEig)
   enddo
+!if(present(flxstype)) print *,"ave/mean/Co/sum",avesigval,meanadjust,Coterm,KLrxi_point
+  KLrxi_point = (avesigval + meanadjust) + (sqrt(Coterm) * KLrxi_point)
 
   end function KLrxi_point
 
@@ -393,13 +397,13 @@ CONTAINS
 
     print *,"Beginning mean adjustment iteration ",adjustiter
     do j=1,KLrnumRealz
-      xr = KLrxi_point(j,0d0)
+      xr = KLrxi_point(j,0d0,flxstype='total  ')
       xl = 0d0
       do
         xr = findnextpoint(j)
         areacont = KLrxi_integral(j,xl,xr)/KLrnumRealz/s
 
-        xmid = KLrxi_point(j,(xr+xl)/2d0)
+        xmid = KLrxi_point(j,(xr+xl)/2d0,flxstype='total  ')
         if(xmid>0d0) then
           aveposarea = aveposarea + areacont
           perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
@@ -436,13 +440,13 @@ CONTAINS
   real(8) :: curx,oldx,curs,olds !position, then sigma value
 
   curx = xl
-  curs = KLrxi_point(j,curx)
+  curs = KLrxi_point(j,curx,flxstype='total  ')
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
-    curs = KLrxi_point(j,curx)
+    curs = KLrxi_point(j,curx,flxstype='total  ')
     if(curs*olds<0d0) then
       curx = refinenextpoint(j,oldx,curx)
       exit
@@ -470,13 +474,13 @@ CONTAINS
 
   stepsign = -1d0
   curstep = step
-  curs = KLrxi_point(j,curx)
+  curs = KLrxi_point(j,curx,flxstype='total  ')
   do
     curstep = curstep/2d0
     oldx = curx
     olds = curs
     curx = curx + curstep*stepsign
-    curs = KLrxi_point(j,curx)
+    curs = KLrxi_point(j,curx,flxstype='total  ')
 
     if(abs(curs)<stol) then
       refinenextpoint = curx

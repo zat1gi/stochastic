@@ -221,7 +221,7 @@ CONTAINS
             endif
           case ("KLWood")
             !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point(j,newpos)/ceilsig
+            woodrat = KLrxi_point(j,newpos,flxstype='total  ')/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
@@ -479,7 +479,7 @@ CONTAINS
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,xpos)
+      xsig= KLrxi_point(j,xpos,flxstype='total  ')
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -488,9 +488,9 @@ CONTAINS
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,xpos1)
+      xsig1= KLrxi_point(j,xpos1,flxstype='total  ')
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,xpos2)
+      xsig2= KLrxi_point(j,xpos2,flxstype='total  ')
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1
@@ -592,17 +592,20 @@ CONTAINS
   if( KLxigentype .eq. 'totxs' ) then
     KLWood_actscatrat = scatrat(1)
   elseif( KLxigentype .eq. 'material' ) then
+!print *
     scatxs = KLrxi_point(j,xpos,flxstype='scatter')
     absxs  = KLrxi_point(j,xpos,flxstype='absorb ')
     totxs  = KLrxi_point(j,xpos,flxstype='total  ')
-!if(j==1) print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
-!if(j==1) print *,"totxs         :                                                     ",totxs
+!print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
+!print *,"totxs         :                                                     ",totxs
     if( scatxs*absxs<0d0 ) print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
     if( abs(scatxs+absxs-totxs)>eps ) stop 'in KLWood_actscatrat, xs recreation not conserved'
+!read(*,*)
     if( scatxs<0d0 ) scatxs = 0d0
     if( absxs <0d0 ) absxs  = 0d0
     KLWood_actscatrat = scatxs/(scatxs+absxs)
   endif
+!print *,"KLWood_actscatrat:",KLWood_actscatrat
   end function KLWood_actscatrat
 
 
