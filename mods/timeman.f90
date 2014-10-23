@@ -185,11 +185,7 @@ CONTAINS
           FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(7))
           FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(7))
         case ("LPMC")
-          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(8))
-          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(8))
         case ("atmixMC")
-          FOM(icase,1) = 1d0/(stocMC_reflection(icase,2)*time(9))
-          FOM(icase,2) = 1d0/(stocMC_transmission(icase,2)*time(9))
       end select
     endif
   enddo
