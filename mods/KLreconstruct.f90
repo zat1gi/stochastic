@@ -321,11 +321,10 @@ print *,"minpos",minpos,"minsig",minsig
   do curEig=1,tnumEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-!if(present(flxstype)) print *,"sqrt(Eig)/Eigfterm/KLrxival",sqrt(Eig(curEig)),Eigfterm,KLrxivals(j,curEig)
+!print *,"sqrt(Eig)/Eigfterm/KLrxival",sqrt(Eig(curEig)),Eigfterm,KLrxivals(j,curEig)
   enddo
-!if(present(flxstype)) print *,"ave/mean/Co/sum",avesigval,meanadjust,Coterm,KLrxi_point
+!print *,"ave/mean/Co/sum",avesigval,meanadjust,Coterm,KLrxi_point
   KLrxi_point = (avesigval + meanadjust) + (sqrt(Coterm) * KLrxi_point)
-
   end function KLrxi_point
 
 

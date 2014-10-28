@@ -595,9 +595,12 @@ CONTAINS
 !print *,"sample"
     scatxs = KLrxi_point(j,xpos,flxstype='scatter')
     absxs  = KLrxi_point(j,xpos,flxstype='absorb ')
-!    totxs  = KLrxi_point(j,xpos,flxstype='total  ')
+    totxs  = KLrxi_point(j,xpos,flxstype='total  ')
     if( scatxs*absxs<0d0 ) print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
-!    if( abs(scatxs+absxs-totxs)>eps ) then
+!    print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
+!    print *,"totxs         :                                                     ",totxs
+!print *
+!    if( abs(scatxs+absxs-totxs)/totxs>eps ) then
 !      print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
 !      print *,"totxs         :                                                     ",totxs
 !      stop 'in KLWood_actscatrat, xs recreation not conserved'
@@ -606,6 +609,7 @@ CONTAINS
     if( scatxs<0d0 ) scatxs = 0d0
     if( absxs <0d0 ) absxs  = 0d0
     KLWood_actscatrat = scatxs/(scatxs+absxs)
+!    KLWood_actscatrat = scatrat(1)
   endif
 
   end function KLWood_actscatrat

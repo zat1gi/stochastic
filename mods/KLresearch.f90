@@ -327,13 +327,17 @@ CONTAINS
   use MCvars, only: trannprt
   use genRealz, only: genReal
   use timeman, only: KL_timeupdate
-  integer :: i,j,k,curEig
+  integer :: i,j,k,curEig,lsig,ssig
   real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
 
   call cpu_time(tt1)
 
   write(*,*) "Starting method: ",flKLtype  
+  if(KLxigentype=='material') then
+    lsig = merge(1,2,sig(1)>sig(2))
+    ssig = merge(1,2,sig(1)<sig(2))
+  endif
   do j=1,numRealz
     call genReal( j,'binary ' )
     do curEig=1,numEigs
@@ -348,7 +352,8 @@ CONTAINS
           hilowterm = sig(matType(i-1))
           aveterm   = sigave
         elseif( KLxigentype=='material' ) then
-          hilowterm = merge(sqrt(P(2)/P(1)),-sqrt(P(1)/P(2)),matType(i-1)==1)
+          hilowterm = merge(sqrt(P(ssig)/P(lsig)),-sqrt(P(lsig)/P(ssig)),matType(i-1)==lsig)
+!          hilowterm = merge(sqrt(P(2)/P(1)),-sqrt(P(1)/P(2)),matType(i-1)==1)
           aveterm   = 0d0
         endif
 
