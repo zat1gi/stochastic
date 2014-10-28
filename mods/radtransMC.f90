@@ -586,26 +586,28 @@ CONTAINS
   use KLvars, only: KLxigentype
   use KLreconstruct, only: KLrxi_point
   integer :: j
-  real(8) :: eps = 0.05d0
+  real(8) :: eps = 0.1d0
   real(8) :: KLWood_actscatrat, xpos, scatxs, absxs, totxs
 
   if( KLxigentype .eq. 'totxs' ) then
     KLWood_actscatrat = scatrat(1)
   elseif( KLxigentype .eq. 'material' ) then
-!print *
+!print *,"sample"
     scatxs = KLrxi_point(j,xpos,flxstype='scatter')
     absxs  = KLrxi_point(j,xpos,flxstype='absorb ')
-    totxs  = KLrxi_point(j,xpos,flxstype='total  ')
-!print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
-!print *,"totxs         :                                                     ",totxs
+!    totxs  = KLrxi_point(j,xpos,flxstype='total  ')
     if( scatxs*absxs<0d0 ) print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
-    if( abs(scatxs+absxs-totxs)>eps ) stop 'in KLWood_actscatrat, xs recreation not conserved'
+!    if( abs(scatxs+absxs-totxs)>eps ) then
+!      print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
+!      print *,"totxs         :                                                     ",totxs
+!      stop 'in KLWood_actscatrat, xs recreation not conserved'
+!    endif
 !read(*,*)
     if( scatxs<0d0 ) scatxs = 0d0
     if( absxs <0d0 ) absxs  = 0d0
     KLWood_actscatrat = scatxs/(scatxs+absxs)
   endif
-!print *,"KLWood_actscatrat:",KLWood_actscatrat
+
   end function KLWood_actscatrat
 
 
@@ -1623,11 +1625,11 @@ CONTAINS
     603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
     604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
-    write(100,600) real(negcnt,8)/real(numRealz,8),negcnt,numRealz
+    write(100,600) real(negcnt,8)/real(numRealz,8)*100d0,negcnt,numRealz
     pos = real(numpnSamp(1),8)
     neg = real(numpnSamp(2),8)
-    write(100,601) neg/(pos+neg),numpnSamp(2),numpnSamp(1)+numpnSamp(2)
-    write(100,602) -areapnSamp(2)/(areapnSamp(1)-areapnSamp(2))
+    write(100,601) neg/(pos+neg)*100d0,numpnSamp(2),numpnSamp(1)+numpnSamp(2)
+    write(100,602) -areapnSamp(2)/(areapnSamp(1)-areapnSamp(2))*100d0
     write(100,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
     write(100,604) areapnSamp(4),areapnSamp(3)
     write(100,*)
