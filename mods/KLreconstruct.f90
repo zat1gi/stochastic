@@ -291,7 +291,7 @@ print *,"minpos",minpos,"minsig",minsig
   integer :: j
   real(8) :: xpos
   real(8) :: KLrxi_point
-  character(7), optional :: flxstype
+  character(7) :: flxstype
   integer, optional :: tnumEigsin
 
   integer :: curEig,tnumEigs
@@ -299,7 +299,7 @@ print *,"minpos",minpos,"minsig",minsig
 
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
-  if(present(flxstype) .and. KLxigentype=='material') then
+  if(KLxigentype=='material') then
     select case (flxstype)
       case ("total")
         avesigval = sigave
