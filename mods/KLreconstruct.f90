@@ -295,26 +295,32 @@ print *,"minpos",minpos,"minsig",minsig
   integer, optional :: tnumEigsin
 
   integer :: curEig,tnumEigs
-  real(8) :: Eigfterm, Coterm, avesigval
+  real(8) :: Eigfterm, Coterm, avesigval, meanfrac
 
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
   if(KLxigentype=='material') then
     select case (flxstype)
       case ("total")
+        meanfrac  = 1d0
         avesigval = sigave
-        Coterm    = CoExp
+        Coterm    = (sqrt(Coscat)+sqrt(Coabs))**2
+!        Coterm    = CoExp
       case ("scatter")
+        meanfrac  = Coscat/(Coscat+Coabs)
         avesigval = sigscatave
         Coterm    = Coscat
       case ("absorb")
+        meanfrac  = Coabs/(Coscat+Coabs)
         avesigval = sigabsave
         Coterm    = Coabs
     end select
   else
+    meanfrac  = 1d0
     avesigval = sigave
     Coterm    = 1d0
   endif   
+!print *
 !print *,"sigave/sigscatave/sigavsave:",sigave,sigscatave,sigabsave
 !print *,"meanadjust:",meanadjust
   KLrxi_point = 0d0
@@ -323,8 +329,10 @@ print *,"minpos",minpos,"minsig",minsig
     KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
 !print *,"sqrt(Eig)/Eigfterm/KLrxival",sqrt(Eig(curEig)),Eigfterm,KLrxivals(j,curEig)
   enddo
-!print *,"ave/mean/Co/sum",avesigval,meanadjust,Coterm,KLrxi_point
-  KLrxi_point = (avesigval + meanadjust) + (sqrt(Coterm) * KLrxi_point)
+!print *,"ave/mean/Co/sum:",avesigval,meanadjust,Coterm,KLrxi_point
+  KLrxi_point = (avesigval + meanadjust*meanfrac) + (sqrt(Coterm) * KLrxi_point)
+!print *,"ave/sqrt(Co)   :",avesigval,sqrt(Coterm)
+!print *,"final          :",KLrxi_point
   end function KLrxi_point
 
 
