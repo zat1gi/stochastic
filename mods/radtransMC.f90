@@ -693,7 +693,7 @@ CONTAINS
   !set value for 'i'
   i=1
   if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) &
-    i = internal_init_i( position )
+    i = internal_init_i( minpos )
 
   !fluxtally irrespective of mat
   if(flfluxplotall) then
@@ -1601,6 +1601,7 @@ CONTAINS
   use genRealzvars, only: matLength
   real(8) :: position
   integer :: i,internal_init_i
+
   do i=1,size(matLength)-1
     if( matLength(i)<=position .AND. matLength(i+1)>position ) then
       internal_init_i = i
