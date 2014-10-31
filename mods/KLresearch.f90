@@ -363,7 +363,7 @@ CONTAINS
 
         xitermtot = xitermtot + xiterm
       enddo
-print *,"flag xitermtot:",xitermtot
+!print *,"flag xitermtot:",xitermtot
       xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot     !find resulting xi
     enddo
 

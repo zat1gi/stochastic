@@ -1,9 +1,9 @@
   33000,         Advance random see how far?
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
-  0.79690,0.38149        Sigma cross section vals #0.7969,0.3815
-  0.53972,0.99899,       Scattering Ratios        #0.9071
-  0.5,2.0,             Lambda path length vals  #0.5,2.0
+  0.79690,0.38149        Sigma cross section vals #0.7969,0.3815,3.4652(corresponds to U,C,H2O)
+  0.53972,0.99359,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
+  0.25,1.0,             Lambda path length vals  #0.5,2.0
   2.0,                 slab thickness           #1.0
   1000,100,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
@@ -11,7 +11,7 @@
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   3,             Number of eigenvalues
-  100,           Number of bins for xi
+  200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
   yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
@@ -36,7 +36,7 @@
 
 
   !!--All Plotting Option
-  default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
 
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis

@@ -592,7 +592,7 @@ CONTAINS
   if( KLxigentype .eq. 'totxs' ) then
     KLWood_actscatrat = scatrat(1)
   elseif( KLxigentype .eq. 'material' ) then
-!print *,"sample"
+print *,"sample"
     scatxs = KLrxi_point(j,xpos,flxstype='scatter')
     absxs  = KLrxi_point(j,xpos,flxstype='absorb ')
     totxs  = KLrxi_point(j,xpos,flxstype='total  ')
