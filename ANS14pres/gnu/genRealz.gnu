@@ -5,12 +5,16 @@ set yrange[   0.29404:   0.63632]
 set ytics border
 set ytics mirror
 set bars small
-set title "Original Realizations"
+set title "Original Realizations" font "Times-Roman, 19"
 set key left
 
 #Label axes
-set ylabel "Cross Section Value"
-set xlabel "Position in Slab"
+set ylabel "Cross Section Value" font "Times-Roman, 19"
+set xlabel "Position in Slab" font "Times-Roman, 19"
+set ytics font "Times-Roman, 19"
+set xtics font "Times-Roman, 19"
+set key top right
+set key samplen 5 spacing 3.5 font "Times-Roman, 19"
 unset colorbox
 set style line 1 lt 1 lc rgb "red" lw 1
 set style line 2 lt 2 lc rgb "green" lw 1
@@ -23,7 +27,7 @@ plot "txt/genRealzplot11.txt" using 1:2 with lines t "Realization 1" ls 1, \
 
 #Postscript info
 set size 1.0,0.6
-set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 11
+set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 19
 set output './genRealz.ps'
 #Screen output
 replot

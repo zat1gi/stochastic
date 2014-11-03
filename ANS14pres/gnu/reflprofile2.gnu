@@ -14,7 +14,7 @@ set xlabel "Current on Reflection Boundary" font "Times-Roman, 19"
 set ytics font "Times-Roman, 19"
 set xtics font "Times-Roman, 19"
 
-set key top center
+set key top right
 set key samplen 5 spacing 3.5 font "Times-Roman, 19"
 
 #Enter Plotline

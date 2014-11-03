@@ -2,13 +2,18 @@
 set ytics border
 set ytics mirror
 set bars small
-set title "Flux Over Domain, Material 2, Point on Tracklength Binning"
+set title "Flux Over Domain: Material 2" font "Times-Roman, 21"
 set key left bottom
 set autoscale
 set logscale y
 #Label axes
-set ylabel "Flux"
-set xlabel "Position in Slab"
+set ylabel "Flux" font "Times-Roman, 21"
+set xlabel "Position in Slab" font "Times-Roman, 21"
+set ytics font "Times-Roman, 21"
+set xtics font "Times-Roman, 21"
+
+set key top right
+set key samplen 5 spacing 3.5 font "Times-Roman, 21"
 
 #Enter Plotline
 

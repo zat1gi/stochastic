@@ -2,15 +2,21 @@
 set ytics border
 set ytics mirror
 set bars small
-set title "Random Parameter Distributions"
+set title "Random Parameter Distributions" font "Times-Roman, 19"
 set key left
 #Graph axis
 #set logscale
 set autoscale
+set xrange[  -3.5: 3.5]
 #Set axes
 #Label axes
-set ylabel "Probability"
-set xlabel "Value"
+set ylabel "Probability" font "Times-Roman, 19"
+set xlabel "Random Parameter Value" font "Times-Roman, 19"
+set ytics font "Times-Roman, 19"
+set xtics font "Times-Roman, 19"
+
+set key top right
+set key samplen 5 spacing 3.5 font "Times-Roman, 19"
 
 #Enter Plotline
 

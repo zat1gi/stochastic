@@ -58,6 +58,16 @@ ps2pdf tranprofile3.ps
 rm tranprofile3.ps
 mv tranprofile3.pdf plots
 
+gnuplot gnu/tranreflprofile2.gnu
+ps2pdf tranreflprofile2.ps
+rm tranreflprofile2.ps
+mv tranreflprofile2.pdf plots
+
+gnuplot gnu/tranreflprofile3.gnu
+ps2pdf tranreflprofile3.ps
+rm tranreflprofile3.ps
+mv tranreflprofile3.pdf plots
+
 
 gnuplot gnu/fluxmat1_2.gnu
 ps2pdf fluxmat1_2.ps

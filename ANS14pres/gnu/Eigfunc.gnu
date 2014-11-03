@@ -2,7 +2,7 @@
 set ytics border
 set ytics mirror
 set bars small
-set title "Eigenfunctions"
+set title "Eigenfunctions" font "Times-Roman, 19"
 set key left
 #Graph axis
 #set logscale
@@ -10,8 +10,13 @@ set autoscale
 #Set axes
 
 #Label axes
-set ylabel "Eigenfunction Value"
-set xlabel "Position in Slab"
+set ylabel "Eigenfunction Value" font "Times-Roman, 19"
+set xlabel "Position in Slab" font "Times-Roman, 19"
+set ytics font "Times-Roman, 19"
+set xtics font "Times-Roman, 19"
+
+set key bottom right
+set key samplen 5 spacing 3.5 font "Times-Roman, 19"
 
 #Enter Plotline
 

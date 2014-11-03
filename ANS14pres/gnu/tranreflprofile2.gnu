@@ -19,14 +19,15 @@ set key samplen 5 spacing 3.5 font "Times-Roman, 19"
 
 #Enter Plotline
 
-plot "txt/radMCtranreflprofile.txt"   u 3:4 w histeps t "TMC",\
-     "txt/radWoodtranreflprofile.txt" u 3:4 w histeps t "WMC",\
-     "txt/KLWoodtranreflprofile.txt"  u 3:4 w histeps t "KLWMC"
+plot "txt/radMCtranreflprofile.txt"   u 1:2 w histeps t "TMC transmittance",\
+     "txt/radWoodtranreflprofile.txt" u 1:2 w histeps t "WMC transmittance",\
+     "txt/radMCtranreflprofile.txt"   u 3:4 w histeps t "TMC reflectance",\
+     "txt/radWoodtranreflprofile.txt" u 3:4 w histeps t "WMC reflectance"
 
 #Postscript info
 set size 1.0,0.6
 set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 11
-set output './reflprofile3.ps'
+set output './tranreflprofile2.ps'
 #Screen output
 replot
 pause 1
