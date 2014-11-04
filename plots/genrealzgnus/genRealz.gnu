@@ -1,5 +1,5 @@
 set autoscale
-set yrange[   0.29841:   0.87998]
+set yrange[   0.29404:   0.63632]
 
 #Main graph frame
 set ytics border
