@@ -1,22 +1,22 @@
-  33000,         Advance random see how far?
+  733000,         Advance random see how far?
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
-  0.58742,0.34294        Sigma cross section vals #0.79690,0.38149,3.4652(corresponds to U,C,H2O)
-  0.68387,0.97703,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
+  10.5,0.2        Sigma cross section vals #0.79690,0.38149,3.4652(corresponds to U,C,H2O)
+  0.8,0.55,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
   0.6,2.4,             Lambda path length vals  #0.5,2.0
-  3.0,                 slab thickness           #1.0
-  10000,100,         Number of realizations/how often to print
-  10000,100,         KLr Number of realizations/how often to print
+  0.5,                 slab thickness           #1.0
+  1000,100,         Number of realizations/how often to print
+  1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  4,             Number of eigenvalues
+  25,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
   yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
-  10000,            Number of particles to simulate on each realization
-  100000000,          Number of particles for LP or atomic mix calculations
+  100,            Number of particles to simulate on each realization
+  100000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -84,12 +84,12 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  plot,plot,plot,    Plot Leakage profile?: radMC,radWood,KLWood
+  preview,plot,plot,    Plot Leakage profile?: radMC,radWood,KLWood
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  plot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
+  preview,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   point,           "track" "point", type of flux binning, over whole track or a point on it 
   50,           Number of cells collect and plot flux over
 

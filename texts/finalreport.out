@@ -1,38 +1,38 @@
 
   Values loaded for special Adamscase :  0.0
-    sig(1)    :  0.587420   sig(2)    :  0.342940
-    scatrat(1):  0.68       scatrat(2):  0.98
-    lam(1)    :  0.60       lam(2)    :  2.40
-    s         :  3.00       lamc      :  0.48
+    sig(1)    :  0.500000   sig(2)    :  0.200000
+    scatrat(1):  0.80       scatrat(2):  0.55
+    lam(1)    :  2.00       lam(2)    :  0.50
+    s         :  3.00       lamc      :  0.40
 
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   :  0.00000%,                     0 /                10000
-  Neg samples :  0.00000%,                     0 /            250179393
+  Neg realz   :  0.00000%,                     0 /                 1000
+  Neg samples :  0.00000%,                     0 /               216494
   Neg area    : -0.00000%
-  Ave neg samp:         NaN   Ave pos samp:      0.3854
-  Max neg samp:      0.0000   Max pos samp:      0.7922
+  Ave neg samp:         NaN   Ave pos samp:      0.4523
+  Max neg samp:      0.0000   Max pos samp:      0.5255
 
 
  |--------------- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |radMC  :  | 0.37921  +-  0.05457    | 0.43349  +-  0.08552|
- |radWood:  | 0.37877  +-  0.05518    | 0.43385  +-  0.08618|
- |KLWood :  | 0.36322  +-  0.04511    | 0.42566  +-  0.07777|
+ |radMC  :  | 0.28618  +-  0.05600    | 0.31506  +-  0.05819|
+ |radWood:  | 0.28289  +-  0.05352    | 0.31848  +-  0.05709|
+ |KLWood :  | 0.29069  +-  0.05122    | 0.31058  +-  0.05608|
  |----------|-------------------------|---------------------|
- |LPMC   :  | 0.37340                 | 0.43052             |
+ |LPMC   :  | 0.28253                 | 0.31735             |
  |----------|-------------------------|---------------------|
- |atmixMC:  | 0.36570                 | 0.41876             |
+ |atmixMC:  | 0.28589                 | 0.31589             |
  |----------------------------------------------------------|
 
-  total runtime:    137.56 min
-    genRealz   :   3.52 min   per:  2.56 % --- genRealz in others, not part of sum
+  total runtime:      0.16 min
+    genRealz   :   0.00 min   per:  1.62 % --- genRealz in others, not part of sum
     ------------------------------------------------ refl ----- tran --
-    radMC      :  13.80 min   per: 10.03 %   FOM:  9.229E+00  3.758E+00
-    radWood    :  12.89 min   per:  9.37 %   FOM:  9.648E+00  3.955E+00
-    KLWood     :  81.64 min   per: 59.35 %   FOM:  2.186E+00  7.356E-01
-    LPMC       :  21.57 min   per: 15.68 %
-    atmixMC    :   7.24 min   per:  5.26 %
-    KLcol      :   0.00 min   per:  0.00 %
-    KLrec      :   0.37 min   per:  0.27 %
-    other      :   0.06 min   per:  0.04 %
+    radMC      :   0.01 min   per:  8.62 %   FOM:  6.494E+03  6.015E+03
+    radWood    :   0.01 min   per:  6.87 %   FOM:  8.818E+03  7.749E+03
+    KLWood     :   0.07 min   per: 40.42 %   FOM:  1.682E+03  1.403E+03
+    LPMC       :   0.02 min   per: 12.45 %
+    atmixMC    :   0.01 min   per:  4.00 %
+    KLcol      :   0.00 min   per:  0.16 %
+    KLrec      :   0.03 min   per: 20.12 %
+    other      :   0.01 min   per:  7.36 %

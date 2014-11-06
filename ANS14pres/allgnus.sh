@@ -24,10 +24,10 @@
 #rm Eigfunc.ps
 #mv Eigfunc.pdf plots
 
-#gnuplot gnu/eigvals.gnu
-#ps2pdf eigvals.ps
-#rm eigvals.ps
-#mv eigvals.pdf plots
+gnuplot gnu/eigvals.gnu
+ps2pdf eigvals.ps
+rm eigvals.ps
+mv eigvals.pdf plots
 
 #gnuplot gnu/KLrrealz.gnu
 #ps2pdf KLrrealz.ps
@@ -39,20 +39,20 @@
 #rm genRealz_KLrrealz.ps
 #mv genRealz_KLrrealz.pdf plots
 
-gnuplot gnu/genRealz_KLrrealz1.gnu
-ps2pdf genRealz_KLrrealz1.ps
-rm genRealz_KLrrealz1.ps
-mv genRealz_KLrrealz1.pdf plots
+#gnuplot gnu/genRealz_KLrrealz1.gnu
+#ps2pdf genRealz_KLrrealz1.ps
+#rm genRealz_KLrrealz1.ps
+#mv genRealz_KLrrealz1.pdf plots
 
-gnuplot gnu/genRealz_KLrrealz2.gnu
-ps2pdf genRealz_KLrrealz2.ps
-rm genRealz_KLrrealz2.ps
-mv genRealz_KLrrealz2.pdf plots
+#gnuplot gnu/genRealz_KLrrealz2.gnu
+#ps2pdf genRealz_KLrrealz2.ps
+#rm genRealz_KLrrealz2.ps
+#mv genRealz_KLrrealz2.pdf plots
 
-gnuplot gnu/genRealz_KLrrealz3.gnu
-ps2pdf genRealz_KLrrealz3.ps
-rm genRealz_KLrrealz3.ps
-mv genRealz_KLrrealz3.pdf plots
+#gnuplot gnu/genRealz_KLrrealz3.gnu
+#ps2pdf genRealz_KLrrealz3.ps
+#rm genRealz_KLrrealz3.ps
+#mv genRealz_KLrrealz3.pdf plots
 
 
 
@@ -91,10 +91,10 @@ mv genRealz_KLrrealz3.pdf plots
 #rm tranprofile3.ps
 #mv tranprofile3.pdf plots
 
-#gnuplot gnu/tranreflprofile2.gnu
-#ps2pdf tranreflprofile2.ps
-#rm tranreflprofile2.ps
-#mv tranreflprofile2.pdf plots
+gnuplot gnu/tranreflprofile2.gnu
+ps2pdf tranreflprofile2.ps
+rm tranreflprofile2.ps
+mv tranreflprofile2.pdf plots
 
 #gnuplot gnu/tranreflprofile3.gnu
 #ps2pdf tranreflprofile3.ps
@@ -102,10 +102,10 @@ mv genRealz_KLrrealz3.pdf plots
 #mv tranreflprofile3.pdf plots
 
 
-#gnuplot gnu/fluxmat1_2.gnu
-#ps2pdf fluxmat1_2.ps
-#rm fluxmat1_2.ps
-#mv fluxmat1_2.pdf plots
+gnuplot gnu/fluxmat1_2.gnu
+ps2pdf fluxmat1_2.ps
+rm fluxmat1_2.ps
+mv fluxmat1_2.pdf plots
 
 #gnuplot gnu/fluxmat1_3.gnu
 #ps2pdf fluxmat1_3.ps
@@ -117,10 +117,10 @@ mv genRealz_KLrrealz3.pdf plots
 #rm fluxmat1_5.ps
 #mv fluxmat1_5.pdf plots
 
-#gnuplot gnu/fluxmat2_2.gnu
-#ps2pdf fluxmat2_2.ps
-#rm fluxmat2_2.ps
-#mv fluxmat2_2.pdf plots
+gnuplot gnu/fluxmat2_2.gnu
+ps2pdf fluxmat2_2.ps
+rm fluxmat2_2.ps
+mv fluxmat2_2.pdf plots
 
 #gnuplot gnu/fluxmat2_3.gnu
 #ps2pdf fluxmat2_3.ps
@@ -131,3 +131,8 @@ mv genRealz_KLrrealz3.pdf plots
 #ps2pdf fluxmat2_5.ps
 #rm fluxmat2_5.ps
 #mv fluxmat2_5.pdf plots
+
+gnuplot gnu/fluxmatall_4.gnu
+ps2pdf fluxmatall_4.ps
+rm fluxmatall_4.ps
+mv fluxmatall_4.pdf plots
