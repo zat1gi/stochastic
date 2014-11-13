@@ -2,6 +2,12 @@
   Neg realz   :  0.00000%,                     0 /                 1000
   Neg samples :  0.00000%,                     0 /               216494
   Neg area    : -0.00000%
+<<<<<<< Updated upstream
   Ave neg samp:         NaN   Ave pos samp:      0.4523
   Max neg samp:      0.0000   Max pos samp:      0.5255
+=======
+  Neg scatrat : 23.10771%,                 44053 /               190642
+  Ave neg samp:         NaN   Ave pos samp:      0.3812
+  Max neg samp:      0.0000   Max pos samp:      0.7168
+>>>>>>> Stashed changes
 

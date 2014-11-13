@@ -14,6 +14,12 @@ exec: $(OBJ)
 	$(FC) -fbounds-check -o astochastic  $(OBJ) $(MODS)
 	mv *.mod mods/
 
+debug: $(OBJ)
+	make mods
+	$(FC) -g -fbounds-check -Wall -fbacktrace -finit-real=nan -o astochastic  $(OBJ) $(MODS)
+	mv *.mod mods/
+
+
 clean:
 	rm -f test mods/*.mod mods/*~
 	rm -f *mod *mod~
