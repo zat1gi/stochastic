@@ -1,16 +1,16 @@
-  733000,         Advance random see how far?
+  33000,         Advance random see how far?
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
-  10.5,0.2        Sigma cross section vals #0.79690,0.38149,3.4652(corresponds to U,C,H2O)
-  0.8,0.55,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
+  0.58742,0.34294        Sigma cross section vals #0.79690,0.38149,3.4652(corresponds to U,C,H2O)
+  0.68387,0.9770355,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
   0.6,2.4,             Lambda path length vals  #0.5,2.0
-  0.5,                 slab thickness           #1.0
+  3.0,                 slab thickness           #1.0
   1000,100,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  25,             Number of eigenvalues
+  4,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
@@ -63,12 +63,12 @@
   4,100000
 
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
-  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  7,4,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
-  14,4,fxi
+  29,1,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
+  29,2,fxi
+  29,3,fxi
   29,4,fxi
-  100,4,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
