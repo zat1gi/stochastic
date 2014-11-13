@@ -1,12 +1,12 @@
-  33000,         Advance random see how far?
+  20000,         Advance random see how far?
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
-  0.58742,0.34294        Sigma cross section vals #0.79690,0.38149,3.4652(corresponds to U,C,H2O)
+  0.58742,0.34294        Sigma cross section vals #0.7969,0.3815,3.4652(corresponds to U,C,H2O)
   0.68387,0.97703,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
   0.6,2.4,             Lambda path length vals  #0.5,2.0
   3.0,                 slab thickness           #1.0
-  10000,1000,         Number of realizations/how often to print
-  10000,1000,         KLr Number of realizations/how often to print
+  10000,100,         Number of realizations/how often to print
+  10000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
@@ -14,9 +14,9 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,yes,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
-  1000,            Number of particles to simulate on each realization
-  10000000,          Number of particles for LP or atomic mix calculations
+  no,no,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC subroutines? ('yes' or 'no')
+  10000,            Number of particles to simulate on each realization
+  100000000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -24,7 +24,7 @@
   11,             Levels of refinement for eigenvalue solving
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
   no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
-  yes,0.001,      Calc KL variance at truncation?/tol for KL variance at truncation
+  no,0.001,      Calc KL variance at truncation?/tol for KL variance at truncation
   200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
 
   !--- Lesser MCtransport Options ---!

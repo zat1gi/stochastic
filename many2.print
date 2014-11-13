@@ -1,0 +1,353 @@
+Eigcalc:      10       4.592501    0.043456477      0.008361480     0.001000000
+      0.9509867   Ak:    0.6738348
+      0.9221287   Ak:    0.5853229
+      0.9455132   Ak:    0.4862775
+      0.9701463   Ak:    0.4012036
+   lamc:              0.480
+   TT  :              6.25000000
+ Starting method: KLcol
+Start mat1:   0.2031+-  0.0040   mat2:   0.7969+-  0.0040
+      P(1):   0.2000             P(2):   0.8000
+Path  mat1:   0.4959+-  0.0043   mat2:   1.3265+-  0.0073
+    lam(1):   0.6000           lam(2):   2.4000
+totLength(1):        6036.06    totLength(2):       23963.94    tottotLength:       30000.00
+expLength(1):        6000.00    expLength(2):       24000.00    exptotLength:       30000.00
+       CoAct:        0.00961
+       CoExp:        0.00956       CoPerdiff:           0.45 %
+ CoExp:    9.5632752640000020E-003
+  smallestxi:                -3.78327        largestxi:                 3.83485
+  curEig:  1   numRealz:      10000   probsum: 1.000   meanxi:   0.0020   varxi:   0.9968
+  curEig:  2   numRealz:      10000   probsum: 1.000   meanxi:  -0.0018   varxi:   1.0019
+  curEig:  3   numRealz:      10000   probsum: 1.000   meanxi:   0.0134   varxi:   1.0080
+  curEig:  4   numRealz:      10000   probsum: 1.000   meanxi:  -0.0026   varxi:   1.0110
+ Starting method: KLrec
+  Integrator/reconstruction check - sigave:  0.39184  intsigave:  0.39657  relerr:   1.21E-02
+ avenegarea:    0.0000000000000000        aveposarea:   0.39656979366631051     
+ meanadjust:   -4.7337936663105484E-003
+  Total num reconstructed realz w/ neg value:            0
+ Starting method: radMC  
+  radMC        0.05 min,   1.0% of method  1 of  3      time/est:   0.13/   9.21 min
+  radMC        0.11 min,   2.0% of method  1 of  3      time/est:   0.18/   9.10 min
+  radMC        0.16 min,   3.0% of method  1 of  3      time/est:   0.24/   9.12 min
+  radMC        0.22 min,   4.0% of method  1 of  3      time/est:   0.29/   9.13 min
+  radMC        0.27 min,   5.0% of method  1 of  3      time/est:   0.35/   9.19 min
+  radMC        0.33 min,   6.0% of method  1 of  3      time/est:   0.40/   9.18 min
+  radMC        0.38 min,   7.0% of method  1 of  3      time/est:   0.46/   9.18 min
+  radMC        0.44 min,   8.0% of method  1 of  3      time/est:   0.51/   9.21 min
+  radMC        0.49 min,   9.0% of method  1 of  3      time/est:   0.57/   9.19 min
+  radMC        0.55 min,  10.0% of method  1 of  3      time/est:   0.62/   9.22 min
+  radMC        0.60 min,  11.0% of method  1 of  3      time/est:   0.68/   9.20 min
+  radMC        0.66 min,  12.0% of method  1 of  3      time/est:   0.73/   9.22 min
+  radMC        0.71 min,  13.0% of method  1 of  3      time/est:   0.79/   9.23 min
+  radMC        0.77 min,  14.0% of method  1 of  3      time/est:   0.84/   9.25 min
+  radMC        0.83 min,  15.0% of method  1 of  3      time/est:   0.90/   9.26 min
+  radMC        0.88 min,  16.0% of method  1 of  3      time/est:   0.96/   9.28 min
+  radMC        0.94 min,  17.0% of method  1 of  3      time/est:   1.01/   9.29 min
+  radMC        1.00 min,  18.0% of method  1 of  3      time/est:   1.07/   9.29 min
+  radMC        1.05 min,  19.0% of method  1 of  3      time/est:   1.13/   9.31 min
+  radMC        1.11 min,  20.0% of method  1 of  3      time/est:   1.18/   9.29 min
+  radMC        1.16 min,  21.0% of method  1 of  3      time/est:   1.23/   9.29 min
+  radMC        1.22 min,  22.0% of method  1 of  3      time/est:   1.29/   9.29 min
+  radMC        1.27 min,  23.0% of method  1 of  3      time/est:   1.35/   9.31 min
+  radMC        1.33 min,  24.0% of method  1 of  3      time/est:   1.40/   9.32 min
+  radMC        1.39 min,  25.0% of method  1 of  3      time/est:   1.46/   9.31 min
+  radMC        1.44 min,  26.0% of method  1 of  3      time/est:   1.51/   9.31 min
+  radMC        1.50 min,  27.0% of method  1 of  3      time/est:   1.57/   9.31 min
+  radMC        1.55 min,  28.0% of method  1 of  3      time/est:   1.62/   9.30 min
+  radMC        1.60 min,  29.0% of method  1 of  3      time/est:   1.68/   9.29 min
+  radMC        1.66 min,  30.0% of method  1 of  3      time/est:   1.74/   9.31 min
+  radMC        1.72 min,  31.0% of method  1 of  3      time/est:   1.79/   9.31 min
+  radMC        1.77 min,  32.0% of method  1 of  3      time/est:   1.85/   9.30 min
+  radMC        1.83 min,  33.0% of method  1 of  3      time/est:   1.90/   9.30 min
+  radMC        1.88 min,  34.0% of method  1 of  3      time/est:   1.96/   9.31 min
+  radMC        1.94 min,  35.0% of method  1 of  3      time/est:   2.01/   9.31 min
+  radMC        2.00 min,  36.0% of method  1 of  3      time/est:   2.07/   9.32 min
+  radMC        2.05 min,  37.0% of method  1 of  3      time/est:   2.12/   9.31 min
+  radMC        2.10 min,  38.0% of method  1 of  3      time/est:   2.18/   9.30 min
+  radMC        2.16 min,  39.0% of method  1 of  3      time/est:   2.23/   9.30 min
+  radMC        2.22 min,  40.0% of method  1 of  3      time/est:   2.29/   9.31 min
+  radMC        2.27 min,  41.0% of method  1 of  3      time/est:   2.34/   9.31 min
+  radMC        2.33 min,  42.0% of method  1 of  3      time/est:   2.40/   9.31 min
+  radMC        2.38 min,  43.0% of method  1 of  3      time/est:   2.46/   9.32 min
+  radMC        2.44 min,  44.0% of method  1 of  3      time/est:   2.52/   9.33 min
+  radMC        2.50 min,  45.0% of method  1 of  3      time/est:   2.57/   9.32 min
+  radMC        2.55 min,  46.0% of method  1 of  3      time/est:   2.63/   9.32 min
+  radMC        2.61 min,  47.0% of method  1 of  3      time/est:   2.68/   9.32 min
+  radMC        2.66 min,  48.0% of method  1 of  3      time/est:   2.74/   9.32 min
+  radMC        2.72 min,  49.0% of method  1 of  3      time/est:   2.80/   9.33 min
+  radMC        2.78 min,  50.0% of method  1 of  3      time/est:   2.85/   9.33 min
+  radMC        2.83 min,  51.0% of method  1 of  3      time/est:   2.91/   9.33 min
+  radMC        2.89 min,  52.0% of method  1 of  3      time/est:   2.96/   9.32 min
+  radMC        2.94 min,  53.0% of method  1 of  3      time/est:   3.01/   9.32 min
+  radMC        2.99 min,  54.0% of method  1 of  3      time/est:   3.07/   9.32 min
+  radMC        3.05 min,  55.0% of method  1 of  3      time/est:   3.13/   9.32 min
+  radMC        3.11 min,  56.0% of method  1 of  3      time/est:   3.18/   9.32 min
+  radMC        3.16 min,  57.0% of method  1 of  3      time/est:   3.24/   9.32 min
+  radMC        3.22 min,  58.0% of method  1 of  3      time/est:   3.29/   9.32 min
+  radMC        3.28 min,  59.0% of method  1 of  3      time/est:   3.35/   9.33 min
+  radMC        3.33 min,  60.0% of method  1 of  3      time/est:   3.41/   9.33 min
+  radMC        3.39 min,  61.0% of method  1 of  3      time/est:   3.46/   9.33 min
+  radMC        3.44 min,  62.0% of method  1 of  3      time/est:   3.52/   9.32 min
+  radMC        3.50 min,  63.0% of method  1 of  3      time/est:   3.57/   9.33 min
+  radMC        3.55 min,  64.0% of method  1 of  3      time/est:   3.63/   9.32 min
+  radMC        3.61 min,  65.0% of method  1 of  3      time/est:   3.68/   9.32 min
+  radMC        3.66 min,  66.0% of method  1 of  3      time/est:   3.74/   9.33 min
+  radMC        3.72 min,  67.0% of method  1 of  3      time/est:   3.80/   9.34 min
+  radMC        3.78 min,  68.0% of method  1 of  3      time/est:   3.85/   9.33 min
+  radMC        3.84 min,  69.0% of method  1 of  3      time/est:   3.91/   9.34 min
+  radMC        3.89 min,  70.0% of method  1 of  3      time/est:   3.97/   9.34 min
+  radMC        3.95 min,  71.0% of method  1 of  3      time/est:   4.02/   9.34 min
+  radMC        4.00 min,  72.0% of method  1 of  3      time/est:   4.08/   9.34 min
+  radMC        4.06 min,  73.0% of method  1 of  3      time/est:   4.13/   9.34 min
+  radMC        4.11 min,  74.0% of method  1 of  3      time/est:   4.19/   9.34 min
+  radMC        4.17 min,  75.0% of method  1 of  3      time/est:   4.24/   9.34 min
+  radMC        4.22 min,  76.0% of method  1 of  3      time/est:   4.30/   9.34 min
+  radMC        4.28 min,  77.0% of method  1 of  3      time/est:   4.36/   9.34 min
+  radMC        4.34 min,  78.0% of method  1 of  3      time/est:   4.41/   9.34 min
+  radMC        4.39 min,  79.0% of method  1 of  3      time/est:   4.47/   9.34 min
+  radMC        4.45 min,  80.0% of method  1 of  3      time/est:   4.52/   9.34 min
+  radMC        4.50 min,  81.0% of method  1 of  3      time/est:   4.58/   9.33 min
+  radMC        4.56 min,  82.0% of method  1 of  3      time/est:   4.63/   9.34 min
+  radMC        4.61 min,  83.0% of method  1 of  3      time/est:   4.69/   9.34 min
+  radMC        4.67 min,  84.0% of method  1 of  3      time/est:   4.74/   9.34 min
+  radMC        4.73 min,  85.0% of method  1 of  3      time/est:   4.80/   9.34 min
+  radMC        4.78 min,  86.0% of method  1 of  3      time/est:   4.86/   9.34 min
+  radMC        4.84 min,  87.0% of method  1 of  3      time/est:   4.91/   9.34 min
+  radMC        4.89 min,  88.0% of method  1 of  3      time/est:   4.97/   9.34 min
+  radMC        4.95 min,  89.0% of method  1 of  3      time/est:   5.02/   9.34 min
+  radMC        5.00 min,  90.0% of method  1 of  3      time/est:   5.08/   9.34 min
+  radMC        5.06 min,  91.0% of method  1 of  3      time/est:   5.13/   9.34 min
+  radMC        5.12 min,  92.0% of method  1 of  3      time/est:   5.19/   9.34 min
+  radMC        5.17 min,  93.0% of method  1 of  3      time/est:   5.25/   9.34 min
+  radMC        5.22 min,  94.0% of method  1 of  3      time/est:   5.30/   9.34 min
+  radMC        5.28 min,  95.0% of method  1 of  3      time/est:   5.36/   9.34 min
+  radMC        5.34 min,  96.0% of method  1 of  3      time/est:   5.41/   9.34 min
+  radMC        5.39 min,  97.0% of method  1 of  3      time/est:   5.47/   9.34 min
+  radMC        5.44 min,  98.0% of method  1 of  3      time/est:   5.52/   9.33 min
+  radMC        5.50 min,  99.0% of method  1 of  3      time/est:   5.58/   9.33 min
+  radMC        5.56 min, 100.0% of method  1 of  3      time/est:   5.63/   9.34 min
+ Starting method: radWood
+  radWood      0.05 min,   1.0% of method  2 of  3      time/est:   5.68/  14.31 min
+  radWood      0.10 min,   2.0% of method  2 of  3      time/est:   5.74/  14.36 min
+  radWood      0.16 min,   3.0% of method  2 of  3      time/est:   5.79/  14.39 min
+  radWood      0.21 min,   4.0% of method  2 of  3      time/est:   5.84/  14.37 min
+  radWood      0.26 min,   5.0% of method  2 of  3      time/est:   5.89/  14.34 min
+  radWood      0.31 min,   6.0% of method  2 of  3      time/est:   5.94/  14.36 min
+  radWood      0.36 min,   7.0% of method  2 of  3      time/est:   5.99/  14.36 min
+  radWood      0.41 min,   8.0% of method  2 of  3      time/est:   6.04/  14.36 min
+  radWood      0.46 min,   9.0% of method  2 of  3      time/est:   6.10/  14.36 min
+  radWood      0.51 min,  10.0% of method  2 of  3      time/est:   6.15/  14.35 min
+  radWood      0.57 min,  11.0% of method  2 of  3      time/est:   6.20/  14.34 min
+  radWood      0.62 min,  12.0% of method  2 of  3      time/est:   6.25/  14.35 min
+  radWood      0.67 min,  13.0% of method  2 of  3      time/est:   6.30/  14.35 min
+  radWood      0.72 min,  14.0% of method  2 of  3      time/est:   6.35/  14.35 min
+  radWood      0.77 min,  15.0% of method  2 of  3      time/est:   6.40/  14.35 min
+  radWood      0.82 min,  16.0% of method  2 of  3      time/est:   6.46/  14.35 min
+  radWood      0.88 min,  17.0% of method  2 of  3      time/est:   6.51/  14.35 min
+  radWood      0.93 min,  18.0% of method  2 of  3      time/est:   6.56/  14.34 min
+  radWood      0.98 min,  19.0% of method  2 of  3      time/est:   6.61/  14.35 min
+  radWood      1.03 min,  20.0% of method  2 of  3      time/est:   6.66/  14.34 min
+  radWood      1.08 min,  21.0% of method  2 of  3      time/est:   6.71/  14.34 min
+  radWood      1.13 min,  22.0% of method  2 of  3      time/est:   6.76/  14.34 min
+  radWood      1.18 min,  23.0% of method  2 of  3      time/est:   6.81/  14.34 min
+  radWood      1.23 min,  24.0% of method  2 of  3      time/est:   6.87/  14.33 min
+  radWood      1.29 min,  25.0% of method  2 of  3      time/est:   6.92/  14.34 min
+  radWood      1.34 min,  26.0% of method  2 of  3      time/est:   6.97/  14.34 min
+  radWood      1.39 min,  27.0% of method  2 of  3      time/est:   7.02/  14.34 min
+  radWood      1.44 min,  28.0% of method  2 of  3      time/est:   7.07/  14.34 min
+  radWood      1.49 min,  29.0% of method  2 of  3      time/est:   7.12/  14.34 min
+  radWood      1.54 min,  30.0% of method  2 of  3      time/est:   7.18/  14.34 min
+  radWood      1.60 min,  31.0% of method  2 of  3      time/est:   7.23/  14.35 min
+  radWood      1.65 min,  32.0% of method  2 of  3      time/est:   7.28/  14.35 min
+  radWood      1.70 min,  33.0% of method  2 of  3      time/est:   7.33/  14.35 min
+  radWood      1.75 min,  34.0% of method  2 of  3      time/est:   7.38/  14.35 min
+  radWood      1.80 min,  35.0% of method  2 of  3      time/est:   7.44/  14.35 min
+  radWood      1.85 min,  36.0% of method  2 of  3      time/est:   7.49/  14.35 min
+  radWood      1.91 min,  37.0% of method  2 of  3      time/est:   7.54/  14.35 min
+  radWood      1.96 min,  38.0% of method  2 of  3      time/est:   7.59/  14.35 min
+  radWood      2.01 min,  39.0% of method  2 of  3      time/est:   7.64/  14.35 min
+  radWood      2.06 min,  40.0% of method  2 of  3      time/est:   7.69/  14.35 min
+  radWood      2.11 min,  41.0% of method  2 of  3      time/est:   7.74/  14.35 min
+  radWood      2.16 min,  42.0% of method  2 of  3      time/est:   7.79/  14.35 min
+  radWood      2.21 min,  43.0% of method  2 of  3      time/est:   7.85/  14.35 min
+  radWood      2.26 min,  44.0% of method  2 of  3      time/est:   7.90/  14.35 min
+  radWood      2.32 min,  45.0% of method  2 of  3      time/est:   7.95/  14.35 min
+  radWood      2.37 min,  46.0% of method  2 of  3      time/est:   8.00/  14.35 min
+  radWood      2.42 min,  47.0% of method  2 of  3      time/est:   8.05/  14.35 min
+  radWood      2.47 min,  48.0% of method  2 of  3      time/est:   8.11/  14.35 min
+  radWood      2.52 min,  49.0% of method  2 of  3      time/est:   8.16/  14.35 min
+  radWood      2.57 min,  50.0% of method  2 of  3      time/est:   8.21/  14.35 min
+  radWood      2.63 min,  51.0% of method  2 of  3      time/est:   8.26/  14.35 min
+  radWood      2.68 min,  52.0% of method  2 of  3      time/est:   8.31/  14.35 min
+  radWood      2.73 min,  53.0% of method  2 of  3      time/est:   8.36/  14.35 min
+  radWood      2.78 min,  54.0% of method  2 of  3      time/est:   8.41/  14.35 min
+  radWood      2.83 min,  55.0% of method  2 of  3      time/est:   8.47/  14.35 min
+  radWood      2.88 min,  56.0% of method  2 of  3      time/est:   8.52/  14.35 min
+  radWood      2.93 min,  57.0% of method  2 of  3      time/est:   8.57/  14.35 min
+  radWood      2.99 min,  58.0% of method  2 of  3      time/est:   8.62/  14.35 min
+  radWood      3.04 min,  59.0% of method  2 of  3      time/est:   8.67/  14.35 min
+  radWood      3.09 min,  60.0% of method  2 of  3      time/est:   8.72/  14.35 min
+  radWood      3.14 min,  61.0% of method  2 of  3      time/est:   8.77/  14.35 min
+  radWood      3.19 min,  62.0% of method  2 of  3      time/est:   8.82/  14.35 min
+  radWood      3.24 min,  63.0% of method  2 of  3      time/est:   8.88/  14.35 min
+  radWood      3.29 min,  64.0% of method  2 of  3      time/est:   8.93/  14.35 min
+  radWood      3.35 min,  65.0% of method  2 of  3      time/est:   8.98/  14.35 min
+  radWood      3.40 min,  66.0% of method  2 of  3      time/est:   9.03/  14.35 min
+  radWood      3.45 min,  67.0% of method  2 of  3      time/est:   9.08/  14.35 min
+  radWood      3.50 min,  68.0% of method  2 of  3      time/est:   9.13/  14.35 min
+  radWood      3.55 min,  69.0% of method  2 of  3      time/est:   9.18/  14.35 min
+  radWood      3.60 min,  70.0% of method  2 of  3      time/est:   9.24/  14.35 min
+  radWood      3.65 min,  71.0% of method  2 of  3      time/est:   9.29/  14.35 min
+  radWood      3.71 min,  72.0% of method  2 of  3      time/est:   9.34/  14.35 min
+  radWood      3.76 min,  73.0% of method  2 of  3      time/est:   9.39/  14.35 min
+  radWood      3.81 min,  74.0% of method  2 of  3      time/est:   9.44/  14.35 min
+  radWood      3.86 min,  75.0% of method  2 of  3      time/est:   9.49/  14.35 min
+  radWood      3.91 min,  76.0% of method  2 of  3      time/est:   9.55/  14.35 min
+  radWood      3.96 min,  77.0% of method  2 of  3      time/est:   9.60/  14.35 min
+  radWood      4.01 min,  78.0% of method  2 of  3      time/est:   9.65/  14.35 min
+  radWood      4.07 min,  79.0% of method  2 of  3      time/est:   9.70/  14.35 min
+  radWood      4.12 min,  80.0% of method  2 of  3      time/est:   9.75/  14.35 min
+  radWood      4.17 min,  81.0% of method  2 of  3      time/est:   9.80/  14.35 min
+  radWood      4.22 min,  82.0% of method  2 of  3      time/est:   9.85/  14.35 min
+  radWood      4.27 min,  83.0% of method  2 of  3      time/est:   9.91/  14.35 min
+  radWood      4.32 min,  84.0% of method  2 of  3      time/est:   9.96/  14.35 min
+  radWood      4.38 min,  85.0% of method  2 of  3      time/est:  10.01/  14.35 min
+  radWood      4.43 min,  86.0% of method  2 of  3      time/est:  10.06/  14.35 min
+  radWood      4.48 min,  87.0% of method  2 of  3      time/est:  10.11/  14.35 min
+  radWood      4.53 min,  88.0% of method  2 of  3      time/est:  10.17/  14.35 min
+  radWood      4.58 min,  89.0% of method  2 of  3      time/est:  10.22/  14.35 min
+  radWood      4.63 min,  90.0% of method  2 of  3      time/est:  10.27/  14.35 min
+  radWood      4.68 min,  91.0% of method  2 of  3      time/est:  10.32/  14.35 min
+  radWood      4.74 min,  92.0% of method  2 of  3      time/est:  10.37/  14.35 min
+  radWood      4.79 min,  93.0% of method  2 of  3      time/est:  10.42/  14.35 min
+  radWood      4.84 min,  94.0% of method  2 of  3      time/est:  10.47/  14.35 min
+  radWood      4.89 min,  95.0% of method  2 of  3      time/est:  10.52/  14.35 min
+  radWood      4.94 min,  96.0% of method  2 of  3      time/est:  10.58/  14.35 min
+  radWood      4.99 min,  97.0% of method  2 of  3      time/est:  10.63/  14.35 min
+  radWood      5.04 min,  98.0% of method  2 of  3      time/est:  10.68/  14.35 min
+  radWood      5.09 min,  99.0% of method  2 of  3      time/est:  10.73/  14.35 min
+  radWood      5.15 min, 100.0% of method  2 of  3      time/est:  10.78/  14.35 min
+ Starting method: KLWood 
+  KLWood       0.29 min,   1.0% of method  3 of  3      time/est:  11.07/  39.70 min
+  KLWood       0.57 min,   2.0% of method  3 of  3      time/est:  11.35/  39.20 min
+  KLWood       0.86 min,   3.0% of method  3 of  3      time/est:  11.64/  39.33 min
+  KLWood       1.14 min,   4.0% of method  3 of  3      time/est:  11.92/  39.28 min
+  KLWood       1.42 min,   5.0% of method  3 of  3      time/est:  12.20/  39.14 min
+  KLWood       1.70 min,   6.0% of method  3 of  3      time/est:  12.48/  39.06 min
+  KLWood       1.98 min,   7.0% of method  3 of  3      time/est:  12.76/  39.06 min
+  KLWood       2.26 min,   8.0% of method  3 of  3      time/est:  13.04/  39.03 min
+  KLWood       2.54 min,   9.0% of method  3 of  3      time/est:  13.32/  39.01 min
+  KLWood       2.82 min,  10.0% of method  3 of  3      time/est:  13.60/  39.02 min
+  KLWood       3.11 min,  11.0% of method  3 of  3      time/est:  13.89/  39.03 min
+  KLWood       3.39 min,  12.0% of method  3 of  3      time/est:  14.17/  39.01 min
+  KLWood       3.67 min,  13.0% of method  3 of  3      time/est:  14.45/  39.02 min
+  KLWood       3.95 min,  14.0% of method  3 of  3      time/est:  14.73/  38.97 min
+  KLWood       4.23 min,  15.0% of method  3 of  3      time/est:  15.01/  38.95 min
+  KLWood       4.51 min,  16.0% of method  3 of  3      time/est:  15.29/  38.98 min
+  KLWood       4.80 min,  17.0% of method  3 of  3      time/est:  15.58/  39.00 min
+  KLWood       5.08 min,  18.0% of method  3 of  3      time/est:  15.86/  39.02 min
+  KLWood       5.36 min,  19.0% of method  3 of  3      time/est:  16.14/  39.00 min
+  KLWood       5.64 min,  20.0% of method  3 of  3      time/est:  16.42/  38.99 min
+  KLWood       5.92 min,  21.0% of method  3 of  3      time/est:  16.70/  38.98 min
+  KLWood       6.20 min,  22.0% of method  3 of  3      time/est:  16.98/  38.97 min
+  KLWood       6.49 min,  23.0% of method  3 of  3      time/est:  17.27/  39.01 min
+  KLWood       6.78 min,  24.0% of method  3 of  3      time/est:  17.56/  39.03 min
+  KLWood       7.06 min,  25.0% of method  3 of  3      time/est:  17.84/  39.02 min
+  KLWood       7.34 min,  26.0% of method  3 of  3      time/est:  18.12/  39.00 min
+  KLWood       7.62 min,  27.0% of method  3 of  3      time/est:  18.40/  39.00 min
+  KLWood       7.90 min,  28.0% of method  3 of  3      time/est:  18.68/  39.00 min
+  KLWood       8.19 min,  29.0% of method  3 of  3      time/est:  18.97/  39.01 min
+  KLWood       8.47 min,  30.0% of method  3 of  3      time/est:  19.25/  39.01 min
+  KLWood       8.75 min,  31.0% of method  3 of  3      time/est:  19.53/  39.00 min
+  KLWood       9.03 min,  32.0% of method  3 of  3      time/est:  19.81/  38.99 min
+  KLWood       9.30 min,  33.0% of method  3 of  3      time/est:  20.08/  38.97 min
+  KLWood       9.58 min,  34.0% of method  3 of  3      time/est:  20.36/  38.97 min
+  KLWood       9.86 min,  35.0% of method  3 of  3      time/est:  20.64/  38.96 min
+  KLWood      10.15 min,  36.0% of method  3 of  3      time/est:  20.93/  38.98 min
+  KLWood      10.43 min,  37.0% of method  3 of  3      time/est:  21.21/  38.97 min
+  KLWood      10.72 min,  38.0% of method  3 of  3      time/est:  21.50/  38.98 min
+  KLWood      11.00 min,  39.0% of method  3 of  3      time/est:  21.78/  38.99 min
+  KLWood      11.29 min,  40.0% of method  3 of  3      time/est:  22.07/  38.99 min
+  KLWood      11.57 min,  41.0% of method  3 of  3      time/est:  22.36/  39.01 min
+  KLWood      11.86 min,  42.0% of method  3 of  3      time/est:  22.64/  39.01 min
+  KLWood      12.14 min,  43.0% of method  3 of  3      time/est:  22.92/  39.01 min
+  KLWood      12.42 min,  44.0% of method  3 of  3      time/est:  23.21/  39.02 min
+  KLWood      12.70 min,  45.0% of method  3 of  3      time/est:  23.48/  39.01 min
+  KLWood      12.98 min,  46.0% of method  3 of  3      time/est:  23.77/  39.01 min
+  KLWood      13.27 min,  47.0% of method  3 of  3      time/est:  24.05/  39.01 min
+  KLWood      13.54 min,  48.0% of method  3 of  3      time/est:  24.32/  38.99 min
+  KLWood      13.82 min,  49.0% of method  3 of  3      time/est:  24.60/  38.99 min
+  KLWood      14.11 min,  50.0% of method  3 of  3      time/est:  24.89/  39.00 min
+  KLWood      14.39 min,  51.0% of method  3 of  3      time/est:  25.17/  38.99 min
+  KLWood      14.67 min,  52.0% of method  3 of  3      time/est:  25.45/  38.99 min
+  KLWood      14.96 min,  53.0% of method  3 of  3      time/est:  25.74/  39.00 min
+  KLWood      15.24 min,  54.0% of method  3 of  3      time/est:  26.02/  39.01 min
+  KLWood      15.52 min,  55.0% of method  3 of  3      time/est:  26.31/  39.01 min
+  KLWood      15.80 min,  56.0% of method  3 of  3      time/est:  26.58/  39.00 min
+  KLWood      16.08 min,  57.0% of method  3 of  3      time/est:  26.86/  38.99 min
+  KLWood      16.37 min,  58.0% of method  3 of  3      time/est:  27.15/  39.00 min
+  KLWood      16.65 min,  59.0% of method  3 of  3      time/est:  27.43/  39.00 min
+  KLWood      16.93 min,  60.0% of method  3 of  3      time/est:  27.71/  39.00 min
+  KLWood      17.22 min,  61.0% of method  3 of  3      time/est:  28.00/  39.00 min
+  KLWood      17.51 min,  62.0% of method  3 of  3      time/est:  28.29/  39.02 min
+  KLWood      17.79 min,  63.0% of method  3 of  3      time/est:  28.57/  39.02 min
+  KLWood      18.07 min,  64.0% of method  3 of  3      time/est:  28.85/  39.02 min
+  KLWood      18.35 min,  65.0% of method  3 of  3      time/est:  29.13/  39.01 min
+  KLWood      18.62 min,  66.0% of method  3 of  3      time/est:  29.41/  39.00 min
+  KLWood      18.91 min,  67.0% of method  3 of  3      time/est:  29.69/  39.00 min
+  KLWood      19.18 min,  68.0% of method  3 of  3      time/est:  29.96/  38.99 min
+  KLWood      19.47 min,  69.0% of method  3 of  3      time/est:  30.25/  38.99 min
+  KLWood      19.75 min,  70.0% of method  3 of  3      time/est:  30.53/  38.99 min
+  KLWood      20.03 min,  71.0% of method  3 of  3      time/est:  30.81/  38.99 min
+  KLWood      20.31 min,  72.0% of method  3 of  3      time/est:  31.09/  38.99 min
+  KLWood      20.59 min,  73.0% of method  3 of  3      time/est:  31.37/  38.99 min
+  KLWood      20.87 min,  74.0% of method  3 of  3      time/est:  31.65/  38.98 min
+  KLWood      21.15 min,  75.0% of method  3 of  3      time/est:  31.93/  38.98 min
+  KLWood      21.43 min,  76.0% of method  3 of  3      time/est:  32.21/  38.97 min
+  KLWood      21.71 min,  77.0% of method  3 of  3      time/est:  32.49/  38.98 min
+  KLWood      21.99 min,  78.0% of method  3 of  3      time/est:  32.77/  38.98 min
+  KLWood      22.28 min,  79.0% of method  3 of  3      time/est:  33.06/  38.98 min
+  KLWood      22.56 min,  80.0% of method  3 of  3      time/est:  33.34/  38.98 min
+  KLWood      22.84 min,  81.0% of method  3 of  3      time/est:  33.62/  38.97 min
+  KLWood      23.11 min,  82.0% of method  3 of  3      time/est:  33.90/  38.97 min
+  KLWood      23.40 min,  83.0% of method  3 of  3      time/est:  34.18/  38.97 min
+  KLWood      23.68 min,  84.0% of method  3 of  3      time/est:  34.46/  38.97 min
+  KLWood      23.97 min,  85.0% of method  3 of  3      time/est:  34.75/  38.98 min
+  KLWood      24.25 min,  86.0% of method  3 of  3      time/est:  35.03/  38.98 min
+  KLWood      24.52 min,  87.0% of method  3 of  3      time/est:  35.30/  38.97 min
+  KLWood      24.81 min,  88.0% of method  3 of  3      time/est:  35.59/  38.97 min
+  KLWood      25.08 min,  89.0% of method  3 of  3      time/est:  35.86/  38.96 min
+  KLWood      25.36 min,  90.0% of method  3 of  3      time/est:  36.14/  38.96 min
+  KLWood      25.64 min,  91.0% of method  3 of  3      time/est:  36.42/  38.96 min
+  KLWood      25.92 min,  92.0% of method  3 of  3      time/est:  36.70/  38.95 min
+  KLWood      26.20 min,  93.0% of method  3 of  3      time/est:  36.99/  38.96 min
+  KLWood      26.49 min,  94.0% of method  3 of  3      time/est:  37.27/  38.96 min
+  KLWood      26.77 min,  95.0% of method  3 of  3      time/est:  37.55/  38.96 min
+  KLWood      27.05 min,  96.0% of method  3 of  3      time/est:  37.83/  38.96 min
+  KLWood      27.33 min,  97.0% of method  3 of  3      time/est:  38.11/  38.95 min
+  KLWood      27.61 min,  98.0% of method  3 of  3      time/est:  38.39/  38.95 min
+  KLWood      27.89 min,  99.0% of method  3 of  3      time/est:  38.67/  38.95 min
+  KLWood      28.16 min, 100.0% of method  3 of  3      time/est:  38.94/  38.94 min
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.587420   sig(2)    :  0.342940
+    scatrat(1):  0.68       scatrat(2):  0.98
+    lam(1)    :  0.60       lam(2)    :  2.40
+    s         :  3.00       lamc      :  0.48
+  Neg realz   :  0.00000%,                     0 /                10000
+  Neg samples :  0.00000%,                     0 /            249998889
+  Neg area    : -0.00000%
+  Ave neg samp:         NaN   Ave pos samp:      0.3860
+  Max neg samp:      0.0000   Max pos samp:      0.7655
+ |radMC  :  | 0.37773  +-  0.05485    | 0.43143  +-  0.08641|
+ |radWood:  | 0.37936  +-  0.05483    | 0.43249  +-  0.08714|
+ |KLWood :  | 0.36264  +-  0.04571    | 0.42486  +-  0.07820|
+  total runtime:     38.98 min
+    genRealz   :   0.01 min   per:  0.02 % --- genRealz in others, not part of sum
+    radMC      :   5.56 min   per: 14.25 %   FOM:  2.259E+01  9.104E+00
+    radWood    :   5.15 min   per: 13.20 %   FOM:  2.452E+01  9.708E+00
+    KLWood     :  28.16 min   per: 72.25 %   FOM:  6.162E+00  2.106E+00
+    KLcol      :   0.00 min   per:  0.01 %
+    KLrec      :   0.07 min   per:  0.18 %
+    other      :   0.04 min   per:  0.11 %
+38925336
+189531730

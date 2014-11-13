@@ -1,0 +1,149 @@
+Eigcalc:      10       4.592501    0.043456477      0.008361480     0.001000000
+      0.9509867   Ak:    0.6738348
+      0.9221287   Ak:    0.5853229
+      0.9455132   Ak:    0.4862775
+      0.9701463   Ak:    0.4012036
+      0.9842505   Ak:    0.3349499
+   lamc:              0.480
+   TT  :              6.25000000
+ Starting method: KLcol
+Start mat1:   0.2027+-  0.0040   mat2:   0.7973+-  0.0040
+      P(1):   0.2000             P(2):   0.8000
+Path  mat1:   0.4989+-  0.0044   mat2:   1.3315+-  0.0073
+    lam(1):   0.6000           lam(2):   2.4000
+totLength(1):        6005.42    totLength(2):       23994.58    tottotLength:       30000.00
+expLength(1):        6000.00    expLength(2):       24000.00    exptotLength:       30000.00
+       CoAct:        0.00957
+       CoExp:        0.00956       CoPerdiff:           0.07 %
+ CoExp:    9.5632752640000020E-003
+  smallestxi:                -3.99036        largestxi:                 4.71189
+  curEig:  1   numRealz:      10000   probsum: 1.000   meanxi:   0.0052   varxi:   0.9923
+  curEig:  2   numRealz:      10000   probsum: 1.000   meanxi:   0.0142   varxi:   1.0016
+  curEig:  3   numRealz:      10000   probsum: 1.000   meanxi:  -0.0069   varxi:   1.0174
+  curEig:  4   numRealz:      10000   probsum: 1.000   meanxi:   0.0038   varxi:   1.0149
+  curEig:  5   numRealz:      10000   probsum: 1.000   meanxi:   0.0064   varxi:   0.9889
+ Starting method: KLrec
+  Integrator/reconstruction check - sigave:  0.39184  intsigave:  0.39824  relerr:   1.63E-02
+ avenegarea:    0.0000000000000000        aveposarea:   0.39823788073279587     
+ meanadjust:   -6.4018807327959060E-003
+  Total num reconstructed realz w/ neg value:            0
+ Starting method: KLWood 
+  KLWood       0.32 min,   1.0% of method  1 of  1      time/est:   0.41/  31.75 min
+  KLWood       0.64 min,   2.0% of method  1 of  1      time/est:   0.73/  31.89 min
+  KLWood       0.97 min,   3.0% of method  1 of  1      time/est:   1.06/  32.30 min
+  KLWood       1.29 min,   4.0% of method  1 of  1      time/est:   1.38/  32.26 min
+  KLWood       1.61 min,   5.0% of method  1 of  1      time/est:   1.71/  32.31 min
+  KLWood       1.92 min,   6.0% of method  1 of  1      time/est:   2.02/  32.17 min
+  KLWood       2.25 min,   7.0% of method  1 of  1      time/est:   2.34/  32.17 min
+  KLWood       2.57 min,   8.0% of method  1 of  1      time/est:   2.66/  32.19 min
+  KLWood       2.88 min,   9.0% of method  1 of  1      time/est:   2.98/  32.14 min
+  KLWood       3.20 min,  10.0% of method  1 of  1      time/est:   3.29/  32.09 min
+  KLWood       3.52 min,  11.0% of method  1 of  1      time/est:   3.61/  32.07 min
+  KLWood       3.84 min,  12.0% of method  1 of  1      time/est:   3.93/  32.07 min
+  KLWood       4.15 min,  13.0% of method  1 of  1      time/est:   4.25/  32.05 min
+  KLWood       4.48 min,  14.0% of method  1 of  1      time/est:   4.58/  32.10 min
+  KLWood       4.80 min,  15.0% of method  1 of  1      time/est:   4.90/  32.13 min
+  KLWood       5.12 min,  16.0% of method  1 of  1      time/est:   5.21/  32.09 min
+  KLWood       5.45 min,  17.0% of method  1 of  1      time/est:   5.54/  32.15 min
+  KLWood       5.76 min,  18.0% of method  1 of  1      time/est:   5.85/  32.09 min
+  KLWood       6.07 min,  19.0% of method  1 of  1      time/est:   6.16/  32.04 min
+  KLWood       6.40 min,  20.0% of method  1 of  1      time/est:   6.49/  32.08 min
+  KLWood       6.71 min,  21.0% of method  1 of  1      time/est:   6.81/  32.05 min
+  KLWood       7.04 min,  22.0% of method  1 of  1      time/est:   7.13/  32.08 min
+  KLWood       7.35 min,  23.0% of method  1 of  1      time/est:   7.44/  32.04 min
+  KLWood       7.67 min,  24.0% of method  1 of  1      time/est:   7.76/  32.05 min
+  KLWood       7.99 min,  25.0% of method  1 of  1      time/est:   8.08/  32.05 min
+  KLWood       8.31 min,  26.0% of method  1 of  1      time/est:   8.40/  32.05 min
+  KLWood       8.62 min,  27.0% of method  1 of  1      time/est:   8.72/  32.03 min
+  KLWood       8.93 min,  28.0% of method  1 of  1      time/est:   9.03/  32.01 min
+  KLWood       9.26 min,  29.0% of method  1 of  1      time/est:   9.35/  32.02 min
+  KLWood       9.58 min,  30.0% of method  1 of  1      time/est:   9.67/  32.02 min
+  KLWood       9.90 min,  31.0% of method  1 of  1      time/est:  10.00/  32.03 min
+  KLWood      10.22 min,  32.0% of method  1 of  1      time/est:  10.32/  32.05 min
+  KLWood      10.55 min,  33.0% of method  1 of  1      time/est:  10.65/  32.07 min
+  KLWood      10.87 min,  34.0% of method  1 of  1      time/est:  10.96/  32.06 min
+  KLWood      11.19 min,  35.0% of method  1 of  1      time/est:  11.28/  32.05 min
+  KLWood      11.50 min,  36.0% of method  1 of  1      time/est:  11.60/  32.05 min
+  KLWood      11.83 min,  37.0% of method  1 of  1      time/est:  11.92/  32.06 min
+  KLWood      12.14 min,  38.0% of method  1 of  1      time/est:  12.24/  32.05 min
+  KLWood      12.46 min,  39.0% of method  1 of  1      time/est:  12.55/  32.03 min
+  KLWood      12.77 min,  40.0% of method  1 of  1      time/est:  12.86/  32.01 min
+  KLWood      13.08 min,  41.0% of method  1 of  1      time/est:  13.18/  32.00 min
+  KLWood      13.40 min,  42.0% of method  1 of  1      time/est:  13.50/  32.00 min
+  KLWood      13.72 min,  43.0% of method  1 of  1      time/est:  13.82/  32.00 min
+  KLWood      14.03 min,  44.0% of method  1 of  1      time/est:  14.13/  31.99 min
+  KLWood      14.35 min,  45.0% of method  1 of  1      time/est:  14.44/  31.98 min
+  KLWood      14.67 min,  46.0% of method  1 of  1      time/est:  14.76/  31.98 min
+  KLWood      14.98 min,  47.0% of method  1 of  1      time/est:  15.08/  31.98 min
+  KLWood      15.30 min,  48.0% of method  1 of  1      time/est:  15.40/  31.97 min
+  KLWood      15.62 min,  49.0% of method  1 of  1      time/est:  15.72/  31.98 min
+  KLWood      15.94 min,  50.0% of method  1 of  1      time/est:  16.04/  31.98 min
+  KLWood      16.28 min,  51.0% of method  1 of  1      time/est:  16.37/  32.01 min
+  KLWood      16.60 min,  52.0% of method  1 of  1      time/est:  16.69/  32.01 min
+  KLWood      16.91 min,  53.0% of method  1 of  1      time/est:  17.01/  32.00 min
+  KLWood      17.23 min,  54.0% of method  1 of  1      time/est:  17.33/  32.01 min
+  KLWood      17.55 min,  55.0% of method  1 of  1      time/est:  17.64/  32.00 min
+  KLWood      17.86 min,  56.0% of method  1 of  1      time/est:  17.95/  31.99 min
+  KLWood      18.19 min,  57.0% of method  1 of  1      time/est:  18.28/  32.00 min
+  KLWood      18.51 min,  58.0% of method  1 of  1      time/est:  18.61/  32.01 min
+  KLWood      18.83 min,  59.0% of method  1 of  1      time/est:  18.92/  32.00 min
+  KLWood      19.15 min,  60.0% of method  1 of  1      time/est:  19.24/  32.00 min
+  KLWood      19.47 min,  61.0% of method  1 of  1      time/est:  19.56/  32.01 min
+  KLWood      19.80 min,  62.0% of method  1 of  1      time/est:  19.89/  32.03 min
+  KLWood      20.12 min,  63.0% of method  1 of  1      time/est:  20.22/  32.03 min
+  KLWood      20.45 min,  64.0% of method  1 of  1      time/est:  20.54/  32.05 min
+  KLWood      20.77 min,  65.0% of method  1 of  1      time/est:  20.87/  32.05 min
+  KLWood      21.09 min,  66.0% of method  1 of  1      time/est:  21.19/  32.05 min
+  KLWood      21.41 min,  67.0% of method  1 of  1      time/est:  21.51/  32.06 min
+  KLWood      21.73 min,  68.0% of method  1 of  1      time/est:  21.83/  32.06 min
+  KLWood      22.06 min,  69.0% of method  1 of  1      time/est:  22.16/  32.07 min
+  KLWood      22.39 min,  70.0% of method  1 of  1      time/est:  22.48/  32.07 min
+  KLWood      22.71 min,  71.0% of method  1 of  1      time/est:  22.80/  32.08 min
+  KLWood      23.02 min,  72.0% of method  1 of  1      time/est:  23.11/  32.06 min
+  KLWood      23.34 min,  73.0% of method  1 of  1      time/est:  23.43/  32.06 min
+  KLWood      23.66 min,  74.0% of method  1 of  1      time/est:  23.75/  32.07 min
+  KLWood      23.98 min,  75.0% of method  1 of  1      time/est:  24.07/  32.06 min
+  KLWood      24.30 min,  76.0% of method  1 of  1      time/est:  24.39/  32.06 min
+  KLWood      24.63 min,  77.0% of method  1 of  1      time/est:  24.72/  32.08 min
+  KLWood      24.95 min,  78.0% of method  1 of  1      time/est:  25.04/  32.08 min
+  KLWood      25.27 min,  79.0% of method  1 of  1      time/est:  25.36/  32.08 min
+  KLWood      25.58 min,  80.0% of method  1 of  1      time/est:  25.68/  32.07 min
+  KLWood      25.90 min,  81.0% of method  1 of  1      time/est:  25.99/  32.07 min
+  KLWood      26.22 min,  82.0% of method  1 of  1      time/est:  26.31/  32.07 min
+  KLWood      26.53 min,  83.0% of method  1 of  1      time/est:  26.63/  32.06 min
+  KLWood      26.85 min,  84.0% of method  1 of  1      time/est:  26.94/  32.06 min
+  KLWood      27.16 min,  85.0% of method  1 of  1      time/est:  27.26/  32.05 min
+  KLWood      27.48 min,  86.0% of method  1 of  1      time/est:  27.58/  32.05 min
+  KLWood      27.80 min,  87.0% of method  1 of  1      time/est:  27.90/  32.05 min
+  KLWood      28.11 min,  88.0% of method  1 of  1      time/est:  28.21/  32.04 min
+  KLWood      28.43 min,  89.0% of method  1 of  1      time/est:  28.53/  32.04 min
+  KLWood      28.75 min,  90.0% of method  1 of  1      time/est:  28.85/  32.04 min
+  KLWood      29.07 min,  91.0% of method  1 of  1      time/est:  29.17/  32.04 min
+  KLWood      29.39 min,  92.0% of method  1 of  1      time/est:  29.48/  32.04 min
+  KLWood      29.70 min,  93.0% of method  1 of  1      time/est:  29.80/  32.03 min
+  KLWood      30.01 min,  94.0% of method  1 of  1      time/est:  30.10/  32.02 min
+  KLWood      30.33 min,  95.0% of method  1 of  1      time/est:  30.43/  32.03 min
+  KLWood      30.65 min,  96.0% of method  1 of  1      time/est:  30.75/  32.02 min
+  KLWood      30.98 min,  97.0% of method  1 of  1      time/est:  31.07/  32.03 min
+  KLWood      31.28 min,  98.0% of method  1 of  1      time/est:  31.38/  32.02 min
+  KLWood      31.59 min,  99.0% of method  1 of  1      time/est:  31.69/  32.01 min
+  KLWood      31.91 min, 100.0% of method  1 of  1      time/est:  32.01/  32.01 min
+  Values loaded for special Adamscase :  0.0
+    sig(1)    :  0.587420   sig(2)    :  0.342940
+    scatrat(1):  0.68       scatrat(2):  0.98
+    lam(1)    :  0.60       lam(2)    :  2.40
+    s         :  3.00       lamc      :  0.48
+  Neg realz   :  0.00000%,                     0 /                10000
+  Neg samples :  0.00000%,                     0 /            253936158
+  Neg area    : -0.00000%
+  Ave neg samp:         NaN   Ave pos samp:      0.3850
+  Max neg samp:      0.0000   Max pos samp:      0.8072
+ |KLWood :  | 0.36106  +-  0.04412    | 0.42555  +-  0.07752|
+  total runtime:     32.08 min
+    genRealz   :   0.00 min   per:  0.00 % --- genRealz in others, not part of sum
+    KLWood     :  31.91 min   per: 99.49 %   FOM:  5.812E+00  1.882E+00
+    KLcol      :   0.00 min   per:  0.01 %
+    KLrec      :   0.09 min   per:  0.28 %
+    other      :   0.07 min   per:  0.22 %
+41447399
+188651659
