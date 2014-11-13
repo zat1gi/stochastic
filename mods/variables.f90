@@ -189,6 +189,7 @@ module MCvars
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally
   integer              :: numpnSamp(2)         ! number of pos, neg samples (in KL reconstuctions)
   real(8)              :: areapnSamp(4)        ! area pos,neg sampled: totpos, totneg, maxpos, maxneg
+  integer              :: numcSamp(2)          ! number of neg/tot KL scatrat samples
 
   real(8),allocatable  :: binmaxind(:)         ! These are used in ceilings for WMC
   real(8),allocatable  :: binmaxes(:)          ! max value in each bin
