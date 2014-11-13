@@ -585,6 +585,7 @@ CONTAINS
   use genRealzvars, only: scatrat
   use KLvars, only: KLxigentype
   use KLreconstruct, only: KLrxi_point
+  use MCvars, only: numcSamp
   integer :: j
   real(8) :: eps = 0.1d0
   real(8) :: KLWood_actscatrat, xpos, scatxs, absxs, totxs
@@ -592,11 +593,12 @@ CONTAINS
   if( KLxigentype .eq. 'totxs' ) then
     KLWood_actscatrat = scatrat(1)
   elseif( KLxigentype .eq. 'material' ) then
-print *,"sample"
+    numcSamp(2) = numcSamp(2) + 1 !tally all scatrat samples
     scatxs = KLrxi_point(j,xpos,flxstype='scatter')
     absxs  = KLrxi_point(j,xpos,flxstype='absorb ')
     totxs  = KLrxi_point(j,xpos,flxstype='total  ')
-    if( scatxs*absxs<0d0 ) print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
+    if( scatxs*absxs<0d0 ) numcSamp(1) = numcSamp(1) + 1 !tally neg scatrat samples
+                           !print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
 !    print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
 !    print *,"totxs         :                                                     ",totxs
 !print *
@@ -606,6 +608,7 @@ print *,"sample"
 !      stop 'in KLWood_actscatrat, xs recreation not conserved'
 !    endif
 !read(*,*)
+!print *,"numcSamp:",numcSamp," percentage:",real(numcSamp(1),8)/real(numcSamp(2),8)*100d0,"%"
     if( scatxs<0d0 ) scatxs = 0d0
     if( absxs <0d0 ) absxs  = 0d0
     KLWood_actscatrat = scatxs/(scatxs+absxs)
@@ -1615,7 +1618,7 @@ print *,"sample"
   subroutine Woodnegstats
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
-  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg
+  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp
 
   real(8) :: pos,neg
 
@@ -1627,6 +1630,7 @@ print *,"sample"
     600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)
     601 format("  Neg samples : ",f8.5,"%, ",i21," /",i21)
     602 format("  Neg area    : ",f8.5,"%")
+    605 format("  Neg scatrat : ",f8.5,"%, ",i21," /",i21)
     603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
     604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
@@ -1635,6 +1639,7 @@ print *,"sample"
     neg = real(numpnSamp(2),8)
     write(100,601) neg/(pos+neg)*100d0,numpnSamp(2),numpnSamp(1)+numpnSamp(2)
     write(100,602) -areapnSamp(2)/(areapnSamp(1)-areapnSamp(2))*100d0
+    write(100,605) real(numcSamp(1))/real(numcSamp(2))*100,numcSamp(1),numcSamp(2)
     write(100,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
     write(100,604) areapnSamp(4),areapnSamp(3)
     write(100,*)
