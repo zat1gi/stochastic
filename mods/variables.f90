@@ -206,6 +206,7 @@ module MCvars
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
 
   real(8)              :: weight               ! weight of particle history for WAMC
+  real(8)              :: refsig               ! arbitrary reference xs for WAMC distance and weight calcs
 
 end module MCvars
 

@@ -67,7 +67,8 @@ CONTAINS
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
-                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight
+                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
+                    refsig
   use genRealz, only: genReal
   use KLreconstruct, only: KLrxi_point
 
@@ -76,11 +77,12 @@ CONTAINS
   !local variables
   integer :: i,o
   real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat,disthold, tempscatrat
+  real(8) :: cursigt, cursigs
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
 
-    call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i)
+    call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i), init weight
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
@@ -124,7 +126,7 @@ CONTAINS
         case ("atmixMC")
           dc = -log(rang())/atmixsig
         case ("WAMC")
-          dc = -log(rang())/atmixsig  !!!WAMCchange to be based upon 
+          dc = -log(rang())/refsig 
       end select
 
       !calculate distance to interface
@@ -173,7 +175,7 @@ CONTAINS
               flExit='exit'
             case ("WAMC")
               newpos = s
-              transmit(j) = transmit(j) + 1.0d0 !!!WAMCchange
+              transmit(j) = transmit(j) + weight
               flExit='exit'
           end select
         endif
@@ -202,8 +204,8 @@ CONTAINS
               flExit='exit'
             case ("WAMC")
               newpos = 0.0d0
-              reflect(j)  = reflect(j) + 1.0d0
-              flExit='exit'            !!!WAMCchange
+              reflect(j)  = reflect(j) + weight
+              flExit='exit'
           end select
         endif
 
@@ -271,40 +273,17 @@ CONTAINS
               flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
-          case ("WAMC")  !!!WAMCchange
-            !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point(j,newpos,flxstype='total  ')/ceilsig
-            !assert within bounds, tally negstats
-            if(woodrat>1.0d0) then                      !assert woodrat
-              stop 'Higher sig samples in KLWood than ceiling, exiting program'
-            endif
-            if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
-            if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
-              if(abs(disthold)>woodrat*ceilsig) then
-                woodrat = 0.0d0
-              else
-                woodrat = (woodrat*ceilsig + disthold) / ceilsig
-              endif
-              disthold = 0.0d0
-            endif
-            if(allowneg=='yes') then                    !tallies for neg/pos if allowing neg
-              if(woodrat<0.0d0) then
-                numpnSamp(2)  =  numpnSamp(2)+1
-                areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
-                if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
-                if(distneg=='yes') disthold = woodrat*ceilsig
-                woodrat=0.0d0
-              else
-                numpnSamp(1)  =  numpnSamp(1)+1
-                areapnSamp(1) = areapnSamp(1)+woodrat*ceilsig          
-                if(woodrat*ceilsig>areapnSamp(3)) areapnSamp(3)=woodrat*ceilsig
-              endif
-            endif
-            !decide fate of particle
-            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
-            if(flIntType=='clean') then                !accept interaction
-              tempscatrat = KLWood_actscatrat(j,newpos)
-              flIntType = merge('scatter','absorb ',tempscatrat>rang())
+          case ("WAMC")
+            !adjust weights, choose type of interaction, flip weight sign if needed
+            cursigt = KLrxi_point(j,newpos,flxstype='total  ')
+            cursigs = KLrxi_point(j,newpos,flxstype='scatter')
+            weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
+            if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
+              flIntType = 'scatter'
+              if(cursigs<0d0)         weight = -1d0 * weight
+            else
+              flIntType = 'absorb '
+              if(-cursigt+refsig<0d0) weight = -1d0 * weight
             endif
         end select
 
@@ -385,8 +364,8 @@ CONTAINS
           case ("atmixMC")
             LPamMCsums(3) = LPamMCsums(3) + 1.0d0
             flExit='exit'
-          case ("WAMC")  !!!WAMCchange
-            absorb(j)     = absorb(j)     + 1.0d0
+          case ("WAMC")
+            absorb(j)     = absorb(j)     + weight
             flExit='exit'
         end select
       endif
@@ -437,7 +416,7 @@ CONTAINS
   !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
   use genRealzvars, only: s, nummatSegs
-  use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases
+  use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases, weight
   integer :: i,icase
 
   if( sourceType=='left' ) then  !generate source particles
@@ -455,6 +434,8 @@ CONTAINS
   if(MCcases(icase)=='radMC') then !if bin need be set
     if(sourceType=='left')   i = 1
     if(sourceType=='intern') i = internal_init_i(position)
+  elseif(MCcases(icase)=='WAMC') then !initialize weight
+    weight = 1d0
   endif
 
   end subroutine genSourcePart
@@ -1403,7 +1384,7 @@ CONTAINS
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
-                    fluxmatnorm
+                    fluxmatnorm, refsig
   integer :: icase,tnumParts,tnumRealz
 
   !number of realizations allocation
@@ -1437,6 +1418,11 @@ CONTAINS
     numpnSamp =0
     areapnSamp=0.0d0
     disthold  =0.0d0
+  endif
+
+  !arbitrary reference cross section setting
+  if(MCcases(icase)=='WAMC') then
+    refsig = 1d0  !!!WAMCchange add a tree or function here to set
   endif
 
   !flux tally allocations
