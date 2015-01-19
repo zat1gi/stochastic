@@ -45,7 +45,7 @@ CONTAINS
                                   KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, allowneg, distneg, radMC, radWood, &
+                                  pltflux, allowneg, distneg, radMC, radWood, WAMC, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype
   integer :: seed                                   !adv seed
@@ -79,7 +79,7 @@ CONTAINS
 
   !--- Large MCtrans Options ---!
   read(2,*) dumchar
-  read(2,*) radMC,radWood,KLWood,LPMC,atmixMC
+  read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC
   read(2,*) numParts
   read(2,*) LPamnumParts
 
@@ -201,7 +201,7 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
-                    pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot
+                    pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot, WAMC
   integer :: fpointorxi(2)
 
   integer :: i
@@ -385,9 +385,8 @@ CONTAINS
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
-  use MCvars, only: fluxfaces, &
-                    radMC, radWood, KLWood, MCcaseson, MCcases, numParts, &
-                    stocMC_reflection, stocMC_transmission, stocMC_absorption, &
+  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, MCcaseson, MCcases, &
+                    numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
@@ -440,6 +439,7 @@ CONTAINS
   if(KLWood =='yes') MCcaseson(3) = 1
   if(LPMC   =='yes') MCcaseson(4) = 1
   if(atmixMC=='yes') MCcaseson(5) = 1
+  if(WAMC   =='yes') MCcaseson(6) = 1
 
   allocate(MCcases(numPosMCmeths))
   MCcases(1) = 'radMC'
@@ -447,6 +447,7 @@ CONTAINS
   MCcases(3) = 'KLWood'
   MCcases(4) = 'LPMC'
   MCcases(5) = 'atmixMC'
+  MCcases(6) = 'WAMC'
 
   allocate(stocMC_reflection(numPosMCmeths,2))   !global MC variables for each method
   allocate(stocMC_transmission(numPosMCmeths,2)) !rank 2 holds 1=average, 2=deviation

@@ -67,7 +67,7 @@ CONTAINS
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
-                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot
+                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight
   use genRealz, only: genReal
   use KLreconstruct, only: KLrxi_point
 
@@ -103,6 +103,8 @@ CONTAINS
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("atmixMC")
           db = merge(s-position,position,mu>=0)/abs(mu)
+        case ("WAMC")
+          db = merge(s-position,position,mu>=0)/abs(mu)
       end select
 
       !calculate distance to collision
@@ -121,12 +123,15 @@ CONTAINS
           dc = -log(rang())/sig(matType(1))
         case ("atmixMC")
           dc = -log(rang())/atmixsig
+        case ("WAMC")
+          dc = -log(rang())/atmixsig  !!!WAMCchange to be based upon 
       end select
 
       !calculate distance to interface
       if(MCcases(icase)=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
+                                      !!!WAMCchange add here
 
-      !select distance limiter (add another later with LP)
+      !select distance limiter
       dist   = min(db,dc)
       fldist = merge('boundary ','collision',db<dc)
       if(MCcases(icase)=='LPMC') then
@@ -166,6 +171,10 @@ CONTAINS
               newpos = s
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
+            case ("WAMC")
+              newpos = s
+              transmit(j) = transmit(j) + 1.0d0 !!!WAMCchange
+              flExit='exit'
           end select
         endif
 
@@ -191,6 +200,10 @@ CONTAINS
               newpos = 0.0d0
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
+            case ("WAMC")
+              newpos = 0.0d0
+              reflect(j)  = reflect(j) + 1.0d0
+              flExit='exit'            !!!WAMCchange
           end select
         endif
 
@@ -258,6 +271,41 @@ CONTAINS
               flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
+          case ("WAMC")  !!!WAMCchange
+            !load woodcock ratio for this position and ceiling
+            woodrat = KLrxi_point(j,newpos,flxstype='total  ')/ceilsig
+            !assert within bounds, tally negstats
+            if(woodrat>1.0d0) then                      !assert woodrat
+              stop 'Higher sig samples in KLWood than ceiling, exiting program'
+            endif
+            if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
+            if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
+              if(abs(disthold)>woodrat*ceilsig) then
+                woodrat = 0.0d0
+              else
+                woodrat = (woodrat*ceilsig + disthold) / ceilsig
+              endif
+              disthold = 0.0d0
+            endif
+            if(allowneg=='yes') then                    !tallies for neg/pos if allowing neg
+              if(woodrat<0.0d0) then
+                numpnSamp(2)  =  numpnSamp(2)+1
+                areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
+                if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
+                if(distneg=='yes') disthold = woodrat*ceilsig
+                woodrat=0.0d0
+              else
+                numpnSamp(1)  =  numpnSamp(1)+1
+                areapnSamp(1) = areapnSamp(1)+woodrat*ceilsig          
+                if(woodrat*ceilsig>areapnSamp(3)) areapnSamp(3)=woodrat*ceilsig
+              endif
+            endif
+            !decide fate of particle
+            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(flIntType=='clean') then                !accept interaction
+              tempscatrat = KLWood_actscatrat(j,newpos)
+              flIntType = merge('scatter','absorb ',tempscatrat>rang())
+            endif
         end select
 
         !Tally for neg stats
@@ -277,12 +325,13 @@ CONTAINS
             endif
           case ("LPMC")
           case ("atmixMC")
+          case ("WAMC")  !!!WAMCchange
         end select
 
       endif !endif fldist=='collision'
 
       !If 'interface' interaction, set new position (LP)
-      if(fldist=='interface') then
+      if(fldist=='interface') then    !!!WAMCchange careful not to do this at interfaces
         newpos = position + di*mu
       endif
 
@@ -312,6 +361,9 @@ CONTAINS
           case ("atmixMC")
             if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
             if(rodOrplanar=='planar') mu = newmu()
+          case ("WAMC")
+            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+            if(rodOrplanar=='planar') mu = newmu()
         end select
       endif
 
@@ -333,6 +385,9 @@ CONTAINS
           case ("atmixMC")
             LPamMCsums(3) = LPamMCsums(3) + 1.0d0
             flExit='exit'
+          case ("WAMC")  !!!WAMCchange
+            absorb(j)     = absorb(j)     + 1.0d0
+            flExit='exit'
         end select
       endif
 
@@ -341,7 +396,7 @@ CONTAINS
         if(flEscapeDir=='transmit') i = i+1
         if(flEscapeDir=='reflect')  i = i-1
       endif
-      if(fldist=='interface') then
+      if(fldist=='interface') then  !!!WAMCchange make sure this does what you want
         matType(1) = merge(1,2,matType(1)==2)
       endif
 
@@ -755,7 +810,7 @@ CONTAINS
       if(ibin==0) ibin=1  !adjust if at ends
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-        select case (flcontribtype)
+        select case (flcontribtype)  !!!WAMCchange add seperate one for WAMC present with weight factored in
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
           case ("first")
@@ -922,7 +977,7 @@ CONTAINS
   real(8) :: dx,p1,p2
 
   !leakage/absorption stats
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then !!!WAMCchange add here
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
@@ -940,7 +995,7 @@ CONTAINS
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
 
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then !!!WAMCchange add here
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
     if(flfluxplotmat) then
                       fluxmat1= fluxmat1/ dx / numParts !normalize part 1
@@ -955,7 +1010,7 @@ CONTAINS
   endif
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
-    if( flfluxplotall ) then
+    if( flfluxplotall ) then  !!!WAMCchange
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
                  stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
@@ -1437,7 +1492,7 @@ CONTAINS
 
   !this nasty if statement decides whether to proceed at all.
   !from here only MCcases is needed.
-  if( (MCcaseson(icase) == 1     .and. MCcases(icase) =='radMC'     .and. &
+  if( (MCcaseson(icase) == 1     .and. MCcases(icase) =='radMC'     .and. &  !!!WAMCchange
       (radMCbinplot     =='plot' .or.  radMCbinplot   =='preview')) .or.  &
       (MCcaseson(icase) == 1     .and. MCcases(icase) =='radWood'   .and. &
       (radWoodbinplot   =='plot' .or.  radWoodbinplot =='preview')) .or.  &
@@ -1489,6 +1544,9 @@ CONTAINS
         call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
       case("LPMC")
       case("atmixMC")
+      case("WAMC")  !!!WAMCchange
+        call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
+        call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
     end select
 
   endif

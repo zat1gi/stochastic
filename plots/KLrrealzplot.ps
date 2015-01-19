@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0
 %%Title: ./genericplot.ps
-%%Creator: gnuplot 4.6 patchlevel 0
-%%CreationDate: Fri Nov  7 07:31:24 2014
+%%Creator: gnuplot 4.6 patchlevel 4
+%%CreationDate: Mon Jan 19 15:08:00 2015
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 554 482
 %%Orientation: Portrait
@@ -49,7 +49,7 @@ gnudict begin
   } if
 } def
 %
-% Gnuplot Prolog Version 4.4 (August 2010)
+% Gnuplot Prolog Version 4.6 (September 2012)
 %
 %/SuppressPDFMark true def
 %
@@ -316,7 +316,8 @@ gnudict begin
 /PatternFill {gsave /PFa [ 9 2 roll ] def
   PFa 0 get PFa 2 get 2 div add PFa 1 get PFa 3 get 2 div add translate
   PFa 2 get -2 div PFa 3 get -2 div PFa 2 get PFa 3 get Rec
-  gsave 1 setgray fill grestore clip
+  TransparentPatterns {} {gsave 1 setgray fill grestore} ifelse
+  clip
   currentlinewidth 0.5 mul setlinewidth
   /PFs PFa 2 get dup mul PFa 3 get dup mul add sqrt def
   0 0 M PFa 5 get rotate PFs -2 div dup translate
@@ -458,11 +459,11 @@ systemdict /pdfmark known not {
 SDict begin [
   /Title (./genericplot.ps)
   /Subject (gnuplot plot)
-  /Creator (gnuplot 4.6 patchlevel 0)
-  /Author (Aaron)
+  /Creator (gnuplot 4.6 patchlevel 4)
+  /Author (aaron)
 %  /Producer (gnuplot)
 %  /Keywords ()
-  /CreationDate (Fri Nov  7 07:31:24 2014)
+  /CreationDate (Mon Jan 19 15:08:00 2015)
   /DOCINFO pdfmark
 end
 } ifelse
@@ -479,11 +480,13 @@ newpath
 (Times-Roman) findfont 110 scalefont setfont
 BackgroundColor 0 lt 3 1 roll 0 lt exch 0 lt or or not {gsave BackgroundColor C clippath fill grestore} if
 /Times-Roman findfont 110 scalefont setfont
+/vshift -36 def
 /Times-Roman findfont 110 scalefont setfont
 /Times-Roman findfont 110 scalefont setfont
 /Times-Roman findfont 110 scalefont setfont
 1.000 UL
 LTb
+LCb setrgbcolor
 605 352 M
 63 0 V
 4173 0 R
@@ -494,6 +497,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 958 M
 63 0 V
 4173 0 R
@@ -504,6 +508,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 1564 M
 63 0 V
 4173 0 R
@@ -514,6 +519,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 2170 M
 63 0 V
 4173 0 R
@@ -524,6 +530,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 2777 M
 63 0 V
 4173 0 R
@@ -534,6 +541,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 3383 M
 63 0 V
 4173 0 R
@@ -544,6 +552,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 3989 M
 63 0 V
 4173 0 R
@@ -554,6 +563,7 @@ stroke
 ] -36.7 MRshow
 1.000 UL
 LTb
+LCb setrgbcolor
 605 352 M
 0 63 V
 0 3574 R
@@ -564,6 +574,7 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 1311 352 M
 0 63 V
 0 3574 R
@@ -574,6 +585,7 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 2017 352 M
 0 63 V
 0 3574 R
@@ -584,6 +596,7 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 2723 352 M
 0 63 V
 0 3574 R
@@ -594,6 +607,7 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 3429 352 M
 0 63 V
 0 3574 R
@@ -604,6 +618,7 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 4135 352 M
 0 63 V
 0 3574 R
@@ -614,6 +629,7 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 4841 352 M
 0 63 V
 0 3574 R
@@ -624,8 +640,10 @@ stroke
 ] -36.7 MCshow
 1.000 UL
 LTb
+LCb setrgbcolor
 1.000 UL
 LTb
+LCb setrgbcolor
 605 3989 N
 605 352 L
 4236 0 V
@@ -650,9 +668,11 @@ LTb
 1.000 UP
 1.000 UL
 LTb
+LCb setrgbcolor
 % Begin plot #1
 1.000 UL
 LT0
+LC0 setrgbcolor
 /Times-Roman findfont 110 scalefont setfont
 LCb setrgbcolor
 2453 3871 M
@@ -694,6 +714,7 @@ LT0
 % Begin plot #2
 stroke
 LT1
+LC1 setrgbcolor
 /Times-Roman findfont 110 scalefont setfont
 LCb setrgbcolor
 2453 3761 M
@@ -735,6 +756,7 @@ LT1
 % Begin plot #3
 stroke
 LT2
+LC2 setrgbcolor
 /Times-Roman findfont 110 scalefont setfont
 LCb setrgbcolor
 2453 3651 M
@@ -776,6 +798,7 @@ LT2
 % Begin plot #4
 stroke
 LT3
+LC3 setrgbcolor
 /Times-Roman findfont 110 scalefont setfont
 LCb setrgbcolor
 2453 3541 M
@@ -816,6 +839,7 @@ LT3
 % End plot #4
 stroke
 LTb
+LCb setrgbcolor
 605 3989 N
 605 352 L
 4236 0 V
@@ -825,6 +849,7 @@ Z stroke
 1.000 UP
 1.000 UL
 LTb
+LCb setrgbcolor
 stroke
 grestore
 end

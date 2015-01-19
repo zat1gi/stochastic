@@ -1,25 +1,11 @@
-<<<<<<< Updated upstream
-  total runtime:      0.16 min
-    genRealz   :   0.00 min   per:  1.62 % --- genRealz in others, not part of sum
+  total runtime:      0.03 min
+    genRealz   :   0.01 min   per: 19.79 % --- genRealz in others, not part of sum
     ------------------------------------------------ refl ----- tran --
-    radMC      :   0.01 min   per:  8.62 %   FOM:  6.494E+03  6.015E+03
-    radWood    :   0.01 min   per:  6.87 %   FOM:  8.818E+03  7.749E+03
-    KLWood     :   0.07 min   per: 40.42 %   FOM:  1.682E+03  1.403E+03
-    LPMC       :   0.02 min   per: 12.45 %
-    atmixMC    :   0.01 min   per:  4.00 %
-    KLcol      :   0.00 min   per:  0.16 %
-    KLrec      :   0.03 min   per: 20.12 %
-    other      :   0.01 min   per:  7.36 %
-=======
-  total runtime:      0.06 min
-    genRealz   :   0.00 min   per:  5.77 % --- genRealz in others, not part of sum
-    ------------------------------------------------ refl ----- tran --
-    radMC      :   0.01 min   per: 10.04 %   FOM:  1.233E+04  6.801E+03
-    radWood    :   0.01 min   per:  9.63 %   FOM:  1.360E+04  7.839E+03
-    KLWood     :   0.02 min   per: 33.27 %   FOM:  4.398E+03  2.314E+03
-    LPMC       :   0.01 min   per: 20.54 %
-    atmixMC    :   0.00 min   per:  5.02 %
-    KLcol      :   0.00 min   per:  0.46 %
-    KLrec      :   0.01 min   per: 12.26 %
-    other      :   0.00 min   per:  8.80 %
->>>>>>> Stashed changes
+    radMC      :   0.00 min   per: 10.05 %   FOM:  2.442E+04  1.347E+04
+    radWood    :   0.00 min   per:  9.56 %   FOM:  2.717E+04  1.566E+04
+    KLWood     :   0.01 min   per: 24.46 %   FOM:  1.187E+04  6.245E+03
+    LPMC       :   0.01 min   per: 34.54 %
+    atmixMC    :   0.00 min   per:  5.77 %
+    KLcol      :   0.00 min   per:  0.60 %
+    KLrec      :   0.00 min   per:  9.39 %
+    other      :   0.00 min   per:  5.63 %

@@ -133,6 +133,7 @@ module MCvars
   character(3)         :: KLWood               ! perform WMC on KL reconstructions operations?
   character(3)         :: LPMC                 ! perform MC in the LP sense for binary mixtures?
   character(3)         :: atmixMC              ! perform TMC over atomic mix of binary mixtures?
+  character(3)         :: WAMC                 ! perform weight adjust MC over KL resonstructions?
   integer              :: numParts             ! number of particles
   integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen
@@ -152,7 +153,7 @@ module MCvars
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
   !non inputs
-  integer, parameter   :: numPosMCmeths = 5    ! total number of MC transport methods available
+  integer, parameter   :: numPosMCmeths = 6    ! total number of MC transport methods available
 
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values
@@ -203,6 +204,8 @@ module MCvars
   integer, allocatable :: MCcaseson(:)         ! reference of on or not on, cases selected or not
   character(7), allocatable :: MCcases(:)      ! library of MC transport cases
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
+
+  real(8)              :: weight               ! weight of particle history for WAMC
 
 end module MCvars
 
