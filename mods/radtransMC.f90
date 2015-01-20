@@ -22,7 +22,6 @@ CONTAINS
 
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
-
   call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
   do j=1,tnumRealz
 
@@ -81,7 +80,6 @@ CONTAINS
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
-
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i), init weight
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
     do ! simulate one pathlength of a particle
@@ -958,7 +956,8 @@ CONTAINS
   real(8) :: dx,p1,p2
 
   !leakage/absorption stats
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then !!!WAMCchange add here
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
+     MCcases(icase)=='KLWood'.or. MCcases(icase)=='WAMC') then
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
@@ -1395,7 +1394,8 @@ CONTAINS
   endif
 
   !current tally allocations
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
+     MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') then
     if(.not.allocated(transmit)) allocate(transmit(numRealz))
     if(.not.allocated(reflect))  allocate(reflect(numRealz))
     if(.not.allocated(absorb))   allocate(absorb(numRealz))
@@ -1718,6 +1718,7 @@ CONTAINS
   326 format(" |radMC  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
+  331 format(" |WAMC   :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
   330 format(" |atmixMC:  |",f8.5,"                 |",f8.5,"             |")
 
@@ -1745,6 +1746,10 @@ CONTAINS
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
       if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+
+      if(MCcases(icase)=='WAMC')  write(100,331) stocMC_reflection(icase,1),&
+      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+
 !if(MCcases(icase)=='KLWood') print *,"flagKLWood:",stocMC_reflection(icase,1),&
 !sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
     endif

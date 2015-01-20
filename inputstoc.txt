@@ -5,8 +5,8 @@
   0.68387,0.9770355,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
   0.6,2.4,             Lambda path length vals  #0.5,2.0
   3.0,                 slab thickness           #1.0
-  1000,100,         Number of realizations/how often to print
-  1000,100,         KLr Number of realizations/how often to print
+  100,10,         Number of realizations/how often to print
+  100,10,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
@@ -14,9 +14,9 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
-  100,            Number of particles to simulate on each realization
-  100000,          Number of particles for LP or atomic mix calculations
+  yes,yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  10,            Number of particles to simulate on each realization
+  1000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -31,7 +31,7 @@
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
-  yes, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
+  no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   
 
 
