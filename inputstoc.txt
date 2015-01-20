@@ -1,8 +1,8 @@
   33000,         Advance random see how far?
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
-  0.58742,0.34294        Sigma cross section vals #0.79690,0.38149,3.4652(corresponds to U,C,H2O)
-  0.68387,0.9770355,       Scattering Ratios        #0.9071,0.53972,0.99359,0.99899(mix,U,C,H2O)
+  1.0,0.9, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.6,0.4, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   0.6,2.4,             Lambda path length vals  #0.5,2.0
   3.0,                 slab thickness           #1.0
   100,10,         Number of realizations/how often to print
@@ -15,7 +15,7 @@
 
   !--- Large MCtrans Options ---!
   yes,yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
-  10,            Number of particles to simulate on each realization
+  100,            Number of particles to simulate on each realization
   1000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
@@ -65,10 +65,10 @@
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
   preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  29,1,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
-  29,2,fxi
-  29,3,fxi
-  29,4,fxi
+  29,4,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
+  30,4,fxi
+  31,4,fxi
+  32,4,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
@@ -84,7 +84,7 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  preview,plot,plot,    Plot Leakage profile?: radMC,radWood,KLWood
+  noplot,noplot,noplot,    Plot Leakage profile?: radMC,radWood,KLWood
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)

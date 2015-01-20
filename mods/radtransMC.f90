@@ -90,7 +90,10 @@ CONTAINS
       newpos      = 101010.0d0 !later throw error if still equal this
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
-
+if(MCcases(icase)=='WAMC') then
+!print *,"endstatesadded:",transmit+reflect+absorb
+!read *
+endif
       !calculate distance to boundary
       select case (MCcases(icase))
         case ("radMC")
@@ -175,6 +178,7 @@ CONTAINS
               newpos = s
               transmit(j) = transmit(j) + weight
               flExit='exit'
+!print *,"tally transmit:",weight
           end select
         endif
 
@@ -204,6 +208,7 @@ CONTAINS
               newpos = 0.0d0
               reflect(j)  = reflect(j) + weight
               flExit='exit'
+!print *,"tally reflect:",weight
           end select
         endif
 
@@ -273,14 +278,32 @@ CONTAINS
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
             !adjust weights, choose type of interaction, flip weight sign if needed
+!print *
+!print *
+!print *
+!print *,"weight:",weight
             cursigt = KLrxi_point(j,newpos,flxstype='total  ')
+!print *,"cursigt:",cursigt
             cursigs = KLrxi_point(j,newpos,flxstype='scatter')
+!print *,"cursigs:",cursigs
+ !cursigt = KLrxi_point(j,newpos,flxstype='absorb ')
+!print *,"cursiga:",cursigt
+!print *
+!print *,"weight adj :",(abs(cursigs)+abs(-cursigt+refsig)) / refsig
+!print *,"first  term:",abs(cursigs)
+!print *,"second term:",abs(cursigs)+abs(-cursigt+refsig)
             weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
+!print *
+!print *,"weight:",weight
+
+!read *
             if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
               flIntType = 'scatter'
+!            weight  = (abs(cursigs) / refsig)  *  weight
               if(cursigs<0d0)         weight = -1d0 * weight
             else
-              flIntType = 'absorb '
+              flIntType = 'reject '
+!            weight  = (abs(-cursigt+refsig)) / refsig  *  weight
               if(-cursigt+refsig<0d0) weight = -1d0 * weight
             endif
         end select
@@ -365,6 +388,7 @@ CONTAINS
           case ("WAMC")
             absorb(j)     = absorb(j)     + weight
             flExit='exit'
+!print *,"tally absorb  :",weight
         end select
       endif
 
@@ -961,7 +985,11 @@ CONTAINS
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
-
+print *,"method sums :",MCcases(icase)
+print *,"sum total   :",sum(transmit)+sum(reflect)+sum(absorb)
+print *,"sum transmit:",sum(transmit)
+print *,"sum reflect :",sum(reflect)
+print *,"sum absorb  :",sum(absorb)
     call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
     call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
     call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
@@ -1422,7 +1450,7 @@ CONTAINS
 
   !arbitrary reference cross section setting
   if(MCcases(icase)=='WAMC') then
-    refsig = 1d0  !!!WAMCchange add a tree or function here to set
+    refsig = 10.5d0  !!!WAMCchange add a tree or function here to set
   endif
 
   !flux tally allocations
