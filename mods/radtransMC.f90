@@ -278,34 +278,27 @@ endif
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
             !adjust weights, choose type of interaction, flip weight sign if needed
-!print *
-!print *
-!print *
-!print *,"weight:",weight
             cursigt = KLrxi_point(j,newpos,flxstype='total  ')
-!print *,"cursigt:",cursigt
             cursigs = KLrxi_point(j,newpos,flxstype='scatter')
-!print *,"cursigs:",cursigs
- !cursigt = KLrxi_point(j,newpos,flxstype='absorb ')
-!print *,"cursiga:",cursigt
-!print *
-!print *,"weight adj :",(abs(cursigs)+abs(-cursigt+refsig)) / refsig
-!print *,"first  term:",abs(cursigs)
-!print *,"second term:",abs(cursigs)+abs(-cursigt+refsig)
             weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
-!print *
-!print *,"weight:",weight
 
-!read *
             if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
               flIntType = 'scatter'
-!            weight  = (abs(cursigs) / refsig)  *  weight
               if(cursigs<0d0)         weight = -1d0 * weight
             else
               flIntType = 'reject '
-!            weight  = (abs(-cursigt+refsig)) / refsig  *  weight
               if(-cursigt+refsig<0d0) weight = -1d0 * weight
             endif
+
+            if(cursigt<0.0d0) then  !negativity stats, currently overrides KLWood negstats
+              numpnSamp(2)  =  numpnSamp(2)+1
+              areapnSamp(2) = areapnSamp(2)+cursigt          
+              if(cursigt<areapnSamp(4)) areapnSamp(4)=cursigt
+            else
+              numpnSamp(1)  =  numpnSamp(1)+1
+              areapnSamp(1) = areapnSamp(1)+cursigt
+              if(cursigt>areapnSamp(3)) areapnSamp(3)=cursigt
+          endif
         end select
 
         !Tally for neg stats
@@ -985,11 +978,6 @@ endif
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
-print *,"method sums :",MCcases(icase)
-print *,"sum total   :",sum(transmit)+sum(reflect)+sum(absorb)
-print *,"sum transmit:",sum(transmit)
-print *,"sum reflect :",sum(reflect)
-print *,"sum absorb  :",sum(absorb)
     call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
     call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
     call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
@@ -1442,15 +1430,15 @@ print *,"sum absorb  :",sum(absorb)
   if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej = 0
 
   !negative xs transport tally allocations
-  if(MCcases(icase)=='KLWood') then
+  if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') then
     numpnSamp =0
     areapnSamp=0.0d0
     disthold  =0.0d0
   endif
 
-  !arbitrary reference cross section setting
+  !set initial WAMC reference sigma value
   if(MCcases(icase)=='WAMC') then
-    refsig = 10.5d0  !!!WAMCchange add a tree or function here to set
+    call setrefsig()
   endif
 
   !flux tally allocations
@@ -1492,6 +1480,36 @@ print *,"sum absorb  :",sum(absorb)
 
   end subroutine MCallocate
 
+
+  subroutine setrefsig()
+  !This subruotine sets the value of refsig according to the user's choice of different methods.
+  !It can be used to set the value only once, or during transport simulations.
+  use genRealzvars, only: sig, scatrat, P
+  use MCvars, only: refsigMode,refsig,userrefsig
+  real(8) :: cursiga, cursigs
+
+  refsig = 10101010.0d0
+  select case(refsigMode)
+    case (1)                           !set to woodcock ceiling value
+      refsig = userrefsig
+    case (2)                           !largest sigma value
+      refsig = maxval(sig)
+    case (3)                           !weighted average value
+      refsig = sig(1)*P(1)+sig(2)*P(2)
+    case (4)                           !average value
+      refsig = (sig(1)+sig(2))/2.0d0
+    case (5)                           !smallest sigma value
+      refsig = minval(sig)
+    case (6)                           !set to proposed best value
+      cursiga = max( (1d0-scatrat(1))*sig(1),(1d0-scatrat(2))*sig(2) )
+      cursigs = max(      scatrat(1) *sig(1),     scatrat(2) *sig(2) )
+      refsig  = max(                 cursiga,                 cursigs) + cursiga / 2d0
+    case (7)                           !set to user defined value
+      refsig = userrefsig
+  end select
+
+  if(refsig==10101010.0d0) stop "refsig value not set" !assert that a value has been assigned
+  end subroutine setrefsig
 
 
   subroutine MCLeakage_pdfbinprint( icase )
@@ -1690,13 +1708,13 @@ print *,"sum absorb  :",sum(absorb)
   subroutine Woodnegstats
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
-  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp
+  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp, WAMC
 
   real(8) :: pos,neg
 
   open(unit=100,file="Woodnegstats.out")
 
-  if(KLWood=='yes' .and. allowneg=='yes') then
+  if((KLWood=='yes' .and. allowneg=='yes') .or. WAMC=='yes') then
     if(distneg=='no')  write(100,*) "--Negative smoothing stats, neg smoothing off--"
     if(distneg=='yes') write(100,*) "--Negative smoothing stats, neg smoothing on--"
     600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)

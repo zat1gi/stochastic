@@ -47,7 +47,7 @@ CONTAINS
                                   numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, WAMC, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype
+                                  pltfluxtype, refsigMode, userrefsig
   integer :: seed                                   !adv seed
 
   character(7) :: pltallopt                         !Plot all same opt
@@ -99,7 +99,7 @@ CONTAINS
   read(2,*) sourceType
   read(2,*) allowneg,distneg
   read(2,*) KLadjust,meanadjust_tol
-
+  read(2,*) refsigMode,userrefsig
 
 
 

@@ -152,6 +152,9 @@ module MCvars
   character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
+  integer              :: refsigMode           ! 1-7, woodceil,larger,wgtave,ave,lower,custom,userinp
+  real(8)              :: userrefsig           ! option 7, manually set refsig value as this
+
   !non inputs
   integer, parameter   :: numPosMCmeths = 6    ! total number of MC transport methods available
 

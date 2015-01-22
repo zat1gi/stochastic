@@ -1,20 +1,20 @@
   33000,         Advance random see how far?
   !--- Geometry ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
+  1.3,           Adamscase option, if==0, then user input for next three parameters
   1.0,0.9, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.6,0.4, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   0.6,2.4,             Lambda path length vals  #0.5,2.0
   3.0,                 slab thickness           #1.0
-  100,10,         Number of realizations/how often to print
-  100,10,         KLr Number of realizations/how often to print
+  1000,100,         Number of realizations/how often to print
+  1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  4,             Number of eigenvalues
+  1,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  no,no,yes,no,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
   100,            Number of particles to simulate on each realization
   1000,          Number of particles for LP or atomic mix calculations
 
@@ -32,7 +32,7 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  
+  7, 14.0          WAMC refsigMode, 1-7, woodceil,larger,wgtave,ave,lower,custom,userinp/{userinpval}
 
 
   !!--All Plotting Option
