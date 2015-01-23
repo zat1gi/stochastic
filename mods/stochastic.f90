@@ -13,7 +13,7 @@ program stochastic
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
   use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, &
-                    numPosMCmeths
+                    numPosMCmeths, refsig !!!WAMC get rid of this last one when done here
   implicit none
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
@@ -71,5 +71,6 @@ program stochastic
   if(sum(MCcaseson)/=0) call MCprintstats
   call timereport
   call finalreport
+write(*,'(A,f5.2)') 'refsig:',refsig
 
 end program stochastic

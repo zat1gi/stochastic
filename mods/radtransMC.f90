@@ -67,7 +67,7 @@ CONTAINS
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
-                    refsig
+                    refsig, wgtmax, wgtmin, wgtmaxmin
   use genRealz, only: genReal
   use KLreconstruct, only: KLrxi_point
 
@@ -176,9 +176,18 @@ endif
               flExit='exit'
             case ("WAMC")
               newpos = s
+              if(wgtmaxmin=='yes') then
+                if(    weight>wgtmax) then !option to truncate large weight values
+                  write(*,'(A,es9.2,A,es9.2)') '   transmission high, ',weight,' changed to ',wgtmax
+                  weight=wgtmax
+                elseif(weight<wgtmin) then
+                  write(*,'(A,es9.2,A,es9.2)') '   transmission low,  ',weight,' changed to ',wgtmin
+                  weight=wgtmin
+                endif
+              endif
               transmit(j) = transmit(j) + weight
               flExit='exit'
-!print *,"tally transmit:",weight
+!print *,"j:",j,"tally transmit:",weight
           end select
         endif
 
@@ -206,6 +215,15 @@ endif
               flExit='exit'
             case ("WAMC")
               newpos = 0.0d0
+              if(wgtmaxmin=='yes') then
+                if(   weight>wgtmax) then !option to truncate large weight values
+                  write(*,'(A,es9.2,A,es9.2)') '   reflection high, ',weight,' changed to ',wgtmax
+                  weight=wgtmax
+                elseif(weight<wgtmin) then
+                  write(*,'(A,es9.2,A,es9.2)') '   reflection low,  ',weight,' changed to ',wgtmin
+                  weight=wgtmin
+                endif
+              endif
               reflect(j)  = reflect(j) + weight
               flExit='exit'
 !print *,"tally reflect:",weight

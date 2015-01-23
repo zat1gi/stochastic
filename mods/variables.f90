@@ -154,6 +154,9 @@ module MCvars
 
   integer              :: refsigMode           ! 1-7, woodceil,larger,wgtave,ave,lower,custom,userinp
   real(8)              :: userrefsig           ! option 7, manually set refsig value as this
+  real(8)              :: wgtmax               ! limit max weights tallied with WAMC method
+  real(8)              :: wgtmin               ! limit min weights tallied with WAMC method
+  character(3)         :: wgtmaxmin            ! chop wgt tallies off at max and min values?
 
   !non inputs
   integer, parameter   :: numPosMCmeths = 6    ! total number of MC transport methods available
