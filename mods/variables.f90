@@ -215,6 +215,6 @@ module MCvars
   real(8)              :: weight               ! weight of particle history for WAMC
   real(8)              :: refsig               ! arbitrary reference xs for WAMC distance and weight calcs
   real(8)              :: maxratio             ! for adaptive negwgts, max acceptable increase ratio
-  real(8), allocatable :: negwgtsigs(:,:)      ! sigs for ad negwgts, rank 2, 1=sigs, 2=sigt
+  real(8), allocatable :: negwgtsigs(:,:)      ! sigs for ad negwgts, rank 2, 1=sigs, 2=sigt, 3=refsig
 end module MCvars
 

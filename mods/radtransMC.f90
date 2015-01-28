@@ -12,7 +12,7 @@ CONTAINS
   !in UQ space.
   use timevars, only: time
   use genRealzvars, only: numRealz
-  use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat
+  use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat, refsigMode
   use genRealz, only: genReal
   use timeman, only: radtrans_timeupdate
   integer :: icase
@@ -34,7 +34,8 @@ CONTAINS
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
 
 
-      if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') &
+      if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
+        (MCcases(icase)=='WAMC' .and. refsigMode==2)) &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
     call MCtransport( j,icase,tnumParts )     !transport over a realization
@@ -484,37 +485,55 @@ endif
   !These ceilings of course need to be recalculated for each new realization
   use genRealzvars, only: s, lamc, nummatSegs, sig
   use KLvars, only: numEigs
-  use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
+  use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin, &
+                    refsigMode, negwgtbinnum
   integer :: j,icase
 
   integer :: i
   real(8) :: binlength
     !select local bin maxes
-    if(MCcases(icase)=='radWood') nceilbin = ceiling(s/lamc)
-    if(MCcases(icase)=='radWood' .and. nceilbin>6)  nceilbin = 6
-    if(MCcases(icase)=='KLWood' ) nceilbin = numEigs 
+    select case (MCcases(icase))
+      case ("radWood")
+        nceilbin = ceiling(s/lamc)
+        if(nceilbin>6) nceilbin = 6
+      case ("KLWood")
+        nceilbin = numEigs
+      case ("WAMC")
+        if(refsigMode==2) nceilbin = negwgtbinnum
+    end select
 
-    if(allocated(binmaxind)) deallocate(binmaxind)
-    if(allocated(binmaxes)) deallocate(binmaxes)
-    if(allocated(fbinmax)) deallocate(fbinmax)
-    if(allocated(bbinmax)) deallocate(bbinmax)
-    allocate(binmaxind(nceilbin+1))
-    allocate(binmaxes(nceilbin))
-    allocate(fbinmax(nceilbin))
-    allocate(bbinmax(nceilbin))
+    if(j==1) then
+      if(allocated(binmaxind)) deallocate(binmaxind)
+      if(allocated(binmaxes)) deallocate(binmaxes)
+      if(allocated(fbinmax)) deallocate(fbinmax)
+      if(allocated(bbinmax)) deallocate(bbinmax)
+    endif
+
+    if(.not. allocated(binmaxind)) allocate(binmaxind(nceilbin+1))
+    if(.not. allocated(binmaxes))  allocate(binmaxes(nceilbin))
+    if(.not. allocated(fbinmax))   allocate(fbinmax(nceilbin))
+    if(.not. allocated(bbinmax))   allocate(bbinmax(nceilbin))
     binmaxind=0.0d0
     binmaxes=0.0d0
     fbinmax=0.0d0
     bbinmax=0.0d0
 
+    !set bin indices
     binlength=s/nceilbin
     binmaxind(1)=0.0d0
     do i=2,nceilbin+1
       binmaxind(i)=binmaxind(i-1)+binlength
     enddo
 
-    if(MCcases(icase)=='radWood') call radWood_binmaxes( nummatSegs )
-    if(MCcases(icase)=='KLWood' ) call KLWood_binmaxes( j )
+    !set individual bin maxes
+    select case (MCcases(icase))
+      case ("radWood")
+        call radWood_binmaxes( nummatSegs )
+      case ("KLWood")
+        call KLWood_binmaxes( j )
+      case ("WAMC")
+        if(refsigMode==2) call WAMC_binmaxes( j )
+    end select
 
     !create forward/backward motion max vectors
     bbinmax(1)=binmaxes(1)
@@ -525,7 +544,57 @@ endif
     do i=nceilbin-1,1,-1
       fbinmax(i) = merge(fbinmax(i+1),binmaxes(i),fbinmax(i+1)>binmaxes(i))
     enddo
+
   end subroutine MCWood_setceils
+
+
+
+  subroutine WAMC_binmaxes( j )
+  use MCvars, only: binmaxind, binmaxes, nceilbin, negwgtsigs
+  use KLreconstruct, only: KLrxi_point
+  integer, intent(in) :: j
+
+  integer :: i
+  real(8) :: pos
+
+  !load sigs, sigt, and solve refsig at each location
+  do i=1,nceilbin*2+1
+    if( mod(i,2)==0 ) then
+      pos = (binmaxind(i/2)+binmaxind(i/2+1))/2
+    else
+      pos = binmaxind((i+1)/2)
+    endif
+    negwgtsigs(i,1) = KLrxi_point(j,pos,flxstype='scatter')
+    negwgtsigs(i,2) = KLrxi_point(j,pos,flxstype='total  ')
+    negwgtsigs(i,3) = localrefsig(negwgtsigs(i,1),negwgtsigs(i,2))
+  enddo
+
+  !take max of values in/on bin in each bin as bin max refsig value
+  do i=1,nceilbin
+    binmaxes(i) = max(negwgtsigs(2*i-1,3),negwgtsigs(2*i,3),negwgtsigs(2*i+1,3))
+  enddo
+
+  end subroutine WAMC_binmaxes
+
+
+
+  function localrefsig(sigs,sigt)
+  !based on maxind, find optimal refsig choice.  See notes on 1-23-15.
+  use MCvars, only: maxratio
+  real(8), intent(in) :: sigs,sigt
+  real(8) :: localrefsig
+
+  if(sigt<0.0d0) then
+    localrefsig = (abs(sigs)+abs(sigt))/(maxratio-1d0)
+  elseif(abs(sigs)<sigt) then
+    localrefsig = sigt
+  elseif(maxratio<abs(sigs)/sigt) then
+    localrefsig = (abs(sigs)+sigt)/(maxratio+1d0)
+  else
+    localrefsig = (abs(sigs)-sigt)/(maxratio-1d0)
+  endif
+  end function
+
 
 
 
@@ -534,7 +603,7 @@ endif
   use MCvars, only: binmaxind, binmaxes, nceilbin
   use KLreconstruct, only: KLrxi_point
 
-  integer :: j
+  integer, intent(in) :: j
 
   integer :: i,k
   integer :: numinnersteps = 7
@@ -1458,7 +1527,7 @@ endif
   if(MCcases(icase)=='WAMC') then
     call setrefsig()
     if(refsigMode==2) then !sig samples from which to create sigrefs
-      allocate(negwgtsigs(negwgtbinnum*2+1,2))
+      allocate(negwgtsigs(negwgtbinnum*2+1,3))
       negwgtsigs = 0d0
     endif
   endif

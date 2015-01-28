@@ -15,7 +15,7 @@
 
   !--- Large MCtrans Options ---!
   no,no,yes,no,no,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
-  1000,            Number of particles to simulate on each realization
+  100,            Number of particles to simulate on each realization
   1000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
@@ -32,7 +32,7 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  2, 7.5, 100,    WAMC refsigMode (1-user,2-adaptive)/(if 1-refsig,if 2-max ratio)/if 2-binnum
+  2, 2, 3,    WAMC refsigMode (1-user,2-adaptive)/(if 1-refsig,if 2-max ratio)/if 2-binnum
   yes,10.0,-10.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !!--All Plotting Option
