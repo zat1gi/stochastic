@@ -178,10 +178,10 @@ endif
               newpos = s
               if(wgtmaxmin=='yes') then
                 if(    weight>wgtmax) then !option to truncate large weight values
-                  write(*,'(A,es9.2,A,es9.2)') '   transmission high, ',weight,' changed to ',wgtmax
+                  !write(*,'(A,es9.2,A,es9.2)') '   transmission high, ',weight,' changed to ',wgtmax
                   weight=wgtmax
                 elseif(weight<wgtmin) then
-                  write(*,'(A,es9.2,A,es9.2)') '   transmission low,  ',weight,' changed to ',wgtmin
+                  !write(*,'(A,es9.2,A,es9.2)') '   transmission low,  ',weight,' changed to ',wgtmin
                   weight=wgtmin
                 endif
               endif
@@ -217,10 +217,10 @@ endif
               newpos = 0.0d0
               if(wgtmaxmin=='yes') then
                 if(   weight>wgtmax) then !option to truncate large weight values
-                  write(*,'(A,es9.2,A,es9.2)') '   reflection high, ',weight,' changed to ',wgtmax
+                  !write(*,'(A,es9.2,A,es9.2)') '   reflection high, ',weight,' changed to ',wgtmax
                   weight=wgtmax
                 elseif(weight<wgtmin) then
-                  write(*,'(A,es9.2,A,es9.2)') '   reflection low,  ',weight,' changed to ',wgtmin
+                  !write(*,'(A,es9.2,A,es9.2)') '   reflection low,  ',weight,' changed to ',wgtmin
                   weight=wgtmin
                 endif
               endif
