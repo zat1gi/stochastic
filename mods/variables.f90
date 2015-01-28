@@ -152,11 +152,12 @@ module MCvars
   character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
-  integer              :: refsigMode           ! 1-7, woodceil,larger,wgtave,ave,lower,custom,userinp
+  integer              :: refsigMode           ! 1-2, userinp, adaptive
   real(8)              :: userrefsig           ! option 7, manually set refsig value as this
   real(8)              :: wgtmax               ! limit max weights tallied with WAMC method
   real(8)              :: wgtmin               ! limit min weights tallied with WAMC method
   character(3)         :: wgtmaxmin            ! chop wgt tallies off at max and min values?
+  integer              :: negwgtbinnum         ! number of bins for adaptive negwgts
 
   !non inputs
   integer, parameter   :: numPosMCmeths = 6    ! total number of MC transport methods available
@@ -213,6 +214,7 @@ module MCvars
 
   real(8)              :: weight               ! weight of particle history for WAMC
   real(8)              :: refsig               ! arbitrary reference xs for WAMC distance and weight calcs
-
+  real(8)              :: maxratio             ! for adaptive negwgts, max acceptable increase ratio
+  real(8), allocatable :: negwgtsigs(:,:)      ! sigs for ad negwgts, rank 2, 1=sigs, 2=sigt
 end module MCvars
 

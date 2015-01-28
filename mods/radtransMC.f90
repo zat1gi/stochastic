@@ -1417,7 +1417,7 @@ endif
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
-                    fluxmatnorm, refsig
+                    fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum
   integer :: icase,tnumParts,tnumRealz
 
   !number of realizations allocation
@@ -1457,6 +1457,10 @@ endif
   !set initial WAMC reference sigma value
   if(MCcases(icase)=='WAMC') then
     call setrefsig()
+    if(refsigMode==2) then !sig samples from which to create sigrefs
+      allocate(negwgtsigs(negwgtbinnum*2+1,2))
+      negwgtsigs = 0d0
+    endif
   endif
 
   !flux tally allocations
@@ -1503,30 +1507,17 @@ endif
   !This subruotine sets the value of refsig according to the user's choice of different methods.
   !It can be used to set the value only once, or during transport simulations.
   use genRealzvars, only: sig, scatrat, P
-  use MCvars, only: refsigMode,refsig,userrefsig
+  use MCvars, only: refsigMode,refsig,userrefsig, maxratio
   real(8) :: cursiga, cursigs
 
-  refsig = 10101010.0d0
+  refsig = 0.0d0
   select case(refsigMode)
-    case (1)                           !set to woodcock ceiling value
+    case (1)                           !set to user defined value
       refsig = userrefsig
     case (2)                           !largest sigma value
-      refsig = maxval(sig)
-    case (3)                           !weighted average value
-      refsig = sig(1)*P(1)+sig(2)*P(2)
-    case (4)                           !average value
-      refsig = (sig(1)+sig(2))/2.0d0
-    case (5)                           !smallest sigma value
-      refsig = minval(sig)
-    case (6)                           !set to proposed best value
-      cursiga = max( (1d0-scatrat(1))*sig(1),(1d0-scatrat(2))*sig(2) )
-      cursigs = max(      scatrat(1) *sig(1),     scatrat(2) *sig(2) )
-      refsig  = max(                 cursiga,                 cursigs) + cursiga / 2d0
-    case (7)                           !set to user defined value
-      refsig = userrefsig
+      maxratio = userrefsig
   end select
 
-  if(refsig==10101010.0d0) stop "refsig value not set" !assert that a value has been assigned
   end subroutine setrefsig
 
 

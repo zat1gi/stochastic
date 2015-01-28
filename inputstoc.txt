@@ -32,8 +32,8 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  7, 7.5          WAMC refsigMode, 1-7, woodceil,larger,wgtave,ave,lower,custom,userinp/{userinpval}
-  yes,10.0,-10.0        WAMC max and min tally weights?/wgtmax/wgtmin
+  2, 7.5, 100,    WAMC refsigMode (1-user,2-adaptive)/(if 1-refsig,if 2-max ratio)/if 2-binnum
+  yes,10.0,-10.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
