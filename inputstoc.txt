@@ -1,8 +1,8 @@
-  521423,         Advance random see how far?
+  1521423,         Advance random see how far?
   !--- Geometry ---!
-  3.3,           Adamscase option, if==0, then user input for next three parameters
-  1.0,0.3, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.8,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0,           Adamscase option, if==0, then user input for next three parameters
+  1.0,0.2, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.9,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.2,0.6,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
   1000,100,         Number of realizations/how often to print
@@ -10,12 +10,12 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  5,             Number of eigenvalues
+  3,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,yes,no,no,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
-  100,            Number of particles to simulate on each realization
+  no,yes,yes,no,no,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  300,            Number of particles to simulate on each realization
   1000,          Number of particles for LP or atomic mix calculations
 
   !--- Lesser KL Options ---!
@@ -32,8 +32,8 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  2, 2, 3,    WAMC refsigMode (1-user,2-adaptive)/(if 1-refsig,if 2-max ratio)/if 2-binnum
-  yes,10.0,-10.0        WAMC enforce max and min weights?/wgtmax/wgtmin
+  2, 10.0, 1000,    WAMC refsigMode (1-user,2-adaptive)/(if 1-refsig,if 2-max ratio)/if 2-binnum
+  no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose

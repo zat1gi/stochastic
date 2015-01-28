@@ -68,14 +68,14 @@ CONTAINS
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
-                    refsig, wgtmax, wgtmin, wgtmaxmin
+                    refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs
   use genRealz, only: genReal
   use KLreconstruct, only: KLrxi_point
 
   integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
 
   !local variables
-  integer :: i,o
+  integer :: i,o,curbin
   real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat,disthold, tempscatrat
   real(8) :: cursigt, cursigs
   character(9) :: fldist, flIntType, flEscapeDir, flExit
@@ -91,10 +91,7 @@ CONTAINS
       newpos      = 101010.0d0 !later throw error if still equal this
       !tally number of interactions
       if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
-if(MCcases(icase)=='WAMC') then
-!print *,"endstatesadded:",transmit+reflect+absorb
-!read *
-endif
+
       !calculate distance to boundary
       select case (MCcases(icase))
         case ("radMC")
@@ -116,24 +113,48 @@ endif
         case ("radMC")
           dc = -log(rang())/sig(matType(i))
         case ("radWood")
-          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
-                        ceilsigfunc(position,bbinmax),mu>=0)
+!          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
+!                        ceilsigfunc(position,bbinmax),mu>=0)
+          curbin =solvecurbin(position)
+          ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
           dc = -log(rang())/ceilsig                   !calc dc
         case ("KLWood")
-          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
-                        ceilsigfunc(position,bbinmax),mu>=0)
+!          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
+!                        ceilsigfunc(position,bbinmax),mu>=0)
+          curbin =solvecurbin(position)
+          ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
           dc = -log(rang())/ceilsig                   !calc dc
         case ("LPMC")
           dc = -log(rang())/sig(matType(1))
         case ("atmixMC")
           dc = -log(rang())/atmixsig
         case ("WAMC")
-          dc = -log(rang())/refsig 
+          if(refsigMode==1) then
+            dc = -log(rang())/refsig 
+          elseif(refsigMode==2) then
+            curbin =solvecurbin(position)
+            refsig =binmaxes(curbin)!negwgtsigs(curbin,3) !bug!! This should not be negwtsigs!!
+            ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
+            dc = -log(rang())/ceilsig
+          endif
+! open(unit=241, file="plotme.txt")
+! do i2=1,size(negwgtsigs(:,3)
+!   i1=i2/2+1
+!   write(241,'(f10.5,f10.5,f10.5)') negwgtssigs(i1,3),fbinmax(i1),bbinmax(i1)
+! enddo
+! close(unit=24)
+!print *,"negwgtsigs(:,3):",negwgtsigs(:,3)
+!print *
+!print *,"binmaxes:",binmaxes
+!print *
+!print *,"fbinmax:",fbinmax
+!print *
+!print *,"bbinmax:",bbinmax
+!read *
       end select
 
       !calculate distance to interface
       if(MCcases(icase)=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
-                                      !!!WAMCchange add here
 
       !select distance limiter
       dist   = min(db,dc)
@@ -179,16 +200,13 @@ endif
               newpos = s
               if(wgtmaxmin=='yes') then
                 if(    weight>wgtmax) then !option to truncate large weight values
-                  !write(*,'(A,es9.2,A,es9.2)') '   transmission high, ',weight,' changed to ',wgtmax
                   weight=wgtmax
                 elseif(weight<wgtmin) then
-                  !write(*,'(A,es9.2,A,es9.2)') '   transmission low,  ',weight,' changed to ',wgtmin
                   weight=wgtmin
                 endif
               endif
               transmit(j) = transmit(j) + weight
               flExit='exit'
-!print *,"j:",j,"tally transmit:",weight
           end select
         endif
 
@@ -218,16 +236,13 @@ endif
               newpos = 0.0d0
               if(wgtmaxmin=='yes') then
                 if(   weight>wgtmax) then !option to truncate large weight values
-                  !write(*,'(A,es9.2,A,es9.2)') '   reflection high, ',weight,' changed to ',wgtmax
                   weight=wgtmax
                 elseif(weight<wgtmin) then
-                  !write(*,'(A,es9.2,A,es9.2)') '   reflection low,  ',weight,' changed to ',wgtmin
                   weight=wgtmin
                 endif
               endif
               reflect(j)  = reflect(j) + weight
               flExit='exit'
-!print *,"tally reflect:",weight
           end select
         endif
 
@@ -296,17 +311,23 @@ endif
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
-            !adjust weights, choose type of interaction, flip weight sign if needed
-            cursigt = KLrxi_point(j,newpos,flxstype='total  ')
-            cursigs = KLrxi_point(j,newpos,flxstype='scatter')
-            weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
+            if(refsigMode==2) then !for adaptive, decide woodcock possible or rejected interaction
+              woodrat = refsig/ceilsig
+              if(woodrat<rang()) flIntType='reject'
+            endif
+            if(flIntType=='clean') then !if refsigMode==1 or (==2 and not rejected yet)
+              !adjust weights, choose type of interaction, flip weight sign if needed
+              cursigt = KLrxi_point(j,newpos,flxstype='total  ')
+              cursigs = KLrxi_point(j,newpos,flxstype='scatter')
+              weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
 
-            if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
-              flIntType = 'scatter'
-              if(cursigs<0d0)         weight = -1d0 * weight
-            else
-              flIntType = 'reject '
-              if(-cursigt+refsig<0d0) weight = -1d0 * weight
+              if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
+                flIntType = 'scatter'
+                if(cursigs<0d0)         weight = -1d0 * weight
+              else
+                flIntType = 'reject '
+                if(-cursigt+refsig<0d0) weight = -1d0 * weight
+              endif
             endif
 
             if(cursigt<0.0d0) then  !negativity stats, currently overrides KLWood negstats
@@ -400,7 +421,6 @@ endif
           case ("WAMC")
             absorb(j)     = absorb(j)     + weight
             flExit='exit'
-!print *,"tally absorb  :",weight
         end select
       endif
 
@@ -409,7 +429,7 @@ endif
         if(flEscapeDir=='transmit') i = i+1
         if(flEscapeDir=='reflect')  i = i-1
       endif
-      if(fldist=='interface') then  !!!WAMCchange make sure this does what you want
+      if(fldist=='interface') then
         matType(1) = merge(1,2,matType(1)==2)
       endif
 
@@ -704,6 +724,17 @@ endif
     endif
   enddo
   end function ceilsigfunc
+
+
+
+  function solvecurbin(position)
+  use genRealzvars, only: s
+  use MCvars, only: nceilbin
+  integer :: solvecurbin
+  real(8) :: position
+
+  solvecurbin = floor(position/s*nceilbin)+1
+  end function solvecurbin
 
 
 
