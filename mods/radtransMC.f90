@@ -105,7 +105,9 @@ CONTAINS
         case ("atmixMC")
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("WAMC")
-          db = merge(s-position,position,mu>=0)/abs(mu)
+          curbin =solvecurbin(position)
+          db = merge(binmaxind(curbin+1)-position,position-binmaxind(curbin),mu>=0)/abs(mu)
+          !db = merge(s-position,position,mu>=0)/abs(mu) !woodcock
       end select
 
       !calculate distance to collision
@@ -133,9 +135,10 @@ CONTAINS
             dc = -log(rang())/refsig 
           elseif(refsigMode==2) then
             curbin =solvecurbin(position)
-            refsig =binmaxes(curbin)!negwgtsigs(curbin,3) !bug!! This should not be negwtsigs!!
-            ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
-            dc = -log(rang())/ceilsig
+            refsig =binmaxes(curbin)
+            !ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0) !woodcock
+            dc = -log(rang())/refsig
+            !dc = -log(rang())/ceilsig !woodcock
           endif
 ! open(unit=241, file="plotme.txt")
 ! do i2=1,size(negwgtsigs(:,3)
@@ -197,7 +200,8 @@ CONTAINS
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
             case ("WAMC")
-              newpos = s
+              !newpos = s !woodcock
+              newpos = binmaxind(curbin+1) + 0.00000000001d0
               if(wgtmaxmin=='yes') then
                 if(    weight>wgtmax) then !option to truncate large weight values
                   weight=wgtmax
@@ -205,8 +209,12 @@ CONTAINS
                   weight=wgtmin
                 endif
               endif
-              transmit(j) = transmit(j) + weight
-              flExit='exit'
+!print *,"curbin:",curbin
+!print *,"size(binmaxind):",size(binmaxind)
+              if(curbin+1==size(binmaxind)) transmit(j) = transmit(j) + weight
+              if(curbin+1==size(binmaxind)) flExit='exit'
+              !transmit(j) = transmit(j) + weight !woodcock
+              !flExit='exit' !woodcock
           end select
         endif
 
@@ -233,7 +241,9 @@ CONTAINS
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
             case ("WAMC")
-              newpos = 0.0d0
+              !newpos = 0.0d0 !woodcock
+!print *,"position:",position
+              newpos = binmaxind(curbin) - 0.000000001d0
               if(wgtmaxmin=='yes') then
                 if(   weight>wgtmax) then !option to truncate large weight values
                   weight=wgtmax
@@ -241,8 +251,12 @@ CONTAINS
                   weight=wgtmin
                 endif
               endif
-              reflect(j)  = reflect(j) + weight
-              flExit='exit'
+!print *,"     curbin:",curbin
+!print *,"newpos:",newpos
+              if(curbin==1) reflect(j) = reflect(j) + weight
+              if(curbin==1) flExit='exit'
+              !reflect(j)  = reflect(j) + weight !woodcock
+              !flExit='exit' !woodcock
           end select
         endif
 
@@ -312,8 +326,8 @@ CONTAINS
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
             if(refsigMode==2) then !for adaptive, decide woodcock possible or rejected interaction
-              woodrat = refsig/ceilsig
-              if(woodrat<rang()) flIntType='reject'
+              !woodrat = refsig/ceilsig !woodcock
+              !if(woodrat<rang()) flIntType='reject' !woodcock
             endif
             if(flIntType=='clean') then !if refsigMode==1 or (==2 and not rejected yet)
               !adjust weights, choose type of interaction, flip weight sign if needed
