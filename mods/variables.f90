@@ -152,7 +152,7 @@ module MCvars
   character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
-  integer              :: refsigMode           ! 1-2, userinp, adaptive
+  integer              :: refsigMode           ! 1-3, 1) userinp, 2) adaptive, 3) adaptive woodcock
   real(8)              :: userrefsig           ! option 7, manually set refsig value as this
   real(8)              :: wgtmax               ! limit max weights tallied with WAMC method
   real(8)              :: wgtmin               ! limit min weights tallied with WAMC method

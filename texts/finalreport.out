@@ -1,37 +1,35 @@
 
-  Values loaded for special Adamscase :  2.2
-    sig(1)    :  0.101010   sig(2)    :  9.090909
-    scatrat(1):  1.00       scatrat(2):  0.00
-    lam(1)    :  0.99       lam(2)    :  0.11
-    s         :  1.00       lamc      :  0.10
+  Values loaded for special Adamscase :  9.2
+    sig(1)    :  0.019802   sig(2)    :  1.980198
+    scatrat(1):  0.90       scatrat(2):  0.90
+    lam(1)    :  5.05       lam(2)    :  5.05
+    s         :  1.00       lamc      :  2.52
 
  --Negative smoothing stats, neg smoothing off--
-  Neg realz   : 38.90000%,                   389 /                 1000
-  Neg samples :  0.26221%,                  5473 /              2087273
-  Neg area    :  0.01011%
-  Neg scatrat :  0.46435%,                  2891 /               622585
-  Ave neg samp:     -0.0962   Ave pos samp:      2.5007
-  Max neg samp:     -0.1354   Max pos samp:      9.5216
+  Neg realz   :  9.30000%,                    93 /                 1000
+  Neg samples :  4.38993%,              13219137 /            301123914
+  Neg area    :  2.01962%
+  Neg scatrat :      NaN%,                     0 /                    0
+  Ave neg samp:     -0.4658   Ave pos samp:      1.0376
+  Max neg samp:     -1.1309   Max pos samp:      3.1309
 
 
- |-case:2.2-|---- Reflection and Transmission Results ------|
+ |-case:9.2-|---- Reflection and Transmission Results ------|
  |Method    | reflave      refldev    | tranave      trandev|
  |----------|-------------------------|---------------------|
- |AdamsMC:  | 0.0548   +-  0.0307     | 0.4841   +-  0.3632 |
- |BrantMC:  | 0.05418                 | 0.48537             |
- |KLWood :  | 0.02304  +-  0.00983    | 0.42855  +-  0.28536|
- |WAMC   :  | 0.04178  +-  0.20750    | 0.46609  +-  0.44347|
+ |AdamsMC:  | 0.2435   +-  0.1991     | 0.6045   +-  0.3346 |
+ |BrantMC:  | 0.24286                 | 0.60498             |
+ |WAMC   :  |********  +-*********    |-0.77836  +- 65.46638|
  |----------|-------------------------|---------------------|
- |AdamsLP:  | 0.0460                  | 0.4834              |
- |BrantLP:  | 0.04552                 | 0.48446             |
+ |AdamsLP:  | 0.2381                  | 0.6086              |
+ |BrantLP:  | 0.23727                 | 0.60911             |
  |----------|-------------------------|---------------------|
- |BrAtMix:  | 0.01879                 | 0.23065             |
+ |BrAtMix:  | 0.35288                 | 0.47477             |
  |----------------------------------------------------------|
 
-  total runtime:      0.25 min
-    genRealz   :   0.00 min   per:  0.04 % --- genRealz in others, not part of sum
+  total runtime:      2.93 min
+    genRealz   :   0.00 min   per:  0.00 % --- genRealz in others, not part of sum
     ------------------------------------------------ refl ----- tran --
-    KLWood     :   0.02 min   per:  7.85 %   FOM:  1.223E+04  1.452E+01
-    KLcol      :   0.00 min   per:  0.07 %
-    KLrec      :   0.00 min   per:  0.38 %
-    other      :   0.23 min   per: 91.70 %
+    KLcol      :   0.00 min   per:  0.00 %
+    KLrec      :   0.00 min   per:  0.05 %
+    other      :   2.93 min   per: 99.95 %

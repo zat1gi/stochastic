@@ -75,7 +75,7 @@ program stochastic
 
 if(refsigMode==1) then
 write(*,'(A,f5.2)') 'refsig:',refsig
-elseif(refsigMode==2) then
+elseif(refsigMode==2 .or. refsigMode==3) then
 write(*,'(A,f5.2,A,i5)') 'maxratio:',userrefsig,'  bins:',negwgtbinnum
 endif
 

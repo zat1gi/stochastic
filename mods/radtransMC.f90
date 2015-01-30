@@ -35,7 +35,7 @@ CONTAINS
 
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-        (MCcases(icase)=='WAMC' .and. refsigMode==2)) &
+        (MCcases(icase)=='WAMC' .and. (refsigMode==2 .or. refsigMode==3))) &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
     call MCtransport( j,icase,tnumParts )     !transport over a realization
@@ -106,8 +106,11 @@ CONTAINS
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("WAMC")
           curbin =solvecurbin(position)
-          db = merge(binmaxind(curbin+1)-position,position-binmaxind(curbin),mu>=0)/abs(mu)
-          !db = merge(s-position,position,mu>=0)/abs(mu) !woodcock
+          if(refsigMode==2) then
+            db = merge(binmaxind(curbin+1)-position,position-binmaxind(curbin),mu>=0)/abs(mu)
+          elseif(refsigMode==1 .or. refsigMode==3) then
+            db = merge(s-position,position,mu>=0)/abs(mu)
+          endif
       end select
 
       !calculate distance to collision
@@ -136,10 +139,14 @@ CONTAINS
           elseif(refsigMode==2) then
             curbin =solvecurbin(position)
             refsig =binmaxes(curbin)
-            !ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0) !woodcock
             dc = -log(rang())/refsig
-            !dc = -log(rang())/ceilsig !woodcock
+          elseif(refsigMode==3) then
+            curbin =solvecurbin(position)
+            refsig =binmaxes(curbin)
+            ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
+            dc = -log(rang())/ceilsig
           endif
+!print *,"dc:",dc
 ! open(unit=241, file="plotme.txt")
 ! do i2=1,size(negwgtsigs(:,3)
 !   i1=i2/2+1
@@ -200,21 +207,30 @@ CONTAINS
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
             case ("WAMC")
-              !newpos = s !woodcock
-              newpos = binmaxind(curbin+1) + 0.00000000001d0
-              if(wgtmaxmin=='yes') then
-                if(    weight>wgtmax) then !option to truncate large weight values
-                  weight=wgtmax
-                elseif(weight<wgtmin) then
-                  weight=wgtmin
-                endif
+!print *
+!print *,"position:",position
+              if(refsigMode==2) then
+                newpos = binmaxind(curbin+1) + 0.00000000001d0
+              elseif(refsigMode==1 .or. refsigMode==3) then  
+                newpos = s
               endif
+              if(refsigMode/=2 .or. curbin+1==size(binmaxind)) then
+                if(wgtmaxmin=='yes') then
+                  if(    weight>wgtmax) then !option to truncate large weight values
+                    weight=wgtmax
+                  elseif(weight<wgtmin) then
+                    weight=wgtmin
+                  endif
+                endif
+                transmit(j) = transmit(j) + weight
+                flExit='exit'
+              endif
+!print *,"transmission direction"
+!print *,"newpos:",newpos
 !print *,"curbin:",curbin
+!print *
+!print *
 !print *,"size(binmaxind):",size(binmaxind)
-              if(curbin+1==size(binmaxind)) transmit(j) = transmit(j) + weight
-              if(curbin+1==size(binmaxind)) flExit='exit'
-              !transmit(j) = transmit(j) + weight !woodcock
-              !flExit='exit' !woodcock
           end select
         endif
 
@@ -241,22 +257,31 @@ CONTAINS
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
             case ("WAMC")
-              !newpos = 0.0d0 !woodcock
-!print *,"position:",position
-              newpos = binmaxind(curbin) - 0.000000001d0
-              if(wgtmaxmin=='yes') then
-                if(   weight>wgtmax) then !option to truncate large weight values
-                  weight=wgtmax
-                elseif(weight<wgtmin) then
-                  weight=wgtmin
-                endif
+              if(refsigMode==2) then
+                newpos = binmaxind(curbin) - 0.00000000001d0
+              elseif(refsigMode==1 .or. refsigMode==3) then
+                newpos = 0.0d0
               endif
-!print *,"     curbin:",curbin
+!print *
+!print *,"position:",position
+              if(refsigMode/=2 .or. curbin==1) then
+                if(wgtmaxmin=='yes') then
+                  if(   weight>wgtmax) then !option to truncate large weight values
+                    weight=wgtmax
+                  elseif(weight<wgtmin) then
+                    weight=wgtmin
+                  endif
+                endif
+                reflect(j) = reflect(j) + weight
+                flExit='exit'
+              endif
+!print *
+!print *,"reflection direction"
 !print *,"newpos:",newpos
-              if(curbin==1) reflect(j) = reflect(j) + weight
-              if(curbin==1) flExit='exit'
-              !reflect(j)  = reflect(j) + weight !woodcock
-              !flExit='exit' !woodcock
+!print *,"curbin:",curbin
+!print *
+!print *
+!print *
           end select
         endif
 
@@ -325,11 +350,11 @@ CONTAINS
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
-            if(refsigMode==2) then !for adaptive, decide woodcock possible or rejected interaction
-              !woodrat = refsig/ceilsig !woodcock
-              !if(woodrat<rang()) flIntType='reject' !woodcock
+            if(refsigMode==3) then !for adaptive, decide woodcock possible or rejected interaction
+              woodrat = refsig/ceilsig
+              if(woodrat<rang()) flIntType='reject'
             endif
-            if(flIntType=='clean') then !if refsigMode==1 or (==2 and not rejected yet)
+            if(flIntType=='clean') then !if refsigMode==1,2 or (==3 and not rejected yet)
               !adjust weights, choose type of interaction, flip weight sign if needed
               cursigt = KLrxi_point(j,newpos,flxstype='total  ')
               cursigs = KLrxi_point(j,newpos,flxstype='scatter')
@@ -533,7 +558,7 @@ CONTAINS
       case ("KLWood")
         nceilbin = numEigs
       case ("WAMC")
-        if(refsigMode==2) nceilbin = negwgtbinnum
+        if(refsigMode==2 .or. refsigMode==3) nceilbin = negwgtbinnum
     end select
 
     if(j==1) then
@@ -566,7 +591,7 @@ CONTAINS
       case ("KLWood")
         call KLWood_binmaxes( j )
       case ("WAMC")
-        if(refsigMode==2) call WAMC_binmaxes( j )
+        if(refsigMode==2 .or. refsigMode==3) call WAMC_binmaxes( j )
     end select
 
     !create forward/backward motion max vectors
@@ -728,6 +753,7 @@ CONTAINS
 
 
   function ceilsigfunc(position,binmax) ! make '1' when done with Woodcock version
+  !This function being held, if solvecurbin proves reliable, then out with this one
   use MCvars, only: nceilbin, binmaxind
   real(8) :: position,ceilsigfunc,binmax(:)
   integer :: i
@@ -1571,7 +1597,7 @@ CONTAINS
   !set initial WAMC reference sigma value
   if(MCcases(icase)=='WAMC') then
     call setrefsig()
-    if(refsigMode==2) then !sig samples from which to create sigrefs
+    if(refsigMode==2 .or. refsigMode==3) then !sig samples from which to create sigrefs
       allocate(negwgtsigs(negwgtbinnum*2+1,3))
       negwgtsigs = 0d0
     endif
@@ -1629,6 +1655,8 @@ CONTAINS
     case (1)                           !set to user defined value
       refsig = userrefsig
     case (2)                           !largest sigma value
+      maxratio = userrefsig
+    case (3)
       maxratio = userrefsig
   end select
 
