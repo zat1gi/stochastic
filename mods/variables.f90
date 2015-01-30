@@ -158,6 +158,7 @@ module MCvars
   real(8)              :: wgtmin               ! limit min weights tallied with WAMC method
   character(3)         :: wgtmaxmin            ! chop wgt tallies off at max and min values?
   integer              :: negwgtbinnum         ! number of bins for adaptive negwgts
+  integer              :: nwvalsperbin         ! number of values in bin (and one edge value)
 
   !non inputs
   integer, parameter   :: numPosMCmeths = 6    ! total number of MC transport methods available

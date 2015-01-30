@@ -141,8 +141,6 @@ CONTAINS
             refsig =binmaxes(curbin)
             dc = -log(rang())/refsig
           elseif(refsigMode==3) then
-            curbin =solvecurbin(position)
-            refsig =binmaxes(curbin)
             ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
             dc = -log(rang())/ceilsig
           endif
@@ -351,6 +349,18 @@ CONTAINS
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
             if(refsigMode==3) then !for adaptive, decide woodcock possible or rejected interaction
+              !use the next two lines for refsig from the bin
+              curbin = solvecurbin(newpos)
+              refsig = binmaxes(curbin)
+              !use the next 7 lines for refsig locally
+              refsig = localrefsig(KLrxi_point(j,newpos,flxstype='scatter'),&
+                                   KLrxi_point(j,newpos,flxstype='total  '))
+              if(refsig>ceilsig) then
+                !write(*,'(A,es9.2,A,es9.2,A,es9.2,A)') "refsig:",refsig,&
+                !      " ceilsig:",ceilsig," truncation %:",(ceilsig-refsig)/refsig*100," %"
+                refsig = ceilsig
+              endif
+
               woodrat = refsig/ceilsig
               if(woodrat<rang()) flIntType='reject'
             endif
@@ -609,19 +619,21 @@ CONTAINS
 
 
   subroutine WAMC_binmaxes( j )
-  use MCvars, only: binmaxind, binmaxes, nceilbin, negwgtsigs
+  use MCvars, only: binmaxind, binmaxes, nceilbin, negwgtsigs, nwvalsperbin
   use KLreconstruct, only: KLrxi_point
   integer, intent(in) :: j
 
-  integer :: i
+  integer :: i, anc	
   real(8) :: pos
 
   !load sigs, sigt, and solve refsig at each location
-  do i=1,nceilbin*2+1
-    if( mod(i,2)==0 ) then
-      pos = (binmaxind(i/2)+binmaxind(i/2+1))/2
+  do i=1,nceilbin*nwvalsperbin+1
+    if( mod(i-1,nwvalsperbin)==0 ) then
+      pos = binmaxind(i/nwvalsperbin+1)
     else
-      pos = binmaxind((i+1)/2)
+      anc = (i-1)/nwvalsperbin+1
+      pos = binmaxind(anc) + real(mod(i-1,nwvalsperbin),8)/real(nwvalsperbin,8) &
+                           * (binmaxind(anc+1)-binmaxind(anc))
     endif
     negwgtsigs(i,1) = KLrxi_point(j,pos,flxstype='scatter')
     negwgtsigs(i,2) = KLrxi_point(j,pos,flxstype='total  ')
@@ -630,9 +642,8 @@ CONTAINS
 
   !take max of values in/on bin in each bin as bin max refsig value
   do i=1,nceilbin
-    binmaxes(i) = max(negwgtsigs(2*i-1,3),negwgtsigs(2*i,3),negwgtsigs(2*i+1,3))
+    binmaxes(i) = maxval(negwgtsigs((i-1)*nwvalsperbin+1:i*nwvalsperbin+1,3))
   enddo
-
   end subroutine WAMC_binmaxes
 
 
@@ -1557,7 +1568,8 @@ CONTAINS
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
-                    fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum
+                    fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
+                    nwvalsperbin
   integer :: icase,tnumParts,tnumRealz
 
   !number of realizations allocation
@@ -1598,7 +1610,7 @@ CONTAINS
   if(MCcases(icase)=='WAMC') then
     call setrefsig()
     if(refsigMode==2 .or. refsigMode==3) then !sig samples from which to create sigrefs
-      allocate(negwgtsigs(negwgtbinnum*2+1,3))
+      allocate(negwgtsigs(negwgtbinnum*nwvalsperbin+1,3))
       negwgtsigs = 0d0
     endif
   endif

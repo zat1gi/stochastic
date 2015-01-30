@@ -1,6 +1,9 @@
-  total runtime:      2.93 min
-    genRealz   :   0.00 min   per:  0.00 % --- genRealz in others, not part of sum
+  total runtime:      0.16 min
+    genRealz   :   0.01 min   per:  4.43 % --- genRealz in others, not part of sum
     ------------------------------------------------ refl ----- tran --
-    KLcol      :   0.00 min   per:  0.00 %
-    KLrec      :   0.00 min   per:  0.05 %
-    other      :   2.93 min   per: 99.95 %
+    radMC      :   0.02 min   per: 10.00 %   FOM:  2.516E+03  3.689E+02
+    radWood    :   0.01 min   per:  9.13 %   FOM:  2.851E+03  4.098E+02
+    KLWood     :   0.03 min   per: 21.64 %   FOM:  3.291E+03  1.440E+02
+    KLcol      :   0.00 min   per:  0.11 %
+    KLrec      :   0.00 min   per:  1.67 %
+    other      :   0.09 min   per: 57.46 %

@@ -1,8 +1,8 @@
-  99658421,         Advance random see how far?
+  1958421,         Advance random see how far?
   !--- Geometry ---!
-  9.2,           Adamscase option, if==0, then user input for next three parameters
-  1.0,0.4, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.9,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0,           Adamscase option, if==0, then user input for next three parameters
+  0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.2,0.6,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
   1000,100,         Number of realizations/how often to print
@@ -10,11 +10,11 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  2,             Number of eigenvalues
+  4,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,no,no,no,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  yes,yes,yes,no,no,yes,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
 
@@ -32,7 +32,7 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  1, 150.0, 200,  WAMC refsigMode (1-user,2-adapt,3-adwood)/(if 1-refsig,2,3-max ratio)/if 2,3-binnum
+  3,20.3,200,20, WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !!--All Plotting Option

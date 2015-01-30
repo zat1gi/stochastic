@@ -74,9 +74,9 @@ program stochastic
   call finalreport
 
 if(refsigMode==1) then
-write(*,'(A,f5.2)') 'refsig:',refsig
+write(*,'(A,f6.2)') 'refsig:',refsig
 elseif(refsigMode==2 .or. refsigMode==3) then
-write(*,'(A,f5.2,A,i5)') 'maxratio:',userrefsig,'  bins:',negwgtbinnum
+write(*,'(A,f6.2,A,i5)') 'maxratio:',userrefsig,'  bins:',negwgtbinnum
 endif
 
 end program stochastic
