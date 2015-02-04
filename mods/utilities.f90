@@ -308,4 +308,59 @@ CONTAINS
 
 
 
+  function erfi(z)
+  !Solves value for inverse error function to certain tolerance using
+  !Maclaurin series.  Alerts user if not solved to tolerance due to 
+  !numerical limitations.
+  integer :: k,m
+  real(8) :: z,erfi,erfinew
+  real(8) :: tol = 0.00000000000000001d0
+  real(8) :: pi  = 3.14159265358979323846d0
+  real(8) :: largest = 1.6933d308
+  integer :: most    = 2999
+  logical :: fliterate
+  real(8), dimension(:), allocatable :: c
+
+  !screen valid function input
+  if(z<=-1d0 .or. z>=1d0) stop "Input must be in interval (-1,1)"
+
+  !initialize
+  fliterate = .true.
+  if(z==0d0) then
+    erfi = 0d0
+    fliterate = .false.
+  endif
+  allocate(c(-1:most))
+  c     = 0d0
+  c(-1) = 1d0
+  erfi    = 0d0
+  erfinew = 0d0
+
+  k=0
+  do while(fliterate)
+    !solve needed coefficient
+    c(k) = 0d0
+    if(k/=0) then
+      do m=0,k-1
+        c(k) = c(k) + c(m)*c(k-1-m)/((real(m,8)+1d0)*(2d0*real(m,8)+1d0))
+      enddo
+    elseif(k==0) then
+      c(k) = 1d0
+    endif
+    !use coefficient to solve next term
+    erfinew = c(k)/(2d0*real(k,8)+1d0)*(sqrt(pi)/2d0*z)**(2d0*real(k,8)+1d0)
+    !add term and/or stop loop
+    if(erfinew>largest .or. erfinew<-largest .or. k>most) then
+      fliterate = .false.
+      print *,"erfi not solved below tolerance due to numerics"
+    else
+      if(erfinew/erfi<tol .and. k>0) fliterate = .false.
+      erfi = erfi + erfinew
+    endif
+    k=k+1
+  enddo
+  deallocate(c)
+  end function erfi
+
+
 end module utilities
