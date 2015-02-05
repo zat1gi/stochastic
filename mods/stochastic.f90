@@ -8,6 +8,7 @@ program stochastic
   use KLresearch
   use KLreconstruct
   use KLmeanadjust
+  use FEDiffSn
 
   use genRealzvars
   use timevars, only: t1
@@ -19,6 +20,10 @@ program stochastic
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
   integer :: seed    !random number seed for overall problem, used once.
+
+
+  call FEmain
+  stop
 
   !!read parameters
   call cpu_time(t1)

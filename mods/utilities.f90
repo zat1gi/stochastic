@@ -363,4 +363,101 @@ CONTAINS
   end function erfi
 
 
+
+  subroutine Thomas_alg( n,a,b,c,d,x )
+  !The thomas algorithm solves a tri-diagonal matrix.
+  !This is the crux of a 1D diffusion model.
+  integer               :: n
+  real(8), dimension(n) :: a,b,c,d,x
+
+  integer               :: i,j,checkalg
+
+  checkalg=2
+  if( checkalg==1 ) then  !a test for the Thomas algorithm
+    a=(/   0,  -1,  -1,  -1/)
+    b=(/2.04,2.04,2.04,2.04/)
+    c=(/  -1,  -1,  -1,   0/)
+    x=0
+    d=(/40.8, 0.8, 0.8, 200.8/)
+  endif !end of loading test values
+
+  c(1)=    c(1)  /  b(1)
+  d(1)=    d(1)  /  b(1)
+  do i=2,n
+    c(i)=  c(i)                    /  (  b(i)-c(i-1)*a(i)  )
+    d(i)=  (  d(i)-d(i-1)*a(i)  )  /  (  b(i)-c(i-1)*a(i)  )
+  enddo
+
+  x(n)=d(n)
+  do j=1,n-1
+    i=n-j
+    x(i)=  d(i)  -  c(i)*x(i+1)
+  enddo
+
+  if( checkalg==1 ) then !load and print correct values for input
+    100 format("x(",i3,"):",f11.5)
+    110 format("x(",i3,"):",f9.3)
+    write(*,*)
+    do i=1,n
+      write(*,100) i,x(i)
+    enddo
+    write(*,*)
+    x=(/65.970,93.778,124.538,159.48/)
+    write(*,*) "Values (to 3 places) should be:"
+    do i=1,n
+      write(*,110) i,x(i)
+    enddo
+    write(*,*)
+  endif !end of printing expected values for test
+
+  end subroutine Thomas_alg
+
+
+
+
+  subroutine gauss_leg_quad( numangs,nodes,wgts,leftb,rightb )
+  !Solves nodes and weights with gauss-legendre quadrature, using executable.
+  !Executable "gauss_leg_quad.out", ensure in correct location.
+  integer :: numangs
+  real(8) :: leftb,rightb
+  real(8),allocatable :: nodes(:),wgts(:)
+
+  integer :: i
+
+  !Allocate nodes and wgts
+  allocate(nodes(numangs))
+  allocate(wgts(numangs))
+  nodes = 0.0
+  wgts  = 0.0
+
+  !Create driver script for executable
+  open(unit=3,file="gl_run_exe")
+  102 format("./auxiliary/quad/gauss_leg_quad.out ",i6," ",f12.6," ",f12.6," gauss_leg")
+  write(3,102) numangs,leftb,rightb
+  close(unit=3)
+
+  !Use driver to run executable
+  call system("chmod u+x gl_run_exe")
+  call system("./gl_run_exe > gl_run.out")
+  call system("rm gl_run.out")
+
+  !Get data from output of executable
+  open(unit=4,file="gauss_leg_x.txt")
+  open(unit=5,file="gauss_leg_w.txt")
+  do i=1,numangs
+    read(4,*) nodes(i)
+    read(5,*) wgts(i)
+  enddo
+  close(unit=4)
+  close(unit=5)
+
+  !Put all files into folder "quad"
+  call system("mv gl_run_exe gauss_leg_r.txt gauss_leg_x.txt gauss_leg_w.txt auxiliary/quad")
+
+  end subroutine gauss_leg_quad
+
+
+
+
+
 end module utilities

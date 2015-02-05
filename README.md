@@ -1,4 +1,4 @@
 stochastic
 ==========
 
-This is my personal PhD research code.  It works with the KL expansion and Monte-Carlo transport.  Maybe someday I will update this README, but for now, this is what you get.
+This is my personal PhD research code.  It works with the KL expansion, Monte-Carlo transport, and includes some finite element diffusion and transport.

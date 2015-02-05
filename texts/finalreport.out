@@ -5,30 +5,8 @@
     lam(1)    :  1.20       lam(2)    :  0.60
     s         :  1.00       lamc      :  0.40
 
- --Negative smoothing stats, neg smoothing off--
-  Neg realz   : 11.40000%,                   114 /                 1000
-  Neg samples :  0.12502%,                  2091 /              1672538
-  Neg area    :  0.02038%
-  Neg scatrat :  8.47548%,                 68708 /               810668
-  Ave neg samp:     -0.1287   Ave pos samp:      0.7899
-  Max neg samp:     -0.4658   Max pos samp:      1.7865
 
-
- |--------------- Reflection and Transmission Results ------|
- |Method    | reflave      refldev    | tranave      trandev|
- |----------|-------------------------|---------------------|
- |radMC  :  | 0.16644  +-  0.06515    | 0.53400  +-  0.17013|
- |radWood:  | 0.16824  +-  0.06438    | 0.54285  +-  0.16981|
- |KLWood :  | 0.13912  +-  0.03539    | 0.51820  +-  0.16921|
- |WAMC   :  | 0.21806  +-  1.95232    | 0.52650  +-  0.43858|
- |----------------------------------------------------------|
-
-  total runtime:      0.16 min
-    genRealz   :   0.01 min   per:  4.43 % --- genRealz in others, not part of sum
+  total runtime:      0.00 min
+    genRealz   :   0.00 min   per:  0.00 % --- genRealz in others, not part of sum
     ------------------------------------------------ refl ----- tran --
-    radMC      :   0.02 min   per: 10.00 %   FOM:  2.516E+03  3.689E+02
-    radWood    :   0.01 min   per:  9.13 %   FOM:  2.851E+03  4.098E+02
-    KLWood     :   0.03 min   per: 21.64 %   FOM:  3.291E+03  1.440E+02
-    KLcol      :   0.00 min   per:  0.11 %
-    KLrec      :   0.00 min   per:  1.67 %
-    other      :   0.09 min   per: 57.46 %
+    other      :   0.00 min   per:100.00 %
