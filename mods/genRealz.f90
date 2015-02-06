@@ -15,7 +15,7 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
-                          totLength, atmixsig, atmixscatrat, scatrat
+                          totLength, atmixsig, atmixscatrat, scatrat, flprint
   use mcnp_random, only: RN_init_particle
 
   integer :: j
@@ -73,7 +73,7 @@ CONTAINS
       if(i>largesti) largesti=1 !track largest i
 
 
-      if( pltgenrealz(1) .ne. 'noplot' ) then  !print to plot selected realizations
+      if( pltgenrealz(1) .ne. 'noplot' .and. flprint ) then  !print to plot selected realizations
       203 format("          ",A7,"            ",A7)
       204 format("      0.00000000     ",f16.8)
       205 format(f16.8,"     ",f16.8)
@@ -186,27 +186,25 @@ CONTAINS
   close(unit=23)
 
   if(pltgenrealznumof==1) then  !attach prefix
-    call system("cat genRealzgnuprefix.txt plots/genrealzgnus/genRealz.1.gnu > genRealztemp.gnu")
+    call system("cat genRealzgnuprefix.txt plots/genRealz/genRealz.1.gnu > genRealztemp.gnu")
   elseif(pltgenrealznumof==2) then
-    call system("cat genRealzgnuprefix.txt plots/genrealzgnus/genRealz.2.gnu > genRealztemp.gnu")
+    call system("cat genRealzgnuprefix.txt plots/genRealz/genRealz.2.gnu > genRealztemp.gnu")
   else
-    call system("cat genRealzgnuprefix.txt plots/genrealzgnus/genRealz.3.gnu > genRealztemp.gnu")
+    call system("cat genRealzgnuprefix.txt plots/genRealz/genRealz.3.gnu > genRealztemp.gnu")
   endif
 
   if(pltgenrealz(1)=='preview') then !attach suffix (pause if desired)
-    call system("cat genRealztemp.gnu plots/genrealzgnus/pause.txt > genRealz.gnu")
+    call system("cat genRealztemp.gnu plots/genRealz/pause.txt > genRealz.gnu")
     call system("rm genRealztemp.gnu")
   else
     call system("mv genRealztemp.gnu genRealz.gnu")
   endif
 
-  call system("gnuplot plots/genrealzgnus/genRealz.gnu") !plot
+  call system("gnuplot plots/genRealz/genRealz.gnu") !plot
 
-  call system("ps2pdf genRealzplot.ps genRealzplot.pdf") !make pdf
-  call system("rm plots/genRealzplot.eps")
-  call system("ps2eps genRealzplot.ps") !make eps
-  call system("mv genRealz.gnu genRealzgnuprefix.txt plots/genrealzgnus") !archive
-  call system("mv genRealzplot* plots")
+  call system("ps2pdf genRealzplot.ps") !make pdf
+  call system("mv genRealz.gnu genRealzgnuprefix.txt plots/genRealz") !archive
+  call system("mv genRealzplot* plots/genRealz")
   endif
 
   end subroutine genReal_stats

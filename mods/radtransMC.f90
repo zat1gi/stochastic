@@ -1242,7 +1242,17 @@ CONTAINS
                     fluxfaces, fluxnumcells, MCcases, MCcaseson, pltflux, pltmatflux, flfluxplot
   integer :: icase, ibin
 
-  call system("rm plots/fluxplots/*.out")
+  call system("test -e plots/fluxplots/radMC_fluxall.out   && rm plots/fluxplots/radMC_fluxall.out")
+  call system("test -e plots/fluxplots/radMC_fluxmat.out   && rm plots/fluxplots/radMC_fluxmat.out")
+  call system("test -e plots/fluxplots/radWood_fluxall.out && rm plots/fluxplots/radWood_fluxall.out")
+  call system("test -e plots/fluxplots/radWood_fluxmat.out && rm plots/fluxplots/radWood_fluxmat.out")
+  call system("test -e plots/fluxplots/KLWood_fluxall.out  && rm plots/fluxplots/KLWood_fluxall.out")
+  call system("test -e plots/fluxplots/KLWood_fluxmat.out  && rm plots/fluxplots/KLWood_fluxmat.out")
+  call system("test -e plots/fluxplots/LPMC_fluxall.out    && rm plots/fluxplots/LPMC_fluxall.out")
+  call system("test -e plots/fluxplots/LPMC_fluxmat.out    && rm plots/fluxplots/LPMC_fluxmat.out")
+  call system("test -e plots/fluxplots/atmixMC_fluxall.out && rm plots/fluxplots/atmixMC_fluxall.out")
+  call system("test -e plots/fluxplots/atmixMC_fluxmat.out && rm plots/fluxplots/atmixMC_fluxmat.out")
+
   370 format("#cell center,       ave flux,        flux dev")
   371 format(f15.7,f15.7,f15.7)
 
@@ -1364,7 +1374,17 @@ CONTAINS
     endif
   enddo
 
-  call system("mv *.out plots/fluxplots")
+  call system("test -e radMC_fluxall.out   && mv radMC_fluxall.out plots/fluxplots")
+  call system("test -e radMC_fluxmat.out   && mv radMC_fluxmat.out plots/fluxplots")
+  call system("test -e radWood_fluxall.out && mv radWood_fluxall.out plots/fluxplots")
+  call system("test -e radWood_fluxmat.out && mv radWood_fluxmat.out plots/fluxplots")
+  call system("test -e KLWood_fluxall.out  && mv KLWood_fluxall.out plots/fluxplots")
+  call system("test -e KLWood_fluxmat.out  && mv KLWood_fluxmat.out plots/fluxplots")
+  call system("test -e LPMC_fluxall.out    && mv LPMC_fluxall.out plots/fluxplots")
+  call system("test -e LPMC_fluxmat.out    && mv LPMC_fluxmat.out plots/fluxplots")
+  call system("test -e atmixMC_fluxall.out && mv atmixMC_fluxall.out plots/fluxplots")
+  call system("test -e atmixMC_fluxmat.out && mv atmixMC_fluxmat.out plots/fluxplots")
+
 
   end subroutine MCfluxPrint
 
@@ -1379,7 +1399,17 @@ CONTAINS
   use MCvars, only: pltflux, radMC, radWood, KLWood, LPMC, atmixMC, pltfluxtype, pltmatflux
 
   !Clean from previous runs
-  call system("rm plots/fluxplots/*.ps plots/fluxplots/*.pdf plots/fluxplots/*.gnu")
+  call system("test -e plots/fluxplots/fluxall.ps && rm plots/fluxplots/fluxall.ps")
+  call system("test -e plots/fluxplots/fluxmat1.ps && rm plots/fluxplots/fluxmat1.ps")
+  call system("test -e plots/fluxplots/fluxmat2.ps && rm plots/fluxplots/fluxmat2.ps")
+
+  call system("test -e plots/fluxplots/fluxall.pdf && rm plots/fluxplots/fluxall.pdf")
+  call system("test -e plots/fluxplots/fluxmat1.pdf && rm plots/fluxplots/fluxmat1.pdf")
+  call system("test -e plots/fluxplots/fluxmat2.pdf && rm plots/fluxplots/fluxmat2.pdf")
+
+  call system("test -e plots/fluxplots/fluxall.gnu && rm plots/fluxplots/fluxall.gnu")
+  call system("test -e plots/fluxplots/fluxmat1.gnu && rm plots/fluxplots/fluxmat1.gnu")
+  call system("test -e plots/fluxplots/fluxmat2.gnu && rm plots/fluxplots/fluxmat2.gnu")
 
   !Bring building blocks near (shorter lines of code)
   call system("cp -r plots/fluxplots/gnubuilding gnu")
@@ -1438,7 +1468,7 @@ CONTAINS
     call system("mv flux.ps fluxall.ps")
     call system("ps2pdf fluxall.ps")
     call system("mv fluxall.ps fluxall.pdf gnu/fluxall.gnu plots/fluxplots/")
-    
+
   endif !end pltflux(1)
 
   if(pltmatflux=='plot' .or. pltmatflux=='preview') then
@@ -1568,7 +1598,7 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz
+  use genRealzvars, only: numRealz, flprint
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
@@ -1576,6 +1606,8 @@ CONTAINS
                     fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
                     nwvalsperbin
   integer :: icase,tnumParts,tnumRealz
+
+  flprint = .false.
 
   !number of realizations allocation
   if( MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC' ) then
@@ -1723,9 +1755,9 @@ CONTAINS
 
     !remove old data files (do only first time)
     if(sum(MCcaseson(1:icase))==1) then
-      call system("rm plots/tranreflprofile/radMCtranreflprofile.txt")
-      call system("rm plots/tranreflprofile/radWoodtranreflprofile.txt")
-      call system("rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+      call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
+      call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
+      call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
     endif
 
     !bin and print data
@@ -1816,22 +1848,27 @@ CONTAINS
   !This subroutine plots MC Leakage value pdfs from data files generated
   !in MCLeakage_pdfbinprint.
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot
+  logical :: flplot = .false.
 
   !preview if at least one chose this, otherwise simply plot
   if(    radMCbinplot  =='preview' .or. radWoodbinplot=='preview' .or. &
          KLWoodbinplot =='preview'                                     ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
+    flplot = .true.
   elseif(radMCbinplot  =='plot' .or. radWoodbinplot=='plot' .or. &
          KLWoodbinplot =='plot'                                        ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
+    flplot = .true.
   endif
   !convert and store
-  call system("ps2pdf tranprofile.ps")
-  call system("ps2pdf reflprofile.ps")
-  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
-  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
+  if(flplot) then
+    call system("ps2pdf tranprofile.ps")
+    call system("ps2pdf reflprofile.ps")
+    call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
+    call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
+  endif
 
   end subroutine MCLeakage_pdfplot
 

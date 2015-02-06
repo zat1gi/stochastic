@@ -1,0 +1,2 @@
+set autoscale
+set yrange[   0.28000:   1.12000]

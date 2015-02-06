@@ -132,7 +132,6 @@ CONTAINS
   endif
 
   call system("ps2pdf genericplot.ps genericplot.pdf")  !convert to pdf
-  call system("ps2eps genericplot.ps")  !convert to eps
 
   end subroutine generic_plotter
 

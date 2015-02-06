@@ -138,8 +138,8 @@ CONTAINS
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
 
-  call system("mv KLrsig.txt plots")
-  call system("mv KLrxisig.txt plots")
+  call system("mv KLrsig.txt plots/KLsigvals")
+  call system("mv KLrxisig.txt plots/KLsigvals")
 
   if( pltKLrrealz(1) .NE. 'noplot' ) then  !plot using generic plotter
     do m=1,pltKLrrealznumof
@@ -182,11 +182,9 @@ CONTAINS
     call generic_plotter( KLrnumpts,pltKLrrealznumof,pltKLrrealzarray,&
                           pltKLrrealz )
 
-    call system("mv genericplot.txt plots/KLrrealzplot.txt")
-    call system("mv genericplot.ps  plots/KLrrealzplot.ps")
-    call system("mv genericplot.pdf plots/KLrrealzplot.pdf")
-    call system("rm plots/KLrrealzplot.eps")
-    call system("mv genericplot.eps plots/KLrrealzplot.eps")
+    call system("mv genericplot.txt plots/KLrrealzplot/KLrrealzplot.txt")
+    call system("mv genericplot.ps  plots/KLrrealzplot/KLrrealzplot.ps")
+    call system("mv genericplot.pdf plots/KLrrealzplot/KLrrealzplot.pdf")
   endif
 
   print *," Total num reconstructed realz w/ neg value: ",negcnt

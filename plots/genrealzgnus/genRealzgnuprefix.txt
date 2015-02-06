@@ -1,2 +1,0 @@
-set autoscale
-set yrange[   0.29404:   0.63632]

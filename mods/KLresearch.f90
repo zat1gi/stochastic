@@ -290,20 +290,18 @@ CONTAINS
   close(unit=16)
 
   if(Corropts(1)=='preview') then
-    call system("cat Correlationfirst.gnu plots/Correlationgnus/Corrps_pause.txt > Correlation.gnu")
+    call system("cat Correlationfirst.gnu plots/Correlation/Corrps_pause.txt > Correlation.gnu")
   else
-    call system("cat Correlationfirst.gnu plots/Correlationgnus/Corrps.txt > Correlation.gnu")
+    call system("cat Correlationfirst.gnu plots/Correlation/Corrps.txt > Correlation.gnu")
   endif
 
   call system("gnuplot Correlation.gnu") !plot using gnuplot
 
-  call system("ps2pdf Correlation.ps Correlation.pdf")         !convert to pdf
-  call system("ps2eps Correlation.ps")         !convert to eps
+  call system("ps2pdf Correlation.ps")         !convert to pdf
 
   call system("rm Correlationfirst.gnu")                       !clean up space
-  call system("rm plots/Correlation.eps")
-  call system("mv Correlation.txt Correlation.ps Correlation.pdf Correlation.eps plots")
-  call system("mv Correlation.gnu plots/Correlationgnus")
+  call system("mv Correlation.txt Correlation.ps Correlation.pdf plots/Correlation")
+  call system("mv Correlation.gnu plots/Correlation")
 
   endif !if plot at all
   end subroutine KL_Correlation
@@ -499,11 +497,9 @@ print *,"CoExp: ",CoExp
   if(pltCo(1) .NE. 'noplot') then
     call generic_plotter( numSlice,pltConumof,Coplotarray,pltCo ) !plot
 
-    call system("mv genericplot.txt plots/CoEffplot.txt")
-    call system("mv genericplot.ps  plots/CoEffplot.ps")
-    call system("mv genericplot.pdf plots/CoEffplot.pdf")
-    call system("rm plots/CoEffplot.eps")
-    call system("mv genericplot.eps plots/CoEffplot.eps")
+    call system("mv genericplot.txt plots/CoEffplot/CoEffplot.txt")
+    call system("mv genericplot.ps  plots/CoEffplot/CoEffplot.ps")
+    call system("mv genericplot.pdf plots/CoEffplot/CoEffplot.pdf")
   endif
 
 
@@ -615,11 +611,9 @@ print *,"CoExp: ",CoExp
     call generic_plotter( binNumof,pltxiBinsnumof,binPDFplotarray,pltxiBins )
 
   !rename "generic" plotting files
-    call system("mv genericplot.txt plots/xiBinsplot.txt")
-    call system("mv genericplot.ps  plots/xiBinsplot.ps")
-    call system("mv genericplot.pdf plots/xiBinsplot.pdf")
-    call system("rm plots/xiBinsplot.eps")
-    call system("mv genericplot.eps plots/xiBinsplot.eps")
+    call system("mv genericplot.txt plots/xiBinsplot/xiBinsplot.txt")
+    call system("mv genericplot.ps  plots/xiBinsplot/xiBinsplot.ps")
+    call system("mv genericplot.pdf plots/xiBinsplot/xiBinsplot.pdf")
   endif
 
 
@@ -670,8 +664,8 @@ print *,"CoExp: ",CoExp
   enddo
   close(unit=1)
   close(unit=2)
-  call system("mv xiBinsAll.txt plots")
-  call system("mv xiBinsper.txt plots")
+  call system("mv xiBinsAll.txt plots/xiBinsplot")
+  call system("mv xiBinsper.txt plots/xiBinsplot")
 
   end subroutine KL_eval
 

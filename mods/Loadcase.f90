@@ -382,7 +382,8 @@ CONTAINS
   use rngvars, only: rngappnum, rngseed
   use timevars, only: time, ntime, totparts, cumparts, FOM, nFOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat
+                          totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
+                          flprint
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
@@ -399,6 +400,7 @@ CONTAINS
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
   !allocate and initialize genRealzvars
+  flprint    = .true.
   numPath    = 0  !setup Markov material tallies
   sumPath    = 0d0
   sqrPath    = 0d0

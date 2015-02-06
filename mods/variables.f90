@@ -60,6 +60,7 @@ module genRealzvars
   character(7)         :: pltgenrealz(4)       !
   integer, allocatable :: pltgenrealzwhich(:)  !
   !non inputs
+  logical              :: flprint              ! flag to print if printing selected
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
   real(8)              :: lamc                 ! "correlation length" for binary mixtures  
   integer, allocatable :: matType(:)           ! material type in cell
