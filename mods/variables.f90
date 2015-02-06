@@ -1,3 +1,34 @@
+module rngvars
+  implicit none
+  integer(8)           :: rngseed              ! user input which seeds rng stream
+
+  integer              :: rngappnum            ! application number
+  integer(8)           :: rngstride=1668163541 ! num of 'part histories' to skip between apps
+contains
+  subroutine setrngappnum( rngapp )
+  !this subroutine sets rngappnum according to what application, to standardize
+  !rngs used for that application
+  character(*) :: rngapp
+  select case (rngapp)
+    case ("radMC")
+      rngappnum = 1
+    case ("radWood")
+      rngappnum = 2
+    case ("KLWood")
+      rngappnum = 3
+    case ("LPMC")
+      rngappnum = 4
+    case ("atmixMC")
+      rngappnum = 5
+    case ("genRealz")
+      rngappnum = 6
+    case ("KLRealz")
+      rngappnum = 7
+  end select
+  end subroutine setrngappnum
+end module rngvars
+
+
 module timevars
   implicit none
   real(8), allocatable :: time(:)              ! keeps cumulative time data for everything

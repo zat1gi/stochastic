@@ -62,6 +62,7 @@ CONTAINS
   !'j' denotes which realization over which the MC transport is performed.
   !'icase' denotes which predefined transport method over which the MC transport is performed.
   !'tnumParts' is the number of particles over which the MC transport is performed.
+  use rngvars, only: rngappnum, rngstride, setrngappnum
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
@@ -71,6 +72,7 @@ CONTAINS
                     refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs
   use genRealz, only: genReal
   use KLreconstruct, only: KLrxi_point
+  use mcnp_random, only: RN_init_particle
 
   integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
 
@@ -81,6 +83,9 @@ CONTAINS
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
+    call setrngappnum(MCcases(icase))
+    call RN_init_particle( int(rngappnum*rngstride+j*tnumParts+o,8) )
+
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i), init weight
     if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
     do ! simulate one pathlength of a particle

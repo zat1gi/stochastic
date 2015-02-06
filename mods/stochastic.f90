@@ -19,20 +19,15 @@ program stochastic
   implicit none
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
-  integer :: seed    !random number seed for overall problem, used once.
-
-
-  call FEmain
-  stop
 
   !!read parameters
   call cpu_time(t1)
-  call readinputstoc( seed )
+  call readinputstoc
   call Acase_load !need to load these to test
   call testinputstoc
 
   !!allocate/prepare global parameters
-  call global_allocate( seed )
+  call global_allocate
   call Acase_print
 
 

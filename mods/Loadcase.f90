@@ -33,7 +33,8 @@ CONTAINS
 
 
 
-  subroutine readinputstoc( seed )
+  subroutine readinputstoc
+  use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -49,8 +50,6 @@ CONTAINS
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin
-  integer :: seed                                   !adv seed
-
   character(7) :: pltallopt                         !Plot all same opt
 
   real(8)       :: dumreal
@@ -60,7 +59,7 @@ CONTAINS
 
   open(unit=2,file="inputstoc.txt")
 
-  read(2,*) seed
+  read(2,*) rngseed
 
   !--- Geometry ---!
   read(2,*) dumchar
@@ -378,8 +377,9 @@ CONTAINS
 
 
 
-  subroutine global_allocate( seed )
+  subroutine global_allocate
   !This subroutine allocates and initializes all global variables
+  use rngvars, only: rngappnum, rngseed
   use timevars, only: time, ntime, totparts, cumparts, FOM, nFOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat
@@ -391,15 +391,12 @@ CONTAINS
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
+  use mcnp_random, only: RN_init_problem
+  integer :: i,icase
 
-  use mcnp_random, only: rang
-  integer :: i,seed,icase
-  real(8) :: seeddum
-
-  !initialize seed
-  do i=1,seed !advance starting seed
-    seeddum = rang()
-  enddo
+  !initialize rngvars
+  rngappnum  = 0
+  call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
   !allocate and initialize genRealzvars
   numPath    = 0  !setup Markov material tallies

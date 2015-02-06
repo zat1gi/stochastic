@@ -1,4 +1,4 @@
-  1958421,         Advance random see how far?
+  1958421,         Random number seed
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
@@ -9,12 +9,12 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
-  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   4,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,no,no,no,no,    Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  yes,yes,yes,yes,yes,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
 

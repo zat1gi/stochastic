@@ -10,14 +10,17 @@ CONTAINS
   subroutine genReal( j,flmode )
   !creates a realization, plots if specified, and collects tallies for realization stats
   !creates for 'binary' mode: binary stochastic media, or 'atmix' mode, atomic mix of that
+  use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
                           totLength, atmixsig, atmixscatrat, scatrat
+  use mcnp_random, only: RN_init_particle
+
   integer :: j
   real(8) :: tt1,tt2
-  character(7) :: flmode !'binary','atmix'
+  character(7) :: flmode !'binary','LPMC','atmix'
 
   integer, parameter :: numArrSz = 5000 !temp var, don't know how long to make arrays yet
   integer :: i,firstloop,matType_temp(numArrSz)
@@ -29,6 +32,9 @@ CONTAINS
 
 
   if(flmode=='binary') then
+    call setrngappnum('genRealz')
+    call RN_init_particle( int(rngappnum*rngstride+j,8) )
+
     matLength_temp=0d0
     matType_temp=0
 

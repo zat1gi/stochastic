@@ -43,6 +43,7 @@ CONTAINS
   !This subroutine reconstructs realizations based upon the KL expansion.
   !It reconstructs based upon the fixed point and fixed xi methods.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
+  use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use genRealzvars, only: s, lamc, sigave
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
@@ -50,6 +51,7 @@ CONTAINS
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
   use timeman, only: KL_timeupdate
+  use mcnp_random, only: RN_init_particle
   integer :: i,j,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
   character(3) :: neg
@@ -59,6 +61,9 @@ CONTAINS
 
   write(*,*) "Starting method: ",flKLtype  
   do j=1,KLrnumRealz
+
+    call setrngappnum('KLRealz')
+    call RN_init_particle( int(rngappnum*rngstride+j,8) )
 
     KLrsig = 0          !create a realization, fixed point
     do i=1,KLrnumpoints(1)

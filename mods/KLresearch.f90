@@ -320,6 +320,7 @@ CONTAINS
   !Currently it does so by integrating over the total cross section in each region,
   !soon it will by integrating over a factor which only considers information that 
   !distinguishes one material from another.
+  use rngvars, only: rngappnum, rngstride
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P, &
                           sigave
@@ -327,6 +328,7 @@ CONTAINS
   use MCvars, only: trannprt
   use genRealz, only: genReal
   use timeman, only: KL_timeupdate
+  use mcnp_random, only: RN_init_particle
   integer :: i,j,k,curEig,lsig,ssig
   real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
@@ -338,6 +340,10 @@ CONTAINS
     lsig = merge(1,2,sig(1)>sig(2))
     ssig = merge(1,2,sig(1)<sig(2))
   endif
+  !advance rng
+  call RN_init_particle( int(rngappnum*rngstride,8) )
+  rngappnum = rngappnum + 1
+
   do j=1,numRealz
     call genReal( j,'binary ' )
     do curEig=1,numEigs
