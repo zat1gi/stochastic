@@ -259,11 +259,16 @@ module MLMCvars
   implicit none
   !inputs
   character(3)         :: detMLMC              ! perform deterministic MLMC on varying coefs? yes or no
+  real(8)              :: MLMC_TOL             ! Tolerance to iterate until achieved
+  integer              :: numcellsLevel0       ! number of cells in initial Level of MLMC 
+  integer              :: nextLevelFactor      ! factor to increase number of cells in each Level by
 
   !non inputs
   integer, parameter   :: numPosMLMCmeths = 1  ! total number of MLMC transport methods available
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
+  integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
+
 
 end module MLMCvars
 

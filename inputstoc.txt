@@ -21,6 +21,7 @@
 
   !--- Large MLMC Options ---!
   yes,            Perform detMLMC subroutines? ('yes' or 'no')
+  0.00000001,     Tolerance which signifies iterating complete
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -38,6 +39,10 @@
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20, WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
+
+  !--- Lesser MLMC Options ---!
+  10, 2,          Number of cells in Level 0, factor to increase by in each Level
+
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose

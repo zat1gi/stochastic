@@ -50,7 +50,7 @@ CONTAINS
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype
-  use MLMCvars,             only: detMLMC
+  use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor
   character(7) :: pltallopt                         !Plot all same opt
 
   real(8)       :: dumreal
@@ -88,6 +88,7 @@ CONTAINS
   !--- Large MLMC Options ---!
   read(2,*) dumchar
   read(2,*) detMLMC
+  read(2,*) MLMC_TOL
 
   !--- Lesser KL Options ---!
   read(2,*) dumchar
@@ -107,6 +108,11 @@ CONTAINS
   read(2,*) KLadjust,meanadjust_tol
   read(2,*) refsigMode,userrefsig,negwgtbinnum,nwvalsperbin
   read(2,*) wgtmaxmin,wgtmax,wgtmin
+
+  !--- Lesser MLMC Options ---!
+  read(2,*) dumchar
+  read(2,*) numcellsLevel0, nextLevelFactor
+
 
 
   read(2,*) dumchar    !All Plot Same Way Option
