@@ -260,6 +260,8 @@ module MLMCvars
   !inputs
   character(3)         :: detMLMC              ! perform deterministic MLMC on varying coefs? yes or no
   real(8)              :: MLMC_TOL             ! Tolerance to iterate until achieved
+  real(8)              :: MLMC_TOLsplit        ! Phi - Tol split param, how much to type I or II err
+  real(8)              :: MLMC_failprob        ! alpha - prob of fail to converge for MC in stoc dim
   integer              :: numcellsLevel0       ! number of cells in initial Level of MLMC 
   integer              :: nextLevelFactor      ! factor to increase number of cells in each Level by
 
@@ -268,7 +270,7 @@ module MLMCvars
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
-
+  real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
 
 end module MLMCvars
 

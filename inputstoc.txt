@@ -21,7 +21,7 @@
 
   !--- Large MLMC Options ---!
   yes,            Perform detMLMC subroutines? ('yes' or 'no')
-  0.00000001,     Tolerance which signifies iterating complete
+  0.00000001, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -42,7 +42,7 @@
 
   !--- Lesser MLMC Options ---!
   10, 2,          Number of cells in Level 0, factor to increase by in each Level
-
+  0.05,          UQ_MC failure probability alpha
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
