@@ -14,7 +14,7 @@ program stochastic
   use genRealzvars
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
-  use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson
+  use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, probtype
   use MLMCvars, only: MLMCcaseson
 
   implicit none
@@ -55,7 +55,7 @@ program stochastic
 
 
   !!Perform UQ-MC for transport problems  
-  if( sum(MCcaseson)>0 ) then        !perform if at least one case chosen
+  if( sum(MCcaseson)>0 .and. probtype=='material') then !perform if at least one case chosen
     do icase=1,size(MCcaseson)       !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
         call UQ_MC( icase )          !perform transport
@@ -67,7 +67,7 @@ program stochastic
   call MCLeakage_pdfplot
 
   !!Perform MLMC with deterministic transport
-  if( sum(MLMCcaseson)>0 ) then        !perform if at least one case chosen
+  if( sum(MLMCcaseson)>0 .and. probtype=='coeffs') then !perform if at least one case chosen
     do icase = 1,size(MLMCcaseson)     !cycle through possible cases
       if( MLMCcaseson(icase)==1 ) then !run case if chosen
         call UQ_MLMC( icase )          !perform UQ problem
@@ -76,11 +76,13 @@ program stochastic
   endif
 
   !!print final reports
-!  call clearreports
-!  call Acase_print
-!  call Woodnegstats
-!  if(sum(MCcaseson)/=0) call MCprintstats
-!  call timereport
-!  call finalreport
+  if(probtype=='material') then
+    call clearreports
+    call Acase_print
+    call Woodnegstats
+    if(sum(MCcaseson)/=0) call MCprintstats
+    call timereport
+    call finalreport
+  endif
 
 end program stochastic

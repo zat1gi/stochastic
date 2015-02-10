@@ -49,7 +49,7 @@ CONTAINS
                                   pltflux, allowneg, distneg, radMC, radWood, WAMC, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
-                                  negwgtbinnum, nwvalsperbin
+                                  negwgtbinnum, nwvalsperbin, probtype
   use MLMCvars,             only: detMLMC
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -61,6 +61,7 @@ CONTAINS
   open(unit=2,file="inputstoc.txt")
 
   read(2,*) rngseed
+  read(2,*) probtype
 
   !--- Geometry ---!
   read(2,*) dumchar

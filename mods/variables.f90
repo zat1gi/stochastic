@@ -160,6 +160,7 @@ end module KLvars
 module MCvars
   implicit none
   !inputs
+  character(8)         :: probtype             ! 'material' or 'coefs', what is random?
   character(3)         :: radMC                ! perform TMC on binary mixtures operations?
   character(3)         :: radWood              ! perform WMC on binary mixtures operations?
   character(3)         :: KLWood               ! perform WMC on KL reconstructions operations?

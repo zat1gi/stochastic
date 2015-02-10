@@ -1,4 +1,5 @@
   1958421,         Random number seed
+  coeffs,          Transport problem type, 'material', or 'coeffs'
   !--- Geometry ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
