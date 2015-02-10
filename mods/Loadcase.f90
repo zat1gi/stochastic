@@ -50,6 +50,7 @@ CONTAINS
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin
+  use MLMCvars,             only: detMLMC
   character(7) :: pltallopt                         !Plot all same opt
 
   real(8)       :: dumreal
@@ -82,6 +83,10 @@ CONTAINS
   read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC
   read(2,*) numParts
   read(2,*) LPamnumParts
+
+  !--- Large MLMC Options ---!
+  read(2,*) dumchar
+  read(2,*) detMLMC
 
   !--- Lesser KL Options ---!
   read(2,*) dumchar
@@ -392,6 +397,7 @@ CONTAINS
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
+  use MLMCvars, only: MLMCcaseson, numPosMLMCmeths, MLMCcases, detMLMC
   use mcnp_random, only: RN_init_problem
   integer :: i,icase
 
@@ -479,6 +485,15 @@ CONTAINS
     stocMC_fluxmat1 = 0.0d0
     stocMC_fluxmat2 = 0.0d0
   endif
+
+
+  !allocate/initialize MLMCvars
+  allocate(MLMCcaseson(numPosMLMCmeths))
+  MLMCcaseson = 0
+  if(detMLMC=='yes') MLMCcaseson(1) = 1
+
+  allocate(MLMCcases(numPosMLMCmeths))
+  MLMCcases(1) = 'detMLMC'
 
 
   !allocate and initialize timevars

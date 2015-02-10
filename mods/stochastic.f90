@@ -8,13 +8,14 @@ program stochastic
   use KLresearch
   use KLreconstruct
   use KLmeanadjust
+  use MLMC
   use FEDiffSn
 
   use genRealzvars
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
-  use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, &
-                    numPosMCmeths
+  use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson
+  use MLMCvars, only: MLMCcaseson
 
   implicit none
   ! pass by reference
@@ -55,7 +56,7 @@ program stochastic
 
   !!Perform UQ-MC for transport problems  
   if( sum(MCcaseson)>0 ) then        !perform if at least one case chosen
-    do icase=1,numPosMCmeths         !cycle through possible cases
+    do icase=1,size(MCcaseson)       !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
         call UQ_MC( icase )          !perform transport
       endif
@@ -65,12 +66,21 @@ program stochastic
   call MCfluxPlot
   call MCLeakage_pdfplot
 
+  !!Perform MLMC with deterministic transport
+  if( sum(MLMCcaseson)>0 ) then        !perform if at least one case chosen
+    do icase = 1,size(MLMCcaseson)     !cycle through possible cases
+      if( MLMCcaseson(icase)==1 ) then !run case if chosen
+        call UQ_MLMC( icase )          !perform UQ problem
+      endif
+    enddo
+  endif
+
   !!print final reports
-  call clearreports
-  call Acase_print
-  call Woodnegstats
-  if(sum(MCcaseson)/=0) call MCprintstats
-  call timereport
-  call finalreport
+!  call clearreports
+!  call Acase_print
+!  call Woodnegstats
+!  if(sum(MCcaseson)/=0) call MCprintstats
+!  call timereport
+!  call finalreport
 
 end program stochastic

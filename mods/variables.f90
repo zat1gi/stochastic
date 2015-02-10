@@ -251,3 +251,18 @@ module MCvars
   real(8), allocatable :: negwgtsigs(:,:)      ! sigs for ad negwgts, rank 2, 1=sigs, 2=sigt, 3=refsig
 end module MCvars
 
+
+
+!--- UQ_MLMC   ---!
+module MLMCvars
+  implicit none
+  !inputs
+  character(3)         :: detMLMC              ! perform deterministic MLMC on varying coefs? yes or no
+
+  !non inputs
+  integer, parameter   :: numPosMLMCmeths = 1  ! total number of MLMC transport methods available
+  integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
+  character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
+
+end module MLMCvars
+

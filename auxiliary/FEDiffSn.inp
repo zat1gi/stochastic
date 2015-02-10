@@ -1,14 +1,14 @@
   !--- Problem Type ---!
-  1,1,1              #Solve: diffusion,Sn,DSA     1==yes, 0==no
+  0,1,0              #Solve: diffusion,Sn,DSA     1==yes, 0==no
   no,               #should I plot?
 
   !--- Material and Mesh ---!
   1.0, 0.999,      #sigt,c
   10.0,100,          #a,numcells
-  4,              #numangs
+  8,              #numangs
 
   !--- Source ---!
-  func1,           #qtype, 'evend', 'func1', or 'moms'
+  evend,           #qtype, 'evend', 'func1', or 'moms'
   1.0,             #constq
   0.0,0.0,         #curRight,curLeft
   vacuum,          #SnBCs

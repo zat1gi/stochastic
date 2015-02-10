@@ -9,14 +9,17 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Large KL Options ---!
-  yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   4,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,yes,yes,yes,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  no,no,no,no,no,no,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
+
+  !--- Large MLMC Options ---!
+  yes,            Perform detMLMC subroutines? ('yes' or 'no')
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -36,7 +39,7 @@
   no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !!--All Plotting Option
-  preview,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
 
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
