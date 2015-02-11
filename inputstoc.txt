@@ -42,6 +42,7 @@
 
   !--- Lesser MLMC Options ---!
   10, 2,          Number of cells in Level 0, factor to increase by in each Level
+  10000,         Baseline number of samples for new MLMC Level
   0.05,          UQ_MC failure probability alpha
 
   !!--All Plotting Option

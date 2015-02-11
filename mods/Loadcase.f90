@@ -51,7 +51,7 @@ CONTAINS
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype
   use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
-                                  MLMC_failprob
+                                  MLMC_failprob, bnumMLMCsamps
   character(7) :: pltallopt                         !Plot all same opt
 
   real(8)       :: dumreal
@@ -113,6 +113,7 @@ CONTAINS
   !--- Lesser MLMC Options ---!
   read(2,*) dumchar
   read(2,*) numcellsLevel0, nextLevelFactor
+  read(2,*) bnumMLMCsamps
   read(2,*) MLMC_failprob
 
 
