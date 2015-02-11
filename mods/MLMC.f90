@@ -232,18 +232,30 @@ if(Level==5) flMLMC = .false.
   !4 Evaluate any new samples needed
   subroutine MLMCevalNewSamps( Level )
   !Evaluate any new samples needed, recompute functional values
+  use MLMCvars, only: M_optsamps
   use rngvars, only: setrngappnum, rngappnum, rngstride
   use mcnp_random, only: RN_init_particle
   integer :: Level
 
-  integer :: isamp
+  integer :: ilevel,isamp, isamplow
 
-  !advance rng to sample specific info, create/re-create sample in input file
-  call setrngappnum('MLMCsamp')
-  call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
-  !run simulation, interface with FEDiffSn to collect response function and store as part of uflux
-
-  !calculate functional values: Q_ufunctional, G_ufunctional, Gave, Gvar
+  do ilevel = 0,Level-1                                        !search each level
+    if( M_optsamps(1,ilevel)>M_optsamps(2,ilevel) ) then       !if new samps to compute
+      isamplow = merge(M_optsamps(2,ilevel)+1,1,ilevel/=Level) !set lowest samp num
+      do isamp = isamplow,M_optsamps(1,ilevel)                 !cycle through samps to compute
+        call setrngappnum('MLMCsamp')                          !set rng unique to sample
+        call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
+                                                               !update solver input info
+                                                               !run solver
+                                                               !collect uflux
+        !run simulation, interface with FEDiffSn to collect response function and store as part of uflux
+      enddo
+    endif
+    !calc Q_ufunctional
+    !calc G_ufunctional
+    !calc Gave
+    !calc Gvar
+  enddo
 
   end subroutine MLMCevalNewSamps
 

@@ -272,8 +272,8 @@ module MLMCvars
   integer, parameter   :: numPosMLMCmeths = 1  ! total number of MLMC transport methods available
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
-  integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
+  integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est,Level)
 
   real(8), allocatable :: uflux(:,:,:)         ! response function, flux here (samp#,Level,cell)
