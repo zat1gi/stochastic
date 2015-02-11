@@ -27,15 +27,18 @@ CONTAINS
     if(Level /= 0) call MLMCaddLevel( Level )
 
     !2 Using M~(current samples) solve V~(estimated variance) for each level L
+    !if(Level /= 0) call MLMCsolveEstVar
 
     !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
     !3.2 expand arrays to hold new M~s(number of samples)
+    !if(Level /= 0) call MLMCcomputeOptSamps( Level )
     if(Level /= 0) call MLMCaddSamples( Level )
 
     !4 Evaluate any new samples needed
+    call MLMCevalNewSamps( Level )
 
     !5 test total error, set flMLMC==.false.?
-    !MLMCerrest = calcMLMCerrest()
+    !MLMCerrest = MLMCcalcErrEst( Level )
     MLMCerrest = 0.1d0
     if(Level>1 .and. MLMCerrest<=MLMC_TOL) then
       flMLMC = .false.
@@ -84,8 +87,9 @@ if(Level==5) flMLMC = .false.
 
   C_alpha = sqrt(2.0d0)*erfi(1.0d0-MLMC_failprob)
 
-  numMLMCcells  = numcellsLevel0
-  M_optsamps    = bnumMLMCsamps
+  numMLMCcells    = numcellsLevel0
+  M_optsamps(1,0) = bnumMLMCsamps
+  M_optsamps(2,0) = 0
 
   uflux         = 0.0d0
   Q_ufunctional = 0.0d0
@@ -215,6 +219,33 @@ if(Level==5) flMLMC = .false.
   deallocate(trarray2)
 
   end subroutine MLMCaddSamples
+
+
+
+  !2 Using M~(current samples) solve V~(estimated variance) for each level L
+!  subroutine MLMCsolveEstVar( Level )
+
+
+!  end subroutine MLMCsolveEstVar
+
+
+  !4 Evaluate any new samples needed
+  subroutine MLMCevalNewSamps( Level )
+  !Evaluate any new samples needed, recompute functional values
+  use rngvars, only: setrngappnum, rngappnum, rngstride
+  use mcnp_random, only: RN_init_particle
+  integer :: Level
+
+  integer :: isamp
+
+  !advance rng to sample specific info, create/re-create sample in input file
+  call setrngappnum('MLMCsamp')
+  call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
+  !run simulation, interface with FEDiffSn to collect response function and store as part of uflux
+
+  !calculate functional values: Q_ufunctional, G_ufunctional, Gave, Gvar
+
+  end subroutine MLMCevalNewSamps
 
 
 end module MLMC

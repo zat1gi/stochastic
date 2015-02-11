@@ -24,6 +24,8 @@ contains
       rngappnum = 6
     case ("KLRealz")
       rngappnum = 7
+    case ("MLMCsamp")
+      rngappnum = 8
   end select
   end subroutine setrngappnum
 end module rngvars
