@@ -245,10 +245,8 @@ if(Level==5) flMLMC = .false.
       do isamp = isamplow,M_optsamps(1,ilevel)                 !cycle through samps to compute
         call setrngappnum('MLMCsamp')                          !set rng unique to sample
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
-                                                               !update solver input info
-                                                               !run solver
-                                                               !collect uflux
-        !run simulation, interface with FEDiffSn to collect response function and store as part of uflux
+        call writeinputfile                                    !update solver input info
+        call solveflux( ilevel,isamp )                         !run solver & collect uflux
       enddo
     endif
     !calc Q_ufunctional
@@ -258,6 +256,48 @@ if(Level==5) flMLMC = .false.
   enddo
 
   end subroutine MLMCevalNewSamps
+
+
+
+  subroutine writeinputfile
+  !This subroutine writes new input file for FE solver
+  use mcnp_random, only: rang
+
+  !determine values here
+
+  !replace values here
+  !sigt and c
+  !call system("sed -i '6s/.*/"  1.0, 0.999,      #sigt,c"/' auxiliary/FEDiffSn.inp")
+  !number of cells
+  !call system("sed -i '7s/.*/"  100,             #numcells"/' auxiliary/FEDiffSn.inp")
+
+
+  end subroutine writeinputfile
+
+
+
+  subroutine solveflux( ilevel,isamp )
+  !This subroutine drives the solver for a new response function flux for a new sample
+  !collects solution, and deallocated module variables from FEDiffSn.
+  use MLMCvars, only: uflux
+  use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
+                      solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
+
+  integer :: ilevel, isamp
+
+  call FEmain
+  
+  if(solve(3)==1) then
+    uflux(isamp,ilevel,1:size(phiDSAl)) = (phiDSAl + phiDSAr) / 2.0d0
+  elseif(solve(2)==1) then
+    uflux(isamp,ilevel,1:size(phiSnl)) = (phiSnl + phiSnr) / 2.0d0
+  elseif(solve(1)==1) then
+    uflux(isamp,ilevel,1:size(phidiff)) = phidiff
+  endif
+
+  call FEDiffSn_externaldeallocate
+
+  end subroutine solveflux
 
 
 end module MLMC

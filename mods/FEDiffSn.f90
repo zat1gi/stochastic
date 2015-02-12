@@ -1,6 +1,11 @@
 module FEDiffSn
   implicit none
 
+  integer, allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes, solve(3)==1, DSAyes
+  real(8), allocatable :: phidiff(:)
+  real(8), allocatable :: phiSnl(:) ,phiSnr(:)
+  real(8), allocatable :: phiDSAl(:),phiDSAr(:)
+
 CONTAINS
 
   !---------------------------------------------------------------------------------
@@ -14,7 +19,6 @@ CONTAINS
 
   !Input Vars
   integer :: numcells,numangs
-  integer,allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes, solve(3)==1, DSAyes
   real(8) :: sigt,c,a,curRight,curLeft,constq,phistart,tol
   character(5) :: qtype !'evend'const src,'func1'quad src,'moms'methodofmansolns src
   character(7) :: SnBCs !'vacuum' for vacuum
@@ -23,10 +27,10 @@ CONTAINS
   !Derived Vars
   integer :: iter
   real(8) :: siga,dx,error,tic,toc,Sntime,Sntimeperiter,DSAtime,DSAtimeperiter,timehere
-  real(8),allocatable :: phidiff(:),phipos(:),q(:),                x(:)
-  real(8),allocatable :: phiSnl(:),phiSnr(:),phiSnlold(:),phiSnrold(:)
+  real(8),allocatable :: phipos(:),q(:),                x(:)
+  real(8),allocatable :: phiSnlold(:),phiSnrold(:)
   real(8),allocatable :: psil(:,:),psir(:,:),psiBCl(:),psiBCr(:),qr(:),ql(:),mu(:),wgts(:)
-  real(8),allocatable :: phiDSAl(:),phiDSAr(:),phiHsl(:),phiHsr(:),phiresl(:),phiresr(:)
+  real(8),allocatable :: phiHsl(:),phiHsr(:),phiresl(:),phiresr(:)
   real(8),allocatable :: phiDSAlold(:),phiDSArold(:),phiDSAdiff(:)
   real(8) :: alpha,beta
 
@@ -156,6 +160,11 @@ CONTAINS
     call compareSnDSA(  numcells,x,phiSnl,phiSnr,phiDSAl,phiDSAr,qtype,flplot ) !soln(Sn=DSA)?
   endif
 
+  call FEDiffSn_internaldeallocate( phipos,q,x,phiSnlold, &
+                                 phiSnrold,psil,psir,psiBCl,psiBCr,qr,ql,mu,wgts, &
+                                 phiHsl,phiHsr,phiresl,phiresr, &
+                                 phiDSAlold,phiDSArold,phiDSAdiff )
+
   end subroutine FEmain
 
 
@@ -190,7 +199,8 @@ CONTAINS
 
   read(2,*) dumchar    !Material and Mesh
   read(2,*) sigt,c
-  read(2,*) a,numcells
+  read(2,*) numcells
+  read(2,*) a
   read(2,*) numangs
 
   read(2,*) dumchar    !Source
@@ -868,6 +878,54 @@ CONTAINS
   enddo
   end subroutine HalfResSum
 
+
+
+
+  subroutine FEDiffSn_internaldeallocate( phipos,q,x,phiSnlold, &
+                                 phiSnrold,psil,psir,psiBCl,psiBCr,qr,ql,mu,wgts, &
+                                 phiHsl,phiHsr,phiresl,phiresr, &
+                                 phiDSAlold,phiDSArold,phiDSAdiff )
+
+  real(8),allocatable :: phipos(:),q(:),                x(:)
+  real(8),allocatable :: phiSnlold(:),phiSnrold(:)
+  real(8),allocatable :: psil(:,:),psir(:,:),psiBCl(:),psiBCr(:),qr(:),ql(:),mu(:),wgts(:)
+  real(8),allocatable :: phiHsl(:),phiHsr(:),phiresl(:),phiresr(:)
+  real(8),allocatable :: phiDSAlold(:),phiDSArold(:),phiDSAdiff(:)
+
+  if(allocated(phipos)) deallocate(phipos)
+  if(allocated(q)) deallocate(q)
+  if(allocated(x)) deallocate(x)
+  if(allocated(phiSnlold)) deallocate(phiSnlold)
+  if(allocated(phiSnrold)) deallocate(phiSnrold)
+  if(allocated(psil)) deallocate(psil)
+  if(allocated(psir)) deallocate(psir)
+  if(allocated(psiBCl)) deallocate(psiBCl)
+  if(allocated(psiBCr)) deallocate(psiBCr)
+  if(allocated(qr)) deallocate(qr)
+  if(allocated(ql)) deallocate(ql)
+  if(allocated(mu)) deallocate(mu)
+  if(allocated(wgts)) deallocate(wgts)
+  if(allocated(phiHsl)) deallocate(phiHsl)
+  if(allocated(phiHsr)) deallocate(phiHsr)
+  if(allocated(phiresl)) deallocate(phiresl)
+  if(allocated(phiresl)) deallocate(phiresl)
+  if(allocated(phiDSAlold)) deallocate(phiDSAlold)
+  if(allocated(phiDSArold)) deallocate(phiDSArold)
+  if(allocated(phiDSAdiff)) deallocate(phiDSAdiff)
+
+  end subroutine FEDiffSn_internaldeallocate
+
+
+
+  subroutine FEDiffSn_externaldeallocate
+  !Deallocate module (not pass-by-reference) variables
+  if(allocated(solve)) deallocate(solve)
+  if(allocated(phidiff)) deallocate(phidiff)
+  if(allocated(phiSnl)) deallocate(phiSnl)
+  if(allocated(phiSnr)) deallocate(phiSnr)
+  if(allocated(phiDSAl)) deallocate(phiDSAl)
+  if(allocated(phiDSAr)) deallocate(phiDSAr)
+  end subroutine FEDiffSn_externaldeallocate
 
 
 end module FEDiffSn

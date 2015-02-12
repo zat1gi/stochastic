@@ -4,7 +4,8 @@
 
   !--- Material and Mesh ---!
   1.0, 0.999,      #sigt,c
-  10.0,100,          #a,numcells
+  100,             #numcells
+  10.0,            #a
   8,              #numangs
 
   !--- Source ---!
