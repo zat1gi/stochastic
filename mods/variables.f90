@@ -45,7 +45,7 @@ module timevars
   integer, allocatable :: totparts(:)          ! total particles to be run in each method
   integer, allocatable :: cumparts(:)          ! cumulative particles run in each method
 
-end module
+end module timevars
 
 
 module genRealzvars
@@ -87,7 +87,27 @@ module genRealzvars
   real(8)              :: sqrPath(2)           !
   real(8), allocatable :: matdxs(:,:,:)        ! delta x of different materials for flux tallying
 
-end module
+end module genRealzvars
+
+
+
+module genSampvars
+  implicit none
+  !inputs
+  character(8)         :: specialprob          ! such as 'mc2013.1' 'mc2013.2' 'mc2015.1'
+  integer              :: nummat               ! number of materials in problem
+  character(10)        :: param1(2)            ! designation for parameter 1 and its uncertainty
+  character(10)        :: param2(2)            ! designation for parameter 2 and its uncertainty
+  real(8), allocatable :: param1_mean(:)       ! average of parameter 1
+  real(8), allocatable :: param1_uncert(:)     ! uncertainty of parameter 1
+  real(8), allocatable :: param2_mean(:)       ! average of parameter 2
+  real(8), allocatable :: param2_uncert(:)     ! uncertainty of parameter 2
+
+  !non-inputs
+  real(8), allocatable :: sigt(:)              ! total cross sections
+  real(8), allocatable :: FE_c(:)              ! 'c' for FEDiffSn input
+
+end module genSampvars
 
 
 

@@ -37,6 +37,8 @@ CONTAINS
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich
+  use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
+                         param2_mean, param2_uncert
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -64,7 +66,7 @@ CONTAINS
   read(2,*) rngseed
   read(2,*) probtype
 
-  !--- Geometry ---!
+  !--- Geometry - 'material' type problem ---!
   read(2,*) dumchar
   read(2,*) Adamscase
   read(2,*) sig(1),sig(2)
@@ -116,6 +118,18 @@ CONTAINS
   read(2,*) bnumMLMCsamps
   read(2,*) MLMC_failprob
 
+  !--- Geometry - 'coeffs' type problem ---!
+  read(2,*) dumchar
+  read(2,*) specialprob
+  read(2,*) dumchar, nummat
+  allocate(param1_mean(nummat))
+  allocate(param1_uncert(nummat))
+  allocate(param2_mean(nummat))
+  allocate(param2_uncert(nummat))
+  read(2,*) param1(1), param1_mean
+  read(2,*) param1(2), param1_uncert
+  read(2,*) param2(1), param2_mean
+  read(2,*) param2(2), param2_uncert
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
@@ -210,6 +224,7 @@ CONTAINS
   subroutine testinputstoc
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich
+  use genSampvars, only: specialprob, param1, param2
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
@@ -383,6 +398,34 @@ CONTAINS
   endif
 
 
+  if( specialprob/='none' .and. specialprob/='mc2013.1' .and. specialprob/='mc2013.2' .and. &
+      specialprob/='mc2015.1') then !Tests for genSampvars input
+    print *,"--Enter 'none' or a valid special problem for genSamp specialproblem"
+    flstopstatus = 'yes'
+  endif
+  if( param1(1)/='sigt' .and. param1(1)/='sigs' ) then
+    print *,"--Enter 'sigt' or 'sigs' as first parameter type for genSamp"
+    flstopstatus = 'yes'
+  endif
+  if( param2(1)/='c' .and. param2(1)/='siga' .and. param2(1)/='sigs' ) then
+    print *,"--Enter 'c', 'siga', or 'sigs' as second parameter type for genSamp"
+    flstopstatus = 'yes'
+  endif
+  if( (param1(1)=='sigt' .and. (param1(2)/='sigt1-abs' .and. param1(2)/='sigt1-frac')) .or. &
+      (param1(1)=='sigs' .and. (param1(2)/='sigs1-abs' .and. param1(2)/='sigs1-frac')) ) then
+    print *,"--Enter the uncertainty on param1 of a same type as the mean"
+    flstopstatus = 'yes'
+  endif
+  if( (param2(1)=='c' .and. (param2(2)/='c1-abs' .and. param2(2)/='c1-frac')) .or. &
+      (param2(1)=='siga' .and. (param2(2)/='siga1-abs' .and. param2(2)/='siga1-frac')) .or. &
+      (param2(1)=='sigs' .and. (param2(2)/='sigs1-abs' .and. param2(2)/='sigs1-frac')) ) then
+    print *,"--Enter the uncertainty on param2 of a same type as the mean"
+    flstopstatus = 'yes'
+  endif
+  if( param1(1)=='sigs' .and. param2(1)/='siga' ) then
+    print *,"--If param1 is sigs, param2 must be siga"
+    flstopstatus = 'yes'
+  endif 
 
   if( flstopstatus=='yes' ) STOP 'killed'
   if( flsleep=='yes' ) call sleep(4)

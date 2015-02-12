@@ -245,8 +245,8 @@ if(Level==5) flMLMC = .false.
       do isamp = isamplow,M_optsamps(1,ilevel)                 !cycle through samps to compute
         call setrngappnum('MLMCsamp')                          !set rng unique to sample
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
-        call writeinputfile                                    !update solver input info
-        call solveflux( ilevel,isamp )                         !run solver & collect uflux
+        call sampleInput                                    !update solver input info
+!        call solveflux( ilevel,isamp )                         !run solver & collect uflux
       enddo
     endif
     !calc Q_ufunctional
@@ -259,10 +259,21 @@ if(Level==5) flMLMC = .false.
 
 
 
-  subroutine writeinputfile
-  !This subroutine writes new input file for FE solver
+  subroutine sampleInput
+  !This subroutine samples input parameters for this solve and passes them as needed
+  use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
+                         param2_mean, param2_uncert
   use mcnp_random, only: rang
 
+print *,"specialprob:",specialprob
+print *,"nummat:",nummat
+print *,"param1:",param1
+print *,"param1_mean:",param1_mean
+print *,"param1_uncert:",param1_uncert
+print *,"param2:",param2
+print *,"param2_mean:",param2_mean
+print *,"param2_uncert:",param2_uncert
+stop
   !determine values here
 
   !replace values here
@@ -272,7 +283,7 @@ if(Level==5) flMLMC = .false.
   !call system("sed -i '7s/.*/"  100,             #numcells"/' auxiliary/FEDiffSn.inp")
 
 
-  end subroutine writeinputfile
+  end subroutine sampleInput
 
 
 

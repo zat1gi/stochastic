@@ -1,6 +1,6 @@
   1958421,         Random number seed
   coeffs,          Transport problem type, 'material', or 'coeffs'
-  !--- Geometry ---!
+  !--- Geometry - 'material' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
@@ -44,6 +44,14 @@
   10, 2,          Number of cells in Level 0, factor to increase by in each Level
   10000,         Baseline number of samples for new MLMC Level
   0.05,          UQ_MC failure probability alpha
+
+  !--- Geometry - 'coeffs' type problem ---!
+  none,       special prob descriptor, overrides options i.e. mc2013.1 mc2013.2 mc2015.1    
+  nummat, 1,        Number of Materials 
+   sigt,      1.0, 1.0,         first xs parameter for each material
+   sigt1-abs, 0.1, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
+   c,         0.8, 0.3,        second xs parameter for each material
+   c1-abs,   0.09, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
