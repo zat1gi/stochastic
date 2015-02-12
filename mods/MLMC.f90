@@ -23,6 +23,7 @@ CONTAINS
 
   !main MLMC loop
   do while(flMLMC)
+print *,"Level:",Level
 
     !1 Determine number of cells, make array which holds number of cells as a function of level L
     !1 aka add new Level and necessary cells
@@ -46,8 +47,7 @@ CONTAINS
       flMLMC = .false.
     else
       Level = Level + 1
-print *,"Level:",Level
-if(Level==5) flMLMC = .false.
+if(Level==4) flMLMC = .false.
     endif
   enddo !loops over realizations
 
@@ -60,13 +60,12 @@ if(Level==5) flMLMC = .false.
 
   subroutine MLMCallocate
   !Allocate arrays here.  Try to only allocate in order to make paralellization easier later.
-  use MLMCvars, only: numMLMCcells, M_optsamps, uflux, Q_ufunctional, G_ufunctional, &
+  use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
                       Gave, Gvar, bnumMLMCsamps, numcellsLevel0
 
   if(.not.allocated(numMLMCcells)) allocate(numMLMCcells(0:0))
   if(.not.allocated(M_optsamps)) allocate(M_optsamps(2,0:0))
 
-  if(.not.allocated(uflux)) allocate(uflux(bnumMLMCsamps,0:0,numcellsLevel0))
   if(.not.allocated(Q_ufunctional)) allocate(Q_ufunctional(bnumMLMCsamps,0:0))
   if(.not.allocated(G_ufunctional)) allocate(G_ufunctional(bnumMLMCsamps,0:0))
   if(.not.allocated(Gave)) allocate(Gave(0:0))
@@ -78,7 +77,7 @@ if(Level==5) flMLMC = .false.
   subroutine MLMCinitialize( flMLMC, Level )
   !Initialize/load values to variables here.
   use MLMCvars, only: numMLMCcells, numcellsLevel0, MLMC_failprob, C_alpha, &
-                      M_optsamps, uflux, Q_ufunctional, G_ufunctional, &
+                      M_optsamps, Q_ufunctional, G_ufunctional, &
                       Gave, Gvar, bnumMLMCsamps
   use utilities, only: erfi
   integer :: Level
@@ -93,7 +92,6 @@ if(Level==5) flMLMC = .false.
   M_optsamps(1,0) = bnumMLMCsamps
   M_optsamps(2,0) = 0
 
-  uflux         = 0.0d0
   Q_ufunctional = 0.0d0
   G_ufunctional = 0.0d0
   Gave          = 0.0d0
@@ -104,13 +102,12 @@ if(Level==5) flMLMC = .false.
 
   subroutine MLMCdeallocate
   !Deallocate arrays here.
-  use MLMCvars, only: numMLMCcells, M_optsamps, uflux, Q_ufunctional, G_ufunctional, &
+  use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
                       Gave, Gvar
 
   if(allocated(numMLMCcells)) deallocate(numMLMCcells)
   if(allocated(M_optsamps)) deallocate(M_optsamps)
 
-  if(allocated(uflux)) deallocate(uflux)
   if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
   if(allocated(G_ufunctional)) deallocate(G_ufunctional)
   if(allocated(Gave)) deallocate(Gave)
@@ -125,7 +122,7 @@ if(Level==5) flMLMC = .false.
   subroutine MLMCaddLevel( Level )
   !Increase size of arrays to handle new Level and in case of response function
   !the associated number of cells as well.
-  use MLMCvars, only: numMLMCcells, nextLevelFactor, uflux, Q_ufunctional, &
+  use MLMCvars, only: numMLMCcells, nextLevelFactor, Q_ufunctional, &
                       G_ufunctional, Gave, Gvar, M_optsamps, bnumMLMCsamps
   integer :: Level
 
@@ -134,7 +131,6 @@ if(Level==5) flMLMC = .false.
 
   real(8), allocatable :: trarray1(:)
   real(8), allocatable :: trarray2(:,:)
-  real(8), allocatable :: trarray3(:,:,:)
 
   !add new Level to numMLMCcells and populate it
   call move_alloc(numMLMCcells,tiarray1)
@@ -152,13 +148,6 @@ if(Level==5) flMLMC = .false.
   M_optsamps(1,Level) = bnumMLMCsamps
   deallocate(tiarray2)
 
-
-  !add new Level and cells to uflux and initialize them
-  call move_alloc(uflux,trarray3)
-  allocate(uflux(size(trarray3(:,1,1)),0:size(trarray3(1,:,1)),maxval(numMLMCcells(:))))
-  uflux = 0.0d0
-  uflux(:,0:size(trarray3(1,:,1))-1,1:size(trarray3(1,1,:))) = trarray3
-  deallocate(trarray3)
 
   !add new Level to Q_ufunctional and initialize it
   call move_alloc(Q_ufunctional,trarray2)
@@ -193,18 +182,10 @@ if(Level==5) flMLMC = .false.
 
   subroutine MLMCaddSamples( Level )
   !Increase size of arrays to handle new optimal number of samples.
-  use MLMCvars, only: uflux, Q_ufunctional, G_ufunctional, M_optsamps
+  use MLMCvars, only: Q_ufunctional, G_ufunctional, M_optsamps
   integer :: Level
 
   real(8), allocatable :: trarray2(:,:)
-  real(8), allocatable :: trarray3(:,:,:)
-
-  !add space for new samples to uflux and initialize the space
-  call move_alloc(uflux,trarray3)
-  allocate(uflux(maxval(M_optsamps),0:size(trarray3(1,:,1))-1,size(trarray3(1,1,:))))
-  uflux = 0.0d0
-  uflux(1:size(trarray3(:,1,1)),:,:) = trarray3
-  deallocate(trarray3)
 
   !add space for new samples to Q_functional and initialize the space
   call move_alloc(Q_ufunctional,trarray2)
@@ -234,27 +215,27 @@ if(Level==5) flMLMC = .false.
   !4 Evaluate any new samples needed
   subroutine MLMCevalNewSamps( Level )
   !Evaluate any new samples needed, recompute functional values
-  use MLMCvars, only: M_optsamps
+  use MLMCvars, only: M_optsamps, Gave, Gvar, G_ufunctional
   use rngvars, only: setrngappnum, rngappnum, rngstride
+  use utilities, only: mean_and_var_p
   use mcnp_random, only: RN_init_particle
   integer :: Level
 
   integer :: ilevel,isamp, isamplow
 
-  do ilevel = 0,Level-1                                        !search each level
+  do ilevel = 0,Level                                          !search each level
     if( M_optsamps(1,ilevel)>M_optsamps(2,ilevel) ) then       !if new samps to compute
       isamplow = merge(M_optsamps(2,ilevel)+1,1,ilevel/=Level) !set lowest samp num
       do isamp = isamplow,M_optsamps(1,ilevel)                 !cycle through samps to compute
         call setrngappnum('MLMCsamp')                          !set rng unique to sample
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
         call sampleInput( ilevel )                             !update solver input info
-!        call solveflux( ilevel,isamp )                         !run solver & collect uflux
+        call solveSamples( ilevel,isamp )                      !solves QoI with and applies norm
+if(mod(isamp,1000)==0) print *,"ilevel:",ilevel,"  isamp:",isamp
       enddo
     endif
-    !calc Q_ufunctional
-    !calc G_ufunctional
-    !calc Gave
-    !calc Gvar
+    call mean_and_var_p( G_ufunctional(:,ilevel),&             !solve ave and var of functionals
+                         size(G_ufunctional(:,ilevel)),Gave(ilevel),Gvar(ilevel) )
   enddo
 
   end subroutine MLMCevalNewSamps
@@ -327,52 +308,59 @@ if(Level==5) flMLMC = .false.
     stop "--'c' sampled as greater than 1, check your input!"
   endif
 
-print *,"sigt:",sigt
-print *,"c:",c
   numcells = numMLMCcells(ilevel)
-print *,"numcells:",numcells
-
-print *,"flvarspassed:",flvarspassed
-print *
-
-
-print *,"specialprob:",specialprob
-print *,"nummat:",nummat
-print *,"param1:",param1
-print *,"param1_mean:",param1_mean
-print *,"param1_uncert:",param1_uncert
-print *,"param2:",param2
-print *,"param2_mean:",param2_mean
-print *,"param2_uncert:",param2_uncert
-stop
-
 
   end subroutine sampleInput
 
 
 
-  subroutine solveflux( ilevel,isamp )
+  subroutine solveSamples( ilevel,isamp )
   !This subroutine drives the solver for a new response function flux for a new sample
   !collects solution, and deallocated module variables from FEDiffSn.
-  use MLMCvars, only: uflux
+  use MLMCvars, only: Q_ufunctional, G_ufunctional, nextLevelFactor, numcellsLevel0
   use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
                       solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
 
-  integer :: ilevel, isamp
+  integer :: ilevel, isamp, i, icell
+  real(8), allocatable :: flux(:)
 
   call FEmain
-  
+
+  !collect flux from FEmain results
+  if(allocated(flux)) deallocate(flux)
   if(solve(3)==1) then
-    uflux(isamp,ilevel,1:size(phiDSAl)) = (phiDSAl + phiDSAr) / 2.0d0
+    allocate(flux(size(phiDSAl)))
+    flux = 0.0d0
+    flux = (phiDSAl + phiDSAr) / 2.0d0
   elseif(solve(2)==1) then
-    uflux(isamp,ilevel,1:size(phiSnl)) = (phiSnl + phiSnr) / 2.0d0
+    allocate(flux(size(phiSnl)))
+    flux = 0.0d0
+    flux = (phiSnl + phiSnr) / 2.0d0
   elseif(solve(1)==1) then
-    uflux(isamp,ilevel,1:size(phidiff)) = phidiff
+    allocate(flux(size(phidiff)))
+    flux = 0.0d0
+    flux = phidiff
+  endif
+
+  !solve Q_ufunctional (L2 norm), currently requires 'nextLevelFactor' to be odd
+  Q_ufunctional(isamp,ilevel) = 0.0d0
+  do i=1,numcellsLevel0
+    icell = (nextLevelFactor**ilevel+1)/2 + (i-1)*nextLevelFactor**ilevel
+    Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + flux(icell)**2
+    icell = icell*nextLevelFactor**ilevel
+  enddo
+  Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))
+
+  !solve G_ufunctional
+  if( ilevel==0 ) then
+    G_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel)
+  else
+    G_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) - Q_ufunctional(isamp,ilevel-1)
   endif
 
   call FEDiffSn_externaldeallocate
 
-  end subroutine solveflux
+  end subroutine solveSamples
 
 
 end module MLMC

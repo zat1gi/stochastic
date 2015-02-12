@@ -296,9 +296,8 @@ module MLMCvars
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est,Level)
 
-  real(8), allocatable :: uflux(:,:,:)         ! response function, flux here (samp#,Level,cell)
-  real(8), allocatable :: Q_ufunctional(:,:)   ! function of u, (samp#,Level)
-  real(8), allocatable :: G_ufunctional(:,:)   ! function of u MLMC form, (samp#,Level)
+  real(8), allocatable :: Q_ufunctional(:,:)   ! functional of u, (samp#,Level)
+  real(8), allocatable :: G_ufunctional(:,:)   ! functional of u MLMC form, (samp#,Level)
   real(8), allocatable :: Gave(:)              ! ave of funct of u MLMC form for each Level
   real(8), allocatable :: Gvar(:)              ! var of funct of u MLMC form for each Level
 

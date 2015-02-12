@@ -41,7 +41,7 @@
   no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !--- Lesser MLMC Options ---!
-  10, 2,          Number of cells in Level 0, factor to increase by in each Level
+  10, 3,          Number of cells in Level 0, factor to increase by in each Level
   10000,         Baseline number of samples for new MLMC Level
   0.05,          UQ_MC failure probability alpha
 

@@ -1,5 +1,5 @@
   !--- Problem Type ---!
-  0,1,0              #Solve: diffusion,Sn,DSA     1==yes, 0==no
+  1,0,0              #Solve: diffusion,Sn,DSA     1==yes, 0==no
   no,               #should I plot?
 
   !--- Material and Mesh ---!

@@ -65,8 +65,8 @@ CONTAINS
 
   !----------------- Solve Sn problem (solve(2)==1) --------------------!
   if(solve(2)==1) then
-    print *
-    print *,"Beginning Sn solve"
+!    print *
+!    print *,"Beginning Sn solve"
     call cpu_time(tic)
     error = 1.0
     call meshgen(        numcells,a,x,dx ) !create mesh in x
@@ -88,13 +88,13 @@ CONTAINS
       if(iter>1) call FESnerror( numcells,phiSnl,phiSnr,phiSnlold,phiSnrold,error ) !Check converge?
       call FESnNewToOld( numcells,phiSnl,phiSnr,phiSnlold,phiSnrold )
     enddo
-    print *,"iteration: ",iter
-    call cpu_time(toc)
-    Sntime = toc-tic
-    Sntimeperiter = Sntime/iter
-    1000 format(" time     : ",f12.7," sec       Time/iter: ",f12.7," sec")
-    write(*,1000) Sntime,Sntimeperiter
-    print *
+!    print *,"iteration: ",iter
+!    call cpu_time(toc)
+!    Sntime = toc-tic
+!    Sntimeperiter = Sntime/iter
+!    1000 format(" time     : ",f12.7," sec       Time/iter: ",f12.7," sec")
+!    write(*,1000) Sntime,Sntimeperiter
+!    print *
     if(flplot) call Snfluxplot(     numcells,x,phiSnl,phiSnr,qtype ) !Plot Sn flux
     if(solve(3)==1) deallocate(x)
     if(solve(3)==1) deallocate(qr)
@@ -111,8 +111,8 @@ CONTAINS
 
   !-------------------- Solve Sn with DSA (solve(3)==1) ------------------!
   if(solve(3)==1) then
-    print *
-    print *,"Beginning DSA solve"
+!    print *
+!    print *,"Beginning DSA solve"
     call cpu_time(tic)
     error = 1.0
     !init for Sn
@@ -152,13 +152,13 @@ CONTAINS
       if(iter>1) call FESnerror( numcells,phiDSAl,phiDSAr,phiDSAlold,phiDSArold,error ) !Converge?
       call FESnNewToOld( numcells,phiDSAl,phiDSAr,phiDSAlold,phiDSArold )
     enddo
-    print *,"iteration: ",iter
-    call cpu_time(toc)
-    DSAtime = toc-tic
-    DSAtimeperiter = DSAtime/iter
-    1001 format(" time     : ",f12.7," sec       Time/iter: ",f12.7," sec")
-    write(*,1001) DSAtime,DSAtimeperiter
-    print *
+!    print *,"iteration: ",iter
+!    call cpu_time(toc)
+!    DSAtime = toc-tic
+!    DSAtimeperiter = DSAtime/iter
+!    1001 format(" time     : ",f12.7," sec       Time/iter: ",f12.7," sec")
+!    write(*,1001) DSAtime,DSAtimeperiter
+!    print *
     if(flplot) call DSAfluxplot(     numcells,x,phiDSAl,phiDSAr,qtype ) !Plot DSA flux
   endif
 
