@@ -236,6 +236,7 @@ if(mod(isamp,1000)==0) print *,"ilevel:",ilevel,"  isamp:",isamp
     endif
     call mean_and_var_p( G_ufunctional(:,ilevel),&             !solve ave and var of functionals
                          size(G_ufunctional(:,ilevel)),Gave(ilevel),Gvar(ilevel) )
+    M_optsamps(2,ilevel) = M_optsamps(1,ilevel)                !save old # of opt samps
   enddo
 
   end subroutine MLMCevalNewSamps
