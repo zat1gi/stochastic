@@ -1,6 +1,14 @@
 module FEDiffSn
   implicit none
+  !true if vars after next comment are passed in (as opposed to read)
+  logical              :: flvarspassed = .false.
 
+  !variables that can be passed to this module
+  real(8)              :: sigt
+  real(8)              :: c
+  integer              :: numcells
+
+  !variables that are passed from this module
   integer, allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes, solve(3)==1, DSAyes
   real(8), allocatable :: phidiff(:)
   real(8), allocatable :: phiSnl(:) ,phiSnr(:)
@@ -18,8 +26,8 @@ CONTAINS
   use utilities, only: gauss_leg_quad
 
   !Input Vars
-  integer :: numcells,numangs
-  real(8) :: sigt,c,a,curRight,curLeft,constq,phistart,tol
+  integer :: numangs
+  real(8) :: a,curRight,curLeft,constq,phistart,tol
   character(5) :: qtype !'evend'const src,'func1'quad src,'moms'methodofmansolns src
   character(7) :: SnBCs !'vacuum' for vacuum
   logical :: flplot
@@ -35,7 +43,7 @@ CONTAINS
   real(8) :: alpha,beta
 
   !Read and Prepare parameters
-  call input(            numcells,sigt,c,a,curRight,curLeft,constq,qtype,phistart,&
+  call input(            a,curRight,curLeft,constq,qtype,phistart,&
                          solve,numangs,SnBCs,tol,flplot )
        siga=             sigt*(1.0-c)
 
@@ -177,18 +185,19 @@ CONTAINS
 
 
 
-  subroutine input( numcells,sigt,c,a,curRight,curLeft,constq,qtype,phistart,solve,numangs,&
+  subroutine input( a,curRight,curLeft,constq,qtype,phistart,solve,numangs,&
                     SnBCs,tol,flplot )
   !Reads in values from input file
-  integer :: numcells,numangs
+  integer :: numangs
   integer,allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes
-  real(8) :: sigt,c,a,curRight,curLeft,constq,phistart,tol
+  real(8) :: a,curRight,curLeft,constq,phistart,tol
   character(5) :: qtype !'evend' for constant source, 'func1' for quadratic source
   character(7) :: SnBCs !'vacuum' for vacuum
   logical      :: flplot       !plot or not
 
   character(3) :: plotprofile  !plot or not, store info in logical form
   character(3) :: dumchar !lets me skip a line of character input so I can label
+  real(8)      :: dumreal !lets me skip a line of real input
 
   allocate(solve(3))
 
@@ -198,8 +207,13 @@ CONTAINS
   read(2,*) plotprofile
 
   read(2,*) dumchar    !Material and Mesh
-  read(2,*) sigt,c
-  read(2,*) numcells
+  if(flvarspassed) then
+    read(2,*) dumreal,dumreal
+    read(2,*) dumreal
+  else
+    read(2,*) sigt,c
+    read(2,*) numcells
+  endif
   read(2,*) a
   read(2,*) numangs
 
@@ -926,6 +940,12 @@ CONTAINS
   if(allocated(phiDSAl)) deallocate(phiDSAl)
   if(allocated(phiDSAr)) deallocate(phiDSAr)
   end subroutine FEDiffSn_externaldeallocate
+
+  subroutine setflvarspassedtrue
+  !For use when module is used by an external solver
+  flvarspassed = .true.
+  end subroutine setflvarspassedtrue
+
 
 
 end module FEDiffSn

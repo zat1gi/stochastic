@@ -10,6 +10,7 @@ CONTAINS
   !to demonstrate MLMC.  It's second implementation is planned to be using MC transport
   !as the solver.  Potentially the third is with MC transport over random binary media.
   use MLMCvars, only: MLMC_TOL, numMLMCcells
+  use FEDiffSn, only: setflvarspassedtrue
   integer :: icase
 
   integer :: Level
@@ -18,6 +19,7 @@ CONTAINS
 
   call MLMCallocate                                    !allocate variables
   call MLMCinitialize( flMLMC, Level )                 !initialize variables
+  call setflvarspassedtrue                             !tell FE mod to accept input from here
 
   !main MLMC loop
   do while(flMLMC)
@@ -245,7 +247,7 @@ if(Level==5) flMLMC = .false.
       do isamp = isamplow,M_optsamps(1,ilevel)                 !cycle through samps to compute
         call setrngappnum('MLMCsamp')                          !set rng unique to sample
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
-        call sampleInput                                    !update solver input info
+        call sampleInput( ilevel )                             !update solver input info
 !        call solveflux( ilevel,isamp )                         !run solver & collect uflux
       enddo
     endif
@@ -259,11 +261,80 @@ if(Level==5) flMLMC = .false.
 
 
 
-  subroutine sampleInput
+  subroutine sampleInput( ilevel )
   !This subroutine samples input parameters for this solve and passes them as needed
   use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
                          param2_mean, param2_uncert
+  use MLMCvars, only: numMLMCcells
+  use FEDiffSn, only: sigt, c, numcells,      flvarspassed
   use mcnp_random, only: rang
+
+  integer :: ilevel
+  real(8) :: loc_sigs, loc_siga
+  logical :: flsiga            !have I already sampled siga?
+
+  !The following preparation of sigt and c is designed for use with FEDiffSn, 
+  !and is written on the assumption that there is only 1 material present.
+  !When similar parsing is written later, code with that in mind.
+  flsiga = .false.
+
+  !sample and prepare sigt
+  if( param1(1)=='sigt' ) then
+    if( param1(2)=='sigt1-abs' ) then
+      sigt = param1_mean(1) + (rang()*2.0d0-1.0d0) * param1_uncert(1)
+    elseif( param1(2)=='sigt1-frac' ) then
+      sigt = param1_mean(1) + (rang()*2.0d0-1.0d0) * param1_mean(1)*param1_uncert(1)
+    endif
+  elseif( param1(1)=='sigs' ) then
+    if( param1(2)=='sigs1-abs' ) then
+      loc_sigs = param1_mean(1) + (rang()*2.0d0-1.0d0) * param1_uncert(1)
+    elseif( param1(2)=='sigs1-frac' ) then
+      loc_sigs = param1_mean(1) + (rang()*2.0d0-1.0d0) * param1_mean(1)*param1_uncert(1)
+    endif
+    if( param2(2)=='siga1-abs' ) then
+      loc_siga = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_uncert(1)
+    elseif( param2(2)=='siga1-frac' ) then
+      loc_siga = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_mean(1)*param2_uncert(1)
+    endif
+    flsiga = .true.
+    sigt = loc_sigs + loc_siga
+  endif
+
+  !sample and prepare c
+  if( param2(1)=='c' ) then
+    if( param2(2)=='c1-abs' ) then
+      c = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_uncert(1)
+    elseif( param2(2)=='c1-frac' ) then
+      c = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_mean(1)*param2_uncert(1)
+    endif
+  elseif( param2(1)=='siga' ) then
+    if( param2(2)=='siga1-abs' .and. .not.flsiga) then
+      loc_siga = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_uncert(1)
+    elseif( param2(2)=='siga1-frac' .and. .not.flsiga) then
+      loc_siga = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_mean(1)*param2_uncert(1)
+    endif
+    c = merge(1.0d0-loc_siga/sigt,loc_sigs/(loc_sigs+loc_siga),.not.flsiga)
+  elseif( param2(1)=='sigs' ) then
+    if( param2(2)=='sigs1-abs' ) then
+      loc_sigs = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_uncert(1)
+    elseif( param2(2)=='sigs1-frac' ) then
+      loc_sigs = param2_mean(1) + (rang()*2.0d0-1.0d0) * param2_mean(1)*param2_uncert(1)
+    endif
+    c = loc_sigs/sigt
+  endif
+
+  if( c>1.0d0 ) then
+    stop "--'c' sampled as greater than 1, check your input!"
+  endif
+
+print *,"sigt:",sigt
+print *,"c:",c
+  numcells = numMLMCcells(ilevel)
+print *,"numcells:",numcells
+
+print *,"flvarspassed:",flvarspassed
+print *
+
 
 print *,"specialprob:",specialprob
 print *,"nummat:",nummat
@@ -274,13 +345,6 @@ print *,"param2:",param2
 print *,"param2_mean:",param2_mean
 print *,"param2_uncert:",param2_uncert
 stop
-  !determine values here
-
-  !replace values here
-  !sigt and c
-  !call system("sed -i '6s/.*/"  1.0, 0.999,      #sigt,c"/' auxiliary/FEDiffSn.inp")
-  !number of cells
-  !call system("sed -i '7s/.*/"  100,             #numcells"/' auxiliary/FEDiffSn.inp")
 
 
   end subroutine sampleInput
