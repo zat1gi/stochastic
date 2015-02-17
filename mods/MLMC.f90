@@ -89,7 +89,7 @@ if(Level==4) flMLMC = .false.
                       Gave, Gvar, bnumMLMCsamps, numcellsLevel0, ncellwidth
 
   if(.not.allocated(numMLMCcells)) allocate(numMLMCcells(0:0))
-  if(.not.allocated(M_optsamps)) allocate(M_optsamps(2,0:0))
+  if(.not.allocated(M_optsamps)) allocate(M_optsamps(3,0:0))
 
   if(.not.allocated(Q_ufunctional)) allocate(Q_ufunctional(bnumMLMCsamps,0:0))
   if(.not.allocated(G_ufunctional)) allocate(G_ufunctional(bnumMLMCsamps,0:0))
@@ -117,6 +117,7 @@ if(Level==4) flMLMC = .false.
   numMLMCcells    = numcellsLevel0
   M_optsamps(1,0) = bnumMLMCsamps
   M_optsamps(2,0) = 0
+  M_optsamps(3,0) = 0
 
   Q_ufunctional = 0.0d0
   G_ufunctional = 0.0d0
@@ -172,7 +173,7 @@ if(Level==4) flMLMC = .false.
 
   !add new Level to M_optsamps and populate it
   call move_alloc(M_optsamps,tiarray2)
-  allocate(M_optsamps(2,0:size(tiarray2(1,:))))
+  allocate(M_optsamps(3,0:size(tiarray2(1,:))))
   M_optsamps = 0
   M_optsamps(:,0:size(tiarray2(1,:))-1) = tiarray2
   M_optsamps(1,Level) = bnumMLMCsamps
@@ -244,12 +245,6 @@ print *,"just reallocated, M_optsamps(2,:):",M_optsamps(2,:)
 
 
 
-  !2 Using M~(current samples) solve V~(estimated variance) for each level L
-!  subroutine MLMCsolveEstVar( Level )
-
-
-!  end subroutine MLMCsolveEstVar
-
   !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
   subroutine MLMCcomputeOptSamps( Level )
   use MLMCvars, only: MLMC_TOLsplit, MLMC_TOL, C_alpha, Gave, Gvar, M_optsamps, &
@@ -265,20 +260,25 @@ print *,"M_optsamps(1,:):",M_optsamps(1,:)
   do ilevel=0,Level
     !accumlate next part of accumulating term
     accterm = accterm + sqrt(Gvar(ilevel)*ncellwidth(ilevel)**(-linsolveEff*numDimensions))
+print *,"ilevel:",ilevel,"  accterm:",accterm
+print *,"term1:",(MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0)
+print *,"term2:",sqrt(abs(Gvar(ilevel)/Gave(ilevel)))
     !calculate new optimal samples estimate
-    M_optsamps(1,ilevel) = ceiling(  (MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0) * &
-                                     sqrt(Gvar(ilevel)/Gave(ilevel)) * &
+    M_optsamps(3,ilevel) = ceiling(  (MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0) * &
+                                     sqrt(abs(Gvar(ilevel)/Gave(ilevel))) * &
                                      accterm                             )                         
 
-    !if new est smaller, keep larger value
-    if(M_optsamps(1,ilevel) < M_optsamps(2,ilevel)) M_optsamps(1,ilevel)=M_optsamps(2,ilevel)
+print *,"M_optsamps(3,ilevel):",M_optsamps(3,ilevel)
+    !use larger of new value and old value
+    M_optsamps(1,ilevel) = max(M_optsamps(2,ilevel),M_optsamps(3,ilevel))
     !if new level's estimate higher, make backwards compatible
     if(ilevel/=0) then
       if(M_optsamps(1,ilevel) > M_optsamps(1,ilevel-1)) &
          M_optsamps(1,0:ilevel-1) = M_optsamps(1,ilevel)
     endif
 
-print *,"optimal M for level",ilevel,":",M_optsamps(1,ilevel)
+print *,"theoretical optimal M for level",ilevel,":",M_optsamps(3,ilevel)
+print *,"practical   optimal M for level",ilevel,":",M_optsamps(1,ilevel)
   enddo
 
   end subroutine MLMCcomputeOptSamps
@@ -299,6 +299,7 @@ print *,"optimal M for level",ilevel,":",M_optsamps(1,ilevel)
 
 print *,"new samps M_optsamps(1,:):",M_optsamps(1,:)
 print *,"new samps M_optsamps(2,:):",M_optsamps(2,:)
+print *,"new samps M_optsamps(3,:):",M_optsamps(3,:)
   do ilevel = 0,Level                                          !search each level
 print *,"ilevel:",ilevel
     if( M_optsamps(1,ilevel)>M_optsamps(2,ilevel) ) then       !if new samps to compute
