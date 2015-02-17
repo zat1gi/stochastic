@@ -289,12 +289,15 @@ module MLMCvars
   integer              :: bnumMLMCsamps        ! baseline number of samples for new Level
 
   !non inputs
+  real(8)              :: linsolveEff = 1      ! =1 for tri-diag solve, aka diffusion, l.ge.1 and l.le.3
+  real(8), parameter   :: numDimensions = 1    ! only currently have plans to do 1D problems
   integer, parameter   :: numPosMLMCmeths = 1  ! total number of MLMC transport methods available
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est,Level)
+  real(8), allocatable :: ncellwidth(:)        ! cell width at levels (normalized to slab of length 1)
 
   real(8), allocatable :: Q_ufunctional(:,:)   ! functional of u, (samp#,Level)
   real(8), allocatable :: G_ufunctional(:,:)   ! functional of u MLMC form, (samp#,Level)

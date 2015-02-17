@@ -29,15 +29,15 @@ print *,"Level:",Level
     !1 aka add new Level and necessary cells
     if(Level /= 0) call MLMCaddLevel( Level )
 
-    !2 Using M~(current samples) solve V~(estimated variance) for each level L
+    !2 Using M~(current samples) solve V~(estimated variance) for each level L, Gvar, calculated at 4
     !if(Level /= 0) call MLMCsolveEstVar
 
     !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
     !3.2 expand arrays to hold new M~s(number of samples)
-    !if(Level /= 0) call MLMCcomputeOptSamps( Level )
+    if(Level /= 0) call MLMCcomputeOptSamps( Level )
     if(Level /= 0) call MLMCaddSamples( Level )
 
-    !4 Evaluate any new samples needed
+    !4 Evaluate any new samples needed, Gave and Gvar calculated here
     call MLMCevalNewSamps( Level )
 
     !5 test total error, set flMLMC==.false.?
@@ -61,7 +61,7 @@ if(Level==4) flMLMC = .false.
   subroutine MLMCallocate
   !Allocate arrays here.  Try to only allocate in order to make paralellization easier later.
   use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar, bnumMLMCsamps, numcellsLevel0
+                      Gave, Gvar, bnumMLMCsamps, numcellsLevel0, ncellwidth
 
   if(.not.allocated(numMLMCcells)) allocate(numMLMCcells(0:0))
   if(.not.allocated(M_optsamps)) allocate(M_optsamps(2,0:0))
@@ -70,6 +70,7 @@ if(Level==4) flMLMC = .false.
   if(.not.allocated(G_ufunctional)) allocate(G_ufunctional(bnumMLMCsamps,0:0))
   if(.not.allocated(Gave)) allocate(Gave(0:0))
   if(.not.allocated(Gvar)) allocate(Gvar(0:0))
+  if(.not.allocated(ncellwidth)) allocate(ncellwidth(0:0))
 
   end subroutine MLMCallocate
 
@@ -78,7 +79,7 @@ if(Level==4) flMLMC = .false.
   !Initialize/load values to variables here.
   use MLMCvars, only: numMLMCcells, numcellsLevel0, MLMC_failprob, C_alpha, &
                       M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar, bnumMLMCsamps
+                      Gave, Gvar, bnumMLMCsamps, ncellwidth
   use utilities, only: erfi
   integer :: Level
   logical :: flMLMC
@@ -97,13 +98,15 @@ if(Level==4) flMLMC = .false.
   Gave          = 0.0d0
   Gvar          = 0.0d0
 
+  ncellwidth    = real(1,8)/real(numcellsLevel0,8)
+
   end subroutine MLMCinitialize
 
 
   subroutine MLMCdeallocate
   !Deallocate arrays here.
   use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar
+                      Gave, Gvar, ncellwidth
 
   if(allocated(numMLMCcells)) deallocate(numMLMCcells)
   if(allocated(M_optsamps)) deallocate(M_optsamps)
@@ -112,6 +115,7 @@ if(Level==4) flMLMC = .false.
   if(allocated(G_ufunctional)) deallocate(G_ufunctional)
   if(allocated(Gave)) deallocate(Gave)
   if(allocated(Gvar)) deallocate(Gvar)
+  if(allocated(ncellwidth)) deallocate(ncellwidth)
 
   end subroutine MLMCdeallocate
 
@@ -123,7 +127,8 @@ if(Level==4) flMLMC = .false.
   !Increase size of arrays to handle new Level and in case of response function
   !the associated number of cells as well.
   use MLMCvars, only: numMLMCcells, nextLevelFactor, Q_ufunctional, &
-                      G_ufunctional, Gave, Gvar, M_optsamps, bnumMLMCsamps
+                      G_ufunctional, Gave, Gvar, M_optsamps, bnumMLMCsamps, &
+                      ncellwidth
   integer :: Level
 
   integer, allocatable :: tiarray1(:)
@@ -177,6 +182,14 @@ if(Level==4) flMLMC = .false.
   Gvar(0:size(trarray1(:))-1) = trarray1
   deallocate(trarray1)
 
+  !add new Level to ncellwidth and initialize it
+  call move_alloc(ncellwidth,trarray1)
+  allocate(ncellwidth(0:size(trarray1(:))))
+  ncellwidth = 0.0d0
+  ncellwidth(0:size(trarray1(:))-1) = trarray1
+  ncellwidth(Level) = ncellwidth(Level-1) / real(nextLevelFactor,8)
+  deallocate(trarray1)
+
   end subroutine MLMCaddLevel
 
 
@@ -210,6 +223,33 @@ if(Level==4) flMLMC = .false.
 
 
 !  end subroutine MLMCsolveEstVar
+
+  !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
+  subroutine MLMCcomputeOptSamps( Level )
+  use MLMCvars, only: MLMC_TOLsplit, MLMC_TOL, C_alpha, Gave, Gvar, M_optsamps, &
+                      ncellwidth,linsolveEff,numDimensions
+  integer :: Level
+
+  integer :: ilevel
+  real(8) :: accterm !last term in estimate, sum over levels, sum as go
+
+  accterm = 0.0d0
+
+  do ilevel=0,Level
+    !store old optimal samples estimate
+    M_optsamps(2,ilevel) = M_optsamps(1,ilevel)
+    !accumlate next part of accumulating term
+    accterm = accterm + sqrt(Gvar(ilevel)*ncellwidth(ilevel)**(-linsolveEff*numDimensions))
+    !calculate new optimal samples estimate
+    M_optsamps(1,ilevel) = ceiling(  (MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0) * &
+                                     sqrt(Gvar(ilevel)/Gave(ilevel)) * &
+                                     accterm                                         )                         
+print *,"optimal M for level",ilevel,":",M_optsamps(1,ilevel)
+  enddo
+
+  end subroutine
+
+
 
 
   !4 Evaluate any new samples needed
