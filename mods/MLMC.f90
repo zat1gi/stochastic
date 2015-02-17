@@ -400,7 +400,7 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
   use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
                       solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
 
-  integer :: ilevel, isamp, i, icell
+  integer :: ilevel, isamp, i, icell, first, last
   real(8), allocatable :: flux(:)
 
   call FEmain
@@ -421,12 +421,13 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
     flux = phidiff
   endif
 
-  !solve Q_ufunctional (L2 norm), currently requires 'nextLevelFactor' to be odd
+  !solve Q_ufunctional (L2 norm), sum components when ilevel/=0, then apply functional
   Q_ufunctional(isamp,ilevel) = 0.0d0
   do i=1,numcellsLevel0
-    icell = (nextLevelFactor**ilevel+1)/2 + (i-1)*nextLevelFactor**ilevel
-    Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + flux(icell)**2
-    icell = icell*nextLevelFactor**ilevel
+    first = 1+(i-1)*nextLevelFactor**ilevel
+    last  = i*nextLevelFactor**ilevel
+    Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + &
+              ( sum(flux(first:last))/(last-first+1) )**2
   enddo
   Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))
 
