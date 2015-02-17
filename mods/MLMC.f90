@@ -27,18 +27,43 @@ print *,"Level:",Level
 
     !1 Determine number of cells, make array which holds number of cells as a function of level L
     !1 aka add new Level and necessary cells
+    if(Level /= 0) print *,"--reallocate to accomodate new Level--"
+if(Level /= 0) read *
     if(Level /= 0) call MLMCaddLevel( Level )
+    if(Level /= 0) print *,"--reallocate to accomodate new Level--"
+if(Level /= 0) read *
+if(Level /= 0) print *
 
-    !2 Using M~(current samples) solve V~(estimated variance) for each level L, Gvar, calculated at 4
-    !if(Level /= 0) call MLMCsolveEstVar
+    !2 Solve initial samples for Level, solve V~(estimated variance) for each level L
+    print *,"--evaluate baseline samples, get variance estimate--"
+read *
+    call MLMCevalNewSamps( Level )
+    print *,"--evaluate baseline samples, get variance estimate--"
+read *
+print *
 
     !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
     !3.2 expand arrays to hold new M~s(number of samples)
-    if(Level /= 0) call MLMCcomputeOptSamps( Level )
-    if(Level /= 0) call MLMCaddSamples( Level )
+    print *,"--compute optimal number of samples--"
+read *
+    call MLMCcomputeOptSamps( Level )
+    print *,"--compute optimal number of samples--"
+read *
+print *
+    print *,"--reallocate to accomodate new samples--"
+read *
+    call MLMCaddSamples( Level )
+    print *,"--reallocate to accomodate new samples--"
+read *
+print *
 
     !4 Evaluate any new samples needed, Gave and Gvar calculated here
+    print *,"--evaluate extra samples needed--"
+read *
     call MLMCevalNewSamps( Level )
+    print *,"--evaluate extra samples needed--"
+read *
+print *
 
     !5 test total error, set flMLMC==.false.?
     !MLMCerrest = MLMCcalcErrEst( Level )
@@ -152,7 +177,8 @@ if(Level==4) flMLMC = .false.
   M_optsamps(:,0:size(tiarray2(1,:))-1) = tiarray2
   M_optsamps(1,Level) = bnumMLMCsamps
   deallocate(tiarray2)
-
+print *,"just reallocated, M_optsamps(1,:):",M_optsamps(1,:)
+print *,"just reallocated, M_optsamps(2,:):",M_optsamps(2,:)
 
   !add new Level to Q_ufunctional and initialize it
   call move_alloc(Q_ufunctional,trarray2)
@@ -235,19 +261,27 @@ if(Level==4) flMLMC = .false.
 
   accterm = 0.0d0
 
+print *,"M_optsamps(1,:):",M_optsamps(1,:)
   do ilevel=0,Level
-    !store old optimal samples estimate
-    M_optsamps(2,ilevel) = M_optsamps(1,ilevel)
     !accumlate next part of accumulating term
     accterm = accterm + sqrt(Gvar(ilevel)*ncellwidth(ilevel)**(-linsolveEff*numDimensions))
     !calculate new optimal samples estimate
     M_optsamps(1,ilevel) = ceiling(  (MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0) * &
                                      sqrt(Gvar(ilevel)/Gave(ilevel)) * &
-                                     accterm                                         )                         
+                                     accterm                             )                         
+
+    !if new est smaller, keep larger value
+    if(M_optsamps(1,ilevel) < M_optsamps(2,ilevel)) M_optsamps(1,ilevel)=M_optsamps(2,ilevel)
+    !if new level's estimate higher, make backwards compatible
+    if(ilevel/=0) then
+      if(M_optsamps(1,ilevel) > M_optsamps(1,ilevel-1)) &
+         M_optsamps(1,0:ilevel-1) = M_optsamps(1,ilevel)
+    endif
+
 print *,"optimal M for level",ilevel,":",M_optsamps(1,ilevel)
   enddo
 
-  end subroutine
+  end subroutine MLMCcomputeOptSamps
 
 
 
@@ -263,7 +297,10 @@ print *,"optimal M for level",ilevel,":",M_optsamps(1,ilevel)
 
   integer :: ilevel,isamp, isamplow
 
+print *,"new samps M_optsamps(1,:):",M_optsamps(1,:)
+print *,"new samps M_optsamps(2,:):",M_optsamps(2,:)
   do ilevel = 0,Level                                          !search each level
+print *,"ilevel:",ilevel
     if( M_optsamps(1,ilevel)>M_optsamps(2,ilevel) ) then       !if new samps to compute
       isamplow = merge(M_optsamps(2,ilevel)+1,1,ilevel/=Level) !set lowest samp num
       do isamp = isamplow,M_optsamps(1,ilevel)                 !cycle through samps to compute
@@ -276,9 +313,10 @@ if(mod(isamp,1000)==0) print *,"ilevel:",ilevel,"  isamp:",isamp
     endif
     call mean_and_var_p( G_ufunctional(:,ilevel),&             !solve ave and var of functionals
                          size(G_ufunctional(:,ilevel)),Gave(ilevel),Gvar(ilevel) )
+print *,"just formed Gave(",ilevel,"):",Gave(ilevel)
+print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
     M_optsamps(2,ilevel) = M_optsamps(1,ilevel)                !save old # of opt samps
   enddo
-
   end subroutine MLMCevalNewSamps
 
 
