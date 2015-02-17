@@ -21,7 +21,7 @@
 
   !--- Large MLMC Options ---!
   yes,            Perform detMLMC subroutines? ('yes' or 'no')
-  0.05, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
+  0.005, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -49,9 +49,9 @@
   none,       special prob descriptor, overrides options i.e. mc2013.1 mc2013.2 mc2015.1    
   nummat, 1,        Number of Materials 
    sigt,      1.0, 1.0,         first xs parameter for each material
-   sigt1-abs, 0.1, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
-   c,         0.8, 0.3,        second xs parameter for each material
-   c1-abs,   0.09, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
+   sigt1-abs, 0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
+   sigs,         0.8, 0.3,        second xs parameter for each material
+   sigs1-abs,   0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
