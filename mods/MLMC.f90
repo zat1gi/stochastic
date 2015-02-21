@@ -461,7 +461,7 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
 
   !5 test total error, set flMLMC==.false.?
   function MLMCcalcErrEst( Level )
-  use MLMCvars, only: Gave, Gvar, C_alpha, ncellwidth, nextLevelFactor
+  use MLMCvars, only: Gave, Gvar, C_alpha, ncellwidth, nextLevelFactor, M_optsamps
              
   real(8) :: MLMCcalcErrEst, err1, C_w, err2, Vsum
   integer :: Level, ilevel
@@ -473,12 +473,12 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
 print *,"err1:",err1
   Vsum = 0.0d0
   do ilevel=0,Level
-    Vsum = Vsum + abs(Gvar(ilevel)/Gave(ilevel))
+    Vsum = Vsum + abs(Gvar(ilevel)/M_optsamps(1,ilevel))
   enddo
   err2 = C_alpha * sqrt(Vsum)
-print *,"err contribution Gvar:",Gvar
-print *,"err contribution Gave:",Gave
-print *,"err contribution Vsum:",Vsum,"   sqrt(Vsum):",sqrt(Vsum)
+print *,"err contribution Gvar       :",Gvar
+print *,"err contribution M_optsamps :",M_optsamps
+print *,"err contribution Vsum       :",Vsum,"   sqrt(Vsum):",sqrt(Vsum)
 print *,"err2:",err2
   MLMCcalcErrEst = err1 + err2
 

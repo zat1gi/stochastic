@@ -296,7 +296,7 @@ module MLMCvars
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
-  integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est,Level)
+  integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est/3-small est,Level)
   real(8), allocatable :: ncellwidth(:)        ! cell width at levels (normalized to slab of length 1)
 
   real(8), allocatable :: Q_ufunctional(:,:)   ! functional of u, (samp#,Level)
