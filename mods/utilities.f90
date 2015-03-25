@@ -431,7 +431,7 @@ CONTAINS
 
   !Create driver script for executable
   open(unit=3,file="gl_run.sh")
-  102 format("./auxiliary/quad/gauss_leg_quad.exe ",i6," ",f12.6," ",f12.6," gauss_leg")
+  102 format("./auxiliary/quad/gauss_leg_quad.out ",i6," ",f12.6," ",f12.6," gauss_leg")
   write(3,102) numangs,leftb,rightb
   close(unit=3)
 
