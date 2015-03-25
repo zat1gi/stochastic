@@ -158,7 +158,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: meanadjust = 0d0     ! positive translation of mean xs
 
   integer              :: mostinBin            !
-  integer              :: Corrnumpoints        !
+  integer              :: Corrnumpoints        ! Number of points used when confirming covariance func
   real(8), allocatable :: binPDF(:,:)          ! 
   real(8), allocatable :: binBounds(:)         !
   real(8), allocatable :: AllEig(:)            ! many more Eigs than used, for variance kept calcs
@@ -297,7 +297,7 @@ module MLMCvars
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est/3-small est,Level)
-  real(8), allocatable :: ncellwidth(:)        ! cell width at levels (normalized to slab of length 1)
+  real(8), allocatable :: ncellwidth(:)        ! cell width at levels
 
   real(8), allocatable :: Q_ufunctional(:,:)   ! functional of u, (samp#,Level)
   real(8), allocatable :: G_ufunctional(:,:)   ! functional of u MLMC form, (samp#,Level)

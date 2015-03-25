@@ -187,6 +187,7 @@ CONTAINS
 
   subroutine input( a,curRight,curLeft,constq,qtype,phistart,solve,numangs,&
                     SnBCs,tol,flplot )
+  use genRealzvars, only: s
   !Reads in values from input file
   integer :: numangs
   integer,allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes
@@ -215,6 +216,7 @@ CONTAINS
     read(2,*) numcells
   endif
   read(2,*) a
+  a=s !override value with value from other input file
   read(2,*) numangs
 
   read(2,*) dumchar    !Source

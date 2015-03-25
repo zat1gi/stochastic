@@ -56,7 +56,7 @@ CONTAINS
                                   MLMC_failprob, bnumMLMCsamps
   character(7) :: pltallopt                         !Plot all same opt
 
-  real(8)       :: dumreal
+  real(8)       :: dumreal,s2
   character(20) :: dumchar !use this to "skip" a line
 
   integer :: i
@@ -122,6 +122,10 @@ CONTAINS
   read(2,*) dumchar
   read(2,*) specialprob
   read(2,*) dumchar, nummat
+  read(2,*) dumchar, s2
+print *,"s:",s
+  if(probtype=='coeffs') s=s2
+print *,"s:",s
   allocate(param1_mean(nummat))
   allocate(param1_uncert(nummat))
   allocate(param2_mean(nummat))
