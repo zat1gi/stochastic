@@ -79,7 +79,7 @@ if(Level>1 .and. flread) read *
       flMLMC = .false.
     else
       Level = Level + 1
-if(Level==4) flMLMC = .false.
+!if(Level==4) flMLMC = .false.
     endif
   enddo !loops over realizations
 
@@ -410,12 +410,13 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
   subroutine solveSamples( ilevel,isamp )
   !This subroutine drives the solver for a new response function flux for a new sample
   !collects solution, and deallocated module variables from FEDiffSn.
-  use MLMCvars, only: Q_ufunctional, G_ufunctional, nextLevelFactor, numcellsLevel0
+  use MLMCvars, only: Q_ufunctional, G_ufunctional, nextLevelFactor, numcellsLevel0, &
+                      ncellwidth
   use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
                       solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
 
   integer :: ilevel, isamp, i, icell, first, last
-  real(8), allocatable :: flux(:)
+  real(8), allocatable :: flux(:),cellwidth
 
   call FEmain
 
@@ -435,16 +436,22 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
     flux = phidiff
   endif
 
-  !solve Q_ufunctional (L2 norm), sum components when ilevel/=0, then apply functional
-!temporarily switched to L1 norm
+  !L2 norm over all domain for Q_ufunctional
   Q_ufunctional(isamp,ilevel) = 0.0d0
-  do i=1,numcellsLevel0
-    first = 1+(i-1)*nextLevelFactor**ilevel
-    last  = i*nextLevelFactor**ilevel
-    Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + &
-              ( sum(flux(first:last))/(last-first+1) )**2
+  do i=1,numcellsLevel0*nextLevelFactor**ilevel
+    Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + flux(i)**2*ncellwidth(ilevel)
   enddo
-  Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))!sqrt(Q_ufunctional(isamp,ilevel))
+  Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))
+
+  !!Here lies my first attempt at an L2 norm.  I think this was wrong, I think this is the 
+  !!L2 of the L1 norm in each original cell...
+  !do i=1,numcellsLevel0
+  !  first = 1+(i-1)*nextLevelFactor**ilevel
+  !  last  = i*nextLevelFactor**ilevel
+  !  Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + &
+  !            ( sum(flux(first:last))/(last-first+1) )**2
+  !enddo
+  !Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))
 
   !solve G_ufunctional
   if( ilevel==0 ) then
@@ -470,7 +477,7 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
   C_w  = max( abs(Gave(Level  ))/(ncellwidth(Level  )**qq*(nextLevelFactor**qq-1)), &
               abs(Gave(Level-1))/(ncellwidth(Level-1)**qq*(nextLevelFactor**qq-1))    )
   err1 = C_w * ncellwidth(Level)**qq
-print *,"err1:",err1
+print *,"err1, disc err:",err1
   Vsum = 0.0d0
   do ilevel=0,Level
     Vsum = Vsum + abs(Gvar(ilevel)/M_optsamps(1,ilevel))
@@ -479,7 +486,7 @@ print *,"err1:",err1
 print *,"err contribution Gvar       :",Gvar
 print *,"err contribution M_optsamps :",M_optsamps
 print *,"err contribution Vsum       :",Vsum,"   sqrt(Vsum):",sqrt(Vsum)
-print *,"err2:",err2
+print *,"err2, MC   err:",err2
   MLMCcalcErrEst = err1 + err2
 
   end function MLMCcalcErrEst
