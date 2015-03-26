@@ -287,6 +287,7 @@ module MLMCvars
   integer              :: numcellsLevel0       ! number of cells in initial Level of MLMC 
   integer              :: nextLevelFactor      ! factor to increase number of cells in each Level by
   integer              :: bnumMLMCsamps        ! baseline number of samples for new Level
+  integer              :: num_ufunct           ! number of functionals to 'u' to be considered
 
   !non inputs
   real(8)              :: linsolveEff = 1      ! =1 for tri-diag solve, aka diffusion, l.ge.1 and l.le.3
@@ -298,6 +299,7 @@ module MLMCvars
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est/3-small est,Level)
   real(8), allocatable :: ncellwidth(:)        ! cell width at levels
+  integer, allocatable :: def_ufunct(:,:)      ! options for which functionals to take/converge
 
   real(8), allocatable :: Q_ufunctional(:,:)   ! functional of u, (samp#,Level)
   real(8), allocatable :: G_ufunctional(:,:)   ! functional of u MLMC form, (samp#,Level)

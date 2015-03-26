@@ -53,8 +53,10 @@ CONTAINS
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype
   use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
-                                  MLMC_failprob, bnumMLMCsamps
+                                  MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct
   character(7) :: pltallopt                         !Plot all same opt
+  character(3) :: default_ufunct  !default u functional or not?
+  character(6) :: chosennorm      !norm to convert from text to number
 
   real(8)       :: dumreal,s2
   character(20) :: dumchar !use this to "skip" a line
@@ -134,10 +136,31 @@ CONTAINS
   read(2,*) param2(1), param2_mean
   read(2,*) param2(2), param2_uncert
 
-  !--- Norms - 'coeffs' type problem ---!
+  !--- Functionals - 'coeffs' type problem ---!
   read(2,*) dumchar
-  read(2,*) dumreal
+  read(2,*) num_ufunct
+  read(2,*) default_ufunct
   read(2,*) dumchar
+  allocate(def_ufunct(num_ufunct,4))
+  do i=1,num_ufunct
+    if(i==1 .and. default_ufunct=='yes') then
+      def_ufunct(1,1) = 1               !first cell
+      def_ufunct(1,2) = numcellsLevel0  !last cell
+      def_ufunct(1,3) = 2               !L2 norm
+      def_ufunct(1,4) = 1               !yes converge to this
+    elseif(i==1) then
+      read(2,*) def_ufunct(1,1),def_ufunct(1,2),chosennorm,def_ufunct(1,4)
+      if(chosennorm=='L1')     def_ufunct(1,3)=1
+      if(chosennorm=='L2')     def_ufunct(1,3)=2
+      if(chosennorm=='center') def_ufunct(1,3)=3
+    elseif(i>1) then
+      read(2,*) def_ufunct(i,1),def_ufunct(i,2),chosennorm,def_ufunct(i,4)
+      if(chosennorm=='L1')     def_ufunct(i,3)=1
+      if(chosennorm=='L2')     def_ufunct(i,3)=2
+      if(chosennorm=='center') def_ufunct(i,3)=3
+    endif
+  enddo
+
 
 
   read(2,*) dumchar    !All Plot Same Way Option
