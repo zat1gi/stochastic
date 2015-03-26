@@ -1,0 +1,2 @@
+In auxiliary/MLMCfuncts there are gnus to plot these values.
+They are not incorporated in the main code, so they are placed there.
