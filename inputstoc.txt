@@ -21,7 +21,7 @@
 
   !--- Large MLMC Options ---!
   yes,            Perform detMLMC subroutines? ('yes' or 'no')
-  0.05, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
+  0.002, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -41,18 +41,26 @@
   no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !--- Lesser MLMC Options ---!
-  20, 2,          Number of cells in Level 0, factor to increase by in each Level
+  2,            Factor to increase by in each Level
   5000,         Baseline number of samples for new MLMC Level
   0.05,          UQ_MC failure probability alpha
 
   !--- Geometry - 'coeffs' type problem ---!
   none,       special prob descriptor, overrides options i.e. mc2013.1 mc2013.2 mc2015.1    
   nummat, 1,        Number of Materials 
-   thickness, 10.0,             slab thickness
+   thickness, 10.0,             Slab thickness
+   numcells,   20,              Number of cells. For MLMC cell at Level 0.
    sigt,      1.0, 1.0,         first xs parameter for each material
    sigt1-abs, 0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
    sigs,         0.7, 0.3,        second xs parameter for each material
    sigs1-abs,   0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
+
+  !--- Norms - 'coeffs' type problem ---!
+  3,     Number of norms (1st cell/last cell/L2,L1,center/calculate(1or0)/converge(1or0)) 
+  yes,    First norm L2 over domain?: 1, last, L2, 1, 1 
+
+
+
 
   !!--All Plotting Option
   noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose

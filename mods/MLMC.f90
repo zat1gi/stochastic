@@ -109,9 +109,11 @@ if(Level>1 .and. flread) read *
 
   subroutine MLMCinitialize( flMLMC, Level )
   !Initialize/load values to variables here.
+  use genRealzvars, only: s
   use MLMCvars, only: numMLMCcells, numcellsLevel0, MLMC_failprob, C_alpha, &
                       M_optsamps, Q_ufunctional, G_ufunctional, &
                       Gave, Gvar, bnumMLMCsamps, ncellwidth
+  use FEDiffSn, only: a
   use utilities, only: erfi
   integer :: Level
   logical :: flMLMC
@@ -131,7 +133,8 @@ if(Level>1 .and. flread) read *
   Gave          = 0.0d0
   Gvar          = 0.0d0
 
-  ncellwidth    = real(1,8)/real(numcellsLevel0,8)
+  ncellwidth    = s/real(numcellsLevel0,8)
+  a             = s
 
   end subroutine MLMCinitialize
 

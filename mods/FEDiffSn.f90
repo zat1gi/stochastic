@@ -4,9 +4,10 @@ module FEDiffSn
   logical              :: flvarspassed = .false.
 
   !variables that can be passed to this module
-  real(8)              :: sigt
-  real(8)              :: c
-  integer              :: numcells
+  real(8)              :: sigt     !total cross section
+  real(8)              :: c        !scattering ratio
+  real(8)              :: a        !slab thickness
+  integer              :: numcells !number of spatial cells
 
   !variables that are passed from this module
   integer, allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes, solve(3)==1, DSAyes
@@ -27,7 +28,7 @@ CONTAINS
 
   !Input Vars
   integer :: numangs
-  real(8) :: a,curRight,curLeft,constq,phistart,tol
+  real(8) :: curRight,curLeft,constq,phistart,tol
   character(5) :: qtype !'evend'const src,'func1'quad src,'moms'methodofmansolns src
   character(7) :: SnBCs !'vacuum' for vacuum
   logical :: flplot
@@ -45,7 +46,7 @@ CONTAINS
   !Read and Prepare parameters
   call input(            a,curRight,curLeft,constq,qtype,phistart,&
                          solve,numangs,SnBCs,tol,flplot )
-       siga=             sigt*(1.0-c)
+       siga=             sigt*(1.0d0-c)
 
 
   !----------------- Solve diffusion problem (solve(1)==1) -----------------!
@@ -54,8 +55,8 @@ CONTAINS
     call fluxinitcont(   numcells,phidiff,phistart ) !create phi=phistart
     if(qtype=='moms') call FEMomsPosited( numcells,sigt,siga,a,x,phipos,qtype ) !Set moms pos soln
     call diffsourceset(  numcells,a,x,dx,curRight,curLeft,constq,qtype,q,sigt,siga ) !Set q w/ BCs
-    alpha = 0.25
-    beta  = 0.5
+    alpha = 0.25d0
+    beta  = 0.5d0
     call FEDiff(         numcells,sigt,c,a,siga,dx,phidiff,q,alpha,beta ) !Solve diff Prob
     if(flplot) call difffluxplot(   numcells,x,phidiff,phipos,qtype ) !Plot diff flux
     if(solve(2)==1 .or. solve(3)==1) deallocate(q)
@@ -68,7 +69,7 @@ CONTAINS
 !    print *
 !    print *,"Beginning Sn solve"
     call cpu_time(tic)
-    error = 1.0
+    error = 1.0d0
     call meshgen(        numcells,a,x,dx ) !create mesh in x
     call gauss_leg_quad( numangs,mu,wgts,real(-1.0,8),real(1.0,8) ) !create mesh in mu
     call fluxinitdisc(   numcells,phiSnl,phistart ) !create phil=phistart
@@ -114,7 +115,7 @@ CONTAINS
 !    print *
 !    print *,"Beginning DSA solve"
     call cpu_time(tic)
-    error = 1.0
+    error = 1.0d0
     !init for Sn
     call meshgen(        numcells,a,x,dx ) !create mesh in x
     call gauss_leg_quad( numangs,mu,wgts,real(-1.0,8),real(1.0,8) ) !create mesh in mu
@@ -187,7 +188,6 @@ CONTAINS
 
   subroutine input( a,curRight,curLeft,constq,qtype,phistart,solve,numangs,&
                     SnBCs,tol,flplot )
-  use genRealzvars, only: s
   !Reads in values from input file
   integer :: numangs
   integer,allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes
@@ -211,12 +211,12 @@ CONTAINS
   if(flvarspassed) then
     read(2,*) dumreal,dumreal
     read(2,*) dumreal
+    read(2,*) dumreal
   else
     read(2,*) sigt,c
     read(2,*) numcells
+    read(2,*) a
   endif
-  read(2,*) a
-  a=s !override value with value from other input file
   read(2,*) numangs
 
   read(2,*) dumchar    !Source

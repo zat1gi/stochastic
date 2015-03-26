@@ -114,7 +114,7 @@ CONTAINS
 
   !--- Lesser MLMC Options ---!
   read(2,*) dumchar
-  read(2,*) numcellsLevel0, nextLevelFactor
+  read(2,*) nextLevelFactor
   read(2,*) bnumMLMCsamps
   read(2,*) MLMC_failprob
 
@@ -123,9 +123,8 @@ CONTAINS
   read(2,*) specialprob
   read(2,*) dumchar, nummat
   read(2,*) dumchar, s2
-print *,"s:",s
   if(probtype=='coeffs') s=s2
-print *,"s:",s
+  read(2,*) dumchar, numcellsLevel0
   allocate(param1_mean(nummat))
   allocate(param1_uncert(nummat))
   allocate(param2_mean(nummat))
@@ -134,6 +133,12 @@ print *,"s:",s
   read(2,*) param1(2), param1_uncert
   read(2,*) param2(1), param2_mean
   read(2,*) param2(2), param2_uncert
+
+  !--- Norms - 'coeffs' type problem ---!
+  read(2,*) dumchar
+  read(2,*) dumreal
+  read(2,*) dumchar
+
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
