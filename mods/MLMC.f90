@@ -93,15 +93,15 @@ if(Level>1 .and. flread) read *
   subroutine MLMCallocate
   !Allocate arrays here.  Try to only allocate in order to make paralellization easier later.
   use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar, bnumMLMCsamps, numcellsLevel0, ncellwidth
+                      Gave, Gvar, bnumMLMCsamps, numcellsLevel0, ncellwidth, num_ufunct
 
   if(.not.allocated(numMLMCcells)) allocate(numMLMCcells(0:0))
   if(.not.allocated(M_optsamps)) allocate(M_optsamps(3,0:0))
 
-  if(.not.allocated(Q_ufunctional)) allocate(Q_ufunctional(bnumMLMCsamps,0:0))
-  if(.not.allocated(G_ufunctional)) allocate(G_ufunctional(bnumMLMCsamps,0:0))
-  if(.not.allocated(Gave)) allocate(Gave(0:0))
-  if(.not.allocated(Gvar)) allocate(Gvar(0:0))
+  if(.not.allocated(Q_ufunctional)) allocate(Q_ufunctional(num_ufunct,bnumMLMCsamps,0:0))
+  if(.not.allocated(G_ufunctional)) allocate(G_ufunctional(num_ufunct,bnumMLMCsamps,0:0))
+  if(.not.allocated(Gave)) allocate(Gave(num_ufunct,0:0))
+  if(.not.allocated(Gvar)) allocate(Gvar(num_ufunct,0:0))
   if(.not.allocated(ncellwidth)) allocate(ncellwidth(0:0))
 
   end subroutine MLMCallocate
@@ -172,6 +172,7 @@ if(Level>1 .and. flread) read *
 
   real(8), allocatable :: trarray1(:)
   real(8), allocatable :: trarray2(:,:)
+  real(8), allocatable :: trarray3(:,:,:)
 
   !add new Level to numMLMCcells and populate it
   call move_alloc(numMLMCcells,tiarray1)
@@ -192,32 +193,32 @@ print *,"just reallocated, M_optsamps(1,:):",M_optsamps(1,:)
 print *,"just reallocated, M_optsamps(2,:):",M_optsamps(2,:)
 
   !add new Level to Q_ufunctional and initialize it
-  call move_alloc(Q_ufunctional,trarray2)
-  allocate(Q_ufunctional(size(trarray2(:,1)),0:size(trarray2(1,:))))
+  call move_alloc(Q_ufunctional,trarray3)
+  allocate(Q_ufunctional(size(trarray3(:,1,1)),size(trarray3(1,:,1)),0:size(trarray3(1,1,:))))
   Q_ufunctional = 0.0d0
-  Q_ufunctional(:,0:size(trarray2(1,:))-1) = trarray2
-  deallocate(trarray2)
+  Q_ufunctional(:,:,0:size(trarray3(1,1,:))-1) = trarray3
+  deallocate(trarray3)
 
   !add new Level to G_ufunctional and initialize it
-  call move_alloc(G_ufunctional,trarray2)
-  allocate(G_ufunctional(size(trarray2(:,1)),0:size(trarray2(1,:))))
+  call move_alloc(G_ufunctional,trarray3)
+  allocate(G_ufunctional(size(trarray3(:,1,1)),size(trarray3(1,:,1)),0:size(trarray3(1,1,:))))
   G_ufunctional = 0.0d0
-  G_ufunctional(:,0:size(trarray2(1,:))-1) = trarray2
-  deallocate(trarray2)
+  G_ufunctional(:,:,0:size(trarray3(1,1,:))-1) = trarray3
+  deallocate(trarray3)
 
   !add new Level to Gave and initialize it
-  call move_alloc(Gave,trarray1)
-  allocate(Gave(0:size(trarray1(:))))
+  call move_alloc(Gave,trarray2)
+  allocate(Gave(size(trarray2(:,1)),0:size(trarray2(1,:))))
   Gave = 0.0d0
-  Gave(0:size(trarray1(:))-1) = trarray1
-  deallocate(trarray1)
+  Gave(:,0:size(trarray2(1,:))-1) = trarray2
+  deallocate(trarray2)
 
   !add new Level to Gvar and initialize it
-  call move_alloc(Gvar,trarray1)
-  allocate(Gvar(0:size(trarray1(:))))
+  call move_alloc(Gvar,trarray2)
+  allocate(Gvar(size(trarray2(:,1)),0:size(trarray2(1,:))))
   Gvar = 0.0d0
-  Gvar(0:size(trarray1(:))-1) = trarray1
-  deallocate(trarray1)
+  Gvar(:,0:size(trarray2(1,:))-1) = trarray2
+  deallocate(trarray2)
 
   !add new Level to ncellwidth and initialize it
   call move_alloc(ncellwidth,trarray1)
@@ -235,21 +236,21 @@ print *,"just reallocated, M_optsamps(2,:):",M_optsamps(2,:)
   use MLMCvars, only: Q_ufunctional, G_ufunctional, M_optsamps
   integer :: Level
 
-  real(8), allocatable :: trarray2(:,:)
+  real(8), allocatable :: trarray3(:,:,:)
 
   !add space for new samples to Q_functional and initialize the space
-  call move_alloc(Q_ufunctional,trarray2)
-  allocate(Q_ufunctional(maxval(M_optsamps),0:size(trarray2(1,:))-1))
+  call move_alloc(Q_ufunctional,trarray3)
+  allocate(Q_ufunctional(size(trarray3(:,1,1)),maxval(M_optsamps),0:size(trarray3(1,1,:))-1))
   Q_ufunctional = 0.0d0
-  Q_ufunctional(1:size(trarray2(:,1)),:) = trarray2
-  deallocate(trarray2)
+  Q_ufunctional(:,1:size(trarray3(1,:,1)),:) = trarray3
+  deallocate(trarray3)
 
   !add space for new samples to G_ufunctional and initialize the space
-  call move_alloc(G_ufunctional,trarray2)
-  allocate(G_ufunctional(maxval(M_optsamps),0:size(trarray2(1,:))-1))
+  call move_alloc(G_ufunctional,trarray3)
+  allocate(G_ufunctional(size(trarray3(:,1,1)),maxval(M_optsamps),0:size(trarray3(1,1,:))-1))
   G_ufunctional = 0.0d0
-  G_ufunctional(1:size(trarray2(:,1)),:) = trarray2
-  deallocate(trarray2)
+  G_ufunctional(:,1:size(trarray3(1,:,1)),:) = trarray3
+  deallocate(trarray3)
 
   end subroutine MLMCaddSamples
 
@@ -273,13 +274,13 @@ print *,"M_optsamps(1,:):",M_optsamps(1,:)
     !solve for work term
     workterm = ncellwidth(ilevel)**(-linsolveEff*numDimensions)
     !accumlate next part of accumulating term
-    accterm = accterm + sqrt(Gvar(ilevel)*workterm)
+    accterm = accterm + sqrt(Gvar(1,ilevel)*workterm)
 print *,"ilevel:",ilevel,"  accterm:",accterm
 print *,"term1:",(MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0)
-print *,"term2:",sqrt(abs(Gvar(ilevel)/workterm))
+print *,"term2:",sqrt(abs(Gvar(1,ilevel)/workterm))
     !calculate new optimal samples estimate
     M_optsamps(3,ilevel) = ceiling(  (MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0) * &
-                                     sqrt(abs(Gvar(ilevel)/workterm)) * &
+                                     sqrt(abs(Gvar(1,ilevel)/workterm)) * &
                                      accterm                             )                         
 
 print *,"M_optsamps(3,ilevel):",M_optsamps(3,ilevel)
@@ -325,13 +326,13 @@ print *,"isamplow:",isamplow
         call sampleInput( ilevel )                             !update solver input info
         call solveSamples( ilevel,isamp )                      !solves QoI with and applies norm
 if(mod(isamp,1000)==0) print *,"ilevel:",ilevel,"  isamp:",isamp
-if(mod(isamp,1000)==0) print *,"G_ufunctional(",isamp,",",ilevel,"):",G_ufunctional(isamp,ilevel)
+if(mod(isamp,1000)==0) print *,"G_ufunctional(",1,",",isamp,",",ilevel,"):",G_ufunctional(1,isamp,ilevel)
       enddo
     endif
-    call mean_and_var_p( G_ufunctional(:,ilevel),&             !solve ave and var of functionals
-                         size(G_ufunctional(:,ilevel)),Gave(ilevel),Gvar(ilevel) )
-print *,"just formed Gave(",ilevel,"):",Gave(ilevel)
-print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
+    call mean_and_var_p( G_ufunctional(1,:,ilevel),&             !solve ave and var of functionals
+                         size(G_ufunctional(1,:,ilevel)),Gave(1,ilevel),Gvar(1,ilevel) )
+print *,"just formed Gave(",1,",",ilevel,"):",Gave(1,ilevel)
+print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
     M_optsamps(2,ilevel) = M_optsamps(1,ilevel)                !save old # of opt samps
   enddo
   end subroutine MLMCevalNewSamps
@@ -440,27 +441,27 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
   endif
 
   !L2 norm over all domain for Q_ufunctional
-  Q_ufunctional(isamp,ilevel) = 0.0d0
+  Q_ufunctional(1,isamp,ilevel) = 0.0d0
   do i=1,numcellsLevel0*nextLevelFactor**ilevel
-    Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + flux(i)**2*ncellwidth(ilevel)
+    Q_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel) + flux(i)**2*ncellwidth(ilevel)
   enddo
-  Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))
+  Q_ufunctional(1,isamp,ilevel) = sqrt(Q_ufunctional(1,isamp,ilevel))
 
   !!Here lies my first attempt at an L2 norm.  I think this was wrong, I think this is the 
   !!L2 of the L1 norm in each original cell...
   !do i=1,numcellsLevel0
   !  first = 1+(i-1)*nextLevelFactor**ilevel
   !  last  = i*nextLevelFactor**ilevel
-  !  Q_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) + &
+  !  Q_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel) + &
   !            ( sum(flux(first:last))/(last-first+1) )**2
   !enddo
-  !Q_ufunctional(isamp,ilevel) = sqrt(Q_ufunctional(isamp,ilevel))
+  !Q_ufunctional(1,isamp,ilevel) = sqrt(Q_ufunctional(1,isamp,ilevel))
 
   !solve G_ufunctional
   if( ilevel==0 ) then
-    G_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel)
+    G_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel)
   else
-    G_ufunctional(isamp,ilevel) = Q_ufunctional(isamp,ilevel) - Q_ufunctional(isamp,ilevel-1)
+    G_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel) - Q_ufunctional(1,isamp,ilevel-1)
   endif
 
   call FEDiffSn_externaldeallocate
@@ -477,13 +478,13 @@ print *,"just formed Gvar(",ilevel,"):",Gvar(ilevel)
   integer :: Level, ilevel
   real(8) :: qq = 2.0d0  !Lect 10, pg 3, >=1, order of error, example of =2
 
-  C_w  = max( abs(Gave(Level  ))/(ncellwidth(Level  )**qq*(nextLevelFactor**qq-1)), &
-              abs(Gave(Level-1))/(ncellwidth(Level-1)**qq*(nextLevelFactor**qq-1))    )
+  C_w  = max( abs(Gave(1,Level  ))/(ncellwidth(Level  )**qq*(nextLevelFactor**qq-1)), &
+              abs(Gave(1,Level-1))/(ncellwidth(Level-1)**qq*(nextLevelFactor**qq-1))    )
   err1 = C_w * ncellwidth(Level)**qq
 print *,"err1, disc err:",err1
   Vsum = 0.0d0
   do ilevel=0,Level
-    Vsum = Vsum + abs(Gvar(ilevel)/M_optsamps(1,ilevel))
+    Vsum = Vsum + abs(Gvar(1,ilevel)/M_optsamps(1,ilevel))
   enddo
   err2 = C_alpha * sqrt(Vsum)
 print *,"err contribution Gvar       :",Gvar

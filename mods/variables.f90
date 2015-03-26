@@ -301,10 +301,10 @@ module MLMCvars
   real(8), allocatable :: ncellwidth(:)        ! cell width at levels
   integer, allocatable :: def_ufunct(:,:)      ! options for which functionals to take/converge
 
-  real(8), allocatable :: Q_ufunctional(:,:)   ! functional of u, (samp#,Level)
-  real(8), allocatable :: G_ufunctional(:,:)   ! functional of u MLMC form, (samp#,Level)
-  real(8), allocatable :: Gave(:)              ! ave of funct of u MLMC form for each Level
-  real(8), allocatable :: Gvar(:)              ! var of funct of u MLMC form for each Level
+  real(8), allocatable :: Q_ufunctional(:,:,:) ! functional of u, (functional#,samp#,Level)
+  real(8), allocatable :: G_ufunctional(:,:,:) ! functional of u MLMC form, (functional#,samp#,Level)
+  real(8), allocatable :: Gave(:,:)            ! ave of funct of u MLMC form, (functional#,Level)
+  real(8), allocatable :: Gvar(:,:)            ! var of funct of u MLMC form, (functional#,Level)
 
 end module MLMCvars
 
