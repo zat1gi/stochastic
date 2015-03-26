@@ -613,11 +613,14 @@ CONTAINS
   !allocate/initialize MLMCvars
   allocate(MLMCcaseson(numPosMLMCmeths))
   MLMCcaseson = 0
-  if(detMLMC=='yes') MLMCcaseson(1) = 1
+  if(detMLMC=='detMLMC') MLMCcaseson(1) = 1
+  if(detMLMC=='spatial') MLMCcaseson(2) = 1
+  if(detMLMC=='iter')    MLMCcaseson(3) = 1
 
   allocate(MLMCcases(numPosMLMCmeths))
   MLMCcases(1) = 'detMLMC'
-
+  MLMCcases(2) = 'spatial'
+  MLMCcases(3) = 'iter'
 
   !allocate and initialize timevars
   allocate(time(ntime))

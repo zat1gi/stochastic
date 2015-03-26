@@ -68,9 +68,12 @@ program stochastic
 
   !!Perform MLMC with deterministic transport
   if( sum(MLMCcaseson)>0 .and. probtype=='coeffs') then !perform if at least one case chosen
-    do icase = 1,size(MLMCcaseson)     !cycle through possible cases
-      if( MLMCcaseson(icase)==1 ) then !run case if chosen
-        call UQ_MLMC( icase )          !perform UQ problem
+    do icase = 1,size(MLMCcaseson)                      !cycle through possible cases
+      if( MLMCcaseson(icase)==1 .and. icase==1 ) then   !run 'detMLMC' if chosen
+        call UQ_MLMC( icase )                           !perform UQ problem
+      endif
+      if( MLMCcaseson(icase)==1 .and. icase==2 ) then   !run 'spatial'
+!        call UQ_spatialconv                             !perform spatial convergence study
       endif
     enddo
   endif

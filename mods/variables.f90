@@ -280,7 +280,7 @@ end module MCvars
 module MLMCvars
   implicit none
   !inputs
-  character(3)         :: detMLMC              ! perform deterministic MLMC on varying coefs? yes or no
+  character(7)         :: detMLMC              ! perform deterministic MLMC on varying coefs? yes or no
   real(8)              :: MLMC_TOL             ! Tolerance to iterate until achieved
   real(8)              :: MLMC_TOLsplit        ! Phi - Tol split param, how much to type I or II err
   real(8)              :: MLMC_failprob        ! alpha - prob of fail to converge for MC in stoc dim
@@ -292,7 +292,7 @@ module MLMCvars
   !non inputs
   real(8)              :: linsolveEff = 1      ! =1 for tri-diag solve, aka diffusion, l.ge.1 and l.le.3
   real(8), parameter   :: numDimensions = 1    ! only currently have plans to do 1D problems
-  integer, parameter   :: numPosMLMCmeths = 1  ! total number of MLMC transport methods available
+  integer, parameter   :: numPosMLMCmeths = 3  ! tot # of MLMC meths, MLMC, spatial conv, iter conv
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
