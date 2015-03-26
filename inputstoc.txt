@@ -56,13 +56,33 @@
    sigs1-abs,   0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
 
   !--- Functionals - 'coeffs' type problem ---!
-  5,     Number of functionals
+  25,     Number of functionals
   yes, 1,    First functional L2 over domain?: 1, last, L2, ?/converge(1or0) 
     (1st cell/last cell/L2,L1,center/converge(1or0)) 
+        1,        2,        L1,          0
+        2,        4,        L1,          0
+        1,        4,        L2,          0
         1,        1,      center,        0
-        2,        5,         L1,         0
-        11,      11,      center,        0
-        2,        5,         L2,         0
+        2,        2,      center,        0
+        3,        3,      center,        0
+        4,        4,      center,        0
+        5,        5,      center,        0
+        6,        6,      center,        0
+        7,        7,      center,        0
+        8,        8,      center,        0
+        9,        9,      center,        0
+        10,        10,      center,        0
+        11,        11,      center,        0
+        12,        12,      center,        0
+        13,        13,      center,        0
+        14,        14,      center,        0
+        15,        15,      center,        0
+        16,        16,      center,        0
+        17,        17,      center,        0
+        18,        18,      center,        0
+        19,        19,      center,        0
+        20,        20,      center,        0
+        21,        21,      center,        0
 
 
 

@@ -24,7 +24,7 @@ CONTAINS
 
   !main MLMC loop
   do while(flMLMC)
-print *,"Level:",Level
+    print *,"Level:",Level
 
     !1 Determine number of cells, make array which holds number of cells as a function of level L
     !1 aka add new Level and necessary cells
@@ -35,11 +35,9 @@ print *,"Level:",Level
 
     !2 Solve initial samples for Level, solve V~(estimated variance) for each level L
     print *,"--evaluate baseline samples, get variance estimate--"
-if(flread) read *
     call MLMCevalNewSamps( Level )
     print *,"--evaluate baseline samples, get variance estimate--"
-if(flread) read *
-print *
+    print *
 
     !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
     !3.2 expand arrays to hold new M~s(number of samples)
@@ -50,15 +48,13 @@ print *
     print *,"--reallocate to accomodate new samples--"
     call MLMCaddSamples( Level )
     print *,"--reallocate to accomodate new samples--"
-print *
+    print *
 
     !4 Evaluate any new samples needed, Gave and Gvar calculated here
     print *,"--evaluate extra samples needed--"
-if(flread) read *
     call MLMCevalNewSamps( Level )
     print *,"--evaluate extra samples needed--"
-if(flread) read *
-print *
+    print *
 
     !5 test total error, set flMLMC==.false.?
     if(Level>1) print *,"--calculate estimated error--"
@@ -83,11 +79,11 @@ print *
     else
       Level = Level + 1
     endif
-
-
     if(Level>1) print *,"--calculate estimated error--"
+
   enddo !loops over realizations
 
+  call MLMCprintfunctionaldata
   call MLMCdeallocate
 
   end subroutine UQ_MLMC
@@ -509,10 +505,98 @@ print *,"isamplow:",isamplow
 
   MLMCcalcErrEst = err1 + err2
 
-print *,"functional:",ifunct
-print *,"  err1, disc err:",err1
-print *,"  err2, MC   err:",err2
+  print *,"functional:",ifunct
+  print *,"  err1, disc err:",err1
+  print *,"  err2, MC   err:",err2
   end function MLMCcalcErrEst
 
+
+
+  subroutine MLMCprintfunctionaldata
+  !Prints data in file for each type of functional chosen
+  use genRealzvars, only: s
+  use MLMCvars, only: Gave, Gvar, numcellsLevel0, def_ufunct, MLMCerrest, MLMC_TOL
+
+  integer :: L1s, L2s, centers, ifunct
+
+  !count number of each functional to be printed
+  L1s     = 0
+  L2s     = 0
+  centers = 0
+  do ifunct=1,size(def_ufunct(:,1))
+    if(def_ufunct(ifunct,3)==1) L1s     = L1s + 1
+    if(def_ufunct(ifunct,3)==2) L2s     = L2s + 1
+    if(def_ufunct(ifunct,3)==3) centers = centers + 1
+  enddo
+
+  1110 format("    converged ")
+  1111 format("    not converged ")
+
+  !print file for L1s
+  call system("test -e plots/MLMCfuncts/MLMCL1s.out && rm plots/MLMCfuncts/MLMCL1s.out")
+  if(L1s>0) then
+    1100 format("#starting cell, ending cell,  cell center, L1 of flux, estimated error, err tol")
+    1101 format(i5,i5,f15.7,f15.7,f15.7,f15.7)
+    open(unit=24, file="plots/MLMCfuncts/MLMCL1s.out")
+    write(24,1100)
+    do ifunct=1,size(def_ufunct(:,1))
+      if(def_ufunct(ifunct,3)==1) then
+        write(24,1101,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2),&
+             ( real(def_ufunct(ifunct,1)+def_ufunct(ifunct,2),8) -1.0d0)*s*0.5d0/real(numcellsLevel0,8), &
+             sum(Gave(ifunct,:)),MLMCerrest(ifunct),MLMC_TOL
+        if(MLMCerrest(ifunct)<MLMC_TOL) then
+          write(24,1110)
+        else
+          write(24,1111)
+        endif
+      endif
+    enddo
+    close(unit=24)    
+  endif
+
+  !print file for L2s
+  call system("test -e plots/MLMCfuncts/MLMCL2s.out && rm plots/MLMCfuncts/MLMCL2s.out")
+  if(L2s>0) then
+    1102 format("#starting cell, ending cell,  cell center, L2 of flux, estimated error, err tol")
+    1103 format(i5,i5,f15.7,f15.7,f15.7,f15.7)
+    open(unit=24, file="plots/MLMCfuncts/MLMCL2s.out")
+    write(24,1102)
+    do ifunct=1,size(def_ufunct(:,1))
+      if(def_ufunct(ifunct,3)==2) then
+        write(24,1103,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2),&
+             ( real(def_ufunct(ifunct,1)+def_ufunct(ifunct,2),8) -1.0d0)*s*0.5d0/real(numcellsLevel0,8), &
+             sum(Gave(ifunct,:)),MLMCerrest(ifunct),MLMC_TOL
+        if(MLMCerrest(ifunct)<MLMC_TOL) then
+          write(24,1110)
+        else
+          write(24,1111)
+        endif
+      endif
+    enddo
+    close(unit=24)    
+  endif
+
+  !print file for centers
+  call system("test -e plots/MLMCfuncts/MLMCcenters.out && rm plots/MLMCfuncts/MLMCcenters.out")
+  if(centers>0) then
+    1104 format("#cell center,    flux at point,     estimated error, err tol")
+    1105 format(f15.7,f15.7,f15.7,f15.7)
+    open(unit=24, file="plots/MLMCfuncts/MLMCcenters.out")
+    write(24,1104)
+    do ifunct=1,size(def_ufunct(:,1))
+      if(def_ufunct(ifunct,3)==3) then
+        write(24,1105,advance="no") ( real(def_ufunct(ifunct,1),8) -0.5d0)*s/real(numcellsLevel0,8), &
+                       sum(Gave(ifunct,:)),MLMCerrest(ifunct),MLMC_TOL
+        if(MLMCerrest(ifunct)<MLMC_TOL) then
+          write(24,1110)
+        else
+          write(24,1111)
+        endif
+      endif
+    enddo
+    close(unit=24)    
+  endif
+
+  end subroutine
 
 end module MLMC

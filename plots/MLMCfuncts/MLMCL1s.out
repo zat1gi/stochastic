@@ -1,0 +1,3 @@
+#starting cell, ending cell,  cell center, L1 of flux, estimated error, err tol
+    1    2      0.4761905      2.1399673      0.0006183      0.0050000    converged 
+    2    4      1.1904762      3.9438449      0.0008136      0.0050000    converged 
