@@ -9,12 +9,12 @@ CONTAINS
   !It's first implementation is planned to be using FEDiffSn as the deterministic solver
   !to demonstrate MLMC.  It's second implementation is planned to be using MC transport
   !as the solver.  Potentially the third is with MC transport over random binary media.
-  use MLMCvars, only: MLMC_TOL, numMLMCcells
+  use MLMCvars, only: MLMC_TOL, numMLMCcells, def_ufunct, MLMCerrest
   use FEDiffSn, only: setflvarspassedtrue
   integer :: icase
+  integer :: ifunct
 
   integer :: Level
-  real(8) :: MLMCerrest
   logical :: flMLMC
   logical :: flread = .false.
 
@@ -29,11 +29,9 @@ print *,"Level:",Level
     !1 Determine number of cells, make array which holds number of cells as a function of level L
     !1 aka add new Level and necessary cells
     if(Level /= 0) print *,"--reallocate to accomodate new Level--"
-if(Level /= 0 .and. flread) read *
     if(Level /= 0) call MLMCaddLevel( Level )
     if(Level /= 0) print *,"--reallocate to accomodate new Level--"
-if(Level /= 0 .and. flread) read *
-if(Level /= 0) print *
+    if(Level /= 0) print *
 
     !2 Solve initial samples for Level, solve V~(estimated variance) for each level L
     print *,"--evaluate baseline samples, get variance estimate--"
@@ -46,16 +44,12 @@ print *
     !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
     !3.2 expand arrays to hold new M~s(number of samples)
     print *,"--compute optimal number of samples--"
-if(flread) read *
     call MLMCcomputeOptSamps( Level )
     print *,"--compute optimal number of samples--"
-if(flread) read *
-print *
+    print *
     print *,"--reallocate to accomodate new samples--"
-if(flread) read *
     call MLMCaddSamples( Level )
     print *,"--reallocate to accomodate new samples--"
-if(flread) read *
 print *
 
     !4 Evaluate any new samples needed, Gave and Gvar calculated here
@@ -68,19 +62,30 @@ print *
 
     !5 test total error, set flMLMC==.false.?
     if(Level>1) print *,"--calculate estimated error--"
-if(Level>1 .and. flread) read *
-    if(Level>1) MLMCerrest = MLMCcalcErrEst( Level )
-    if(Level>1) print *,"MLMCerrest:",MLMCerrest
-    if(Level>1) print *,"MLMC_TOL  :",MLMC_TOL
-    if(Level>1) print *,"--calculate estimated error--"
-if(Level>1 .and. flread) read *
-    !MLMCerrest = 0.1d0
-    if(Level>1 .and. MLMCerrest<=MLMC_TOL) then
+    if(Level>1) then
+      do ifunct=1,size(def_ufunct(:,1))                  !calculate estimated error for each functional
+        MLMCerrest(ifunct) = MLMCcalcErrEst( Level,ifunct )
+        print *,"          MLMCerrest :",MLMCerrest(ifunct)
+        if(MLMCerrest(ifunct)>MLMC_TOL) then
+          print *,"          MLMC_TOL   :",MLMC_TOL," not converged"
+        else
+          print *,"          MLMC_TOL   :",MLMC_TOL," converged"
+        endif
+      enddo
+    endif
+
+    do ifunct=1,size(def_ufunct(:,1))                    !find which functional to converge
+      if(def_ufunct(ifunct,4)==1) exit
+    enddo
+
+    if(Level>1 .and. MLMCerrest(ifunct)<=MLMC_TOL) then  !test for convergence
       flMLMC = .false.
     else
       Level = Level + 1
-!if(Level==4) flMLMC = .false.
     endif
+
+
+    if(Level>1) print *,"--calculate estimated error--"
   enddo !loops over realizations
 
   call MLMCdeallocate
@@ -93,10 +98,12 @@ if(Level>1 .and. flread) read *
   subroutine MLMCallocate
   !Allocate arrays here.  Try to only allocate in order to make paralellization easier later.
   use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar, bnumMLMCsamps, numcellsLevel0, ncellwidth, num_ufunct
+                      Gave, Gvar, bnumMLMCsamps, numcellsLevel0, ncellwidth, num_ufunct, &
+                      MLMCerrest
 
   if(.not.allocated(numMLMCcells)) allocate(numMLMCcells(0:0))
   if(.not.allocated(M_optsamps)) allocate(M_optsamps(3,0:0))
+  if(.not.allocated(MLMCerrest)) allocate(MLMCerrest(num_ufunct))
 
   if(.not.allocated(Q_ufunctional)) allocate(Q_ufunctional(num_ufunct,bnumMLMCsamps,0:0))
   if(.not.allocated(G_ufunctional)) allocate(G_ufunctional(num_ufunct,bnumMLMCsamps,0:0))
@@ -112,7 +119,7 @@ if(Level>1 .and. flread) read *
   use genRealzvars, only: s
   use MLMCvars, only: numMLMCcells, numcellsLevel0, MLMC_failprob, C_alpha, &
                       M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar, bnumMLMCsamps, ncellwidth
+                      Gave, Gvar, bnumMLMCsamps, ncellwidth, MLMCerrest
   use FEDiffSn, only: a
   use utilities, only: erfi
   integer :: Level
@@ -128,6 +135,8 @@ if(Level>1 .and. flread) read *
   M_optsamps(2,0) = 0
   M_optsamps(3,0) = 0
 
+  MLMCerrest    = 0.0d0
+
   Q_ufunctional = 0.0d0
   G_ufunctional = 0.0d0
   Gave          = 0.0d0
@@ -142,10 +151,11 @@ if(Level>1 .and. flread) read *
   subroutine MLMCdeallocate
   !Deallocate arrays here.
   use MLMCvars, only: numMLMCcells, M_optsamps, Q_ufunctional, G_ufunctional, &
-                      Gave, Gvar, ncellwidth
+                      Gave, Gvar, ncellwidth, MLMCerrest
 
   if(allocated(numMLMCcells)) deallocate(numMLMCcells)
   if(allocated(M_optsamps)) deallocate(M_optsamps)
+  if(allocated(MLMCerrest)) deallocate(MLMCerrest)
 
   if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
   if(allocated(G_ufunctional)) deallocate(G_ufunctional)
@@ -189,8 +199,6 @@ if(Level>1 .and. flread) read *
   M_optsamps(:,0:size(tiarray2(1,:))-1) = tiarray2
   M_optsamps(1,Level) = bnumMLMCsamps
   deallocate(tiarray2)
-print *,"just reallocated, M_optsamps(1,:):",M_optsamps(1,:)
-print *,"just reallocated, M_optsamps(2,:):",M_optsamps(2,:)
 
   !add new Level to Q_ufunctional and initialize it
   call move_alloc(Q_ufunctional,trarray3)
@@ -259,31 +267,30 @@ print *,"just reallocated, M_optsamps(2,:):",M_optsamps(2,:)
   !3 Using V~s(estimated variance), compute optimal M~s(estimated opt num of samples)
   subroutine MLMCcomputeOptSamps( Level )
   use MLMCvars, only: MLMC_TOLsplit, MLMC_TOL, C_alpha, Gave, Gvar, M_optsamps, &
-                      ncellwidth,linsolveEff,numDimensions
+                      ncellwidth,linsolveEff,numDimensions, def_ufunct
   integer :: Level
 
-  integer :: ilevel
+  integer :: ilevel,ifunct
   real(8) :: workterm
   real(8) :: accterm !last term in estimate, sum over levels, sum as go
 
   workterm = 0.0d0
   accterm  = 0.0d0
 
-print *,"M_optsamps(1,:):",M_optsamps(1,:)
+  do ifunct=1,size(def_ufunct(:,1)) !decide for which functional to set opt num of samps
+    if(def_ufunct(ifunct,4)==1) exit
+  enddo
+
   do ilevel=0,Level
     !solve for work term
     workterm = ncellwidth(ilevel)**(-linsolveEff*numDimensions)
     !accumlate next part of accumulating term
-    accterm = accterm + sqrt(Gvar(1,ilevel)*workterm)
-print *,"ilevel:",ilevel,"  accterm:",accterm
-print *,"term1:",(MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0)
-print *,"term2:",sqrt(abs(Gvar(1,ilevel)/workterm))
+    accterm = accterm + sqrt(Gvar(ifunct,ilevel)*workterm)
     !calculate new optimal samples estimate
     M_optsamps(3,ilevel) = ceiling(  (MLMC_TOLsplit*MLMC_TOL/C_alpha)**(-2.0d0) * &
-                                     sqrt(abs(Gvar(1,ilevel)/workterm)) * &
+                                     sqrt(abs(Gvar(ifunct,ilevel)/workterm)) * &
                                      accterm                             )                         
 
-print *,"M_optsamps(3,ilevel):",M_optsamps(3,ilevel)
     !use larger of new value and old value
     M_optsamps(1,ilevel) = max(M_optsamps(2,ilevel),M_optsamps(3,ilevel))
     !if new level's estimate higher, make backwards compatible
@@ -292,8 +299,8 @@ print *,"M_optsamps(3,ilevel):",M_optsamps(3,ilevel)
          M_optsamps(1,0:ilevel-1) = M_optsamps(1,ilevel)
     endif
 
-print *,"theoretical optimal M for level",ilevel,":",M_optsamps(3,ilevel)
-print *,"practical   optimal M for level",ilevel,":",M_optsamps(1,ilevel)
+    print *,"theoretical optimal M for level",ilevel,":",M_optsamps(3,ilevel)
+    print *,"practical   optimal M for level",ilevel,":",M_optsamps(1,ilevel)
   enddo
 
   end subroutine MLMCcomputeOptSamps
@@ -304,19 +311,15 @@ print *,"practical   optimal M for level",ilevel,":",M_optsamps(1,ilevel)
   !4 Evaluate any new samples needed
   subroutine MLMCevalNewSamps( Level )
   !Evaluate any new samples needed, recompute functional values
-  use MLMCvars, only: M_optsamps, Gave, Gvar, G_ufunctional
+  use MLMCvars, only: M_optsamps, Gave, Gvar, G_ufunctional, def_ufunct
   use rngvars, only: setrngappnum, rngappnum, rngstride
   use utilities, only: mean_and_var_p
   use mcnp_random, only: RN_init_particle
   integer :: Level
 
-  integer :: ilevel,isamp, isamplow
+  integer :: ifunct,ilevel,isamp, isamplow
 
-print *,"new samps M_optsamps(1,:):",M_optsamps(1,:)
-print *,"new samps M_optsamps(2,:):",M_optsamps(2,:)
-print *,"new samps M_optsamps(3,:):",M_optsamps(3,:)
   do ilevel = 0,Level                                          !search each level
-print *,"ilevel:",ilevel
     if( M_optsamps(1,ilevel)>M_optsamps(2,ilevel) ) then       !if new samps to compute
       isamplow = max(M_optsamps(2,ilevel)+1,1)                 !set lowest samp num
 print *,"isamplow:",isamplow
@@ -325,16 +328,16 @@ print *,"isamplow:",isamplow
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
         call sampleInput( ilevel )                             !update solver input info
         call solveSamples( ilevel,isamp )                      !solves QoI with and applies norm
-if(mod(isamp,1000)==0) print *,"ilevel:",ilevel,"  isamp:",isamp
-if(mod(isamp,1000)==0) print *,"G_ufunctional(",1,",",isamp,",",ilevel,"):",G_ufunctional(1,isamp,ilevel)
       enddo
     endif
-    call mean_and_var_p( G_ufunctional(1,:,ilevel),&             !solve ave and var of functionals
-                         size(G_ufunctional(1,:,ilevel)),Gave(1,ilevel),Gvar(1,ilevel) )
-print *,"just formed Gave(",1,",",ilevel,"):",Gave(1,ilevel)
-print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
+    do ifunct=1,size(def_ufunct(:,1))
+      call mean_and_var_p( G_ufunctional(ifunct,:,ilevel),&             !solve ave and var of functionals
+                           size(G_ufunctional(ifunct,:,ilevel)),Gave(ifunct,ilevel),Gvar(ifunct,ilevel) )
+    enddo
     M_optsamps(2,ilevel) = M_optsamps(1,ilevel)                !save old # of opt samps
   enddo
+  print *,"Number of samples solved :",M_optsamps(1,:)
+  print *,"Theoretical ideal # samps:",M_optsamps(3,:)
   end subroutine MLMCevalNewSamps
 
 
@@ -468,7 +471,6 @@ print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
         Q_ufunctional(ifunct,isamp,ilevel) = flux(firstcell)
     end select
 
-
     !solve G_ufunctional
     if( ilevel==0 ) then
       G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel)
@@ -476,6 +478,9 @@ print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
       G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) - &
                                            Q_ufunctional(ifunct,isamp,ilevel-1)
     endif
+
+    if(mod(isamp,1000)==0) print *,"G_ufunctional(",ifunct,",",isamp,",",ilevel,"):",&
+                                    G_ufunctional(ifunct,isamp,ilevel)
   enddo
 
   call FEDiffSn_externaldeallocate
@@ -485,28 +490,28 @@ print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
 
 
   !5 test total error, set flMLMC==.false.?
-  function MLMCcalcErrEst( Level )
+  function MLMCcalcErrEst( Level,ifunct )
   use MLMCvars, only: Gave, Gvar, C_alpha, ncellwidth, nextLevelFactor, M_optsamps
              
   real(8) :: MLMCcalcErrEst, err1, C_w, err2, Vsum
-  integer :: Level, ilevel
+  integer :: Level, ilevel, ifunct
   real(8) :: qq = 2.0d0  !Lect 10, pg 3, >=1, order of error, example of =2
 
-  C_w  = max( abs(Gave(1,Level  ))/(ncellwidth(Level  )**qq*(nextLevelFactor**qq-1)), &
-              abs(Gave(1,Level-1))/(ncellwidth(Level-1)**qq*(nextLevelFactor**qq-1))    )
+  C_w  = max( abs(Gave(ifunct,Level  ))/(ncellwidth(Level  )**qq*(nextLevelFactor**qq-1)), &
+              abs(Gave(ifunct,Level-1))/(ncellwidth(Level-1)**qq*(nextLevelFactor**qq-1))    )
   err1 = C_w * ncellwidth(Level)**qq
-print *,"err1, disc err:",err1
+
   Vsum = 0.0d0
   do ilevel=0,Level
-    Vsum = Vsum + abs(Gvar(1,ilevel)/M_optsamps(1,ilevel))
+    Vsum = Vsum + abs(Gvar(ifunct,ilevel)/M_optsamps(1,ilevel))
   enddo
   err2 = C_alpha * sqrt(Vsum)
-print *,"err contribution Gvar       :",Gvar
-print *,"err contribution M_optsamps :",M_optsamps
-print *,"err contribution Vsum       :",Vsum,"   sqrt(Vsum):",sqrt(Vsum)
-print *,"err2, MC   err:",err2
+
   MLMCcalcErrEst = err1 + err2
 
+print *,"functional:",ifunct
+print *,"  err1, disc err:",err1
+print *,"  err2, MC   err:",err2
   end function MLMCcalcErrEst
 
 

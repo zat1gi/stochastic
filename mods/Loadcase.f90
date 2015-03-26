@@ -61,7 +61,7 @@ CONTAINS
   real(8)       :: dumreal,s2
   character(20) :: dumchar !use this to "skip" a line
 
-  integer :: i
+  integer :: i,default_ufunctc
 
   open(unit=2,file="inputstoc.txt")
 
@@ -139,7 +139,7 @@ CONTAINS
   !--- Functionals - 'coeffs' type problem ---!
   read(2,*) dumchar
   read(2,*) num_ufunct
-  read(2,*) default_ufunct
+  read(2,*) default_ufunct,default_ufunctc
   read(2,*) dumchar
   allocate(def_ufunct(num_ufunct,4))
   do i=1,num_ufunct
@@ -147,7 +147,7 @@ CONTAINS
       def_ufunct(1,1) = 1               !first cell
       def_ufunct(1,2) = numcellsLevel0  !last cell
       def_ufunct(1,3) = 2               !L2 norm
-      def_ufunct(1,4) = 1               !yes converge to this
+      def_ufunct(1,4) = default_ufunctc !converge to this or not
     elseif(i==1) then
       read(2,*) def_ufunct(1,1),def_ufunct(1,2),chosennorm,def_ufunct(1,4)
       if(chosennorm=='L1')     def_ufunct(1,3)=1
@@ -267,7 +267,7 @@ CONTAINS
   use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
   integer :: fpointorxi(2)
 
-  integer :: i
+  integer :: i, ones, zeros
   real(8) :: smallersig,largersig,sigratio
   real(8) :: eps = 0.000001d0
   character(3) :: run = 'no'
@@ -463,6 +463,8 @@ CONTAINS
   endif 
 
   if(probtype=='coeffs') then
+    ones  = 0
+    zeros = 0
     do i=1,size(def_ufunct(:,1))
       if(def_ufunct(i,3)==3) then
         if(def_ufunct(i,1)/=def_ufunct(i,2)) then
@@ -479,7 +481,21 @@ CONTAINS
         print *,"--Define functionals over range of cells that exist"
         flstopstatus = .true.
       endif
+      if(def_ufunct(i,4)==1) ones  = ones+1
+      if(def_ufunct(i,4)==0) zeros = zeros+1
     enddo
+    if(ones>1) then
+      print *,"--Only first functional set to 1 will be required to converge"
+      flsleep = .true.
+    endif
+    if(ones<1) then
+      print *,"--Must set at a functional to converge"
+      flstopstatus = .true.
+    endif
+    if(ones+zeros/=size(def_ufunct(:,1))) then
+      print *,"--Set each functional's convergence status to either 0 or 1"
+      flstopstatus = .true.
+    endif
   endif
 
   if(flstopstatus) STOP 'killed'

@@ -57,7 +57,7 @@
 
   !--- Functionals - 'coeffs' type problem ---!
   5,     Number of functionals
-  yes,    First functional L2 over domain?: 1, last, L2, 1 
+  yes, 1,    First functional L2 over domain?: 1, last, L2, ?/converge(1or0) 
     (1st cell/last cell/L2,L1,center/converge(1or0)) 
         1,        1,      center,        0
         2,        5,         L1,         0

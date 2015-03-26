@@ -298,6 +298,7 @@ module MLMCvars
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est/3-small est,Level)
+  real(8), allocatable :: MLMCerrest(:)        ! error estimate for each functional chosen
   real(8), allocatable :: ncellwidth(:)        ! cell width at levels
   integer, allocatable :: def_ufunct(:,:)      ! options for which functionals to take/converge
 
