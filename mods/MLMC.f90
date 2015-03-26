@@ -412,14 +412,15 @@ print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
 
 
   subroutine solveSamples( ilevel,isamp )
-  !This subroutine drives the solver for a new response function flux for a new sample
-  !collects solution, and deallocated module variables from FEDiffSn.
+  !This subroutine drives the solver for a new response function flux for a new sample,
+  !collects all desired Quantities of Interest from that solution, 
+  !and deallocates module variables from FEDiffSn.
   use MLMCvars, only: Q_ufunctional, G_ufunctional, nextLevelFactor, numcellsLevel0, &
-                      ncellwidth
+                      ncellwidth, def_ufunct
   use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
                       solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
 
-  integer :: ilevel, isamp, i, icell, first, last
+  integer :: ifunct, isamp, ilevel,  icell, firstcell, lastcell, middlecell
   real(8), allocatable :: flux(:),cellwidth
 
   call FEmain
@@ -440,29 +441,42 @@ print *,"just formed Gvar(",1,",",ilevel,"):",Gvar(1,ilevel)
     flux = phidiff
   endif
 
-  !L2 norm over all domain for Q_ufunctional
-  Q_ufunctional(1,isamp,ilevel) = 0.0d0
-  do i=1,numcellsLevel0*nextLevelFactor**ilevel
-    Q_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel) + flux(i)**2*ncellwidth(ilevel)
+  do ifunct=1,size(def_ufunct(:,1))  !solve Q_ufunctional for each specified functional
+    firstcell = (def_ufunct(ifunct,1)-1)*nextLevelFactor**ilevel+1
+
+    select case (def_ufunct(ifunct,3))
+
+      case (1) !L1 norm
+        lastcell = def_ufunct(ifunct,2)*nextLevelFactor**ilevel
+        Q_ufunctional(ifunct,isamp,ilevel) = 0.0d0
+        do icell=firstcell,lastcell
+          Q_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) + &
+                                                flux(icell)   *ncellwidth(ilevel)
+        enddo
+
+      case (2) !L2 norm
+        lastcell = def_ufunct(ifunct,2)*nextLevelFactor**ilevel
+        Q_ufunctional(ifunct,isamp,ilevel) = 0.0d0
+        do icell=firstcell,lastcell
+          Q_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) + &
+                                                flux(icell)**2*ncellwidth(ilevel)
+        enddo
+        Q_ufunctional(ifunct,isamp,ilevel) = sqrt(Q_ufunctional(ifunct,isamp,ilevel))
+
+      case (3) !center value
+        middlecell = firstcell - 1 +(nextLevelFactor**ilevel+1)/2
+        Q_ufunctional(ifunct,isamp,ilevel) = flux(firstcell)
+    end select
+
+
+    !solve G_ufunctional
+    if( ilevel==0 ) then
+      G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel)
+    else
+      G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) - &
+                                           Q_ufunctional(ifunct,isamp,ilevel-1)
+    endif
   enddo
-  Q_ufunctional(1,isamp,ilevel) = sqrt(Q_ufunctional(1,isamp,ilevel))
-
-  !!Here lies my first attempt at an L2 norm.  I think this was wrong, I think this is the 
-  !!L2 of the L1 norm in each original cell...
-  !do i=1,numcellsLevel0
-  !  first = 1+(i-1)*nextLevelFactor**ilevel
-  !  last  = i*nextLevelFactor**ilevel
-  !  Q_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel) + &
-  !            ( sum(flux(first:last))/(last-first+1) )**2
-  !enddo
-  !Q_ufunctional(1,isamp,ilevel) = sqrt(Q_ufunctional(1,isamp,ilevel))
-
-  !solve G_ufunctional
-  if( ilevel==0 ) then
-    G_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel)
-  else
-    G_ufunctional(1,isamp,ilevel) = Q_ufunctional(1,isamp,ilevel) - Q_ufunctional(1,isamp,ilevel-1)
-  endif
 
   call FEDiffSn_externaldeallocate
 
