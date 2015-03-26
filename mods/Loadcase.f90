@@ -262,7 +262,9 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
-                    pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot, WAMC
+                    pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot, WAMC, &
+                    probtype
+  use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
   integer :: fpointorxi(2)
 
   integer :: i
@@ -460,6 +462,25 @@ CONTAINS
     flstopstatus = .true.
   endif 
 
+  if(probtype=='coeffs') then
+    do i=1,size(def_ufunct(:,1))
+      if(def_ufunct(i,3)==3) then
+        if(def_ufunct(i,1)/=def_ufunct(i,2)) then
+          print *,"--Use 'center' option for functionals only over one cell"
+          flstopstatus = .true.
+        endif
+        if(mod(nextLevelFactor,2)/=1) then
+          print *,"--Use 'center' option only with odd refinement factor"
+          flstopstatus = .true.
+        endif
+      endif
+      if(def_ufunct(i,1)<1 .or. def_ufunct(i,2)>numcellsLevel0 .or. &
+                                def_ufunct(i,1)>def_ufunct(i,2)) then
+        print *,"--Define functionals over range of cells that exist"
+        flstopstatus = .true.
+      endif
+    enddo
+  endif
 
   if(flstopstatus) STOP 'killed'
   if(flsleep) call sleep(4)
