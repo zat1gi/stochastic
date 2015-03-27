@@ -44,6 +44,7 @@
   3,            Refinement factor with which to increase each Level
   5000,         Baseline number of samples for new MLMC Level
   0.05,          UQ_MC failure probability alpha
+  6,            Max level for spatial convergence study (baseline for error)
 
   !--- Geometry - 'coeffs' type problem ---!
   none,       special prob descriptor, overrides options i.e. mc2013.1 mc2013.2 mc2015.1    
@@ -83,7 +84,6 @@
         19,        19,      center,        0
         20,        20,      center,        0
         21,        21,      center,        0
-
 
 
 

@@ -4,18 +4,18 @@
 
   !--- Material and Mesh ---!
   1.0, 0.999,      #sigt,c
-  100,             #numcells
+  20,             #numcells
   10.0,            #a
-  8,              #numangs
+  4,              #numangs
 
   !--- Source ---!
   evend,           #qtype, 'evend', 'func1', or 'moms'
   1.0,             #constq
-  0.0,0.0,         #curRight,curLeft
+  0.0,0.0, #-4.0,0.2,         #curRight,curLeft
   vacuum,          #SnBCs
 
   !--- Starting Flux ---!
-  0.0,             #phistart
+  1.0,             #phistart
 
   !--- Iteration Inputs ---!
-  0.000000001,         #tol
+  0.0000001,         #tol

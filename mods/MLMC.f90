@@ -90,6 +90,35 @@ CONTAINS
 
 
 
+  subroutine UQ_spatialconv( icase )
+  !This subroutine performs a spatial convergence study for all chosen functionals in an
+  !effort to determine the spatial convergence parameter for each problem, solve, and QoI
+  use genRealzvars, only: s
+  use MLMCvars, only: Q_ufunctional, num_ufunct, spatial_Level, ncellwidth, numcellsLevel0, &
+                      nextLevelFactor
+  use FEDiffSn, only: setflvarspassedtrue, a
+  integer :: icase,ilevel
+
+  if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
+  allocate(Q_ufunctional(num_ufunct,1,0:spatial_Level))
+  Q_ufunctional = 0.0d0
+  if(allocated(ncellwidth)) deallocate(ncellwidth)
+  allocate(ncellwidth(0:spatial_Level))
+  ncellwidth = 0.0d0
+  a             = s
+  call setflvarspassedtrue                             !tell FE mod to accept input from here
+
+  do ilevel=0,spatial_Level
+    ncellwidth(ilevel) = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
+print *,"ncellwidth(ilevel):",ncellwidth(ilevel)
+    call samplespatialInput( ilevel )          !samples average values
+    call solveSamples( ilevel,1 ) !isamp=1     !solves QoIs
+  enddo
+  end subroutine UQ_spatialconv
+
+
+
+
 
   subroutine MLMCallocate
   !Allocate arrays here.  Try to only allocate in order to make paralellization easier later.
@@ -323,7 +352,7 @@ print *,"isamplow:",isamplow
         call setrngappnum('MLMCsamp')                          !set rng unique to sample
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
         call sampleInput( ilevel )                             !update solver input info
-        call solveSamples( ilevel,isamp )                      !solves QoI with and applies norm
+        call solveSamples( ilevel,isamp )                      !solves QoIs
       enddo
     endif
     do ifunct=1,size(def_ufunct(:,1))
@@ -410,12 +439,84 @@ print *,"isamplow:",isamplow
 
 
 
+  subroutine samplespatialInput( ilevel )
+  !This subroutine samples average input parameters passes them as needed
+  use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, &
+                         param2_mean
+  use MLMCvars, only: nextLevelFactor, numcellsLevel0
+  use FEDiffSn, only: sigt, c, numcells,      flvarspassed
+
+  integer :: ilevel
+  real(8) :: loc_sigs, loc_siga
+  logical :: flsiga            !have I already sampled siga?
+
+  !The following preparation of sigt and c is designed for use with FEDiffSn, 
+  !and is written on the assumption that there is only 1 material present.
+  !When similar parsing is written later, code with that in mind.
+  flsiga = .false.
+
+  !sample and prepare sigt
+  if( param1(1)=='sigt' ) then
+    if( param1(2)=='sigt1-abs' ) then
+      sigt = param1_mean(1)
+    elseif( param1(2)=='sigt1-frac' ) then
+      sigt = param1_mean(1)
+    endif
+  elseif( param1(1)=='sigs' ) then
+    if( param1(2)=='sigs1-abs' ) then
+      loc_sigs = param1_mean(1)
+    elseif( param1(2)=='sigs1-frac' ) then
+      loc_sigs = param1_mean(1)
+    endif
+    if( param2(2)=='siga1-abs' ) then
+      loc_siga = param2_mean(1)
+    elseif( param2(2)=='siga1-frac' ) then
+      loc_siga = param2_mean(1)
+    endif
+    flsiga = .true.
+    sigt = loc_sigs + loc_siga
+  endif
+
+  !sample and prepare c
+  if( param2(1)=='c' ) then
+    if( param2(2)=='c1-abs' ) then
+      c = param2_mean(1)
+    elseif( param2(2)=='c1-frac' ) then
+      c = param2_mean(1)
+    endif
+  elseif( param2(1)=='siga' ) then
+    if( param2(2)=='siga1-abs' .and. .not.flsiga) then
+      loc_siga = param2_mean(1)
+    elseif( param2(2)=='siga1-frac' .and. .not.flsiga) then
+      loc_siga = param2_mean(1)
+    endif
+    c = merge(1.0d0-loc_siga/sigt,loc_sigs/(loc_sigs+loc_siga),.not.flsiga)
+  elseif( param2(1)=='sigs' ) then
+    if( param2(2)=='sigs1-abs' ) then
+      loc_sigs = param2_mean(1)
+    elseif( param2(2)=='sigs1-frac' ) then
+      loc_sigs = param2_mean(1)
+    endif
+    c = loc_sigs/sigt
+  endif
+
+  if( c>1.0d0 ) then
+    stop "--'c' sampled as greater than 1, check your input!"
+  endif
+
+  numcells = numcellsLevel0*nextLevelFactor**ilevel
+print *,"ilevel:",ilevel,"numcells:",numcells
+  end subroutine samplespatialInput
+
+
+
+
   subroutine solveSamples( ilevel,isamp )
   !This subroutine drives the solver for a new response function flux for a new sample,
   !collects all desired Quantities of Interest from that solution, 
   !and deallocates module variables from FEDiffSn.
   use MLMCvars, only: Q_ufunctional, G_ufunctional, nextLevelFactor, numcellsLevel0, &
-                      ncellwidth, def_ufunct
+                      ncellwidth, def_ufunct, detMLMC
   use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
                       solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
 
@@ -437,7 +538,7 @@ print *,"isamplow:",isamplow
   elseif(solve(1)==1) then
     allocate(flux(size(phidiff)))
     flux = 0.0d0
-    flux = phidiff
+    flux = ( phidiff(1:size(phidiff)-1)+phidiff(2:size(phidiff)) )/2.0d0
   endif
 
   do ifunct=1,size(def_ufunct(:,1))  !solve Q_ufunctional for each specified functional
@@ -467,16 +568,19 @@ print *,"isamplow:",isamplow
         Q_ufunctional(ifunct,isamp,ilevel) = flux(firstcell)
     end select
 
-    !solve G_ufunctional
-    if( ilevel==0 ) then
-      G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel)
-    else
-      G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) - &
-                                           Q_ufunctional(ifunct,isamp,ilevel-1)
+    !solve G_ufunctional if performing deterministic MLMC
+    if( detMLMC=='detMLMC' ) then
+      if( ilevel==0 ) then
+        G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel)
+      else
+        G_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) - &
+                                             Q_ufunctional(ifunct,isamp,ilevel-1)
+      endif
+
+      if(mod(isamp,1000)==0) print *,"G_ufunctional(",ifunct,",",isamp,",",ilevel,"):",&
+                                      G_ufunctional(ifunct,isamp,ilevel)
     endif
 
-    if(mod(isamp,1000)==0) print *,"G_ufunctional(",ifunct,",",isamp,",",ilevel,"):",&
-                                    G_ufunctional(ifunct,isamp,ilevel)
   enddo
 
   call FEDiffSn_externaldeallocate

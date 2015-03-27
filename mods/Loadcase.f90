@@ -53,7 +53,7 @@ CONTAINS
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype
   use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
-                                  MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct
+                                  MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct, spatial_Level
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: default_ufunct  !default u functional or not?
   character(6) :: chosennorm      !norm to convert from text to number
@@ -119,6 +119,7 @@ CONTAINS
   read(2,*) nextLevelFactor
   read(2,*) bnumMLMCsamps
   read(2,*) MLMC_failprob
+  read(2,*) spatial_Level
 
   !--- Geometry - 'coeffs' type problem ---!
   read(2,*) dumchar

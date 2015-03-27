@@ -73,7 +73,7 @@ program stochastic
         call UQ_MLMC( icase )                           !perform UQ problem
       endif
       if( MLMCcaseson(icase)==1 .and. icase==2 ) then   !run 'spatial'
-!        call UQ_spatialconv                             !perform spatial convergence study
+        call UQ_spatialconv( icase )                    !perform spatial convergence study
       endif
     enddo
   endif
