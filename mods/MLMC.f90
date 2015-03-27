@@ -123,8 +123,8 @@ CONTAINS
   use MLMCvars, only: Q_ufunctional, spatial_Level, num_ufunct, def_ufunct, &
                       numcellsLevel0, nextLevelFactor
 
-  integer :: ilevel, ifunct
-  real(8), allocatable :: err_ufunctional(:,:,:)
+  integer :: ilevel, ifunct, ibase, igap
+  real(8), allocatable :: err_ufunctional(:,:,:),slope
 
   if(.not.allocated(err_ufunctional)) allocate(err_ufunctional(num_ufunct,1,0:spatial_Level-1))
   err_ufunctional = 0.0d0
@@ -137,6 +137,40 @@ CONTAINS
     enddo
   enddo
 
+  !Here I calculate the log-log slopes and print in each variation possible
+  !for each functional chosen.  I calculate slope between the first and second
+  !data points, first and third, etc, then first and third, first and fourth, etc.
+  !Each of these slope calculations ought to be about the same, but this is a sanity
+  !check that they are!
+  call system("test -e plots/MLMCfuncts/spatialslopes.out && rm plots/MLMCfuncts/spatialslopes.out")
+
+  open(unit=24, file="plots/MLMCfuncts/spatialslopes.out")
+
+  1130 format(f15.7)
+  1131 format("slope for ")
+  do ifunct=1,num_ufunct
+    write(24,1131,advance="no")
+    if(def_ufunct(ifunct,3)==1) then
+      write(24,1121) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==2) then
+      write(24,1122) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==3) then
+      write(24,1123) def_ufunct(ifunct,1)
+    endif
+    do igap=1,spatial_Level-1
+      do ibase=0,spatial_Level-igap-1
+        slope = spatiallogslope(err_ufunctional,ifunct,ibase,ibase+igap)
+        write(24,1130,advance="no") slope
+      enddo
+      write(24,1124)
+    enddo
+  enddo
+
+  close(unit=24)      
+
+
+  !Here we print the actual functional error data so that it can be examined
+  !by hand and/or plotted.
   call system("test -e plots/MLMCfuncts/spatialconv.out && rm plots/MLMCfuncts/spatialconv.out")
 
   open(unit=24, file="plots/MLMCfuncts/spatialconv.out")
@@ -170,6 +204,22 @@ CONTAINS
 
   end subroutine spatial_calcerr_print
 
+
+  function spatiallogslope(err_ufunctional2,ifunct,ilevel1,ilevel2)
+  !This function finds the log-log slope of spatial convergence of functionals
+  !err_ufunctional has a 2 because it is passed by reference, and the new array
+  !is starts at 1, not 0.  The '2' denotes this difference for understandability.
+  !Each 'ilevel#' has a plus one to compensate for this offset.
+  use MLMCvars, only: numcellsLevel0, nextLevelFactor
+  real(8) :: err_ufunctional2(:,:,:)
+  real(8) :: spatiallogslope
+  integer :: ifunct,ilevel1,ilevel2
+
+  spatiallogslope = ( log(err_ufunctional2(ifunct,1,ilevel1+1))                  - &
+                      log(err_ufunctional2(ifunct,1,ilevel2+1))                ) / &
+                    ( log(real(numcellsLevel0*nextLevelFactor**(ilevel1+1),8))   - &
+                      log(real(numcellsLevel0*nextLevelFactor**(ilevel2+1),8)) )
+  end function spatiallogslope
 
 
 
