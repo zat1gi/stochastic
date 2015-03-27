@@ -110,12 +110,65 @@ CONTAINS
 
   do ilevel=0,spatial_Level
     ncellwidth(ilevel) = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
-print *,"ncellwidth(ilevel):",ncellwidth(ilevel)
     call samplespatialInput( ilevel )          !samples average values
     call solveSamples( ilevel,1 ) !isamp=1     !solves QoIs
   enddo
+  call spatial_calcerr_print                   !calc and print errs for functs
   end subroutine UQ_spatialconv
 
+
+  subroutine spatial_calcerr_print
+  !This subroutrine calculates the error (based off the most converged level)
+  !for each functional, and prints these values to a file.
+  use MLMCvars, only: Q_ufunctional, spatial_Level, num_ufunct, def_ufunct, &
+                      numcellsLevel0, nextLevelFactor
+
+  integer :: ilevel, ifunct
+  real(8), allocatable :: err_ufunctional(:,:,:)
+
+  if(.not.allocated(err_ufunctional)) allocate(err_ufunctional(num_ufunct,1,0:spatial_Level-1))
+  err_ufunctional = 0.0d0
+
+  do ilevel=0,spatial_Level-1
+    do ifunct=1,num_ufunct
+      err_ufunctional(ifunct,1,ilevel) = &
+                  abs( Q_ufunctional(ifunct,1,spatial_Level)-Q_ufunctional(ifunct,1,ilevel) ) / &
+                       Q_ufunctional(ifunct,1,spatial_Level)
+    enddo
+  enddo
+
+  call system("test -e plots/MLMCfuncts/spatialconv.out && rm plots/MLMCfuncts/spatialconv.out")
+
+  open(unit=24, file="plots/MLMCfuncts/spatialconv.out")
+  1120 format("#ilevel     num of cells   ")
+  1121 format("L1 cell",i5," to",i5,"  ")
+  1122 format("L2 cell",i5," to",i5,"  ")
+  1123 format(" center cell",i5,"     ")
+  1124 format(" ")
+  write(24,1120,advance="no")
+  do ifunct=1,num_ufunct
+    if(def_ufunct(ifunct,3)==1) then
+      write(24,1121,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==2) then
+      write(24,1122,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==3) then
+      write(24,1123,advance="no") def_ufunct(ifunct,1)
+    endif
+  enddo
+  write(24,1124)
+
+  1125 format(i5,"     ",i13,"    ")
+  1126 format(es14.7,"        ")
+  do ilevel=0,spatial_Level-1
+    write(24,1125,advance="no") ilevel,numcellsLevel0*nextLevelFactor**ilevel
+    do ifunct=1,num_ufunct
+      write(24,1126,advance="no") err_ufunctional(ifunct,1,ilevel)
+    enddo
+    write(24,1124)
+  enddo
+  close(unit=24)    
+
+  end subroutine spatial_calcerr_print
 
 
 
@@ -505,7 +558,7 @@ print *,"isamplow:",isamplow
   endif
 
   numcells = numcellsLevel0*nextLevelFactor**ilevel
-print *,"ilevel:",ilevel,"numcells:",numcells
+
   end subroutine samplespatialInput
 
 
