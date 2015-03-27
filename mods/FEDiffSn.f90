@@ -42,6 +42,7 @@ CONTAINS
   real(8),allocatable :: phiHsl(:),phiHsr(:),phiresl(:),phiresr(:)
   real(8),allocatable :: phiDSAlold(:),phiDSArold(:),phiDSAdiff(:)
   real(8) :: alpha,beta
+  logical :: flitermore
 
   !Read and Prepare parameters
   call input(            a,curRight,curLeft,constq,qtype,phistart,&
@@ -81,13 +82,15 @@ CONTAINS
     call Snsourceset(    numcells,a,x,dx,constq,qtype,qr,ql,sigt,siga,SnBCs,&
                          psiBCl,psiBCr,numangs)!Set qs & psiBCs
     iter=0
-    do while (error>tol)
+    flitermore = .true.
+    do while (flitermore)
       iter=iter+1
       call FESn(         numcells,phiSnl,phiSnr,psil,psir,x,dx,qr,ql,sigt,siga,mu,&
                          psiBCl,psiBCr,numangs ) !Solve an Sn sweep
       call FESncalcphi(  numcells,phiSnl,phiSnr,psil,psir,wgts,numangs ) !Calc phi from psi
       if(iter>1) call FESnerror( numcells,phiSnl,phiSnr,phiSnlold,phiSnrold,error ) !Check converge?
       call FESnNewToOld( numcells,phiSnl,phiSnr,phiSnlold,phiSnrold )
+      if(error<tol) flitermore = .false.
     enddo
 !    print *,"iteration: ",iter
 !    call cpu_time(toc)
@@ -135,7 +138,8 @@ CONTAINS
     !init for diff
     call fluxinitcont(   numcells,phiDSAdiff,phistart ) !create phi=phistart
     iter=0
-    do while (error>tol)
+    flitermore = .true.
+    do while (flitermore)
       iter=iter+1
       !Step 1, Sn solve for half step solution of flux
       call FESn(         numcells,phiDSAlold,phiDSArold,psil,psir,x,dx,qr,ql,sigt,siga,mu,&
@@ -152,6 +156,7 @@ CONTAINS
 
       if(iter>1) call FESnerror( numcells,phiDSAl,phiDSAr,phiDSAlold,phiDSArold,error ) !Converge?
       call FESnNewToOld( numcells,phiDSAl,phiDSAr,phiDSAlold,phiDSArold )
+      if(error<tol) flitermore = .false.
     enddo
 !    print *,"iteration: ",iter
 !    call cpu_time(toc)
