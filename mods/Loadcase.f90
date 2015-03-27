@@ -55,13 +55,15 @@ CONTAINS
   use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
                                   MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct, spatial_Level
   character(7) :: pltallopt                         !Plot all same opt
-  character(3) :: default_ufunct  !default u functional or not?
-  character(6) :: chosennorm      !norm to convert from text to number
+  character(3) :: default_ufunct    !default u functional or not?
+  character(3) :: allL1s,allcenters !all basic L1/center based functionals?
+  character(6) :: chosennorm        !norm to convert from text to number
 
   real(8)       :: dumreal,s2
   character(20) :: dumchar !use this to "skip" a line
 
   integer :: i,default_ufunctc
+  integer, allocatable :: tiarray2(:,:)
 
   open(unit=2,file="inputstoc.txt")
 
@@ -141,9 +143,10 @@ CONTAINS
   read(2,*) dumchar
   read(2,*) num_ufunct
   read(2,*) default_ufunct,default_ufunctc
+  read(2,*) allL1s,allcenters
   read(2,*) dumchar
   allocate(def_ufunct(num_ufunct,4))
-  do i=1,num_ufunct
+  do i=1,num_ufunct  !read/set non-bulk values for functionals
     if(i==1 .and. default_ufunct=='yes') then
       def_ufunct(1,1) = 1               !first cell
       def_ufunct(1,2) = numcellsLevel0  !last cell
@@ -161,6 +164,35 @@ CONTAINS
       if(chosennorm=='center') def_ufunct(i,3)=3
     endif
   enddo
+
+  if(allL1s=='yes') then  !add bulk values for functionals (many at one time)
+    num_ufunct = num_ufunct+numcellsLevel0
+    call move_alloc(def_ufunct,tiarray2)
+    allocate(def_ufunct(num_ufunct,4))
+    def_ufunct = 0
+    def_ufunct(1:size(tiarray2(:,1)),:) = tiarray2
+    do i=1,numcellsLevel0
+      def_ufunct(size(tiarray2(:,1))+i,1) = i
+      def_ufunct(size(tiarray2(:,1))+i,2) = i
+      def_ufunct(size(tiarray2(:,1))+i,3) = 1
+      def_ufunct(size(tiarray2(:,1))+i,4) = 0
+    enddo
+    deallocate(tiarray2)
+  endif 
+  if(allcenters=='yes') then
+    num_ufunct = num_ufunct+numcellsLevel0
+    call move_alloc(def_ufunct,tiarray2)
+    allocate(def_ufunct(num_ufunct,4))
+    def_ufunct = 0
+    def_ufunct(1:size(tiarray2(:,1)),:) = tiarray2
+    do i=1,numcellsLevel0
+      def_ufunct(size(tiarray2(:,1))+i,1) = i
+      def_ufunct(size(tiarray2(:,1))+i,2) = i
+      def_ufunct(size(tiarray2(:,1))+i,3) = 3
+      def_ufunct(size(tiarray2(:,1))+i,4) = 0
+    enddo
+    deallocate(tiarray2)
+  endif 
 
 
 
@@ -490,7 +522,7 @@ CONTAINS
       flsleep = .true.
     endif
     if(ones<1) then
-      print *,"--Must set at a functional to converge"
+      print *,"--Must choose a functional to converge"
       flstopstatus = .true.
     endif
     if(ones+zeros/=size(def_ufunct(:,1))) then
