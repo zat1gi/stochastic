@@ -227,8 +227,7 @@ CONTAINS
   !effort to determine the iterative convergence parameter for each problem, solve, and QoI
   use genRealzvars, only: s
   use MLMCvars, only: Q_ufunctional, num_ufunct, ncellwidth, numcellsLevel0
-  use FEDiffSn, only: setflvarspassedtrue, a, fliterstudy, max_iter, flnewiter, fliterstudy, &
-                      FEMain, FEDiffSn_externaldeallocate
+  use FEDiffSn, only: setflvarspassedtrue, a, fliterstudy, max_iter, flnewiter, fliterstudy
   integer :: icase, iiter
 
   if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
@@ -246,8 +245,6 @@ CONTAINS
   fliterstudy = .true.
   do while(flnewiter)                       !solve until FEDiffSn solver says it's converged
     call sampleconvInput( 0 )               !samples average values, ilevel=0 so to set # of cells
-call FEmain
-call FEDiffSn_externaldeallocate
 !    call solveSamples( 0,1 )                !solves QoIs, ilevel=0, isamp=1
     max_iter = max_iter + 1
   enddo

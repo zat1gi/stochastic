@@ -87,13 +87,10 @@ CONTAINS
                          psiBCl,psiBCr,numangs)!Set qs & psiBCs
     iter=0
     flitermore = .true.
-print *,"flitermore:",flitermore,"fliterstudy:",fliterstudy
     if(fliterstudy) then                      !used w iter conv study
-print *,"max_iter:",max_iter
       if(max_iter==0) flitermore = .false.    !iterate at all?
       flnewiter = .true.                      !initialize 
     endif
-print *,"   flitermore:",flitermore
     do while (flitermore)
       iter=iter+1
       call FESn(         numcells,phiSnl,phiSnr,psil,psir,x,dx,qr,ql,sigt,siga,mu,&
@@ -105,10 +102,8 @@ print *,"   flitermore:",flitermore
         if(error<tol) flnewiter = .false.       !if converged solve no more iters for conv study
         if(max_iter==iter) flitermore = .false. !if at iter desired for conv study stop here
       endif
-print *,"flitermore:",flitermore,"         error-tol:",error,"-",tol
       if(error<tol) flitermore = .false.
     enddo
-  call sleep(1)
 !    print *,"iteration: ",iter
 !    call cpu_time(toc)
 !    Sntime = toc-tic
@@ -156,6 +151,10 @@ print *,"flitermore:",flitermore,"         error-tol:",error,"-",tol
     call fluxinitcont(   numcells,phiDSAdiff,phistart ) !create phi=phistart
     iter=0
     flitermore = .true.
+    if(fliterstudy) then                      !used w iter conv study
+      if(max_iter==0) flitermore = .false.    !iterate at all?
+      flnewiter = .true.                      !initialize 
+    endif
     do while (flitermore)
       iter=iter+1
       !Step 1, Sn solve for half step solution of flux
@@ -173,6 +172,10 @@ print *,"flitermore:",flitermore,"         error-tol:",error,"-",tol
 
       if(iter>1) call FESnerror( numcells,phiDSAl,phiDSAr,phiDSAlold,phiDSArold,error ) !Converge?
       call FESnNewToOld( numcells,phiDSAl,phiDSAr,phiDSAlold,phiDSArold )
+      if(fliterstudy) then  !used w iter conv study
+        if(error<tol) flnewiter = .false.       !if converged solve no more iters for conv study
+        if(max_iter==iter) flitermore = .false. !if at iter desired for conv study stop here
+      endif
       if(error<tol) flitermore = .false.
     enddo
 !    print *,"iteration: ",iter
