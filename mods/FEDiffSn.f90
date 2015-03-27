@@ -4,16 +4,20 @@ module FEDiffSn
   logical              :: flvarspassed = .false.
 
   !variables that can be passed to this module
-  real(8)              :: sigt     !total cross section
-  real(8)              :: c        !scattering ratio
-  real(8)              :: a        !slab thickness
-  integer              :: numcells !number of spatial cells
+  real(8)              :: sigt        !total cross section
+  real(8)              :: c           !scattering ratio
+  real(8)              :: a           !slab thickness
+  integer              :: numcells    !number of spatial cells
+  logical              :: fliterstudy !performing iteration convergence study?
+  integer              :: max_iter    !max iterations for data point in conv study
 
   !variables that are passed from this module
   integer, allocatable :: solve(:) !solve(1)==1, diffyes, solve(2)==1, Snyes, solve(3)==1, DSAyes
   real(8), allocatable :: phidiff(:)
   real(8), allocatable :: phiSnl(:) ,phiSnr(:)
   real(8), allocatable :: phiDSAl(:),phiDSAr(:)
+  logical              :: flnewiter               !more points for conv study?
+
 
 CONTAINS
 
@@ -83,6 +87,13 @@ CONTAINS
                          psiBCl,psiBCr,numangs)!Set qs & psiBCs
     iter=0
     flitermore = .true.
+print *,"flitermore:",flitermore,"fliterstudy:",fliterstudy
+    if(fliterstudy) then                      !used w iter conv study
+print *,"max_iter:",max_iter
+      if(max_iter==0) flitermore = .false.    !iterate at all?
+      flnewiter = .true.                      !initialize 
+    endif
+print *,"   flitermore:",flitermore
     do while (flitermore)
       iter=iter+1
       call FESn(         numcells,phiSnl,phiSnr,psil,psir,x,dx,qr,ql,sigt,siga,mu,&
@@ -90,8 +101,14 @@ CONTAINS
       call FESncalcphi(  numcells,phiSnl,phiSnr,psil,psir,wgts,numangs ) !Calc phi from psi
       if(iter>1) call FESnerror( numcells,phiSnl,phiSnr,phiSnlold,phiSnrold,error ) !Check converge?
       call FESnNewToOld( numcells,phiSnl,phiSnr,phiSnlold,phiSnrold )
+      if(fliterstudy) then  !used w iter conv study
+        if(error<tol) flnewiter = .false.       !if converged solve no more iters for conv study
+        if(max_iter==iter) flitermore = .false. !if at iter desired for conv study stop here
+      endif
+print *,"flitermore:",flitermore,"         error-tol:",error,"-",tol
       if(error<tol) flitermore = .false.
     enddo
+  call sleep(1)
 !    print *,"iteration: ",iter
 !    call cpu_time(toc)
 !    Sntime = toc-tic
@@ -949,7 +966,8 @@ CONTAINS
   end subroutine FEDiffSn_externaldeallocate
 
   subroutine setflvarspassedtrue
-  !For use when module is used by an external solver
+  !For use when variables native from when this module was its own code
+  !are used by an external solver
   flvarspassed = .true.
   end subroutine setflvarspassedtrue
 

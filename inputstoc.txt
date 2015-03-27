@@ -20,7 +20,7 @@
   1000000,          Number of particles for LP or atomic mix calculations
 
   !--- Large MLMC Options ---!
-  spatial,            'none','detMLMC','spatial','iter' - which mode?
+  iter,            'none','detMLMC','spatial','iter' - which mode?
   0.005, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!

@@ -105,12 +105,12 @@ CONTAINS
   if(allocated(ncellwidth)) deallocate(ncellwidth)
   allocate(ncellwidth(0:spatial_Level))
   ncellwidth = 0.0d0
-  a             = s
   call setflvarspassedtrue                             !tell FE mod to accept input from here
+  a             = s
 
   do ilevel=0,spatial_Level
     ncellwidth(ilevel) = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
-    call samplespatialInput( ilevel )          !samples average values
+    call sampleconvInput( ilevel )          !samples average values
     call solveSamples( ilevel,1 ) !isamp=1     !solves QoIs
   enddo
   call spatial_calcerr_print                   !calc and print errs for functs
@@ -220,6 +220,45 @@ CONTAINS
                     ( log(real(numcellsLevel0*nextLevelFactor**(ilevel1+1),8))   - &
                       log(real(numcellsLevel0*nextLevelFactor**(ilevel2+1),8)) )
   end function spatiallogslope
+
+
+  subroutine UQ_iterconv( icase )
+  !This subroutine performs an iterative convergence study for all chosen functionals in an
+  !effort to determine the iterative convergence parameter for each problem, solve, and QoI
+  use genRealzvars, only: s
+  use MLMCvars, only: Q_ufunctional, num_ufunct, ncellwidth, numcellsLevel0
+  use FEDiffSn, only: setflvarspassedtrue, a, fliterstudy, max_iter, flnewiter, fliterstudy, &
+                      FEMain, FEDiffSn_externaldeallocate
+  integer :: icase, iiter
+
+  if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
+  allocate(Q_ufunctional(num_ufunct,1,0:0))
+  Q_ufunctional = 0.0d0
+  if(allocated(ncellwidth)) deallocate(ncellwidth)
+  allocate(ncellwidth(0:0))
+  ncellwidth = 0.0d0
+  ncellwidth = s/real(numcellsLevel0,8)
+  call setflvarspassedtrue                             !tell FE mod to accept input from here
+  a             = s
+
+  max_iter = 0
+  flnewiter = .true.
+  fliterstudy = .true.
+  do while(flnewiter)                       !solve until FEDiffSn solver says it's converged
+    call sampleconvInput( 0 )               !samples average values, ilevel=0 so to set # of cells
+call FEmain
+call FEDiffSn_externaldeallocate
+!    call solveSamples( 0,1 )                !solves QoIs, ilevel=0, isamp=1
+    max_iter = max_iter + 1
+  enddo
+!  call spatial_calcerr_print                   !calc and print errs for functs
+  end subroutine UQ_iterconv
+
+
+
+
+
+
 
 
 
@@ -542,8 +581,9 @@ print *,"isamplow:",isamplow
 
 
 
-  subroutine samplespatialInput( ilevel )
-  !This subroutine samples average input parameters passes them as needed
+  subroutine sampleconvInput( ilevel )
+  !Used in spatial convergence studies and iterative convergence studies, 
+  !this subroutine samples average input parameters and passes them off
   use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, &
                          param2_mean
   use MLMCvars, only: nextLevelFactor, numcellsLevel0
@@ -609,7 +649,7 @@ print *,"isamplow:",isamplow
 
   numcells = numcellsLevel0*nextLevelFactor**ilevel
 
-  end subroutine samplespatialInput
+  end subroutine sampleconvInput
 
 
 

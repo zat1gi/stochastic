@@ -75,6 +75,9 @@ program stochastic
       if( MLMCcaseson(icase)==1 .and. icase==2 ) then   !run 'spatial'
         call UQ_spatialconv( icase )                    !perform spatial convergence study
       endif
+      if( MLMCcaseson(icase)==1 .and. icase==3 ) then   !run 'iter'
+        call UQ_iterconv( icase )                      !perform spatial convergence study
+      endif
     enddo
   endif
 

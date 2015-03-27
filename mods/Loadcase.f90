@@ -554,6 +554,7 @@ CONTAINS
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
   use MLMCvars, only: MLMCcaseson, numPosMLMCmeths, MLMCcases, detMLMC
+  use FEDiffSn, only: fliterstudy
   use mcnp_random, only: RN_init_problem
   integer :: i,icase
 
@@ -654,6 +655,9 @@ CONTAINS
   MLMCcases(1) = 'detMLMC'
   MLMCcases(2) = 'spatial'
   MLMCcases(3) = 'iter'
+
+  !initialize FEDiffSn variables
+  fliterstudy = .false.
 
   !allocate and initialize timevars
   allocate(time(ntime))
