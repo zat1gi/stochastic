@@ -173,36 +173,36 @@ CONTAINS
 
   !Here we print the actual functional error data so that it can be examined
   !by hand and/or plotted.
-!  call system("test -e plots/MLMCfuncts/spatialconv.out && rm plots/MLMCfuncts/spatialconv.out")
+  call system("test -e plots/MLMCfuncts/iterconv.out && rm plots/MLMCfuncts/iterconv.out")
 
-!  open(unit=24, file="plots/MLMCfuncts/spatialconv.out")
-!  1120 format("#ilevel     num of cells   ")
+  open(unit=24, file="plots/MLMCfuncts/iterconv.out")
+  1150 format("#ilevel     ")
   1151 format("L1 cell",i5," to",i5,"  ")
   1152 format("L2 cell",i5," to",i5,"  ")
   1153 format(" center cell",i5,"     ")
-!  1154 format(" ")
-!  write(24,1120,advance="no")
-!  do ifunct=1,num_ufunct
-!    if(def_ufunct(ifunct,3)==1) then
-!      write(24,1121,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==2) then
-!      write(24,1122,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==3) then
-!      write(24,1123,advance="no") def_ufunct(ifunct,1)
-!    endif
-!  enddo
-!  write(24,1124)
+  1154 format(" ")
+  write(24,1150,advance="no")
+  do ifunct=1,num_ufunct
+    if(def_ufunct(ifunct,3)==1) then
+      write(24,1151,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==2) then
+      write(24,1152,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==3) then
+      write(24,1153,advance="no") def_ufunct(ifunct,1)
+    endif
+  enddo
+  write(24,1154)
 
-!  1125 format(i5,"     ",i13,"    ")
-!  1126 format(es14.7,"        ")
-!  do ilevel=0,spatial_Level-1
-!    write(24,1125,advance="no") ilevel,numcellsLevel0*nextLevelFactor**ilevel
-!    do ifunct=1,num_ufunct
-!      write(24,1126,advance="no") err_ufunctional(ifunct,1,ilevel)
-!    enddo
-!    write(24,1124)
-!  enddo
-!  close(unit=24)    
+  1155 format(i8,"     ")
+  1156 format(es14.7,"        ")
+  do iiter=0,lastiter-1
+    write(24,1155,advance="no") iiter
+    do ifunct=1,num_ufunct
+      write(24,1156,advance="no") err_ufunctional(ifunct,1,iiter)
+    enddo
+    write(24,1154)
+  enddo
+  close(unit=24)    
 
   end subroutine iter_calcerr_print
 

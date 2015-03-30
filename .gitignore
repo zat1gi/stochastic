@@ -1,2 +1,20 @@
 #ignore old saved files
 *~
+texts/finalreport.out
+texts/timereport.out
+texts/Woodnegstats.out
+astochastic
+auxiliary/quad/gauss_leg_w.txt
+auxiliary/quad/gauss_leg_x.txt
+plots/MLMCfuncts/spatialslopes.out
+mods/fediffsn.mod
+mods/mcvars.mod
+mods/mlmc.mod
+mods/mlmcvars.mod
+auxiliary/quad/gl_run.sh
+
+texts/Acase.out
+plots/MLMCfuncts/spatialconv.out
+plots/FEDiffSn/diffflux.txt
+plots/FEDiffSn/diffflux.ps
+plots/FEDiffSn/diffflux.pdf
