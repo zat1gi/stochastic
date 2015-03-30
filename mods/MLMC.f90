@@ -113,13 +113,103 @@ CONTAINS
     call sampleconvInput( ilevel )          !samples average values
     call solveSamples( ilevel,1,icase )     !solves QoIs, isamp=1
   enddo
-  call spatial_calcerr_print                !calc and print errs for functs
+  call spatial_calcerr_print                   !calc and print errs for functs
   end subroutine UQ_spatialconv
+
+
+ subroutine iter_calcerr_print
+  !This subroutrine calculates the error (based off the most converged iteration)
+  !for each functional and iterative convergence values and prints each to a file.
+  use MLMCvars, only: Q_ufunctional, num_ufunct, def_ufunct, &
+                      numcellsLevel0, nextLevelFactor
+
+  integer :: iiter, ifunct, ibase, igap, lastiter
+  real(8), allocatable :: err_ufunctional(:,:,:),slope
+
+  lastiter = size(Q_ufunctional(1,1,:))-1
+  if(.not.allocated(err_ufunctional)) allocate(err_ufunctional(num_ufunct,1,0:lastiter))
+  err_ufunctional = 0.0d0
+
+  do iiter=0,lastiter
+    do ifunct=1,num_ufunct
+      err_ufunctional(ifunct,1,iiter) = &
+                  abs( Q_ufunctional(ifunct,1,lastiter)-Q_ufunctional(ifunct,1,iiter) ) / &
+                       Q_ufunctional(ifunct,1,lastiter)
+    enddo
+  enddo
+  !Here I calculate the log-log slopes and print in each variation possible
+  !for each functional chosen.  I calculate slope between the first and second
+  !data points, first and third, etc, then first and third, first and fourth, etc.
+  !Each of these slope calculations ought to be about the same, but this is a sanity
+  !check that they are!
+!  call system("test -e plots/MLMCfuncts/spatialslopes.out && rm plots/MLMCfuncts/spatialslopes.out")
+
+!  open(unit=24, file="plots/MLMCfuncts/spatialslopes.out")
+
+!  1130 format(f15.7)
+!  1131 format("slope for ")
+!  do ifunct=1,num_ufunct
+!    write(24,1131,advance="no")
+!    if(def_ufunct(ifunct,3)==1) then
+!      write(24,1121) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+!    elseif(def_ufunct(ifunct,3)==2) then
+!      write(24,1122) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+!    elseif(def_ufunct(ifunct,3)==3) then
+!      write(24,1123) def_ufunct(ifunct,1)
+!    endif
+!    do igap=1,spatial_Level-1
+!      do ibase=0,spatial_Level-igap-1
+!        slope = spatiallogslope(err_ufunctional,ifunct,ibase,ibase+igap)
+!        write(24,1130,advance="no") slope
+!      enddo
+!      write(24,1124)
+!    enddo
+!  enddo
+
+!  close(unit=24)      
+
+
+  !Here we print the actual functional error data so that it can be examined
+  !by hand and/or plotted.
+!  call system("test -e plots/MLMCfuncts/spatialconv.out && rm plots/MLMCfuncts/spatialconv.out")
+
+!  open(unit=24, file="plots/MLMCfuncts/spatialconv.out")
+!  1120 format("#ilevel     num of cells   ")
+!  1121 format("L1 cell",i5," to",i5,"  ")
+!  1122 format("L2 cell",i5," to",i5,"  ")
+!  1123 format(" center cell",i5,"     ")
+!  1124 format(" ")
+!  write(24,1120,advance="no")
+!  do ifunct=1,num_ufunct
+!    if(def_ufunct(ifunct,3)==1) then
+!      write(24,1121,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+!    elseif(def_ufunct(ifunct,3)==2) then
+!      write(24,1122,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+!    elseif(def_ufunct(ifunct,3)==3) then
+!      write(24,1123,advance="no") def_ufunct(ifunct,1)
+!    endif
+!  enddo
+!  write(24,1124)
+
+!  1125 format(i5,"     ",i13,"    ")
+!  1126 format(es14.7,"        ")
+!  do ilevel=0,spatial_Level-1
+!    write(24,1125,advance="no") ilevel,numcellsLevel0*nextLevelFactor**ilevel
+!    do ifunct=1,num_ufunct
+!      write(24,1126,advance="no") err_ufunctional(ifunct,1,ilevel)
+!    enddo
+!    write(24,1124)
+!  enddo
+!  close(unit=24)    
+
+  end subroutine iter_calcerr_print
+
 
 
   subroutine spatial_calcerr_print
   !This subroutrine calculates the error (based off the most converged level)
-  !for each functional, and prints these values to a file.
+  !for each functional and the log-log slopes (convergence rates),
+  !and prints each of these values to a file.
   use MLMCvars, only: Q_ufunctional, spatial_Level, num_ufunct, def_ufunct, &
                       numcellsLevel0, nextLevelFactor
 
@@ -249,16 +339,18 @@ CONTAINS
     call sampleconvInput( 0 )               !samples average values, ilevel=0 so to set # of cells
     call solveSamples( max_iter,1,icase )   !solves QoIs, ilevel=max_iter, isamp=1
 
-    !add new max_iter level to Q_ufunctional and initialize it
-    call move_alloc(Q_ufunctional,trarray3)
-    allocate(Q_ufunctional(size(trarray3(:,1,1)),size(trarray3(1,:,1)),0:size(trarray3(1,1,:))))
-    Q_ufunctional = 0.0d0
-    Q_ufunctional(:,:,0:size(trarray3(1,1,:))-1) = trarray3
-    deallocate(trarray3)
+    if(flnewiter) then
+      !add new max_iter level to Q_ufunctional and initialize it
+      call move_alloc(Q_ufunctional,trarray3)
+      allocate(Q_ufunctional(size(trarray3(:,1,1)),size(trarray3(1,:,1)),0:size(trarray3(1,1,:))))
+      Q_ufunctional = 0.0d0
+      Q_ufunctional(:,:,0:size(trarray3(1,1,:))-1) = trarray3
+      deallocate(trarray3)
+    endif
 
     max_iter = max_iter + 1
   enddo
-!  call spatial_calcerr_print                   !calc and print errs for functs
+  call iter_calcerr_print                   !calc and print errs for functs
   end subroutine UQ_iterconv
 
 
