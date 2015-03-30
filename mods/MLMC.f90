@@ -117,14 +117,16 @@ CONTAINS
   end subroutine UQ_spatialconv
 
 
- subroutine iter_calcerr_print
+
+  subroutine iter_calcerr_print
   !This subroutrine calculates the error (based off the most converged iteration)
   !for each functional and iterative convergence values and prints each to a file.
   use MLMCvars, only: Q_ufunctional, num_ufunct, def_ufunct, &
                       numcellsLevel0, nextLevelFactor
 
   integer :: iiter, ifunct, ibase, igap, lastiter
-  real(8), allocatable :: err_ufunctional(:,:,:),slope
+  real(8) :: Rval, Rvalsum
+  real(8), allocatable :: err_ufunctional(:,:,:)
 
   lastiter = size(Q_ufunctional(1,1,:))-1
   if(.not.allocated(err_ufunctional)) allocate(err_ufunctional(num_ufunct,1,0:lastiter))
@@ -137,36 +139,36 @@ CONTAINS
                        Q_ufunctional(ifunct,1,lastiter)
     enddo
   enddo
-  !Here I calculate the log-log slopes and print in each variation possible
-  !for each functional chosen.  I calculate slope between the first and second
-  !data points, first and third, etc, then first and third, first and fourth, etc.
-  !Each of these slope calculations ought to be about the same, but this is a sanity
-  !check that they are!
-!  call system("test -e plots/MLMCfuncts/spatialslopes.out && rm plots/MLMCfuncts/spatialslopes.out")
+  !Here I calculate the R-value of iterative convergence (see notes in google drive
+  !on MLMC, a/b^R = b/c^R = b/d^R = ... = A, where lower case are errors at iteration
+  !I print these values to a file for each functional.
+  call system("test -e plots/MLMCfuncts/iterRvalues.out && rm plots/MLMCfuncts/iterRvalues.out")
 
-!  open(unit=24, file="plots/MLMCfuncts/spatialslopes.out")
+  open(unit=24, file="plots/MLMCfuncts/iterRvalues.out")
 
-!  1130 format(f15.7)
-!  1131 format("slope for ")
-!  do ifunct=1,num_ufunct
-!    write(24,1131,advance="no")
-!    if(def_ufunct(ifunct,3)==1) then
-!      write(24,1121) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==2) then
-!      write(24,1122) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==3) then
-!      write(24,1123) def_ufunct(ifunct,1)
-!    endif
-!    do igap=1,spatial_Level-1
-!      do ibase=0,spatial_Level-igap-1
-!        slope = spatiallogslope(err_ufunctional,ifunct,ibase,ibase+igap)
-!        write(24,1130,advance="no") slope
-!      enddo
-!      write(24,1124)
-!    enddo
-!  enddo
+  1140 format(f15.7)
+  1141 format("R val for ")
+  1142 format("   Rvalave:",f15.7)
+  do ifunct=1,num_ufunct
+    write(24,1141,advance="no")
+    if(def_ufunct(ifunct,3)==1) then
+      write(24,1151) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==2) then
+      write(24,1152) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==3) then
+      write(24,1153) def_ufunct(ifunct,1)
+    endif
+    Rvalsum = 0.0d0
+    do iiter=0,lastiter-3
+      Rval = log(err_ufunctional(ifunct,1,iiter+1)/err_ufunctional(ifunct,1,iiter  )) / &
+             log(err_ufunctional(ifunct,1,iiter+2)/err_ufunctional(ifunct,1,iiter+1))
+      Rvalsum = Rvalsum + Rval
+      write(24,1140,advance="no") Rval
+    enddo
+    write(24,1142) Rvalsum/(lastiter-2)
+  enddo
 
-!  close(unit=24)      
+  close(unit=24)      
 
 
   !Here we print the actual functional error data so that it can be examined
@@ -175,10 +177,10 @@ CONTAINS
 
 !  open(unit=24, file="plots/MLMCfuncts/spatialconv.out")
 !  1120 format("#ilevel     num of cells   ")
-!  1121 format("L1 cell",i5," to",i5,"  ")
-!  1122 format("L2 cell",i5," to",i5,"  ")
-!  1123 format(" center cell",i5,"     ")
-!  1124 format(" ")
+  1151 format("L1 cell",i5," to",i5,"  ")
+  1152 format("L2 cell",i5," to",i5,"  ")
+  1153 format(" center cell",i5,"     ")
+!  1154 format(" ")
 !  write(24,1120,advance="no")
 !  do ifunct=1,num_ufunct
 !    if(def_ufunct(ifunct,3)==1) then
@@ -214,7 +216,8 @@ CONTAINS
                       numcellsLevel0, nextLevelFactor
 
   integer :: ilevel, ifunct, ibase, igap
-  real(8), allocatable :: err_ufunctional(:,:,:),slope
+  real(8) :: slope
+  real(8), allocatable :: err_ufunctional(:,:,:)
 
   if(.not.allocated(err_ufunctional)) allocate(err_ufunctional(num_ufunct,1,0:spatial_Level-1))
   err_ufunctional = 0.0d0
