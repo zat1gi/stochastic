@@ -35,7 +35,7 @@ CONTAINS
 
     !2 Solve initial samples for Level, solve V~(estimated variance) for each level L
     print *,"--evaluate baseline samples, get variance estimate--"
-    call MLMCevalNewSamps( Level )
+    call MLMCevalNewSamps( Level,icase )
     print *,"--evaluate baseline samples, get variance estimate--"
     print *
 
@@ -52,7 +52,7 @@ CONTAINS
 
     !4 Evaluate any new samples needed, Gave and Gvar calculated here
     print *,"--evaluate extra samples needed--"
-    call MLMCevalNewSamps( Level )
+    call MLMCevalNewSamps( Level,icase )
     print *,"--evaluate extra samples needed--"
     print *
 
@@ -111,9 +111,9 @@ CONTAINS
   do ilevel=0,spatial_Level
     ncellwidth(ilevel) = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
     call sampleconvInput( ilevel )          !samples average values
-    call solveSamples( ilevel,1 ) !isamp=1     !solves QoIs
+    call solveSamples( ilevel,1,icase )     !solves QoIs, isamp=1
   enddo
-  call spatial_calcerr_print                   !calc and print errs for functs
+  call spatial_calcerr_print                !calc and print errs for functs
   end subroutine UQ_spatialconv
 
 
@@ -222,6 +222,7 @@ CONTAINS
   end function spatiallogslope
 
 
+
   subroutine UQ_iterconv( icase )
   !This subroutine performs an iterative convergence study for all chosen functionals in an
   !effort to determine the iterative convergence parameter for each problem, solve, and QoI
@@ -231,7 +232,7 @@ CONTAINS
   integer :: icase, iiter
 
   if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
-  allocate(Q_ufunctional(num_ufunct,1,0:0))
+  allocate(Q_ufunctional(num_ufunct,1,0:9))
   Q_ufunctional = 0.0d0
   if(allocated(ncellwidth)) deallocate(ncellwidth)
   allocate(ncellwidth(0:0))
@@ -245,7 +246,8 @@ CONTAINS
   fliterstudy = .true.
   do while(flnewiter)                       !solve until FEDiffSn solver says it's converged
     call sampleconvInput( 0 )               !samples average values, ilevel=0 so to set # of cells
-!    call solveSamples( 0,1 )                !solves QoIs, ilevel=0, isamp=1
+    call solveSamples( max_iter,1,icase )   !solves QoIs, ilevel=max_iter, isamp=1
+if(max_iter==18) flnewiter=.false.
     max_iter = max_iter + 1
   enddo
 !  call spatial_calcerr_print                   !calc and print errs for functs
@@ -473,13 +475,13 @@ CONTAINS
 
 
   !4 Evaluate any new samples needed
-  subroutine MLMCevalNewSamps( Level )
+  subroutine MLMCevalNewSamps( Level,icase )
   !Evaluate any new samples needed, recompute functional values
   use MLMCvars, only: M_optsamps, Gave, Gvar, G_ufunctional, def_ufunct
   use rngvars, only: setrngappnum, rngappnum, rngstride
   use utilities, only: mean_and_var_p
   use mcnp_random, only: RN_init_particle
-  integer :: Level
+  integer :: Level, icase
 
   integer :: ifunct,ilevel,isamp, isamplow
 
@@ -491,7 +493,7 @@ print *,"isamplow:",isamplow
         call setrngappnum('MLMCsamp')                          !set rng unique to sample
         call RN_init_particle( int(rngappnum*rngstride+isamp,8) )
         call sampleInput( ilevel )                             !update solver input info
-        call solveSamples( ilevel,isamp )                      !solves QoIs
+        call solveSamples( ilevel,isamp,icase )                !solves QoIs
       enddo
     endif
     do ifunct=1,size(def_ufunct(:,1))
@@ -651,17 +653,19 @@ print *,"isamplow:",isamplow
 
 
 
-  subroutine solveSamples( ilevel,isamp )
+  subroutine solveSamples( ilevel,isamp,icase )
   !This subroutine drives the solver for a new response function flux for a new sample,
   !collects all desired Quantities of Interest from that solution, 
   !and deallocates module variables from FEDiffSn.
+  !For the iter conv study, 'ilevel' here is max_iter, and functional ilevel is 0.
   use MLMCvars, only: Q_ufunctional, G_ufunctional, nextLevelFactor, numcellsLevel0, &
-                      ncellwidth, def_ufunct, detMLMC
+                      ncellwidth, def_ufunct, detMLMC, MLMCcases
   use FEDiffSn, only: FEmain,FEDiffSn_externaldeallocate, &
                       solve,phidiff,phiSnl,phiSnr,phiDSAl,phiDSAr
 
-  integer :: ifunct, isamp, ilevel,  icell, firstcell, lastcell, middlecell
-  real(8), allocatable :: flux(:),cellwidth
+  integer :: icase, ifunct, isamp, ilevel,  icell, firstcell, lastcell, middlecell, iilevel
+  real(8) :: cellwidth
+  real(8), allocatable :: flux(:)
 
   call FEmain
 
@@ -682,29 +686,32 @@ print *,"isamplow:",isamplow
   endif
 
   do ifunct=1,size(def_ufunct(:,1))  !solve Q_ufunctional for each specified functional
-    firstcell = (def_ufunct(ifunct,1)-1)*nextLevelFactor**ilevel+1
+
+    iilevel    =  merge(0,ilevel,MLMCcases(icase)=='iter') !to 0 for iter conv study (ilevel=max_iter)
+    firstcell  = (def_ufunct(ifunct,1)-1)*nextLevelFactor**iilevel+1
+    lastcell   =  def_ufunct(ifunct,2)   *nextLevelFactor**iilevel
+    middlecell =  firstcell - 1 +(nextLevelFactor**iilevel+1)/2
+    cellwidth  =  ncellwidth(iilevel)
+
 
     select case (def_ufunct(ifunct,3))
 
       case (1) !L1 norm
-        lastcell = def_ufunct(ifunct,2)*nextLevelFactor**ilevel
         Q_ufunctional(ifunct,isamp,ilevel) = 0.0d0
         do icell=firstcell,lastcell
           Q_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) + &
-                                                flux(icell)   *ncellwidth(ilevel)
+                                                flux(icell)   *cellwidth
         enddo
 
       case (2) !L2 norm
-        lastcell = def_ufunct(ifunct,2)*nextLevelFactor**ilevel
         Q_ufunctional(ifunct,isamp,ilevel) = 0.0d0
         do icell=firstcell,lastcell
           Q_ufunctional(ifunct,isamp,ilevel) = Q_ufunctional(ifunct,isamp,ilevel) + &
-                                                flux(icell)**2*ncellwidth(ilevel)
+                                                flux(icell)**2*cellwidth
         enddo
         Q_ufunctional(ifunct,isamp,ilevel) = sqrt(Q_ufunctional(ifunct,isamp,ilevel))
 
       case (3) !center value
-        middlecell = firstcell - 1 +(nextLevelFactor**ilevel+1)/2
         Q_ufunctional(ifunct,isamp,ilevel) = flux(firstcell)
     end select
 

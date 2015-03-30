@@ -15,7 +15,7 @@ program stochastic
   use timevars, only: t1
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
   use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, probtype
-  use MLMCvars, only: MLMCcaseson
+  use MLMCvars, only: MLMCcaseson, MLMCcases
 
   implicit none
   ! pass by reference
@@ -67,16 +67,16 @@ program stochastic
   call MCLeakage_pdfplot
 
   !!Perform MLMC with deterministic transport
-  if( sum(MLMCcaseson)>0 .and. probtype=='coeffs') then !perform if at least one case chosen
-    do icase = 1,size(MLMCcaseson)                      !cycle through possible cases
-      if( MLMCcaseson(icase)==1 .and. icase==1 ) then   !run 'detMLMC' if chosen
-        call UQ_MLMC( icase )                           !perform UQ problem
+  if( sum(MLMCcaseson)>0 .and. probtype=='coeffs') then                  !perform if at least one case chosen
+    do icase = 1,size(MLMCcaseson)                                       !cycle through possible cases
+      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='detMLMC' ) then !run 'detMLMC' if chosen
+        call UQ_MLMC( icase )                                            !perform UQ problem
       endif
-      if( MLMCcaseson(icase)==1 .and. icase==2 ) then   !run 'spatial'
-        call UQ_spatialconv( icase )                    !perform spatial convergence study
+      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='spatial' ) then !run 'spatial'
+        call UQ_spatialconv( icase )                                     !perform spatial convergence study
       endif
-      if( MLMCcaseson(icase)==1 .and. icase==3 ) then   !run 'iter'
-        call UQ_iterconv( icase )                      !perform spatial convergence study
+      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='iter' ) then    !run 'iter'
+        call UQ_iterconv( icase )                                        !perform iter convergence study
       endif
     enddo
   endif
