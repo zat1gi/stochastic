@@ -230,9 +230,10 @@ CONTAINS
   use MLMCvars, only: Q_ufunctional, num_ufunct, ncellwidth, numcellsLevel0
   use FEDiffSn, only: setflvarspassedtrue, a, fliterstudy, max_iter, flnewiter, fliterstudy
   integer :: icase, iiter
+  real(8), allocatable :: trarray3(:,:,:)
 
   if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)
-  allocate(Q_ufunctional(num_ufunct,1,0:9))
+  allocate(Q_ufunctional(num_ufunct,1,0:0))
   Q_ufunctional = 0.0d0
   if(allocated(ncellwidth)) deallocate(ncellwidth)
   allocate(ncellwidth(0:0))
@@ -247,7 +248,14 @@ CONTAINS
   do while(flnewiter)                       !solve until FEDiffSn solver says it's converged
     call sampleconvInput( 0 )               !samples average values, ilevel=0 so to set # of cells
     call solveSamples( max_iter,1,icase )   !solves QoIs, ilevel=max_iter, isamp=1
-if(max_iter==18) flnewiter=.false.
+
+    !add new max_iter level to Q_ufunctional and initialize it
+    call move_alloc(Q_ufunctional,trarray3)
+    allocate(Q_ufunctional(size(trarray3(:,1,1)),size(trarray3(1,:,1)),0:size(trarray3(1,1,:))))
+    Q_ufunctional = 0.0d0
+    Q_ufunctional(:,:,0:size(trarray3(1,1,:))-1) = trarray3
+    deallocate(trarray3)
+
     max_iter = max_iter + 1
   enddo
 !  call spatial_calcerr_print                   !calc and print errs for functs
