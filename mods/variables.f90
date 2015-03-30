@@ -291,12 +291,13 @@ module MLMCvars
   integer              :: spatial_Level        ! max level for spatial conv study (baseline for error)
 
   !non inputs
-  real(8)              :: linsolveEff = 1      ! =1 for tri-diag solve, aka diffusion, l.ge.1 and l.le.3
+  real(8)              :: linsolveEff = 1      ! =1 for tri-diag (diff), 1 for Sn (tested)
   real(8), parameter   :: numDimensions = 1    ! only currently have plans to do 1D problems
   integer, parameter   :: numPosMLMCmeths = 3  ! tot # of MLMC meths, MLMC, spatial conv, iter conv
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
+  real(8)              :: spatcRate            ! spatial convergence based on solve and QoI
   integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
   integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est/3-small est,Level)
   real(8), allocatable :: MLMCerrest(:)        ! error estimate for each functional chosen

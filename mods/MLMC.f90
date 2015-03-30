@@ -36,6 +36,7 @@ CONTAINS
     !2 Solve initial samples for Level, solve V~(estimated variance) for each level L
     print *,"--evaluate baseline samples, get variance estimate--"
     call MLMCevalNewSamps( Level,icase )
+    if(Level==0) call MLMCsetspatial
     print *,"--evaluate baseline samples, get variance estimate--"
     print *
 
@@ -415,6 +416,35 @@ CONTAINS
   a             = s
 
   end subroutine MLMCinitialize
+
+
+  subroutine MLMCsetspatial
+  !This subroutine chooses the appropriate spatial convergence parameter
+  !based on solver and QoI
+  use MLMCvars, only: def_ufunct, spatcRate
+  use FEDiffsn, only: solve
+
+  integer :: ifunct,functtype
+print *,"here?"
+  do ifunct=1,size(def_ufunct(:,1))
+    if(def_ufunct(ifunct,4)==1) functtype = def_ufunct(ifunct,3)
+  enddo
+print *,"how about here?"
+  select case(functtype)
+    case(1)                !functional to converge L1 based
+      if(solve(1)==1) then   !using diffusion solve
+        spatcRate = 2.0d0
+      else                   !using Sn or Sn with DSA solve
+        spatcRate = 3.0d0
+      endif
+    case(2)                !functional to converge L2 based
+      spatcRate = 2.0d0
+    case(3)                !functional to converge center value based
+      spatcRate = 1.0d0
+  end select
+print *,"here then?"
+  end subroutine MLMCsetspatial
+
 
 
   subroutine MLMCdeallocate
@@ -841,15 +871,14 @@ print *,"isamplow:",isamplow
 
   !5 test total error, set flMLMC==.false.?
   function MLMCcalcErrEst( Level,ifunct )
-  use MLMCvars, only: Gave, Gvar, C_alpha, ncellwidth, nextLevelFactor, M_optsamps
+  use MLMCvars, only: Gave, Gvar, C_alpha, ncellwidth, nextLevelFactor, M_optsamps, spatcRate
              
   real(8) :: MLMCcalcErrEst, err1, C_w, err2, Vsum
   integer :: Level, ilevel, ifunct
-  real(8) :: qq = 2.0d0  !Lect 10, pg 3, >=1, order of error, example of =2
 
-  C_w  = max( abs(Gave(ifunct,Level  ))/(ncellwidth(Level  )**qq*(nextLevelFactor**qq-1)), &
-              abs(Gave(ifunct,Level-1))/(ncellwidth(Level-1)**qq*(nextLevelFactor**qq-1))    )
-  err1 = C_w * ncellwidth(Level)**qq
+  C_w  = max( abs(Gave(ifunct,Level  ))/(ncellwidth(Level  )**spatcRate*(nextLevelFactor**spatcRate-1)), &
+              abs(Gave(ifunct,Level-1))/(ncellwidth(Level-1)**spatcRate*(nextLevelFactor**spatcRate-1))    )
+  err1 = C_w * ncellwidth(Level)**spatcRate
 
   Vsum = 0.0d0
   do ilevel=0,Level
