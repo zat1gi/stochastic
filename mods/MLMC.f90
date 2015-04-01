@@ -99,11 +99,13 @@ CONTAINS
   !using the gnu file in auxiliary/MLMCfuncts.
   use genRealzvars, only: s
   use MLMCvars, only: Q_ufunctional, num_ufunct, spatial_Level, num_benchsamps, &
-                      ncellwidth, numcellsLevel0, nextLevelFactor, Gave, Gvar
+                      ncellwidth, numcellsLevel0, nextLevelFactor, Gave, Gvar, &
+                      C_alpha, MLMC_failprob, numMLMCcells
   use FEDiffSn, only: setflvarspassedtrue, a
-  integer :: icase,ilevel,isamp
+  use utilities, only: erfi, mean_and_var_s
+  integer :: icase,ilevel,isamp,ifunct
 
-print *,"I ran"
+  !allocate and initialize
   if(allocated(Gave)) deallocate(Gave)
   allocate(Gave(num_ufunct,0:spatial_Level))
   Gave = 0.0d0
@@ -113,21 +115,34 @@ print *,"I ran"
   if(allocated(ncellwidth)) deallocate(ncellwidth)
   allocate(ncellwidth(0:spatial_Level))
   ncellwidth = 0.0d0
+  if(allocated(numMLMCcells)) deallocate(numMLMCcells)
+  allocate(numMLMCcells(0:spatial_Level))
+  numMLMCcells = 0.0d0
   call setflvarspassedtrue                             !tell FE mod to accept input from here
   a             = s
-
-!allocate Gave and Gvar
+  C_alpha = sqrt(2.0d0)*erfi(1.0d0-MLMC_failprob)
 
   do ilevel=0,spatial_Level
+print *,"ilevel:",ilevel
+    !re-allocate/prepare variables
     if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)  !allocate only locally, save memory
     allocate(Q_ufunctional(num_ufunct,num_benchsamps,ilevel:ilevel))
     Q_ufunctional = 0.0d0
-    ncellwidth(ilevel) = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
+    ncellwidth(ilevel)   = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
+    numMLMCcells(ilevel) =        numcellsLevel0*nextLevelFactor**ilevel
+
+    !solve all samples at ilevel
     do isamp=1,num_benchsamps
-      !sampleInput
-      !solveSamples
+      call sampleInput( ilevel )                  !update solver input info
+      call solveSamples( ilevel,isamp,icase )     !solves QoIs
     enddo
-    !store ave and SEM for each functional
+
+    !collect all functionals at ilevel
+    do ifunct=1,num_ufunct
+      call mean_and_var_s( Q_ufunctional(ifunct,:,ilevel),&  !solve ave and var of functionals
+                           num_benchsamps,Gave(ifunct,ilevel),Gvar(ifunct,ilevel) )
+      Gvar(ifunct,ilevel) = C_alpha * sqrt( Gvar(ifunct,ilevel)/num_benchsamps ) !conv to SEM @ CI
+    enddo
 
   enddo
 !  call benchmark_calcerr_print                   !calc and print errs for functs
@@ -655,7 +670,7 @@ print *,"here then?"
   !Evaluate any new samples needed, recompute functional values
   use MLMCvars, only: M_optsamps, Gave, Gvar, G_ufunctional, def_ufunct
   use rngvars, only: setrngappnum, rngappnum, rngstride
-  use utilities, only: mean_and_var_p
+  use utilities, only: mean_and_var_s
   use mcnp_random, only: RN_init_particle
   integer :: Level, icase
 
@@ -673,7 +688,7 @@ print *,"isamplow:",isamplow
       enddo
     endif
     do ifunct=1,size(def_ufunct(:,1))
-      call mean_and_var_p( G_ufunctional(ifunct,:,ilevel),&             !solve ave and var of functionals
+      call mean_and_var_s( G_ufunctional(ifunct,:,ilevel),&             !solve ave and var of functionals
                            size(G_ufunctional(ifunct,:,ilevel)),Gave(ifunct,ilevel),Gvar(ifunct,ilevel) )
     enddo
     M_optsamps(2,ilevel) = M_optsamps(1,ilevel)                !save old # of opt samps
