@@ -97,6 +97,7 @@ CONTAINS
   !To get a feel for the spatial bias, errors are produced compared with the most 
   !converged case, with propagated CIs and printed in a way that can be plotted
   !using the gnu file in auxiliary/MLMCfuncts.
+  !Another file is printed with functional values to compare with MLMC.
   use genRealzvars, only: s
   use MLMCvars, only: Q_ufunctional, num_ufunct, spatial_Level, num_benchsamps, &
                       ncellwidth, numcellsLevel0, nextLevelFactor, Gave, Gvar, &
@@ -150,16 +151,18 @@ print *,"ilevel:",ilevel
 
 
 
+
   subroutine benchmark_calcerr_print
   !This subroutrine calculates the error of the ensemble averaged functional
   !values (based off the most converged level) for each functional along with
   !confidence bars produced by propagating SEM at chosen CI through error calculation,
-  !and prints each of these values to a file, along with another file which is only
-  !of the most converged level which can be used to compare functional profiles to MLMC.
+  !and prints each of these values to a file, along with another file which is functionals 
+  !of only the most converged level and can be used to compare functional profiles to MLMC.
+  use genRealzvars, only: s
   use MLMCvars, only: spatial_Level, num_ufunct, def_ufunct, &
                       numcellsLevel0, nextLevelFactor, Gave, Gvar
 
-  integer :: ilevel, ifunct, ibase, igap
+  integer :: ilevel, ifunct, L1s, L2s, centers
   real(8) :: slope
   real(8), allocatable :: err_ufunctional(:,:), err_ufunctSEM(:,:)
 
@@ -181,70 +184,105 @@ print *,"ilevel:",ilevel
     enddo
   enddo
 
-  !Here I calculate the log-log slopes and print in each variation possible
-  !for each functional chosen.  I calculate slope between the first and second
-  !data points, first and third, etc, then first and third, first and fourth, etc.
-  !Each of these slope calculations ought to be about the same, but this is a sanity
-  !check that they are!
-!  call system("test -e plots/MLMCfuncts/spatialslopes.out && rm plots/MLMCfuncts/spatialslopes.out")
+  !Here print functional errors and associated SEM of each of these.
+  !Data from each functional can be plotted to see if spatial bias
+  !has been sufficiently resolved, of if you can tell from the data.
+  call system("test -e plots/MLMCfuncts/benchmarkbias.out && rm plots/MLMCfuncts/benchmarkbias.out")
 
-!  open(unit=24, file="plots/MLMCfuncts/spatialslopes.out")
+  open(unit=24, file="plots/MLMCfuncts/benchmarkbias.out")
 
-!  1130 format(f15.7)
-!  1131 format("slope for ")
-!  do ifunct=1,num_ufunct
-!    write(24,1131,advance="no")
-!    if(def_ufunct(ifunct,3)==1) then
-!      write(24,1121) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==2) then
-!      write(24,1122) def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==3) then
-!      write(24,1123) def_ufunct(ifunct,1)
-!    endif
-!    do igap=1,spatial_Level-1
-!      do ibase=0,spatial_Level-igap-1
-!        slope = spatiallogslope(err_ufunctional,ifunct,ibase,ibase+igap)
-!        write(24,1130,advance="no") slope
-!      enddo
-!      write(24,1124)
-!    enddo
-!  enddo
+  1160 format(f15.7,f15.7)
+  1161 format("#  level      ")
+  1162 format(i7,"       ")
+  1163 format("       L1 cell",i5," to",i5,"          ")
+  1164 format("       L2 cell",i5," to",i5,"          ")
+  1165 format("        center cell",i5,"             ")
+  1174 format(" ")
+  write(24,1161,advance="no")
+  do ifunct=1,num_ufunct
+    if(def_ufunct(ifunct,3)==1) then
+      write(24,1163,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==2) then
+      write(24,1164,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
+    elseif(def_ufunct(ifunct,3)==3) then
+      write(24,1165,advance="no") def_ufunct(ifunct,1)
+    endif
+  enddo
+  write(24,1174)
+  do ilevel=0,spatial_Level-1
+    write(24,1162,advance="no") ilevel
+    do ifunct=1,num_ufunct
+      write(24,1160,advance="no") err_ufunctional(ifunct,ilevel),err_ufunctSEM(ifunct,ilevel)
+    enddo
+    write(24,1174)
+  enddo
 
-!  close(unit=24)      
+  close(unit=24)      
 
 
-  !Here we print the actual functional error data so that it can be examined
-  !by hand and/or plotted.
-!  call system("test -e plots/MLMCfuncts/spatialconv.out && rm plots/MLMCfuncts/spatialconv.out")
+  !Here prints actual functional and SEM data which can be compared with similar values
+  !attained using MLMC.
 
-!  open(unit=24, file="plots/MLMCfuncts/spatialconv.out")
-!  1120 format("#ilevel     num of cells   ")
-!  1121 format("L1 cell",i5," to",i5,"  ")
-!  1122 format("L2 cell",i5," to",i5,"  ")
-!  1123 format(" center cell",i5,"     ")
-!  1124 format(" ")
-!  write(24,1120,advance="no")
-!  do ifunct=1,num_ufunct
-!    if(def_ufunct(ifunct,3)==1) then
-!      write(24,1121,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==2) then
-!      write(24,1122,advance="no") def_ufunct(ifunct,1),def_ufunct(ifunct,2)
-!    elseif(def_ufunct(ifunct,3)==3) then
-!      write(24,1123,advance="no") def_ufunct(ifunct,1)
-!    endif
-!  enddo
-!  write(24,1124)
+  !count number of each functional to be printed
+  L1s     = 0
+  L2s     = 0
+  centers = 0
+  do ifunct=1,size(def_ufunct(:,1))
+    if(def_ufunct(ifunct,3)==1) L1s     = L1s + 1
+    if(def_ufunct(ifunct,3)==2) L2s     = L2s + 1
+    if(def_ufunct(ifunct,3)==3) centers = centers + 1
+  enddo
 
-!  1125 format(i5,"     ",i13,"    ")
-!  1126 format(es14.7,"        ")
-!  do ilevel=0,spatial_Level-1
-!    write(24,1125,advance="no") ilevel,numcellsLevel0*nextLevelFactor**ilevel
-!    do ifunct=1,num_ufunct
-!      write(24,1126,advance="no") err_ufunctional(ifunct,1,ilevel)
-!    enddo
-!    write(24,1124)
-!  enddo
-!  close(unit=24)    
+  !print file for L1s
+  call system("test -e plots/MLMCfuncts/benchL1s.out && rm plots/MLMCfuncts/benchL1s.out")
+  if(L1s>0) then
+    1180 format("#starting cell, ending cell,  cell center, L1 of flux, SEM @ conf")
+    1181 format(i5,i5,f15.7,f15.7,f15.7)
+    open(unit=24, file="plots/MLMCfuncts/benchL1s.out")
+    write(24,1180)
+    do ifunct=1,size(def_ufunct(:,1))
+      if(def_ufunct(ifunct,3)==1) then
+        write(24,1181) def_ufunct(ifunct,1),def_ufunct(ifunct,2),&
+             ( real(def_ufunct(ifunct,1)+def_ufunct(ifunct,2),8) -1.0d0)*s*0.5d0/real(numcellsLevel0,8), &
+             Gave(ifunct,spatial_Level),Gvar(ifunct,spatial_Level)
+      endif
+    enddo
+    close(unit=24)    
+  endif
+
+  !print file for L2s
+  call system("test -e plots/MLMCfuncts/benchL2s.out && rm plots/MLMCfuncts/benchL2s.out")
+  if(L2s>0) then
+    1182 format("#starting cell, ending cell,  cell center, L2 of flux, SEM @ conf")
+    1183 format(i5,i5,f15.7,f15.7,f15.7)
+    open(unit=24, file="plots/MLMCfuncts/benchL2s.out")
+    write(24,1182)
+    do ifunct=1,size(def_ufunct(:,1))
+      if(def_ufunct(ifunct,3)==2) then
+        write(24,1183) def_ufunct(ifunct,1),def_ufunct(ifunct,2),&
+             ( real(def_ufunct(ifunct,1)+def_ufunct(ifunct,2),8) -1.0d0)*s*0.5d0/real(numcellsLevel0,8), &
+             Gave(ifunct,spatial_Level),Gvar(ifunct,spatial_Level)
+      endif
+    enddo
+    close(unit=24)    
+  endif
+
+  !print file for centers
+  call system("test -e plots/MLMCfuncts/benchcenters.out && rm plots/MLMCfuncts/benchcenters.out")
+  if(centers>0) then
+    1184 format("#cell center,    flux at point,     SEM @ conf")
+    1185 format(f15.7,f15.7,f15.7)
+    open(unit=24, file="plots/MLMCfuncts/benchcenters.out")
+    write(24,1184)
+    do ifunct=1,size(def_ufunct(:,1))
+      if(def_ufunct(ifunct,3)==3) then
+        write(24,1185) ( real(def_ufunct(ifunct,1),8) -0.5d0)*s/real(numcellsLevel0,8), &
+                       Gave(ifunct,spatial_Level),Gvar(ifunct,spatial_Level)
+      endif
+    enddo
+    close(unit=24)    
+  endif
+
 
   end subroutine benchmark_calcerr_print
 
