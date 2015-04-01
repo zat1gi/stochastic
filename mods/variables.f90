@@ -293,7 +293,7 @@ module MLMCvars
   !non inputs
   real(8)              :: linsolveEff = 1      ! =1 for tri-diag (diff), 1 for Sn (tested)
   real(8), parameter   :: numDimensions = 1    ! only currently have plans to do 1D problems
-  integer, parameter   :: numPosMLMCmeths = 3  ! tot # of MLMC meths, MLMC, spatial conv, iter conv
+  integer, parameter   :: numPosMLMCmeths = 4  ! tot # of MLMC meths, MLMC, spatial conv, iter conv, benchmark
   integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
   character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
   real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim

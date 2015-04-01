@@ -650,11 +650,13 @@ CONTAINS
   if(detMLMC=='detMLMC') MLMCcaseson(1) = 1
   if(detMLMC=='spatial') MLMCcaseson(2) = 1
   if(detMLMC=='iter')    MLMCcaseson(3) = 1
+  if(detMLMC=='bench')   MLMCcaseson(4) = 1
 
   allocate(MLMCcases(numPosMLMCmeths))
   MLMCcases(1) = 'detMLMC'
   MLMCcases(2) = 'spatial'
   MLMCcases(3) = 'iter'
+  MLMCcases(4) = 'bench'
 
   !initialize FEDiffSn variables
   fliterstudy = .false.

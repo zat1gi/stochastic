@@ -20,8 +20,8 @@
   1000000,          Number of particles for LP or atomic mix calculations
 
   !--- Large MLMC Options ---!
-  iter,            'none','detMLMC','spatial','iter' - which mode?
-  0.005, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
+  bench,            'none','detMLMC','spatial','iter','bench' - which mode?
+  0.0003, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -57,16 +57,19 @@
    sigs1-abs,   0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
 
   !--- Functionals - 'coeffs' type problem ---!
-  7,     Number of non-bulk functionals (all but 'allL1s' or 'allcenters')
-  yes, 1,    First functional L2 over domain?: 1, last, L2, ?/converge(1or0) 
+  10,     Number of non-bulk functionals (all but 'allL1s' or 'allcenters')
+  yes, 0,    First functional L2 over domain?: 1, last, L2, ?/converge(1or0) 
   no,no,   All basic L1 functionals?  All center functionals?
     (1st cell/last cell/L2,L1,center/converge(1or0)) 
-        1,        2,        L1,          0
-        1,        21,       L1,          0
-        1,        4,        L2,          0
+        6,        17,       L1,          0
+        10,       13,       L1,          0
+        21,       21,       L2,          1
+        6,        17,       L2,          0
+        10,       13,       L2,          0
+        15,       19,       L2,          0
         1,        1,        center,      0
         5,        5,        center,      0
-        11,       11,       center,      0
+        21,       21,       center,      0
 
 
   !!--All Plotting Option
