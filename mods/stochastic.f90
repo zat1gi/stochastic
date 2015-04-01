@@ -78,6 +78,9 @@ program stochastic
       if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='iter' ) then    !run 'iter'
         call UQ_iterconv( icase )                                        !perform iter convergence study
       endif
+      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='bench' ) then   !run 'bench'
+        call UQ_benchmark( icase )                                       !generate benchmark values (conv study)
+      endif
     enddo
   endif
 

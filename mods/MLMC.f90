@@ -90,6 +90,49 @@ CONTAINS
   end subroutine UQ_MLMC
 
 
+  subroutine UQ_benchmark( icase )
+  !This subroutine produces a benchmark against which to test the solutions to MLMC.
+  !It solves at each level the same number of samples, then gleans Gave and Gvar
+  !values based only on the CI of the Monte Carlo convergence.
+  !To get a feel for the spatial bias, errors are produced compared with the most 
+  !converged case, with propagated CIs and printed in a way that can be plotted
+  !using the gnu file in auxiliary/MLMCfuncts.
+  use genRealzvars, only: s
+  use MLMCvars, only: Q_ufunctional, num_ufunct, spatial_Level, num_benchsamps, &
+                      ncellwidth, numcellsLevel0, nextLevelFactor, Gave, Gvar
+  use FEDiffSn, only: setflvarspassedtrue, a
+  integer :: icase,ilevel,isamp
+
+print *,"I ran"
+  if(allocated(Gave)) deallocate(Gave)
+  allocate(Gave(num_ufunct,0:spatial_Level))
+  Gave = 0.0d0
+  if(allocated(Gvar)) deallocate(Gvar)        !Here Gvar is SEM of Gave set to alpha CI
+  allocate(Gvar(num_ufunct,0:spatial_Level))
+  Gvar = 0.0d0
+  if(allocated(ncellwidth)) deallocate(ncellwidth)
+  allocate(ncellwidth(0:spatial_Level))
+  ncellwidth = 0.0d0
+  call setflvarspassedtrue                             !tell FE mod to accept input from here
+  a             = s
+
+!allocate Gave and Gvar
+
+  do ilevel=0,spatial_Level
+    if(allocated(Q_ufunctional)) deallocate(Q_ufunctional)  !allocate only locally, save memory
+    allocate(Q_ufunctional(num_ufunct,num_benchsamps,ilevel:ilevel))
+    Q_ufunctional = 0.0d0
+    ncellwidth(ilevel) = s/real(numcellsLevel0*nextLevelFactor**ilevel,8)
+    do isamp=1,num_benchsamps
+      !sampleInput
+      !solveSamples
+    enddo
+    !store ave and SEM for each functional
+
+  enddo
+!  call benchmark_calcerr_print                   !calc and print errs for functs
+  end subroutine UQ_benchmark
+
 
   subroutine UQ_spatialconv( icase )
   !This subroutine performs a spatial convergence study for all chosen functionals in an

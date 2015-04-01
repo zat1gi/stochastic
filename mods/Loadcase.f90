@@ -53,7 +53,8 @@ CONTAINS
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype
   use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
-                                  MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct, spatial_Level
+                                  MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct, spatial_Level, &
+                                  num_benchsamps
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: default_ufunct    !default u functional or not?
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
@@ -122,6 +123,7 @@ CONTAINS
   read(2,*) bnumMLMCsamps
   read(2,*) MLMC_failprob
   read(2,*) spatial_Level
+  read(2,*) num_benchsamps
 
   !--- Geometry - 'coeffs' type problem ---!
   read(2,*) dumchar

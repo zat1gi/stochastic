@@ -288,7 +288,8 @@ module MLMCvars
   integer              :: nextLevelFactor      ! factor to increase number of cells in each Level by
   integer              :: bnumMLMCsamps        ! baseline number of samples for new Level
   integer              :: num_ufunct           ! number of functionals to 'u' to be considered
-  integer              :: spatial_Level        ! max level for spatial conv study (baseline for error)
+  integer              :: spatial_Level        ! max level for spat conv study or benchmark (base for err)
+  integer              :: num_benchsamps       ! number of samples for benchmark at each level
 
   !non inputs
   real(8)              :: linsolveEff = 1      ! =1 for tri-diag (diff), 1 for Sn (tested)
