@@ -18,3 +18,6 @@ plots/MLMCfuncts/spatialconv.out
 plots/FEDiffSn/diffflux.txt
 plots/FEDiffSn/diffflux.ps
 plots/FEDiffSn/diffflux.pdf
+auxiliary/MLMCfuncts/benchmarkbias.ps
+auxiliary/MLMCfuncts/bothcenters.ps
+auxiliary/MLMCfuncts/benchmarkbias1.ps

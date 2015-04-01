@@ -1,0 +1,4 @@
+#cell center,    flux at point,     estimated error, err tol
+      0.2380952      0.9945783      0.0007498      0.0100000    converged 
+      2.1428571      2.1869330      0.0019511      0.0100000    converged 
+      9.7619048     17.8330509      0.0056355      0.0100000    converged 

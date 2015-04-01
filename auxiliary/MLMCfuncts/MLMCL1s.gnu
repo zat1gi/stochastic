@@ -2,7 +2,7 @@
 set ytics border
 set ytics mirror
 set bars small
-set title "Region Center L1 Flux Values"
+set title "Region Center L1 Flux Values - MLMC"
 set key left
 
 #Graph axis
