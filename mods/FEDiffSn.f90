@@ -28,7 +28,7 @@ CONTAINS
   !---------------------------------------------------------------------------------
 
   subroutine FEmain
-  use utilities, only: gauss_leg_quad
+  use utilities, only: gauss_legq
 
   !Input Vars
   integer :: numangs
@@ -42,7 +42,7 @@ CONTAINS
   real(8) :: siga,dx,error,tic,toc,Sntime,Sntimeperiter,DSAtime,DSAtimeperiter,timehere
   real(8),allocatable :: phipos(:),q(:),                x(:)
   real(8),allocatable :: phiSnlold(:),phiSnrold(:)
-  real(8),allocatable :: psil(:,:),psir(:,:),psiBCl(:),psiBCr(:),qr(:),ql(:),mu(:),wgts(:)
+  real(8),allocatable :: psil(:,:),psir(:,:),psiBCl(:),psiBCr(:),qr(:),ql(:),mu_t(:),mu(:),wgts(:)
   real(8),allocatable :: phiHsl(:),phiHsr(:),phiresl(:),phiresr(:)
   real(8),allocatable :: phiDSAlold(:),phiDSArold(:),phiDSAdiff(:)
   real(8) :: alpha,beta
@@ -76,7 +76,7 @@ CONTAINS
     call cpu_time(tic)
     error = 1.0d0
     call meshgen(        numcells,a,x,dx ) !create mesh in x
-    call gauss_leg_quad( numangs,mu,wgts,real(-1.0,8),real(1.0,8) ) !create mesh in mu
+    call gauss_legq(     numangs,mu,wgts ) !create mesh in mu
     call fluxinitdisc(   numcells,phiSnl,phistart ) !create phil=phistart
     call fluxinitdisc(   numcells,phiSnr,phistart ) !create phir=phistart
     call fluxinitdisc(   numcells,phiSnlold,phistart ) !create old phil for error calc
@@ -133,7 +133,7 @@ CONTAINS
     error = 1.0d0
     !init for Sn
     call meshgen(        numcells,a,x,dx ) !create mesh in x
-    call gauss_leg_quad( numangs,mu,wgts,real(-1.0,8),real(1.0,8) ) !create mesh in mu
+    call gauss_legq(     numangs,mu,wgts ) !create mesh in mu
     call alpha_beta(     numangs,mu,wgts,alpha,beta ) !solve for alpha and beta
     call fluxinitdisc(   numcells,phiDSAl,phistart ) !create phil=phistart
     call fluxinitdisc(   numcells,phiDSAr,phistart ) !create phir=phistart

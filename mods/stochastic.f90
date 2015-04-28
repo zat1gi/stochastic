@@ -21,15 +21,6 @@ program stochastic
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
 
-  integer, parameter :: nnn=4
-  real(8) :: endpts(2)
-  real(8) :: arrb(nnn),arrt(nnn),arrw(nnn)
-
-  call gaussq(1, nnn, 0.0d0, 0.0d0, 0, endpts, arrb, arrt, arrw)
-print *,"arrt:",arrt
-print *,"arrw:",arrw
-stop
-
   !!read parameters
   call cpu_time(t1)
   call readinputstoc

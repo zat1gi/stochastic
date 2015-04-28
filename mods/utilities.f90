@@ -412,50 +412,29 @@ CONTAINS
   end subroutine Thomas_alg
 
 
+  subroutine gauss_legq( numangs,nodes,wgts )
+  !This subroutine serves as an intermediary between external code and 'gaussq' for gauss-legendre
+  !quadrature.  'gaussq' is a netlib package which can generate many types of quadrature.
+  integer, intent(in) :: numangs
+  real(8), intent(out), allocatable, dimension(:) :: nodes,wgts
 
+  real(8), allocatable, dimension(:) :: nodes_t
+  real(8), dimension(2) :: endpts
 
-  subroutine gauss_leg_quad( numangs,nodes,wgts,leftb,rightb )
-  !Solves nodes and weights with gauss-legendre quadrature, using executable.
-  !Executable "gauss_leg_quad.exe", ensure in correct location.
-  integer :: numangs
-  real(8) :: leftb,rightb
-  real(8),allocatable :: nodes(:),wgts(:)
-
-  integer :: i
-
-  !Allocate nodes and wgts
+  if(allocated(nodes)) deallocate(nodes)
+  if(allocated(wgts)) deallocate(wgts)
+  if(allocated(nodes_t)) deallocate(nodes_t)
   allocate(nodes(numangs))
   allocate(wgts(numangs))
-  nodes = 0.0
-  wgts  = 0.0
+  allocate(nodes_t(numangs))
+  nodes   = 0.0d0
+  wgts    = 0.0d0
+  nodes_t = 0.0d0
+  endpts  = 0.0d0
 
-  !Create driver script for executable
-  open(unit=3,file="gl_run.sh")
-  102 format("./auxiliary/quad/gauss_leg_quad.out ",i6," ",f12.6," ",f12.6," gauss_leg")
-  write(3,102) numangs,leftb,rightb
-  close(unit=3)
+  call gaussq( 1, numangs, 0.0d0, 0.0d0, 0, endpts, nodes_t, nodes, wgts )
 
-  !Use driver to run executable
-  call system("chmod +x gl_run.sh")
-  call system("./gl_run.sh > gl_run.out")
-  call system("chmod +rw gauss_leg_x.txt gauss_leg_w.txt")
-  call system("rm gl_run.out")
-
-  !Get data from output of executable
-  open(unit=4,file="gauss_leg_x.txt")
-  open(unit=5,file="gauss_leg_w.txt")
-  do i=1,numangs
-    read(4,*) nodes(i)
-    read(5,*) wgts(i)
-  enddo
-  close(unit=4)
-  close(unit=5)
-
-  !Put all files into folder "quad"
-  call system("mv gl_run.sh gauss_leg_r.txt gauss_leg_x.txt gauss_leg_w.txt auxiliary/quad")
-
-  end subroutine gauss_leg_quad
-
+  end subroutine gauss_legq
 
 
 

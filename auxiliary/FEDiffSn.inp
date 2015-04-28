@@ -1,9 +1,9 @@
   !--- Problem Type ---!
-  0,1,0              #Solve: diffusion,Sn,DSA     1==yes, 0==no
+  1,0,0              #Solve: diffusion,Sn,DSA     1==yes, 0==no
   no,               #should I plot?
 
   !--- Material and Mesh ---!
-  1.0, 0.999,      #sigt,c
+  1.0, 0.1,      #sigt,c
   20,             #numcells
   10.0,            #a
   4,              #numangs
@@ -11,7 +11,7 @@
   !--- Source ---!
   evend,           #qtype, 'evend', 'func1', or 'moms'
   1.0,             #constq
-  0.0,0.0, #-4.0,0.2,         #curRight,curLeft
+  -1.0,10.0,        #-1.0,1.2,         #curRight,curLeft
   vacuum,          #SnBCs
 
   !--- Starting Flux ---!

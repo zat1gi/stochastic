@@ -624,11 +624,11 @@ print *,"ilevel:",ilevel
   use FEDiffsn, only: solve
 
   integer :: ifunct,functtype
-print *,"here?"
+
   do ifunct=1,size(def_ufunct(:,1))
     if(def_ufunct(ifunct,4)==1) functtype = def_ufunct(ifunct,3)
   enddo
-print *,"how about here?"
+
   select case(functtype)
     case(1)                !functional to converge L1 based
       if(solve(1)==1) then   !using diffusion solve
@@ -641,7 +641,7 @@ print *,"how about here?"
     case(3)                !functional to converge center value based
       spatcRate = 1.0d0
   end select
-print *,"here then?"
+
   end subroutine MLMCsetspatial
 
 
@@ -1045,6 +1045,7 @@ print *,"isamplow:",isamplow
 
       case (3) !center value
         Q_ufunctional(ifunct,isamp,ilevel) = flux(firstcell)
+        Q_ufunctional(ifunct,isamp,ilevel) = flux(middlecell)
     end select
 
     !solve G_ufunctional if performing deterministic MLMC
@@ -1056,8 +1057,8 @@ print *,"isamplow:",isamplow
                                              Q_ufunctional(ifunct,isamp,ilevel-1)
       endif
 
-      if(mod(isamp,1000)==0) print *,"G_ufunctional(",ifunct,",",isamp,",",ilevel,"):",&
-                                      G_ufunctional(ifunct,isamp,ilevel)
+!      if(mod(isamp,1000)==0) print *,"G_ufunctional(",ifunct,",",isamp,",",ilevel,"):",&
+!                                      G_ufunctional(ifunct,isamp,ilevel)
     endif
 
   enddo

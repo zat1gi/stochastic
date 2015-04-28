@@ -1,4 +1,4 @@
-  1958421,         Random number seed
+  3216545,         Random number seed
   coeffs,          Transport problem type, 'material', or 'coeffs'
   !--- Geometry - 'material' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
@@ -20,8 +20,8 @@
   1000000,          Number of particles for LP or atomic mix calculations
 
   !--- Large MLMC Options ---!
-  bench,            'none','detMLMC','spatial','iter','bench' - which mode?
-  0.01, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
+  detMLMC,            'none','detMLMC','spatial','iter','bench' - which mode?
+  0.09, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
@@ -37,40 +37,33 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  3,20.3,200,20, WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
+  3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !--- Lesser MLMC Options ---!
   3,            Refinement factor with which to increase each Level
-  1000,         Baseline number of samples for new MLMC Level
+  1000,         Baseline number of samples for new MLMC Level 
   0.05,          UQ_MC failure probability alpha
-  3,            Max level for spatial convergence study or benchmark (baseline for error)
+  0,            Max level for spatial convergence study or benchmark (baseline for error)
   10000,        Number of samples for benchmark at each level
 
   !--- Geometry - 'coeffs' type problem ---!
-  none,       special prob descriptor, overrides options i.e. mc2013.1 mc2013.2 mc2015.1    
+  none,       special prob descriptor, overrides options i.e. mc2013.1 mc2013.2 mc2015.1    																																																																																																																									
   nummat, 1,        Number of Materials 
    thickness, 10.0,             Slab thickness
    numcells,   21,              Number of cells. For MLMC cell at Level 0.
    sigt,      1.0, 1.0,         first xs parameter for each material
-   sigt1-abs, 0.1, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
-   sigs,         0.7, 0.3,        second xs parameter for each material
-   sigs1-abs,   0.1, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
+   sigt1-abs, 0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
+   sigs,      0.97, 0.3,        second xs parameter for each material
+   sigs1-abs, 0.01, 0.2,        first xs parameter uncertainty, '-abs' or '-frac'
 
   !--- Functionals - 'coeffs' type problem ---!
-  10,     Number of non-bulk functionals (all but 'allL1s' or 'allcenters')
-  yes, 0,    First functional L2 over domain?: 1, last, L2, ?/converge(1or0) 
+  3,     Number of non-bulk functionals (all but 'allL1s' or 'allcenters')
+  yes, 1,    First functional L2 over domain?: 1, last, L2, ?/converge(1or0) 
   no,no,   All basic L1 functionals?  All center functionals?
     (1st cell/last cell/L2,L1,center/converge(1or0)) 
-        6,        17,       L1,          0
-        10,       13,       L1,          0
-        21,       21,       L2,          0
-        6,        17,       L2,          0
-        10,       13,       L2,          0
-        15,       19,       L2,          0
         1,        1,        center,      0
-        5,        5,        center,      0
-        21,       21,       center,      1
+        10,       13,       L1,          0
 
 
   !!--All Plotting Option
