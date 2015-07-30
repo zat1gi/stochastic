@@ -1188,7 +1188,7 @@ CONTAINS
         ABreflection(1,5)   = 0.07455d0 !Bratmixave
 
         ABtransmission(1,1) = 0.9398d0 !AdMCave
-        ABtransmission(2,1) = 0.0985d0 !AdMCdev
+        ABtransmission(2,1) = 0.1446d0 !AdMCdev
         ABtransmission(1,2) = 0.9397d0 !AdLPave
         ABtransmission(1,3) = 0.94005d0 !BrMCave
         ABtransmission(1,4) = 0.93985d0 !BrLPave
