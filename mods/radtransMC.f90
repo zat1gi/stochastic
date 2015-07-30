@@ -681,9 +681,9 @@ CONTAINS
   integer, intent(in) :: j
 
   integer :: i,k
-  integer :: numinnersteps = 7
-  integer :: numrefine     = 5
-  real(8) :: safetyfactor  = 1.1d0
+  integer :: numinnersteps = 11
+  integer :: numrefine     = 7
+  real(8) :: safetyfactor  = 1.4d0
   real(8) :: innerstep,maxsig,maxpos,xpos,xsig,xpos1,xsig1,xpos2,xsig2
 
   do i=1,nceilbin
