@@ -305,6 +305,31 @@ CONTAINS
   end function dev_p
 
 
+  function OneGaussrandnum(rand1,rand2)
+  !Uses Box-Muller transformation to transform two uniformly-distributed
+  !random numbers to be Guassian-distributed random numbers.
+  !Returns one of these.  Similar subroutine returns both numbers.
+  real(8), intent(in)  :: rand1, rand2
+  real(8) :: OneGaussrandnum
+  real(8) :: pi  = 3.14159265358979323846d0
+
+  OneGaussrandnum = sqrt(-2.0d0*log(rand1)) * cos(2.0d0*pi*rand2)
+
+  end function OneGaussrandnum
+
+
+  subroutine TwoGaussrandnums(rand1,rand2,randGauss)
+  !Uses Box-Muller transformation to transform two uniformly-distributed
+  !random numbers to be Guassian-distributed random numbers.
+  !Returns both numbers.  Similar function returns one of two numbers.
+  real(8), intent(in)  :: rand1, rand2
+  real(8), intent(out) :: randGauss(2)
+  real(8) :: pi  = 3.14159265358979323846d0
+
+  randGauss(1) = sqrt(-2.0d0*log(rand1)) * cos(2.0d0*pi*rand2)
+  randGauss(2) = sqrt(-2.0d0*log(rand1)) * sin(2.0d0*pi*rand2)
+
+  end subroutine TwoGaussrandnums
 
 
   function erfi(z)
