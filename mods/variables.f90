@@ -137,6 +137,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
   logical              :: flMarkov             ! run Markov-based KL routines?
   logical              :: flGauss              ! run Gauss-random-based KL routines?
+  character(3)         :: Gaussrandtype        ! 'BM'-Box-Muller sampling or 'inv' inverse sampling
 
   character(7)         :: pltxiBins(4)         !
   character(7)         :: pltxiBinsgauss       !

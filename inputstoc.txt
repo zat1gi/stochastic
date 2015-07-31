@@ -40,6 +40,7 @@
   no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
   no,0.000001,    Calc KL variance at truncation?/tol for KL variance at truncation
   200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
+  BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type

@@ -47,7 +47,7 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol, &
-                                  flMarkov, flGauss
+                                  flMarkov, flGauss, Gaussrandtype
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, WAMC, &
@@ -97,11 +97,6 @@ CONTAINS
   read(2,*) GBlamc
   read(2,*) GBs
 
-print *,"flMarkov: ",flMarkov
-print *,"flGauss:  ",flGauss
-print *,"GB sigave,sigvar,scatrat,lamc,s:",GBsigave,GBsigvar,GBscatrat,GBlamc,GBs
-stop
-
   !--- Large KL Options ---!
   read(2,*) dumchar
   read(2,*) KLres,KLrec
@@ -128,6 +123,7 @@ stop
   read(2,*) KLnoise
   read(2,*) KLvarcalc,KLvarkept_tol
   read(2,*) numSlice
+  read(2,*) Gaussrandtype
 
   !--- Lesser MCtrans Options ---!
   read(2,*) dumchar 
@@ -316,7 +312,7 @@ stop
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype
+                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, Gaussrandtype
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
                     pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot, WAMC, &
                     probtype
@@ -381,10 +377,19 @@ stop
       flstopstatus = .true.
     endif
   endif
-  if( KLres=='no' .AND. KLrec=='yes' ) then
+  if( KLres=='no' .AND. .not.flGauss .and. KLrec=='yes' ) then
     KLres = 'yes'
-    print *,"--User attempting KLrec  w/o        KLres,          KLres has been set to 'yes'"
+    print *,"--User attempting KLrec w/o flGauss or KLres, KLres has been set to 'yes'"
     flsleep = .true.
+  endif
+  if( flGauss .and. KLrec=='no' ) then
+    KLrec = 'yes'
+    print *,"--User attempting Gauss rand geom w/o KLrec, KLrec has been set to 'yes'"
+    flsleep = .true.
+  endif
+  if( Gaussrandtype .ne. 'BM' .and. Gaussrandtype .ne. 'inv' ) then
+    print *,"--User should enter 'BM' or 'inv' for Gaussian sampling type"
+    flstopstatus = .true.
   endif
   !Tests for Leakage pdf plotting options
   if(radMCbinplot  .ne. 'noplot'.or. radWoodbinplot .ne. 'noplot'.or. &
