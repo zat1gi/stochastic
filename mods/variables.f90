@@ -57,7 +57,11 @@ module genRealzvars
   real(8),dimension(2) :: lam                  ! ave path lengths
   real(8)              :: s                    ! slab thickness
   integer              :: numRealz             ! number of realz to create
-  
+  real(8)              :: GBsigave, GBsigvar   ! Gauss-based sig average and variance
+  real(8)              :: GBscatrat            ! Gauss-based scattering ratio
+  real(8)              :: GBlamc               ! Gauss-based correlation length
+  real(8)              :: GBs                  ! Gauss-based slab thickness
+
   integer              :: pltgenrealznumof     !
   character(7)         :: pltgenrealz(4)       !
   integer, allocatable :: pltgenrealzwhich(:)  !
@@ -131,7 +135,8 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: binLargeBound        ! largest xi value for xi bins
   character(3)         :: KLadjust             ! flag, perform or not
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
-
+  logical              :: flMarkov             ! run Markov-based KL routines?
+  logical              :: flGauss              ! run Gauss-random-based KL routines?
 
   character(7)         :: pltxiBins(4)         !
   character(7)         :: pltxiBinsgauss       !

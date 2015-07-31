@@ -1,13 +1,22 @@
   3216545,         Random number seed
-  coeffs,          Transport problem type, 'material', or 'coeffs'
-  !--- Geometry - 'material' type problem ---!
+  material,        Transport problem type, 'material', or 'coeffs'
+  no,yes,          'yes' or 'no', Markov, Gauss, 'material' problem type(s)
+  !--- Geometry - 'material', num of realz ---!
+  1000,100,         Number of realizations/how often to print
+  1000,100,         KLr Number of realizations/how often to print
+
+  !--- Geometry - 'material', 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.2,0.6,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
-  1000,100,         Number of realizations/how often to print
-  1000,100,         KLr Number of realizations/how often to print
+
+  !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
+  1.0,0.4,    Ave total cross section, total cross section variance
+  0.9,        Scattering ratio, c
+  1.0,        Correlation length, lamc
+  1.0,        Slab thickness, s
 
   !--- Large KL Options ---!
   no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
@@ -29,7 +38,7 @@
   11,             Levels of refinement for eigenvalue solving
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
   no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
-  no,0.000001,      Calc KL variance at truncation?/tol for KL variance at truncation
+  no,0.000001,    Calc KL variance at truncation?/tol for KL variance at truncation
   200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
 
   !--- Lesser MCtransport Options ---!
@@ -38,7 +47,7 @@
   yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
-  no,2.0,-20.0        WAMC enforce max and min weights?/wgtmax/wgtmin
+  no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
 
   !--- Lesser MLMC Options ---!
   3,            Refinement factor with which to increase each Level

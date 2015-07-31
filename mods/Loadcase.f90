@@ -36,7 +36,8 @@ CONTAINS
   subroutine readinputstoc
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
-                                  pltgenrealz, pltgenrealzwhich
+                                  pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
+                                  GBlamc, GBs
   use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
                          param2_mean, param2_uncert
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -45,7 +46,8 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
-                                  KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol
+                                  KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol, &
+                                  flMarkov, flGauss
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, WAMC, &
@@ -61,6 +63,7 @@ CONTAINS
   character(6) :: chosennorm        !norm to convert from text to number
 
   real(8)       :: dumreal,s2
+  character(3)  :: setflags(2)
   character(20) :: dumchar !use this to "skip" a line
 
   integer :: i,default_ufunctc
@@ -70,16 +73,34 @@ CONTAINS
 
   read(2,*) rngseed
   read(2,*) probtype
+  read(2,*) setflags(1),setflags(2)
+  flMarkov=merge(.true.,.false.,setflags(1)=='yes')
+  flGauss =merge(.true.,.false.,setflags(2)=='yes')
 
-  !--- Geometry - 'material' type problem ---!
+  !--- Geometry - 'material' num of realz ---!
+  read(2,*) dumchar
+  read(2,*) numRealz,trannprt
+  read(2,*) KLrnumRealz,KLrprintat
+
+  !--- Geometry - 'material', 'Markov' type problem ---!
   read(2,*) dumchar
   read(2,*) Adamscase
   read(2,*) sig(1),sig(2)
   read(2,*) scatrat(1),scatrat(2)
   read(2,*) lam(1),lam(2)
   read(2,*) s
-  read(2,*) numRealz,trannprt
-  read(2,*) KLrnumRealz,KLrprintat
+
+  !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
+  read(2,*) dumchar
+  read(2,*) GBsigave,GBsigvar
+  read(2,*) GBscatrat
+  read(2,*) GBlamc
+  read(2,*) GBs
+
+print *,"flMarkov: ",flMarkov
+print *,"flGauss:  ",flGauss
+print *,"GB sigave,sigvar,scatrat,lamc,s:",GBsigave,GBsigvar,GBscatrat,GBlamc,GBs
+stop
 
   !--- Large KL Options ---!
   read(2,*) dumchar

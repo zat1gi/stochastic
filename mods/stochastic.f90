@@ -21,19 +21,6 @@ program stochastic
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
 
-  real(8) :: rand1,rand2,randGauss,randGauss2(2)
-
-  !test routine for new subprograms OneGaussrandnum and TwoGaussrandnums
-  do j=1,10
-  rand1 = rang()
-  rand2 = rang()
-  randGauss = OneGaussrandnum(rand1,rand2)
-  call TwoGaussrandnums(rand1,rand2,randGauss2)
-  print *,"randGauss : ",randGauss
-  print *,"randGauss2: ",randGauss2
-  enddo
-  stop
-
   !!read parameters
   call cpu_time(t1)
   call readinputstoc
