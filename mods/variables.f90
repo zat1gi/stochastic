@@ -195,6 +195,7 @@ module MCvars
   character(3)         :: LPMC                 ! perform MC in the LP sense for binary mixtures?
   character(3)         :: atmixMC              ! perform TMC over atomic mix of binary mixtures?
   character(3)         :: WAMC                 ! perform weight adjust MC over KL resonstructions?
+  character(3)         :: GaussKL              ! perform WMC on Gaussian-random process?
   integer              :: numParts             ! number of particles
   integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen
@@ -209,6 +210,7 @@ module MCvars
   character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview', pdf of leakage
   character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
   character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview', pdf of leakage
+  character(7)         :: GaussKLbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
 
   character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
@@ -222,7 +224,7 @@ module MCvars
   integer              :: nwvalsperbin         ! number of values in bin (and one edge value)
 
   !non inputs
-  integer, parameter   :: numPosMCmeths = 6    ! total number of MC transport methods available
+  integer, parameter   :: numPosMCmeths = 7    ! total number of MC transport methods available
 
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values

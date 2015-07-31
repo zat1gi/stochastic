@@ -7,53 +7,75 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
+  subroutine KLreconstructions(icase)
+  !Master subroutine for those which create and plot realizations for Markov KL or 
+  !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
+  use KLmeanadjust, only: KLadjustmean
+  use KLvars, only: KLadjust
+  integer :: icase
+
+  call KLrmeshgen         !creates mesh for fixed x and xi material constructions
+  call KLrgenrealz(icase) !selects array of random variables xi
+  if(KLadjust=='yes') call KLadjustmean !adjusts mean after lopping neg cross sections
+  call KLrplotrealz       !plots reconstructed realiztions
+
+  end subroutine KLreconstructions
+
+
+
   subroutine KLrmeshgen
   !This subroutine creates a mesh based on selected frequency of 
   !sampling in x for a fixed point reconstruction, and then for a fixed xi
   !construction.  The fixed xi construction is the only one we care about.
   use genRealzvars , only: s
-  use KLvars, only: KLrnumpoints, KLrx, KLrxi
+  use KLvars, only: KLrnumpoints, KLrx, KLrxi, pltKLrrealzPointorXi
 
   integer :: i
   real(8) :: KLrxstepsize
 
-  allocate(KLrx(KLrnumpoints(1)))
-  KLrx = 0                             !create mesh for fixed point KL reconstruction
-  KLrxstepsize = s / KLrnumpoints(1)
-  do i=1,KLrnumpoints(1)
-    KLrx(i) = KLrxstepsize*i - KLrxstepsize/2
-  enddo
+  if(pltKLrrealzPointorXi(1)=='fpoint') then
+    if(allocated(KLrx)) deallocate(KLrx)
+    allocate(KLrx(KLrnumpoints(1)))
+    KLrx = 0                             !create mesh for fixed point KL reconstruction
+    KLrxstepsize = s / KLrnumpoints(1)
+    do i=1,KLrnumpoints(1)
+      KLrx(i) = KLrxstepsize*i - KLrxstepsize/2
+    enddo
+  endif
 
-  allocate(KLrxi(KLrnumpoints(2)))
-  KLrxi = 0                            !create mesh for fixed xi KL reconstruction
-  KLrxstepsize = s / KLrnumpoints(2)
-  do i=1,KLrnumpoints(2)
-    KLrxi(i) = KLrxstepsize*i - KLrxstepsize/2
-  enddo
+  if(pltKLrrealzPointorXi(1)=='fxi') then
+    if(allocated(KLrxi)) deallocate(KLrxi)
+    allocate(KLrxi(KLrnumpoints(2)))
+    KLrxi = 0                            !create mesh for fixed xi KL reconstruction
+    KLrxstepsize = s / KLrnumpoints(2)
+    do i=1,KLrnumpoints(2)
+      KLrxi(i) = KLrxstepsize*i - KLrxstepsize/2
+    enddo
+  endif
 
   end subroutine KLrmeshgen
 
 
 
 
-
-
-
-  subroutine KLrgenrealz
+  subroutine KLrgenrealz(icase)
   !This subroutine reconstructs realizations based upon the KL expansion.
   !It reconstructs based upon the fixed point and fixed xi methods.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
+  use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: s, lamc, sigave
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
-                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig
+                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, &
+                          pltKLrrealzPointorXi, Gaussrandtype
+  use MCvars, only: MCcases
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,j,curEig,w,u
-  real(8) :: KLsigtemp,Eigfterm,xiterm,rand,tt1,tt2
+  integer :: i,j,curEig,w,u,icase
+  real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
   character(3) :: neg
   character(5) :: flKLtype = 'KLrec'
 
@@ -65,54 +87,67 @@ CONTAINS
     call setrngappnum('KLRealz')
     call RN_init_particle( int(rngappnum*rngstride+j,8) )
 
-    KLrsig = 0          !create a realization, fixed point
-    do i=1,KLrnumpoints(1)
-      !This process not collapsed because KLrrandarray is needed, and does not fit
-      !the form of the function.
-      KLrsig(i) = sigave
-      do curEig=1,numEigs
-        Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
-        rand = rang()
-        do u=1,pltKLrrealznumof   !capture rand if useful to plot later
-          if( pltKLrrealzwhich(1,u)==j ) then
-            KLrrandarray(i,curEig,u+1) = rand
-          endif
+    if(pltKLrrealzPointorXi(1)=='fpoint') then !create a realization, fixed point
+      KLrsig = 0
+      do i=1,KLrnumpoints(1)
+        !This process not collapsed because KLrrandarray is needed, and does not fit
+        !the form of the function.
+        KLrsig(i) = sigave
+        do curEig=1,numEigs
+          Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
+          rand = rang()
+          do u=1,pltKLrrealznumof   !capture rand if useful to plot later
+            if( pltKLrrealzwhich(1,u)==j ) then
+              KLrrandarray(i,curEig,u+1) = rand
+            endif
+          enddo
+          call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
+          KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
         enddo
-        call select_from_PDF( binPDF,binNumof,numEigs,xiterm,rand )
-        KLrsig(i) = KLrsig(i) + sqrt(Eig(curEig)) * Eigfterm * xiterm
       enddo
-    enddo
-    612 format("  ",f14.8)     !print sigma values to text file, fixed point
-    open(unit=10,file="KLrsig.txt")
-    do i=1,KLrnumpoints(1)
-      write(10,612,advance="no") KLrsig(i)
-    enddo
-    write(10,*)
-
-
-
-    KLrxisig = 0      !create a realization, fixed xi
-    do curEig=1,numEigs  !select xi values
-      rand = rang()
-      call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-      KLrxivals(j,curEig) = xiterm
-    enddo
-
-    neg='no'
-    call KLr_negsearch( j,neg )
-    if(neg=='yes') then  !counts the number of realz that contain a negative value
-      negcnt=negcnt+1
-      print *,"negcnt  : ",negcnt,"          realz#: ",j
+      612 format("  ",f14.8)     !print sigma values to text file, fixed point
+      open(unit=10,file="KLrsig.txt")
+      do i=1,KLrnumpoints(1)
+        write(10,612,advance="no") KLrsig(i)
+      enddo
+      write(10,*)
     endif
 
-    do i=1,KLrnumpoints(2)  !create realization
-      KLrxisig(i) = KLrxi_point(j,KLrxi(i),flxstype='total  ')
-    enddo
-    open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
-    do i=1,KLrnumpoints(2)
-      write(11,612,advance="no") KLrxisig(i)
-    enddo
-    write(11,*)
+    if(pltKLrrealzPointorXi(1)=='fxi') then !create a realization, fixed xi
+      KLrxisig = 0
+      do curEig=1,numEigs + mod(numEigs,2)  !select xi values
+          rand = rang()
+          if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') then
+            call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+          elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='BM') then
+            if(mod(curEig,2)==1) rand1 = rand
+            if(mod(curEig,2)==0) then
+              call TwoGaussrandnums(rand1,rand,xiterms)
+              KLrxivals(j,curEig-1) = xiterms(1)
+              xiterm = xiterms(2)
+            endif
+          elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='inv') then
+            xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+          endif
+        if(curEig<=numEigs) KLrxivals(j,curEig) = xiterm
+      enddo
+
+      neg='no'
+      call KLr_negsearch( j,neg )
+      if(neg=='yes') then  !counts the number of realz that contain a negative value
+        negcnt=negcnt+1
+        print *,"negcnt  : ",negcnt,"          realz#: ",j
+      endif
+
+      do i=1,KLrnumpoints(2)  !create realization
+        KLrxisig(i) = KLrxi_point(j,KLrxi(i),flxstype='total  ')
+      enddo
+      open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
+      do i=1,KLrnumpoints(2)
+        write(11,612,advance="no") KLrxisig(i)
+      enddo
+      write(11,*)
+    endif
 
 
     if(mod(j,KLrprintat)==0) call KL_timeupdate( j,tt1,flKLtype )
@@ -123,11 +158,8 @@ CONTAINS
 
 
 
-
-
-
   subroutine KLrplotrealz
-  !This subroutine uses the stored array of "random" numbers used in KLrgenrealz
+  !This subroutine uses the stored array of pseudo-random numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use genRealzvars, only: lamc, sigave
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
@@ -308,7 +340,7 @@ print *,"minpos",minpos,"minsig",minsig
         meanfrac  = 1d0
         avesigval = sigave
         Coterm    = (sqrt(Coscat)+sqrt(Coabs))**2
-!        Coterm    = CoExp
+        !Coterm    = CoExp
       case ("scatter")
         meanfrac  = Coscat/(Coscat+Coabs)
         avesigval = sigscatave
@@ -323,19 +355,13 @@ print *,"minpos",minpos,"minsig",minsig
     avesigval = sigave
     Coterm    = 1d0
   endif   
-!print *
-!print *,"sigave/sigscatave/sigavsave:",sigave,sigscatave,sigabsave
-!print *,"meanadjust:",meanadjust
   KLrxi_point = 0d0
   do curEig=1,tnumEigs
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
     KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-!print *,"sqrt(Eig)/Eigfterm/KLrxival",sqrt(Eig(curEig)),Eigfterm,KLrxivals(j,curEig)
   enddo
-!print *,"ave/mean/Co/sum:",avesigval,meanadjust,Coterm,KLrxi_point
   KLrxi_point = (avesigval + meanadjust*meanfrac) + (sqrt(Coterm) * KLrxi_point)
-!print *,"ave/sqrt(Co)   :",avesigval,sqrt(Coterm)
-!print *,"final          :",KLrxi_point
+
   end function KLrxi_point
 
 

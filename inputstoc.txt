@@ -1,16 +1,16 @@
   3216545,         Random number seed
   material,        Transport problem type, 'material', or 'coeffs'
-  no,yes,          'yes' or 'no', Markov, Gauss, 'material' problem type(s)
+  yes,yes,          'yes' or 'no', Markov, Gauss, 'material' problem type(s)
   !--- Geometry - 'material', num of realz ---!
   1000,100,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
+  3.3,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.2,0.6,             Lambda path length vals  #0.5,2.0
-  1.0,                 slab thickness           #1.0
+  10.0,                 slab thickness           #1.0
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   1.0,0.4,    Ave total cross section, total cross section variance
@@ -19,12 +19,12 @@
   1.0,        Slab thickness, s
 
   !--- Large KL Options ---!
-  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
+  yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   4,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,no,no,no,no,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC subroutines? ('yes' or 'no')
+  no,no,yes,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
 
@@ -77,7 +77,7 @@
 
 
   !!--All Plotting Option
-  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+  default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
 
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
@@ -125,7 +125,7 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,noplot,noplot,    Plot Leakage profile?: radMC,radWood,KLWood
+  noplot,noplot,plot,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
@@ -133,7 +133,6 @@
   preview,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   point,           "track" "point", type of flux binning, over whole track or a point on it 
   50,           Number of cells collect and plot flux over
-
 
 
 

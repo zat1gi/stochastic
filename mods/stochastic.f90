@@ -13,8 +13,9 @@ program stochastic
 
   use genRealzvars
   use timevars, only: t1
-  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, KLadjust
-  use MCvars, only: pltflux, radMC, radWood, KLWood, MCcaseson, probtype
+  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
+  use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
+                    MCcaseson, MCcases, probtype
   use MLMCvars, only: MLMCcaseson, MLMCcases
 
   implicit none
@@ -44,20 +45,22 @@ program stochastic
     call reset_genRealtals  !resets Markov realz stats for next round of creation
   endif
 
-  !!Perform KL reconstructions
-  if(KLrec=='yes') then
-    call KLrmeshgen         !creates mesh for fixed x and xi material constructions
-    call KLrgenrealz        !selects array of random variables xi
-    if(KLadjust=='yes') call KLadjustmean !adjusts mean after lopping neg cross sections
-    call KLrplotrealz       !plots reconstructed realiztions
+  !!Perform KL reconstructions if no transport to use them
+  if(KLrec=='yes' .and. KLWood=='no' .and. WAMC=='no' .and. GaussKL=='no') then
+    call KLreconstructions(2)  !pass information as KLWood
   endif
-
-
 
   !!Perform UQ-MC for transport problems  
   if( sum(MCcaseson)>0 .and. probtype=='material') then !perform if at least one case chosen
     do icase=1,size(MCcaseson)       !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
+
+        if(  (MCcaseson(icase)==1 .and. MCcases(icase)=='KLWood' )       .or. &
+            ((MCcaseson(icase)==1 .and. MCcases(icase)=='WAMC'   ) .and. &
+             (MCcaseson(2)    ==1 .and. MCcases(icase)=='KLWood' ))      .or. &
+             (MCcaseson(icase)==1 .and. MCcases(icase)=='GaussKL')          ) &
+          call KLreconstructions(icase)       !create KL realz for cases that need them
+
         call UQ_MC( icase )          !perform transport
       endif
     enddo

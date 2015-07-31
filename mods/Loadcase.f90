@@ -49,8 +49,8 @@ CONTAINS
                                   KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol, &
                                   flMarkov, flGauss, Gaussrandtype
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
-                                  numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, allowneg, distneg, radMC, radWood, WAMC, &
+                                  GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
+                                  pltflux, allowneg, distneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype
@@ -105,7 +105,7 @@ CONTAINS
 
   !--- Large MCtrans Options ---!
   read(2,*) dumchar
-  read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC
+  read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC,GaussKL
   read(2,*) numParts
   read(2,*) LPamnumParts
 
@@ -267,7 +267,7 @@ CONTAINS
 
 
   read(2,*) dumchar    !Leakage pdf
-  read(2,*) radMCbinplot,radWoodbinplot,KLWoodbinplot
+  read(2,*) radMCbinplot,radWoodbinplot,KLWoodbinplot,GaussKLbinplot
   read(2,*) trprofile_binnum
 
   read(2,*) dumchar    !Plotting flux
@@ -285,6 +285,7 @@ CONTAINS
     radMCbinplot   = pltallopt
     radWoodbinplot = pltallopt
     KLWoodbinplot  = pltallopt
+    GaussKLbinplot = pltallopt
     pltEigf(1)     = pltallopt
     Corropts(1)    = pltallopt
     pltxiBins(1)   = pltallopt
@@ -314,8 +315,8 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, Gaussrandtype
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
-                    pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, KLWoodbinplot, WAMC, &
-                    probtype
+                    GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
+                    KLWoodbinplot, GaussKLbinplot, probtype
   use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
   integer :: fpointorxi(2)
 
@@ -407,6 +408,11 @@ CONTAINS
     if(KLWoodbinplot .ne. 'noplot' .and. KLWood=='no') then
       KLWoodbinplot = 'noplot'
       print *,"--User attempting to plot KLWood leakage values w/o KLWood, set to 'noplot'"
+      flsleep = .true.
+    endif
+    if(GaussKLbinplot .ne. 'noplot' .and. GaussKL=='no') then
+      GaussKLbinplot = 'noplot'
+      print *,"--User attempting to plot GaussKL leakage values w/o GaussKL, set to 'noplot'"
       flsleep = .true.
     endif
   endif
@@ -576,7 +582,7 @@ CONTAINS
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
                     xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
-  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, MCcaseson, MCcases, &
+  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
@@ -631,6 +637,8 @@ CONTAINS
   if(LPMC   =='yes') MCcaseson(4) = 1
   if(atmixMC=='yes') MCcaseson(5) = 1
   if(WAMC   =='yes') MCcaseson(6) = 1
+  if(GaussKL=='yes') MCcaseson(7) = 1
+
 
   allocate(MCcases(numPosMCmeths))
   MCcases(1) = 'radMC'
@@ -639,6 +647,7 @@ CONTAINS
   MCcases(4) = 'LPMC'
   MCcases(5) = 'atmixMC'
   MCcases(6) = 'WAMC'
+  MCcases(7) = 'GaussKL'
 
   allocate(stocMC_reflection(numPosMCmeths,2))   !global MC variables for each method
   allocate(stocMC_transmission(numPosMCmeths,2)) !rank 2 holds 1=average, 2=deviation

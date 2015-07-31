@@ -35,7 +35,8 @@ CONTAINS
 
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-        (MCcases(icase)=='WAMC' .and. (refsigMode==2 .or. refsigMode==3))) &
+        (MCcases(icase)=='WAMC' .and. (refsigMode==2 .or. refsigMode==3)) .or. &
+         MCcases(icase)=='GaussKL') &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
     call MCtransport( j,icase,tnumParts )     !transport over a realization
@@ -116,6 +117,8 @@ CONTAINS
           elseif(refsigMode==1 .or. refsigMode==3) then
             db = merge(s-position,position,mu>=0)/abs(mu)
           endif
+        case ("GaussKL")
+          db = merge(s-position,position,mu>=0)/abs(mu)
       end select
 
       !calculate distance to collision
@@ -149,21 +152,10 @@ CONTAINS
             ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
             dc = -log(rang())/ceilsig
           endif
-!print *,"dc:",dc
-! open(unit=241, file="plotme.txt")
-! do i2=1,size(negwgtsigs(:,3)
-!   i1=i2/2+1
-!   write(241,'(f10.5,f10.5,f10.5)') negwgtssigs(i1,3),fbinmax(i1),bbinmax(i1)
-! enddo
-! close(unit=24)
-!print *,"negwgtsigs(:,3):",negwgtsigs(:,3)
-!print *
-!print *,"binmaxes:",binmaxes
-!print *
-!print *,"fbinmax:",fbinmax
-!print *
-!print *,"bbinmax:",bbinmax
-!read *
+        case ("GaussKL")
+          curbin =solvecurbin(position)
+          ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
+          dc = -log(rang())/ceilsig                   !calc dc
       end select
 
       !calculate distance to interface
@@ -183,8 +175,8 @@ CONTAINS
       if(fldist=='boundary') then
         !set direction flag
         flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
-        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej(1)=Wood_rej(1)+1
-                                                                    !accept path tal
+        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
+           MCcases(icase)=='GaussKL') Wood_rej(1)=Wood_rej(1)+1           !accept path tal
 
         !evaluate for local or global transmission or reflection
         if(flEscapeDir=='transmit') then   !transmit
@@ -210,8 +202,6 @@ CONTAINS
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
             case ("WAMC")
-!print *
-!print *,"position:",position
               if(refsigMode==2) then
                 newpos = binmaxind(curbin+1) + 0.00000000001d0
               elseif(refsigMode==1 .or. refsigMode==3) then  
@@ -228,12 +218,10 @@ CONTAINS
                 transmit(j) = transmit(j) + weight
                 flExit='exit'
               endif
-!print *,"transmission direction"
-!print *,"newpos:",newpos
-!print *,"curbin:",curbin
-!print *
-!print *
-!print *,"size(binmaxind):",size(binmaxind)
+            case ("GaussKL")
+              newpos = s
+              transmit(j) = transmit(j) + 1.0d0
+              flExit='exit'
           end select
         endif
 
@@ -265,8 +253,6 @@ CONTAINS
               elseif(refsigMode==1 .or. refsigMode==3) then
                 newpos = 0.0d0
               endif
-!print *
-!print *,"position:",position
               if(refsigMode/=2 .or. curbin==1) then
                 if(wgtmaxmin=='yes') then
                   if(   weight>wgtmax) then !option to truncate large weight values
@@ -278,13 +264,10 @@ CONTAINS
                 reflect(j) = reflect(j) + weight
                 flExit='exit'
               endif
-!print *
-!print *,"reflection direction"
-!print *,"newpos:",newpos
-!print *,"curbin:",curbin
-!print *
-!print *
-!print *
+            case ("GaussKL")
+              newpos = 0.0d0
+              reflect(j)  = reflect(j) + 1.0d0
+              flExit='exit'
           end select
         endif
 
@@ -393,6 +376,41 @@ CONTAINS
               areapnSamp(1) = areapnSamp(1)+cursigt
               if(cursigt>areapnSamp(3)) areapnSamp(3)=cursigt
           endif
+          case ("GaussKL")
+            !load woodcock ratio for this position and ceiling
+            woodrat = KLrxi_point(j,newpos,flxstype='total  ')/ceilsig
+            !assert within bounds, tally negstats
+            if(woodrat>1.0d0) then                      !assert woodrat
+              stop 'Higher sig samples in KLWood than ceiling, exiting program'
+            endif
+            if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
+            if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
+              if(abs(disthold)>woodrat*ceilsig) then
+                woodrat = 0.0d0
+              else
+                woodrat = (woodrat*ceilsig + disthold) / ceilsig
+              endif
+              disthold = 0.0d0
+            endif
+            if(allowneg=='yes') then                    !tallies for neg/pos if allowing neg
+              if(woodrat<0.0d0) then
+                numpnSamp(2)  =  numpnSamp(2)+1
+                areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
+                if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
+                if(distneg=='yes') disthold = woodrat*ceilsig
+                woodrat=0.0d0
+              else
+                numpnSamp(1)  =  numpnSamp(1)+1
+                areapnSamp(1) = areapnSamp(1)+woodrat*ceilsig          
+                if(woodrat*ceilsig>areapnSamp(3)) areapnSamp(3)=woodrat*ceilsig
+              endif
+            endif
+            !decide fate of particle
+            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(flIntType=='clean') then                !accept interaction
+              tempscatrat = KLWood_actscatrat(j,newpos)
+              flIntType = merge('scatter','absorb ',tempscatrat>rang())
+            endif
         end select
 
         !Tally for neg stats
@@ -413,6 +431,12 @@ CONTAINS
           case ("LPMC")
           case ("atmixMC")
           case ("WAMC")  !!!WAMCchange
+          case ("GaussKL")
+            if(flIntType=='reject') then
+              Wood_rej(2)=Wood_rej(2)+1
+            else
+              Wood_rej(1)=Wood_rej(1)+1
+            endif
         end select
 
       endif !endif fldist=='collision'
@@ -432,26 +456,31 @@ CONTAINS
 
       !Evaluate scatter
       if(flIntType=='scatter') then     !scatter
-        select case (MCcases(icase))
-          case ("radMC")
-            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-            if(rodOrplanar=='planar') mu = newmu()
-          case ("radWood")
-            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-            if(rodOrplanar=='planar') mu = newmu()
-          case ("KLWood")
-            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-            if(rodOrplanar=='planar') mu = newmu()
-          case ("LPMC")
-            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-            if(rodOrplanar=='planar') mu = newmu()
-          case ("atmixMC")
-            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-            if(rodOrplanar=='planar') mu = newmu()
-          case ("WAMC")
-            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-            if(rodOrplanar=='planar') mu = newmu()
-        end select
+        if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !all currently do same
+        if(rodOrplanar=='planar') mu = newmu()
+!        select case (MCcases(icase))
+!          case ("radMC")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!          case ("radWood")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!          case ("KLWood")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!          case ("LPMC")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!          case ("atmixMC")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!          case ("WAMC")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!          case ("GaussKL")
+!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+!            if(rodOrplanar=='planar') mu = newmu()
+!        end select
       endif
 
       !Evaluate absorption
@@ -474,6 +503,9 @@ CONTAINS
             flExit='exit'
           case ("WAMC")
             absorb(j)     = absorb(j)     + weight
+            flExit='exit'
+          case ("GaussKL")
+            absorb(j)     = absorb(j)     + 1.0d0
             flExit='exit'
         end select
       endif
@@ -574,6 +606,8 @@ CONTAINS
         nceilbin = numEigs
       case ("WAMC")
         if(refsigMode==2 .or. refsigMode==3) nceilbin = negwgtbinnum
+      case ("GaussKL")
+        nceilbin = numEigs
     end select
 
     if(j==1) then
@@ -607,6 +641,8 @@ CONTAINS
         call KLWood_binmaxes( j )
       case ("WAMC")
         if(refsigMode==2 .or. refsigMode==3) call WAMC_binmaxes( j )
+      case ("GaussKL")
+        call KLWood_binmaxes( j )
     end select
 
     !create forward/backward motion max vectors
@@ -1148,7 +1184,8 @@ CONTAINS
 
   !leakage/absorption stats
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
-     MCcases(icase)=='KLWood'.or. MCcases(icase)=='WAMC') then
+     MCcases(icase)=='KLWood'.or. MCcases(icase)=='WAMC'    .or. &
+     MCcases(icase)=='GaussKL'                                     ) then
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
@@ -1165,7 +1202,8 @@ CONTAINS
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
 
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then !!!WAMCchange add here
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
+     MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'        ) then !!!WAMCchange add here
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
     if(flfluxplotmat) then
                       fluxmat1= fluxmat1/ dx / numParts !normalize part 1
@@ -1179,7 +1217,8 @@ CONTAINS
     endif    
   endif
 
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') then
+  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
+     MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'       ) then
     if( flfluxplotall ) then  !!!WAMCchange
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
@@ -1370,6 +1409,26 @@ CONTAINS
             close(unit=24)
           endif
 
+        case ("GaussKL")
+          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+            open(unit=24, file="GaussKL_fluxall.out")
+            write(24,370)
+            do ibin=1,fluxnumcells
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+            open(unit=24, file="GaussKL_fluxmat.out")
+            write(24,370)
+            do ibin=1,fluxnumcells
+              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+            enddo
+            close(unit=24)
+          endif
+
       end select
     endif
   enddo
@@ -1384,6 +1443,8 @@ CONTAINS
   call system("test -e LPMC_fluxmat.out    && mv LPMC_fluxmat.out plots/fluxplots")
   call system("test -e atmixMC_fluxall.out && mv atmixMC_fluxall.out plots/fluxplots")
   call system("test -e atmixMC_fluxmat.out && mv atmixMC_fluxmat.out plots/fluxplots")
+  call system("test -e GaussKL_fluxall.out  && mv GaussKL_fluxall.out plots/fluxplots")
+  call system("test -e GaussKL_fluxmat.out  && mv GaussKL_fluxmat.out plots/fluxplots")
 
 
   end subroutine MCfluxPrint
@@ -1396,7 +1457,8 @@ CONTAINS
   !which is deleted at the end.  Builds based on options like title type, plotting lines, and
   !pause or preview.  Can perform three builds, one for material irrespective flux tallying, and 
   !one for each material using material respective flux plotting.
-  use MCvars, only: pltflux, radMC, radWood, KLWood, LPMC, atmixMC, pltfluxtype, pltmatflux
+  use MCvars, only: pltflux, radMC, radWood, KLWood, LPMC, atmixMC, pltfluxtype, pltmatflux, &
+                    GaussKL
 
   !Clean from previous runs
   call system("test -e plots/fluxplots/fluxall.ps && rm plots/fluxplots/fluxall.ps")
@@ -1445,6 +1507,10 @@ CONTAINS
     endif
     if(atmixMC=='yes') then
       call system("cat gnu/tempold.txt gnu/atmixMCall.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(GaussKL=='yes') then
+      call system("cat gnu/tempold.txt gnu/GaussKLall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
 
@@ -1504,6 +1570,10 @@ CONTAINS
       call system("cat gnu/tempold.txt gnu/atmixMCmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
+    if(GaussKL=='yes') then
+      call system("cat gnu/tempold.txt gnu/GaussKLmat1.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
 
     !Add third general part
     call system("cat gnu/tempold.txt gnu/gen3.txt > gnu/tempnew.txt")
@@ -1559,6 +1629,10 @@ CONTAINS
     endif
     if(atmixMC=='yes') then
       call system("cat gnu/tempold.txt gnu/atmixMCmat2.txt > gnu/tempnew.txt")
+      call system("mv gnu/tempnew.txt gnu/tempold.txt")
+    endif
+    if(GaussKL=='yes') then
+      call system("cat gnu/tempold.txt gnu/GaussKLmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
 
@@ -1617,8 +1691,9 @@ CONTAINS
   endif
 
   !current tally allocations
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
-     MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') then
+  if(MCcases(icase)=='radMC'  .or. MCcases(icase)=='radWood'.or. &
+     MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC'   .or. &
+     MCcases(icase)=='GaussKL'                                     ) then
     if(.not.allocated(transmit)) allocate(transmit(numRealz))
     if(.not.allocated(reflect))  allocate(reflect(numRealz))
     if(.not.allocated(absorb))   allocate(absorb(numRealz))
@@ -1634,10 +1709,12 @@ CONTAINS
   endif
 
   !rejection tally allocations
-  if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood') Wood_rej = 0
+  if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
+     MCcases(icase)=='GaussKL'                                     ) Wood_rej = 0
 
   !negative xs transport tally allocations
-  if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') then
+  if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. &
+     MCcases(icase)=='GaussKL'                                 ) then
     numpnSamp =0
     areapnSamp=0.0d0
     disthold  =0.0d0
@@ -1669,6 +1746,9 @@ CONTAINS
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
     case ("atmixMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
+         pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
+    case ("GaussKL")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
          pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
   end select
@@ -1716,20 +1796,22 @@ CONTAINS
   !This subroutine bins leakage data, and prints this data to files to later be plotted
   !for methods which contain realizations (radMC, radWood, KLWood).
   use genRealzvars, only: numRealz
-  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, reflect, transmit, &
-                          MCcases, MCcaseson
+  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot, &
+                          reflect, transmit, MCcases, MCcaseson
 
   integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
   !this nasty if statement decides whether to proceed at all.
   !from here only MCcases is needed.
-  if( (MCcaseson(icase) == 1     .and. MCcases(icase) =='radMC'     .and. &  !!!WAMCchange
-      (radMCbinplot     =='plot' .or.  radMCbinplot   =='preview')) .or.  &
-      (MCcaseson(icase) == 1     .and. MCcases(icase) =='radWood'   .and. &
-      (radWoodbinplot   =='plot' .or.  radWoodbinplot =='preview')) .or.  &
-      (MCcaseson(icase) == 1     .and. MCcases(icase) =='KLWood'    .and. &
-      (KLWoodbinplot    =='plot' .or.  KLWoodbinplot  =='preview'))         ) then
+  if( (MCcaseson(icase) == 1      .and. MCcases(icase) =='radMC'      .and. &  !!!WAMCchange
+      (radMCbinplot     =='plot'  .or.  radMCbinplot   =='preview'))  .or.  &
+      (MCcaseson(icase) == 1      .and. MCcases(icase) =='radWood'    .and. &
+      (radWoodbinplot   =='plot'  .or.  radWoodbinplot =='preview'))  .or.  &
+      (MCcaseson(icase) == 1      .and. MCcases(icase) =='KLWood'     .and. &
+      (KLWoodbinplot    =='plot'  .or.  KLWoodbinplot  =='preview'))  .or.  &
+      (MCcaseson(icase) == 1      .and. MCcases(icase) =='GaussKL'    .and. &
+      (GaussKLbinplot    =='plot' .or.  GaussKLbinplot  =='preview'))          ) then
 
     !find reflection binning/plotting bounds
     smrefl = 1d0
@@ -1758,6 +1840,7 @@ CONTAINS
       call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
       call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
       call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+      call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
     endif
 
     !bin and print data
@@ -1779,6 +1862,9 @@ CONTAINS
       case("WAMC")  !!!WAMCchange
         call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
         call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
+      case("GaussKL")
+        call system("mv tranreflprofile.txt GaussKLtranreflprofile.txt")
+        call system("mv GaussKLtranreflprofile.txt plots/tranreflprofile")
     end select
 
   endif
@@ -1847,17 +1933,17 @@ CONTAINS
   subroutine MCLeakage_pdfplot
   !This subroutine plots MC Leakage value pdfs from data files generated
   !in MCLeakage_pdfbinprint.
-  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot
+  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot
   logical :: flplot = .false.
 
   !preview if at least one chose this, otherwise simply plot
   if(    radMCbinplot  =='preview' .or. radWoodbinplot=='preview' .or. &
-         KLWoodbinplot =='preview'                                     ) then
+         KLWoodbinplot =='preview' .or. GaussKLbinplot=='preview'      ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
     flplot = .true.
   elseif(radMCbinplot  =='plot' .or. radWoodbinplot=='plot' .or. &
-         KLWoodbinplot =='plot'                                        ) then
+         KLWoodbinplot =='plot' .or. GaussKLbinplot=='plot'         ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
     flplot = .true.
@@ -1913,13 +1999,15 @@ CONTAINS
   subroutine Woodnegstats
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
-  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp, WAMC
+  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp, &
+                    WAMC, GaussKL
 
   real(8) :: pos,neg
 
   open(unit=100,file="Woodnegstats.out")
 
-  if((KLWood=='yes' .and. allowneg=='yes') .or. WAMC=='yes') then
+  if((KLWood=='yes'  .and. allowneg=='yes') .or. WAMC=='yes' .or. &
+     (GaussKL=='yes' .and. allowneg=='yes')                       ) then
     if(distneg=='no')  write(100,*) "--Negative smoothing stats, neg smoothing off--"
     if(distneg=='yes') write(100,*) "--Negative smoothing stats, neg smoothing on--"
     600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)
@@ -1954,6 +2042,7 @@ CONTAINS
   !then prints that file to the screen for user friendliness.
   !Stats are from Adams89, Brantley11, and those generated here!
   use genRealzvars, only: Adamscase
+  use KLvars, only: flMarkov
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
                     numPosMCmeths, LPMC, atmixMC
@@ -1970,11 +2059,14 @@ CONTAINS
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   331 format(" |WAMC   :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
+  332 format(" |GaussKL:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
   330 format(" |atmixMC:  |",f8.5,"                 |",f8.5,"             |")
 
   !print to file
   open(unit=100,file="MCleakage.out")
+
+
   !print headings/benchmark solutions for full problem
   write(100,*)
   if(Adamscase/=0) write(100,325) Adamscase
@@ -2001,6 +2093,10 @@ CONTAINS
       if(MCcases(icase)=='WAMC')  write(100,331) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
+      if(MCcases(icase)=='GaussKL')  write(100,332) stocMC_reflection(icase,1),&
+      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+
+
 !if(MCcases(icase)=='KLWood') print *,"flagKLWood:",stocMC_reflection(icase,1),&
 !sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
     endif
@@ -2011,7 +2107,7 @@ CONTAINS
     write(100,*) "|----------|-------------------------|---------------------|"
 
   !print benchmark LP solutions
-  if(Adamscase/=0) then
+  if(Adamscase/=0 .and. flMarkov) then
     write(100,322) ABreflection(1,2),ABtransmission(1,2)
     if(rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
   endif
@@ -2027,7 +2123,7 @@ CONTAINS
     write(100,*) "|----------|-------------------------|---------------------|"
 
   !print benchmark atomic mix solutions
-  if(Adamscase/=0) then
+  if(Adamscase/=0 .and. flMarkov) then
     if(rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
   endif
 
