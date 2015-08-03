@@ -26,9 +26,9 @@ CONTAINS
   do j=1,tnumRealz
 
       if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
-    call genReal( j,'binary ' )               !gen binary geometry
+    call genReal( j,'binary ',icase )         !gen binary geometry
       if(MCcases(icase)=='atmixMC') &
-    call genReal( j,'atmixMC' )               !gen atomic mix geometry
+    call genReal( j,'atmixMC',icase )         !gen atomic mix geometry
 
       if(flfluxplotmat .and. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) &
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
@@ -70,7 +70,7 @@ CONTAINS
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
-                    refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs
+                    refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs, flCorrMC
   use genRealz, only: genReal
   use KLreconstruct, only: KLrxi_point
   use mcnp_random, only: RN_init_particle
@@ -84,11 +84,15 @@ CONTAINS
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
-    call setrngappnum(MCcases(icase))
+    if(flCorrMC) then
+      call setrngappnum(MCcases(1))
+    else
+      call setrngappnum(MCcases(icase))
+    endif
     call RN_init_particle( int(rngappnum*rngstride+j*tnumParts+o,8) )
 
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i), init weight
-    if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
+    if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ',icase ) !for LP, choose starting material
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
@@ -555,7 +559,7 @@ CONTAINS
   subroutine genSourcePart( i,icase )
   !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
-  use genRealzvars, only: s, nummatSegs
+  use genRealzvars, only: s
   use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases, weight
   integer :: i,icase
 

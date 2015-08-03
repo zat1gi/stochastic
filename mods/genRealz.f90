@@ -7,7 +7,7 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( j,flmode )
+  subroutine genReal( j,flmode,icase )
   !creates a realization, plots if specified, and collects tallies for realization stats
   !creates for 'binary' mode: binary stochastic media, or 'atmix' mode, atomic mix of that
   use rngvars, only: rngappnum, rngstride, setrngappnum
@@ -15,10 +15,12 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
-                          totLength, atmixsig, atmixscatrat, scatrat, flprint
+                          totLength, atmixsig, atmixscatrat, scatrat, flprint, &
+                          flCorrMarkov, flCorrRealz
+  use MCvars, only: MCcases
   use mcnp_random, only: RN_init_particle
 
-  integer :: j
+  integer :: j, icase
   real(8) :: tt1,tt2
   character(7) :: flmode !'binary','LPMC','atmix'
 
@@ -30,9 +32,16 @@ CONTAINS
   if(allocated(matType)) deallocate(matType)
   if(allocated(matLength)) deallocate(matLength)
 
-
   if(flmode=='binary') then
-    call setrngappnum('genRealz')
+    if(icase==0 .or. flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
+      call setrngappnum('genRealzKLres')
+    else
+      if(MCcases(icase)=='radMC' .or. (MCcases(icase)=='radWood' .and. flCorrMarkov)) then
+        call setrngappnum('genRealzTMC')
+      elseif(MCcases(icase)=='radWood' .and. .not.flCorrMarkov) then
+        call setrngappnum('genRealzWMC')
+      endif
+    endif
     call RN_init_particle( int(rngappnum*rngstride+j,8) )
 
     matLength_temp=0d0
@@ -111,7 +120,6 @@ CONTAINS
       matLength(i) = matLength_temp(i)
     enddo
     matLength(nummatSegs+1) = matLength_temp(nummatSegs+1)
-
 
     do i=2,nummatSegs+1 !collect total length data for Actual Co calculations
       totLength(matType(i-1))=totLength(matType(i-1))+matLength(i)-matLength(i-1)

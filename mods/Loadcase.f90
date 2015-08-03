@@ -37,7 +37,7 @@ CONTAINS
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
-                                  GBlamc, GBs
+                                  GBlamc, GBs, flCorrMarkov, flCorrRealz
   use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
                          param2_mean, param2_uncert
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -47,13 +47,13 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol, &
-                                  flMarkov, flGauss, Gaussrandtype
+                                  flMarkov, flGauss, Gaussrandtype, flCorrKL
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, allowneg, distneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
-                                  negwgtbinnum, nwvalsperbin, probtype
+                                  negwgtbinnum, nwvalsperbin, probtype, flCorrMC
   use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
                                   MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct, spatial_Level, &
                                   num_benchsamps
@@ -63,7 +63,7 @@ CONTAINS
   character(6) :: chosennorm        !norm to convert from text to number
 
   real(8)       :: dumreal,s2
-  character(3)  :: setflags(2)
+  character(3)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
 
   integer :: i,default_ufunctc
@@ -89,6 +89,10 @@ CONTAINS
   read(2,*) scatrat(1),scatrat(2)
   read(2,*) lam(1),lam(2)
   read(2,*) s
+  read(2,*) setflags(1),setflags(2),setflags(3)
+  if(setflags(1)=='yes') flCorrMarkov=.true.
+  if(setflags(2)=='yes') flCorrKL    =.true.
+  if(setflags(3)=='yes') flCorrRealz =.true.
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
@@ -108,6 +112,8 @@ CONTAINS
   read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC,GaussKL
   read(2,*) numParts
   read(2,*) LPamnumParts
+  read(2,*) setflags(1)
+  if(setflags(1)=='yes') flCorrMC    =.true.
 
   !--- Large MLMC Options ---!
   read(2,*) dumchar
@@ -308,12 +314,13 @@ CONTAINS
 
   subroutine testinputstoc
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
-                          pltgenrealzwhich
+                          pltgenrealzwhich, flCorrMarkov, flCorrRealz
   use genSampvars, only: specialprob, param1, param2
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, Gaussrandtype
+                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, &
+                    Gaussrandtype, flCorrKL
   use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, probtype
@@ -493,6 +500,19 @@ CONTAINS
 !    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
 !    flstopstatus = .true.
 !  endif
+  
+  if( flCorrRealz .and. (.not.flCorrMarkov .or. .not.flCorrKL)) then !Test for correlation deficiency
+    print *,"--User trying to correlate KLres w/ others w/o corr Markov or KL, both set to true"
+    flCorrMarkov=.true.
+    flCorrKL    =.true.
+    flsleep = .true.
+  endif
+
+  if( Gaussrandtype=='BM' .and. flCorrKL ) then  !Test for correlated GaussKL sampling method
+    print *,"--User trying to correlate KL realz w/ Box-Muller sampling, switched to inverse sampling"
+    Gaussrandtype='inv'
+    flsleep = .true.
+  endif
 
   if( KLnoise == 'yes' .AND. KLres == 'no' ) then !Test KLnoise w/o KLres
     print *,"--User trying to perform KLnoise without KLres"

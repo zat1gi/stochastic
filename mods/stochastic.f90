@@ -47,7 +47,7 @@ program stochastic
 
   !!Perform KL reconstructions if no transport to use them
   if(KLrec=='yes' .and. KLWood=='no' .and. WAMC=='no' .and. GaussKL=='no') then
-    call KLreconstructions(2)  !pass information as KLWood
+    call KLreconstructions(2)  !'2' means passes information as KLWood
   endif
 
   !!Perform UQ-MC for transport problems  

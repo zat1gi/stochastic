@@ -70,7 +70,7 @@ CONTAINS
                           KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, &
-                          pltKLrrealzPointorXi, Gaussrandtype
+                          pltKLrrealzPointorXi, Gaussrandtype, flCorrKL
   use MCvars, only: MCcases
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
@@ -83,8 +83,13 @@ CONTAINS
 
   write(*,*) "Starting method: ",flKLtype  
   do j=1,KLrnumRealz
-
-    call setrngappnum('KLRealz')
+    !set random number application
+    if(MCcases(icase)=='KLWood' .or. (MCcases(icase)=='GaussKL' .and. flCorrKL)) then
+      call setrngappnum('KLRealzMarkov')
+    elseif(MCcases(icase)=='GaussKL') then
+      call setrngappnum('KLRealzGaussB')
+    endif
+    !set random number based on application
     call RN_init_particle( int(rngappnum*rngstride+j,8) )
 
     if(pltKLrrealzPointorXi(1)=='fpoint') then !create a realization, fixed point

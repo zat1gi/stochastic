@@ -10,22 +10,30 @@ contains
   !rngs used for that application
   character(*) :: rngapp
   select case (rngapp)
-    case ("radMC")
+    case ("radMC")         !transport           !possible correlation 1
       rngappnum = 1
-    case ("radWood")
+    case ("radWood")                            !possible correlation 1
       rngappnum = 2
-    case ("KLWood")
+    case ("KLWood")                             !possible correlation 2
       rngappnum = 3
     case ("LPMC")
       rngappnum = 4
     case ("atmixMC")
       rngappnum = 5
-    case ("genRealz")
+    case ("GaussKL")                            !possible correlation 2
       rngappnum = 6
-    case ("KLRealz")
-      rngappnum = 7
-    case ("MLMCsamp")
-      rngappnum = 8
+    case ("genRealzKLres") !material generation !possible correlation 3
+      rngappnum = 10
+    case ("genRealzTMC")                        !possible correlation 3
+      rngappnum = 11
+    case ("genRealzWMC")                        !possible correlation 3
+      rngappnum = 12
+    case ("KLRealzMarkov")                      !possible correlation 4
+      rngappnum = 13
+    case ("KLRealzGaussB")                      !possible correlation 4
+      rngappnum = 14
+    case ("MLMCsamp")      !other
+      rngappnum = 20
   end select
   end subroutine setrngappnum
 end module rngvars
@@ -79,6 +87,8 @@ module genRealzvars
   real(8)              :: sigave               ! weighted average sigma value for binary mixtures
   real(8)              :: sigscatave           ! average scattering xs
   real(8)              :: sigabsave            ! average absorption xs
+  logical              :: flCorrMarkov=.false. ! correlated sampling for Markov realizations?
+  logical              :: flCorrRealz =.false. ! correlated KLres (for KL recon) and Markov realz?
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
@@ -162,6 +172,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
   real(8)              :: meanadjust = 0d0     ! positive translation of mean xs
+  logical              :: flCorrKL=.false.     ! correlated random numbers for KL Markov and GaussB realz?
 
   integer              :: mostinBin            !
   integer              :: Corrnumpoints        ! Number of points used when confirming covariance func
@@ -225,6 +236,7 @@ module MCvars
 
   !non inputs
   integer, parameter   :: numPosMCmeths = 7    ! total number of MC transport methods available
+  logical              :: flCorrMC=.false.     ! correlated random number MC transport
 
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values

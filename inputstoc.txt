@@ -6,11 +6,12 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  3.3,           Adamscase option, if==0, then user input for next three parameters
+  3.1,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.2,0.6,             Lambda path length vals  #0.5,2.0
   10.0,                 slab thickness           #1.0
+  no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   1.0,0.4,    Ave total cross section, total cross section variance
@@ -24,9 +25,10 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,yes,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  yes,yes,yes,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
+  no,             Correlated-Random number Monte Carlo?
 
   !--- Large MLMC Options ---!
   detMLMC,            'none','detMLMC','spatial','iter','bench' - which mode?
@@ -125,7 +127,7 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,noplot,plot,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
+  plot,plot,plot,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
