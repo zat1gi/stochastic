@@ -76,7 +76,7 @@ CONTAINS
   use mcnp_random, only: RN_init_particle
   integer :: i,j,curEig,w,u,icase
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
-  character(3) :: neg
+  logical :: flrealzneg
   character(5) :: flKLtype = 'KLrec'
 
   call cpu_time(tt1)
@@ -137,9 +137,9 @@ CONTAINS
         if(curEig<=numEigs) KLrxivals(j,curEig) = xiterm
       enddo
 
-      neg='no'
-      call KLr_negsearch( j,neg )
-      if(neg=='no') then  !counts the number of realz that contain a positive value
+      flrealzneg=.false.
+      call KLr_negsearch( j,flrealzneg )
+      if(.not.flrealzneg) then  !counts the number of realz that contain a positive value
         numPosRealz=numPosRealz+1
         posRealz(j) = 1
         print *,"numNegRealz  : ",j-numPosRealz,"          realz#: ",j
@@ -234,11 +234,13 @@ CONTAINS
 
 
 
-  subroutine KLr_negsearch( j,neg )
+  subroutine KLr_negsearch( j,flrealzneg )
+  !This subroutine searches for negative values in KL realizations.
+  !If negative value found, set flrealzneg=.true., otherwise remain .false..
   use genRealzvars, only: s
   use KLvars, only: alpha, Ak, Eig, numEigs
   integer :: j
-  character(3) :: neg
+  logical :: flrealzneg
 
   integer :: i,k,l
   integer :: nminnersteps = 12
@@ -277,7 +279,7 @@ CONTAINS
       enddo
     enddo
     if(minsig<0) then
-      neg='yes'
+      flrealzneg=.true.
 print *,"minpos",minpos,"minsig",minsig
       exit
     endif

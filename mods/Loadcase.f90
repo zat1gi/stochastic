@@ -324,16 +324,14 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, &
                     Gaussrandtype, flCorrKL
-  use MCvars, only: trannprt, sourceType, pltflux, flnegxs, distneg, radMC, radWood, KLWood, &
+  use MCvars, only: trannprt, sourceType, pltflux, distneg, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, probtype
   use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
   integer :: fpointorxi(2)
 
   integer :: i, ones, zeros
-  real(8) :: smallersig,largersig,sigratio
   real(8) :: eps = 0.000001d0
-  character(3) :: run = 'no'
   logical :: flstopstatus = .false., flsleep = .false.
 
   print *,"  "
@@ -480,29 +478,11 @@ CONTAINS
       print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
       flstopstatus = .true.
     endif
-    smallersig = minval(sig)
-    largersig  = maxval(sig)
-    sigratio   = (largersig-smallersig)/smallersig
-    if( sigratio > 0.33334d0 .and. .not.flstopstatus .and. .not.flnegxs) then
-      print *,"--User attempting to run KLWood where neg reconstructed xs values may exist"
-      print *,"   -if you choose to run this, you will want your # of pnts to recon at to be quite high"
-      print *,"   -please either 'run' to run anyway, or anything else to exit"
-      read(*,*) run
-      if( run .ne. 'run' ) flstopstatus = .true.
-    endif
-!    if( .not.flnegxs .and. distneg=='yes' ) then !so! let that one be, who cares!
-!      print *,"--User attempting to redistribute negative xs values without flnegxs on"
-!      flstopstatus = .true.
-!    endif
     if( KLWood=='yes' .and. numRealz/=KLrnumRealz ) then
       print *,"--User attempting to do transport over original and reconstructed with dif num of realz"
       flstopstatus = .true.
     endif
   endif
-!  if( KLWood=='no' .and. flnegxs) then  !so! let that one be, who cares!
-!    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
-!    flstopstatus = .true.
-!  endif
   
   if( flCorrRealz .and. (.not.flCorrMarkov .or. .not.flCorrKL)) then !Test for correlation deficiency
     print *,"--User trying to correlate KLres w/ others w/o corr Markov or KL, both set to true"

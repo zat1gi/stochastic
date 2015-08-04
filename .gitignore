@@ -74,3 +74,6 @@ texts/CoEffAct.txt
 texts/CoEffExp.txt
 texts/absdiffGam.txt
 plots/KLsigvals/KLrxisig.txt
+plots/fluxplots/radWood_fluxall.out
+plots/fluxplots/radWood_fluxmat.out
+plots/tranreflprofile/radWoodtranreflprofile.txt

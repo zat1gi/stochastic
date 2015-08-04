@@ -11,8 +11,9 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
   use timevars, only: time
-  use genRealzvars, only: numRealz, flGBgeom
-  use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat, refsigMode
+  use genRealzvars, only: numRealz, flGBgeom, posRealz
+  use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat, refsigMode, &
+                    flnegxs
   use genRealz, only: genReal
   use KLresearch, only: KL_eigenvalue
   use KLreconstruct, only: KLreconstructions
@@ -36,21 +37,23 @@ CONTAINS
 
   do j=1,tnumRealz
 
-      if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
-    call genReal( j,'binary ',icase )         !gen binary geometry
-      if(MCcases(icase)=='atmixMC') &
-    call genReal( j,'atmixMC',icase )         !gen atomic mix geometry
+    if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. flnegxs .or. &
+       (.not.flnegxs .and. posRealz(j)==1)) then !if not WMC, neg ok, or realz positive
+        if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
+      call genReal( j,'binary ',icase )         !gen binary geometry
+        if(MCcases(icase)=='atmixMC') &
+      call genReal( j,'atmixMC',icase )         !gen atomic mix geometry
 
-      if(flfluxplotmat .and. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) &
-    call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
+        if(flfluxplotmat .and. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) &
+      call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
 
+        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
+          (MCcases(icase)=='WAMC' .and. (refsigMode==2 .or. refsigMode==3)) .or. &
+           MCcases(icase)=='GaussKL') &
+      call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
-      if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-        (MCcases(icase)=='WAMC' .and. (refsigMode==2 .or. refsigMode==3)) .or. &
-         MCcases(icase)=='GaussKL') &
-    call MCWood_setceils( j,icase )           !for WMC, create ceilings
-
-    call MCtransport( j,icase,tnumParts )     !transport over a realization
+      call MCtransport( j,icase,tnumParts )     !transport over a realization
+    endif
 
       if(mod( j,trannprt )==0 .or. MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') &
     call radtrans_timeupdate( j,icase,tt1 )   !print time updates
@@ -1189,14 +1192,16 @@ CONTAINS
   !   irrespective and material respective flux tallies.
   !3) calls 'MCLeakage_pdfbinprint', which bins and prints leakage values for
   !   later plotting.
-  use genRealzvars, only: numRealz
+  use genRealzvars, only: numRealz, numPosRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    MCcases, fluxnumcells, fluxall, &
+                    MCcases, fluxnumcells, fluxall, flnegxs, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
   integer :: icase,ibin,tnumRealz,j
   real(8) :: dx,p1,p2
+  real(8), allocatable :: posreflect(:),postransmit(:),posabsorb(:)
+  real(8), allocatable :: posfluxall(:),posfluxmat1(:),posfluxmat2(:)
 
   !leakage/absorption stats
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
@@ -1205,9 +1210,20 @@ CONTAINS
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
-    call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
-    call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
-    call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
+    if(flnegxs .or. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) then !stats based on all realz
+      call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
+      call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
+      call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
+    elseif(.not.flnegxs .and. (MCcases(icase)=='KLWood' .or. & !stats based on fully-pos realz
+                    MCcases(icase)=='WAMC' .or. MCcases(icase)=='GaussKL')) then
+      call pos_all_pop( reflect,posreflect )
+      call pos_all_pop( transmit,postransmit )
+      call pos_all_pop( absorb,posabsorb )
+
+      call mean_and_var_s( posreflect,numPosRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
+      call mean_and_var_s( postransmit,numPosRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
+      call mean_and_var_s( posabsorb,numPosRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
+    endif
   elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
     stocMC_reflection(icase,1)   = LPamMCsums(1) / LPamnumParts
     stocMC_transmission(icase,1) = LPamMCsums(2) / LPamnumParts
@@ -1237,22 +1253,42 @@ CONTAINS
      MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'       ) then
     if( flfluxplotall ) then  !!!WAMCchange
       do ibin=1,fluxnumcells
-        call mean_and_var_s( fluxall(ibin,:),numRealz, &
-                 stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
+
+        if(flnegxs .or. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) then !stats from all realz
+          call mean_and_var_s( fluxall(ibin,:),numRealz, &
+                   stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
+        elseif(.not.flnegxs .and. (MCcases(icase)=='KLWood' .or. & !stats based on fully-pos realz
+                    MCcases(icase)=='WAMC' .or. MCcases(icase)=='GaussKL')) then
+          call pos_all_pop( fluxall(ibin,:),posfluxall )
+          call mean_and_var_s( posfluxall(:),numPosRealz, &
+                   stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
+        endif
+
       enddo
     endif
     if( flfluxplotmat ) then
       do ibin=1,fluxnumcells
         p1 = sum(fluxmatnorm(ibin,:,1)) / sum(fluxmatnorm(ibin,:,:))
         p2 = 1.0d0 - p1
-        fluxmat1(ibin,:) = fluxmat1(ibin,:) / p1
-        fluxmat2(ibin,:) = fluxmat2(ibin,:) / p2
 
-        call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
-                  stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )
-        call mean_and_var_s( fluxmat2(ibin,:),numRealz, &
-                  stocMC_fluxmat2(ibin,icase,1),stocMC_fluxmat2(ibin,icase,2) )
- 
+        if(flnegxs .or. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) then !stats from all realz
+          fluxmat1(ibin,:) = fluxmat1(ibin,:) / p1
+          fluxmat2(ibin,:) = fluxmat2(ibin,:) / p2
+          call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
+                    stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )
+          call mean_and_var_s( fluxmat2(ibin,:),numRealz, &
+                    stocMC_fluxmat2(ibin,icase,1),stocMC_fluxmat2(ibin,icase,2) )
+        elseif(.not.flnegxs .and. (MCcases(icase)=='KLWood' .or. & !stats based on fully-pos realz
+                    MCcases(icase)=='WAMC' .or. MCcases(icase)=='GaussKL')) then
+          call pos_all_pop( fluxmat1(ibin,:),posfluxmat1 )
+          call pos_all_pop( fluxmat2(ibin,:),posfluxmat2 )
+          posfluxmat1(:) = posfluxmat1(:) / p1
+          posfluxmat2(:) = posfluxmat2(:) / p2
+          call mean_and_var_s( posfluxmat1(:),numPosRealz, &
+                    stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )
+          call mean_and_var_s( posfluxmat2(:),numPosRealz, &
+                    stocMC_fluxmat2(ibin,icase,1),stocMC_fluxmat2(ibin,icase,2) )
+        endif 
 
       enddo
     endif
@@ -1287,6 +1323,34 @@ CONTAINS
   call MCLeakage_pdfbinprint( icase )         !bin and print pdf of leakage values
 
   end subroutine stocMC_stats
+
+
+
+  subroutine pos_all_pop( realzarray,posrealzarray )
+  !This subroutine takes an array of data and collapses it to the same array 
+  !without data corresponding to realizations which at part of the domain are negative.
+  use genRealzvars, only: numRealz, posRealz, numPosRealz
+
+  real(8) :: realzarray(:)
+  real(8), allocatable :: posrealzarray(:)
+  integer :: j,posj
+
+  !allocate
+  if(allocated(posrealzarray)) deallocate(posrealzarray)
+  allocate(posrealzarray(numPosRealz))
+  posrealzarray = 0.0d0
+
+  !populate
+  posj = 0
+  do j=1,numRealz
+    if(posRealz(j)==1) then
+      posj = posj + 1
+      posrealzarray(posj) = realzarray(j)
+    endif
+  enddo
+
+  end subroutine pos_all_pop
+
 
 
 
@@ -1752,13 +1816,16 @@ CONTAINS
   !negative xs transport tally allocations
   if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. &
      MCcases(icase)=='GaussKL'                                 ) then
-    numPosRealz=0
     if(allocated(posRealz)) deallocate(posRealz)
     allocate(posRealz(numRealz))
     posRealz   =0
+    numPosRealz=0
     numpnSamp  =0
     areapnSamp =0.0d0
     disthold   =0.0d0
+  else  !include this so that 'posRealz' is defined for other methods
+    if(allocated(posRealz)) deallocate(posRealz)
+    allocate(posRealz(numRealz))
   endif
 
   !set initial WAMC reference sigma value
@@ -1885,7 +1952,7 @@ CONTAINS
     endif
 
     !bin and print data
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran ) 
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran,icase ) 
 
     !bin and print data, give printed data files appropriate name
     select case (MCcases(icase))
@@ -1915,11 +1982,12 @@ CONTAINS
 
 
 
-  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran )
+  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran,icase )
   !Heart of radtrans_resultplot, for methods with realizations,
   !loads leakage values to bins (pdf), and prints to generic text file
-  use genRealzvars, only: numRealz
-  use MCvars, only: trprofile_binnum, reflect, transmit
+  use genRealzvars, only: numRealz, numPosRealz, posRealz
+  use MCvars, only: trprofile_binnum, reflect, transmit, flnegxs, MCcases
+  integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
   !local vars
@@ -1927,6 +1995,7 @@ CONTAINS
   integer,allocatable,dimension(:) :: reflcounts,trancounts  
   real(8),allocatable,dimension(:) :: reflprob,  tranprob
   real(8),allocatable,dimension(:) :: reflbounds,tranbounds
+  real(8),allocatable,dimension(:) :: posreflect,postransmit
 
   !prepare variables
   if(allocated(reflcounts)) deallocate(reflcounts)
@@ -1948,13 +2017,31 @@ CONTAINS
   tranprob   = 0d0
   reflbounds = 0d0
   tranbounds = 0d0
-  
-  !actually store in binned fashion
-  call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,reflect,numRealz )
-  call store_in_bins( smtran,lgtran,trprofile_binnum,trancounts,tranbounds,transmit,numRealz )
 
-  tranprob = real(trancounts,8)/numRealz/((lgtran-smtran)/(trprofile_binnum-1))
-  reflprob = real(reflcounts,8)/numRealz/((lgrefl-smrefl)/(trprofile_binnum-1))
+  if(.not.flnegxs .and. (MCcases(icase)=='KLWood' .or. &
+     MCcases(icase)=='WAMC' .or. MCcases(icase)=='GaussKL') ) then
+    !only use leakage data for pos realizations (if negative rejected due to method or input)
+    if(allocated(posreflect)) deallocate(posreflect)
+    if(allocated(postransmit)) deallocate(postransmit)
+    allocate(posreflect(numPosRealz))
+    allocate(postransmit(numPosRealz))
+    call pos_all_pop( reflect,posreflect )
+    call pos_all_pop( transmit,postransmit )
+
+    !actually store in binned fashion
+    call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,posreflect,numPosRealz )
+    call store_in_bins( smtran,lgtran,trprofile_binnum,trancounts,tranbounds,postransmit,numPosRealz )
+
+    tranprob = real(trancounts,8)/numPosRealz/((lgtran-smtran)/(trprofile_binnum-1))
+    reflprob = real(reflcounts,8)/numPosRealz/((lgrefl-smrefl)/(trprofile_binnum-1))
+  else
+    !actually store in binned fashion
+    call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,reflect,numRealz )
+    call store_in_bins( smtran,lgtran,trprofile_binnum,trancounts,tranbounds,transmit,numRealz )
+
+    tranprob = real(trancounts,8)/numRealz/((lgtran-smtran)/(trprofile_binnum-1))
+    reflprob = real(reflcounts,8)/numRealz/((lgrefl-smrefl)/(trprofile_binnum-1))
+  endif
 
   !print to generic file
   open(unit=100,file="tranreflprofile.txt")
