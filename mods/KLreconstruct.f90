@@ -65,9 +65,9 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use utilities, only: TwoGaussrandnums, erfi
-  use genRealzvars, only: s, lamc, sigave
+  use genRealzvars, only: s, lamc, sigave, numPosRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
-                          KLrnumpoints, KLrnumRealz, KLrprintat, negcnt, pltKLrrealz, &
+                          KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, &
                           pltKLrrealzPointorXi, Gaussrandtype, flCorrKL
@@ -139,9 +139,9 @@ CONTAINS
 
       neg='no'
       call KLr_negsearch( j,neg )
-      if(neg=='yes') then  !counts the number of realz that contain a negative value
-        negcnt=negcnt+1
-        print *,"negcnt  : ",negcnt,"          realz#: ",j
+      if(neg=='no') then  !counts the number of realz that contain a positive value
+        numPosRealz=numPosRealz+1
+        print *,"numNegRealz  : ",j-numPosRealz,"          realz#: ",j
       endif
 
       do i=1,KLrnumpoints(2)  !create realization
@@ -166,9 +166,9 @@ CONTAINS
   subroutine KLrplotrealz
   !This subroutine uses the stored array of pseudo-random numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use genRealzvars, only: lamc, sigave
+  use genRealzvars, only: lamc, sigave, numRealz, numPosRealz
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
-                         KLrnumpoints, negcnt, pltKLrrealz, pltKLrrealznumof, &
+                         KLrnumpoints, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
                          KLrsig, KLrxisig, pltKLrrealzPointorXi
 
@@ -224,7 +224,7 @@ CONTAINS
     call system("mv genericplot.pdf plots/KLrrealzplot/KLrrealzplot.pdf")
   endif
 
-  print *," Total num reconstructed realz w/ neg value: ",negcnt
+  print *," Total num reconstructed realz w/ neg value: ",numRealz-numPosRealz
   print *,
 
   end subroutine KLrplotrealz

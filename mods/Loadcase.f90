@@ -601,9 +601,9 @@ CONTAINS
   use timevars, only: time, ntime, totparts, cumparts, FOM, nFOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          flprint
+                          flprint, numPosRealz
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
-                    KLrxisig, negcnt, numSlice, gam, alpha, Ak, Eig, &
+                    KLrxisig, numSlice, gam, alpha, Ak, Eig, &
                     xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
@@ -632,6 +632,7 @@ CONTAINS
   sigave     = P(1)*                 sig(1) + P(2)*                 sig(2)
   sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
   sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+  numPosRealz= 0
 
 
   !allocate  KLresearch variables
@@ -648,7 +649,6 @@ CONTAINS
   allocate(KLrxivals(KLrnumRealz,numEigs))                            !fxi allocations
   allocate(KLrxisig(KLrnumpoints(2)))
   allocate(pltKLrrealzarray(maxval(KLrnumpoints),pltKLrrealznumof+1)) !fpoint and/or fxi all
-  negcnt  = 0
 
 
   !allocate/initialize MCvars

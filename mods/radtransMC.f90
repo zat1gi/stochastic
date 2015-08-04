@@ -1688,7 +1688,7 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, &
+  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, numPosRealz, &
                           GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
@@ -1751,9 +1751,10 @@ CONTAINS
   !negative xs transport tally allocations
   if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. &
      MCcases(icase)=='GaussKL'                                 ) then
-    numpnSamp =0
-    areapnSamp=0.0d0
-    disthold  =0.0d0
+    numPosRealz=0
+    numpnSamp  =0
+    areapnSamp =0.0d0
+    disthold   =0.0d0
   endif
 
   !set initial WAMC reference sigma value
@@ -2033,8 +2034,7 @@ CONTAINS
 
 
   subroutine Woodnegstats(icase)
-  use genRealzvars, only: numRealz
-  use KLvars, only: negcnt
+  use genRealzvars, only: numRealz, numPosRealz
   use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, flnegxs, numcSamp, &
                     WAMC, GaussKL, MCcases
 
@@ -2056,7 +2056,7 @@ CONTAINS
     603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
     604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
-    write(100,600) real(negcnt,8)/real(numRealz,8)*100d0,negcnt,numRealz
+    write(100,600) real(numRealz-numPosRealz,8)/real(numRealz,8)*100d0,numRealz-numPosRealz,numRealz
     pos = real(numpnSamp(1),8)
     neg = real(numpnSamp(2),8)
     write(100,601) neg/(pos+neg)*100d0,numpnSamp(2),numpnSamp(1)+numpnSamp(2)

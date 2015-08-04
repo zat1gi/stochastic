@@ -101,6 +101,7 @@ module genRealzvars
   real(8)              :: sumPath(2)           ! (consider making these guys local)
   real(8)              :: sqrPath(2)           !
   real(8), allocatable :: matdxs(:,:,:)        ! delta x of different materials for flux tallying
+  integer              :: numPosRealz          ! tally of num of realz that are always positive
 
 end module genRealzvars
 
@@ -183,7 +184,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
   real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
   real(8)              :: binSize              !
-  integer              :: negcnt               ! tally of number of realizations that have gone neg
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !
   real(8), allocatable :: KLrxivals(:,:)       !

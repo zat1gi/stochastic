@@ -2,8 +2,8 @@
   material,        Transport problem type, 'material', or 'coeffs'
   yes,yes,          'yes' or 'no', Markov, Gauss, 'material' problem type(s)
   !--- Geometry - 'material', num of realz ---!
-  1000,100,         Number of realizations/how often to print
-  1000,100,         KLr Number of realizations/how often to print
+  100,10,         Number of realizations/how often to print
+  100,10,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
   3.1,           Adamscase option, if==0, then user input for next three parameters
