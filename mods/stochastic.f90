@@ -54,13 +54,6 @@ program stochastic
   if( sum(MCcaseson)>0 .and. probtype=='material') then !perform if at least one case chosen
     do icase=1,size(MCcaseson)       !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
-
-        if(  (MCcaseson(icase)==1 .and. MCcases(icase)=='KLWood' )       .or. &
-            ((MCcaseson(icase)==1 .and. MCcases(icase)=='WAMC'   ) .and. &
-             (MCcaseson(2)    ==1 .and. MCcases(icase)=='KLWood' ))      .or. &
-             (MCcaseson(icase)==1 .and. MCcases(icase)=='GaussKL')          ) &
-          call KLreconstructions(icase)       !create KL realz for cases that need them
-
         call UQ_MC( icase )          !perform transport
       endif
     enddo

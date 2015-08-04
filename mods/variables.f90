@@ -89,6 +89,7 @@ module genRealzvars
   real(8)              :: sigabsave            ! average absorption xs
   logical              :: flCorrMarkov=.false. ! correlated sampling for Markov realizations?
   logical              :: flCorrRealz =.false. ! correlated KLres (for KL recon) and Markov realz?
+  logical              :: flGBgeom    =.true.  ! Gauss-based geom? (or defer to Markov-based)
 
   integer              :: largesti             !
   integer              :: numPath(2)           !

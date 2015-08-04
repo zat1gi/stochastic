@@ -37,7 +37,7 @@ CONTAINS
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
-                                  GBlamc, GBs, flCorrMarkov, flCorrRealz
+                                  GBlamc, GBs, flCorrMarkov, flCorrRealz, flGBgeom
   use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
                          param2_mean, param2_uncert
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
@@ -96,6 +96,8 @@ CONTAINS
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
+  read(2,*) setflags(1)
+  if(setflags(1)=='MB') flGBgeom = .false.
   read(2,*) GBsigave,GBsigvar
   read(2,*) GBscatrat
   read(2,*) GBlamc
@@ -432,7 +434,7 @@ CONTAINS
 
                               !Test plotting flux
   if( pltflux(1)/='noplot' .AND. radMC=='no' .AND. radWood=='no' .AND. KLWood=='no' &
-      .and. LPMC=='no' .and. atmixMC=='no' ) then
+      .and. LPMC=='no' .and. atmixMC=='no' .and. GaussKL=='no') then
     print *,"--User attempting to plot flux when no transport calculations are made"
     flstopstatus = .true.
   endif

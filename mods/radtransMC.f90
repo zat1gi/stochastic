@@ -11,9 +11,11 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
   use timevars, only: time
-  use genRealzvars, only: numRealz
-  use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat, refsigMode
+  use genRealzvars, only: numRealz, flGBgeom
+  use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat, refsigMode
   use genRealz, only: genReal
+  use KLresearch, only: KL_eigenvalue
+  use KLreconstruct, only: KLreconstructions
   use timeman, only: radtrans_timeupdate
   integer :: icase
 
@@ -23,6 +25,15 @@ CONTAINS
   call cpu_time(tt1)
   write(*,*) "Starting method: ",MCcases(icase)  
   call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
+
+  if(  MCcases(icase)=='GaussKL' .and. flGBgeom) &
+    call KL_eigenvalue
+
+  if(  MCcases(icase)=='KLWood'   .or. &
+      (MCcases(icase)=='WAMC' .and. MCcaseson(2)==1 .and. MCcases(icase)=='KLWood' ) .or. &
+       MCcases(icase)=='GaussKL'     ) &
+    call KLreconstructions(icase)       !create KL realz for cases that need them
+
   do j=1,tnumRealz
 
       if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
@@ -996,7 +1007,7 @@ CONTAINS
 
   subroutine MCfluxtally( j,i,minpos,maxpos,flfluxtallytype )
   !This subroutine accepts arguments from its wrapper, then tallies flux contributions accordingly.
-  !It can keep full 'track'length tallies, or choose one bin (at a 'point' on the tracklength) in
+  !It can keep full 'track' length tallies, or choose one bin (at a 'point' on the tracklength) in
   !which to place the entire contribution.
   !Flux can be calculated for the tracklength w/ or w/o respect to which material the tallies are in.
   use MCvars, only: mu, fluxall, fluxmat1, fluxmat2, fluxfaces, pltfluxtype, fluxnumcells
@@ -1676,14 +1687,16 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, flprint
+  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, &
+                          GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
-                    nwvalsperbin
-  integer :: icase,tnumParts,tnumRealz
+                    nwvalsperbin, flfluxplot, fluxfaces
+  use KLvars, only: KLxigentype
+  integer :: icase,tnumParts,tnumRealz,i
 
   flprint = .false.
 
@@ -1692,6 +1705,24 @@ CONTAINS
     tnumRealz = 1
   else
     tnumRealz = numRealz
+  endif
+
+  !Gauss-based input set (or not)
+  if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
+    sigave     = GBsigave
+    CoExp      = GBsigvar
+    scatrat(1) = GBscatrat
+    lamc       = GBlamc
+    s          = GBs
+    KLxigentype= 'totxs'
+    if(flfluxplot) then
+      if(allocated(fluxfaces)) deallocate(fluxfaces)
+      allocate(fluxfaces(fluxnumcells+1))
+      fluxfaces = 0.0d0
+      do i=1,fluxnumcells+1
+        fluxfaces(i) = (s/fluxnumcells) * (i-1)
+      enddo
+    endif
   endif
 
   !current tally allocations

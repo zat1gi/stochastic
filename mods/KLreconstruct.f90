@@ -122,7 +122,7 @@ CONTAINS
       KLrxisig = 0
       do curEig=1,numEigs + mod(numEigs,2)  !select xi values
           rand = rang()
-          if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') then
+          if((MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') .and. curEig<=numEigs) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
           elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='BM') then
             if(mod(curEig,2)==1) rand1 = rand

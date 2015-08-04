@@ -5,6 +5,7 @@ texts/timereport.out
 texts/Woodnegstats.out
 astochastic
 plots/MLMCfuncts/spatialslopes.out
+
 mods/fediffsn.mod
 mods/mcvars.mod
 mods/mlmc.mod
@@ -14,6 +15,8 @@ mods/klreconstruct.mod
 mods/klresearch.mod
 mods/radtransmc.mod
 mods/utilities.mod
+mods/genrealzvars.mod
+mods/klvars.mod
 
 texts/Acase.out
 plots/MLMCfuncts/spatialconv.out
@@ -36,6 +39,27 @@ plots/MLMCfuncts/MLMCcenters.out
 plots/MLMCfuncts/benchL1s.out
 plots/MLMCfuncts/benchL2s.out
 plots/MLMCfuncts/benchcenters.out
+texts/MCleakage.out
 plots/MLMCfuncts/benchmarkbias.out
 
+plots/fluxplots/GaussKL_fluxall.out
+plots/fluxplots/GaussKL_fluxmat.out
+plots/fluxplots/KLWood_fluxall.out
+plots/fluxplots/KLWood_fluxmat.out
+plots/fluxplots/fluxall.gnu
+plots/fluxplots/fluxall.pdf
+plots/fluxplots/fluxall.ps
+plots/fluxplots/fluxmat1.gnu
+plots/fluxplots/fluxmat1.pdf
+plots/fluxplots/fluxmat1.ps
+plots/fluxplots/fluxmat2.gnu
+plots/fluxplots/fluxmat2.pdf
+plots/fluxplots/fluxmat2.ps
+plots/fluxplots/gnubuilding/GaussKLall.txt
+plots/fluxplots/gnubuilding/GaussKLallerr.txt
+plots/fluxplots/gnubuilding/GaussKLmat1.txt
+plots/fluxplots/gnubuilding/GaussKLmat1err.txt
+plots/fluxplots/gnubuilding/GaussKLmat2.txt
+plots/fluxplots/gnubuilding/GaussKLmat2err.txt
+plots/tranreflprofile/GaussKLtranreflprofile.txt
 

@@ -8,15 +8,13 @@ CONTAINS
 
 
 
-
-
   subroutine KL_eigenvalue
   !This subroutine: 1) calculates some initial values used here
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates variance maintained with # of eigvals if input specifies
-  use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave
+  use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave, CoExp
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
                           levsrefEig, pltEigf, KLrnumRealz
@@ -32,16 +30,14 @@ CONTAINS
   real(8), allocatable :: oldAllgam(:),oldAllEig(:),cumeig(:)
 
   TT = s/lamc
-  Co = P(1)*P(2)*(sig(1)-sig(2))**2
   if( stepGam==0 ) stepGam  =1/TT/50
   allocate(Eigfplotarray(numSlice,numSlice+1))
 
-
-  424 format("   P(1):",f8.5,"   P(2)  :",f8.5,"   lamc:",f8.5,"   TT:",f8.5)
-  425 format("   Co  :",f8.5,"   sigave:",f8.5,"   stepGam:",f8.5)
-
   !Initial guesses for Gam
   420 format(i7,"     ",f15.9," ",f19.14)
+
+  if(allocated(AllEig)) deallocate(AllEig)
+  if(allocated(Allgam)) deallocate(Allgam)
 
   allocate(AllEig(10))
   allocate(Allgam(10))
@@ -158,6 +154,8 @@ CONTAINS
     !write(*,*)
   enddo
 
+  if(allocated(cumeig)) deallocate(cumeig)
+  if(allocated(varmain)) deallocate(varmain)
   allocate(cumeig(newsize))
   allocate(varmain(newsize))
   do curEig=1,newsize
