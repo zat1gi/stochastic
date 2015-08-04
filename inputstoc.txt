@@ -26,7 +26,7 @@
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,yes,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  no,yes,yes,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
@@ -48,7 +48,7 @@
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  yes,no          Allow negative cross sections?/Redistribute negs? ('yes' or 'no')
+  yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
@@ -80,7 +80,7 @@
 
 
   !!--All Plotting Option
-  default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
 
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis

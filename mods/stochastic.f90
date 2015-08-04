@@ -31,7 +31,7 @@ program stochastic
   !!allocate/prepare global parameters
   call global_allocate
   call Acase_print
-
+  if(probtype=='material') call clearreports
 
   !!Perform KL research
   if(KLres=='yes') then
@@ -82,9 +82,7 @@ program stochastic
 
   !!print final reports
   if(probtype=='material') then
-    call clearreports
     call Acase_print
-    call Woodnegstats
     if(sum(MCcaseson)/=0) call MCprintstats
     call timereport
     call finalreport

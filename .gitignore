@@ -63,3 +63,14 @@ plots/fluxplots/gnubuilding/GaussKLmat2.txt
 plots/fluxplots/gnubuilding/GaussKLmat2err.txt
 plots/tranreflprofile/GaussKLtranreflprofile.txt
 
+plots/tranreflprofile/KLWoodtranreflprofile.txt
+plots/tranreflprofile/reflprofile.pdf
+plots/tranreflprofile/reflprofile.ps
+plots/tranreflprofile/tranprofile.pdf
+plots/tranreflprofile/tranprofile.ps
+plots/xiBinsplot/xiBinsAll.txt
+plots/xiBinsplot/xiBinsper.txt
+texts/CoEffAct.txt
+texts/CoEffExp.txt
+texts/absdiffGam.txt
+

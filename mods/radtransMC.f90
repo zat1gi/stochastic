@@ -60,7 +60,8 @@ CONTAINS
   call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
-
+  if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. MCcases(icase)=='GaussKL' ) &
+    call Woodnegstats(icase)
 
   end subroutine UQ_MC
 
@@ -2031,20 +2032,23 @@ CONTAINS
 
 
 
-  subroutine Woodnegstats
+  subroutine Woodnegstats(icase)
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
   use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp, &
-                    WAMC, GaussKL
+                    WAMC, GaussKL, MCcases
 
+  integer :: icase
   real(8) :: pos,neg
 
   open(unit=100,file="Woodnegstats.out")
 
   if((KLWood=='yes'  .and. allowneg=='yes') .or. WAMC=='yes' .or. &
      (GaussKL=='yes' .and. allowneg=='yes')                       ) then
-    if(distneg=='no')  write(100,*) "--Negative smoothing stats, neg smoothing off--"
-    if(distneg=='yes') write(100,*) "--Negative smoothing stats, neg smoothing on--"
+    606 format("--Negative xs stats (",A8," ), neg smoothing off--")
+    607 format("--Negative xs stats (",A8," ), neg smoothing on--")
+    if(distneg=='no')  write(100,606) MCcases(icase)
+    if(distneg=='yes') write(100,607) MCcases(icase)
     600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)
     601 format("  Neg samples : ",f8.5,"%, ",i21," /",i21)
     602 format("  Neg area    : ",f8.5,"%")
@@ -2066,7 +2070,12 @@ CONTAINS
   endif
 
   close(unit=100)
-  call system("mv Woodnegstats.out texts")
+  !if file already exists, cat new and old, else create, and remove old
+  call system("test -e texts/Woodnegstats.out && cat texts/Woodnegstats.out Woodnegstats.out > temp.out")
+  call system("test -e texts/Woodnegstats.out && mv temp.out texts/Woodnegstats.out")
+  call system("test -e texts/Woodnegstats.out || cp Woodnegstats.out texts")
+  call system("rm Woodnegstats.out")
+
   end subroutine Woodnegstats
 
 
