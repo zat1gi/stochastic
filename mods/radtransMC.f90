@@ -1688,8 +1688,9 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, numPosRealz, &
-                          GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp
+  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, &
+                          GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp, &
+                          posRealz, numPosRealz
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
@@ -1752,6 +1753,9 @@ CONTAINS
   if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. &
      MCcases(icase)=='GaussKL'                                 ) then
     numPosRealz=0
+    if(allocated(posRealz)) deallocate(posRealz)
+    allocate(posRealz(numRealz))
+    posRealz   =0
     numpnSamp  =0
     areapnSamp =0.0d0
     disthold   =0.0d0

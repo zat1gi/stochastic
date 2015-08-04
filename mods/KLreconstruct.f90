@@ -15,9 +15,9 @@ CONTAINS
   integer :: icase
 
   call KLrmeshgen         !creates mesh for fixed x and xi material constructions
-  call KLrgenrealz(icase) !selects array of random variables xi
+  call KLrgenrealz(icase) !selects array of random variables xi and tests for negativity
   if(KLadjust=='yes') call KLadjustmean !adjusts mean after lopping neg cross sections
-  call KLrplotrealz       !plots reconstructed realiztions
+  call KLrplotrealz       !plots reconstructed realizations
 
   end subroutine KLreconstructions
 
@@ -65,7 +65,7 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use utilities, only: TwoGaussrandnums, erfi
-  use genRealzvars, only: s, lamc, sigave, numPosRealz
+  use genRealzvars, only: s, lamc, sigave, numPosRealz, posRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
@@ -141,6 +141,7 @@ CONTAINS
       call KLr_negsearch( j,neg )
       if(neg=='no') then  !counts the number of realz that contain a positive value
         numPosRealz=numPosRealz+1
+        posRealz(j) = 1
         print *,"numNegRealz  : ",j-numPosRealz,"          realz#: ",j
       endif
 
