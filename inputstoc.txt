@@ -6,7 +6,7 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  3.3,           Adamscase option, if==0, then user input for next three parameters
+  3.1,           Adamscase option, if==0, then user input for next three parameters
   0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.2,0.6,             Lambda path length vals  #0.5,2.0

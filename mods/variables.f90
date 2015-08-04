@@ -224,7 +224,7 @@ module MCvars
   character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview', pdf of leakage
   character(7)         :: GaussKLbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
 
-  character(3)         :: allowneg             ! allow tranport on neg xs? 'yes', 'no'
+  logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
   character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
 
   integer              :: refsigMode           ! 1-3, 1) userinp, 2) adaptive, 3) adaptive woodcock

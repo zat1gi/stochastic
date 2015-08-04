@@ -50,7 +50,7 @@ CONTAINS
                                   flMarkov, flGauss, Gaussrandtype, flCorrKL
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, allowneg, distneg, radMC, radWood, WAMC, GaussKL, &
+                                  pltflux, flnegxs, distneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype, flCorrMC
@@ -137,7 +137,8 @@ CONTAINS
   read(2,*) dumchar 
   read(2,*) rodOrplanar
   read(2,*) sourceType
-  read(2,*) allowneg,distneg
+  read(2,*) setflags(1),distneg
+  if(setflags(1)=='yes') flnegxs=.true.
   read(2,*) KLadjust,meanadjust_tol
   read(2,*) refsigMode,userrefsig,negwgtbinnum,nwvalsperbin
   read(2,*) wgtmaxmin,wgtmax,wgtmin
@@ -323,7 +324,7 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, &
                     Gaussrandtype, flCorrKL
-  use MCvars, only: trannprt, sourceType, pltflux, allowneg, distneg, radMC, radWood, KLWood, &
+  use MCvars, only: trannprt, sourceType, pltflux, flnegxs, distneg, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, probtype
   use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
@@ -482,15 +483,15 @@ CONTAINS
     smallersig = minval(sig)
     largersig  = maxval(sig)
     sigratio   = (largersig-smallersig)/smallersig
-    if( sigratio > 0.33334d0 .and. .not.flstopstatus .and. allowneg=='no') then
+    if( sigratio > 0.33334d0 .and. .not.flstopstatus .and. .not.flnegxs) then
       print *,"--User attempting to run KLWood where neg reconstructed xs values may exist"
       print *,"   -if you choose to run this, you will want your # of pnts to recon at to be quite high"
       print *,"   -please either 'run' to run anyway, or anything else to exit"
       read(*,*) run
       if( run .ne. 'run' ) flstopstatus = .true.
     endif
-!    if( allowneg=='no' .and. distneg=='yes' ) then !so! let that one be, who cares!
-!      print *,"--User attempting to redistribute negative xs values without allowneg on"
+!    if( .not.flnegxs .and. distneg=='yes' ) then !so! let that one be, who cares!
+!      print *,"--User attempting to redistribute negative xs values without flnegxs on"
 !      flstopstatus = .true.
 !    endif
     if( KLWood=='yes' .and. numRealz/=KLrnumRealz ) then
@@ -498,7 +499,7 @@ CONTAINS
       flstopstatus = .true.
     endif
   endif
-!  if( KLWood=='no' .and. allowneg=='yes') then  !so! let that one be, who cares!
+!  if( KLWood=='no' .and. flnegxs) then  !so! let that one be, who cares!
 !    print *,"--User attempting to adjust for neg xs in domain when not performing KLWood"
 !    flstopstatus = .true.
 !  endif

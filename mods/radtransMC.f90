@@ -80,7 +80,7 @@ CONTAINS
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
-                    nceilbin, Wood_rej, allowneg, distneg, MCcases, fbinmax, &
+                    nceilbin, Wood_rej, flnegxs, distneg, MCcases, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
                     refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs, flCorrMC
   use genRealz, only: genReal
@@ -319,7 +319,7 @@ CONTAINS
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
-            if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
+            if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in KLWood, exiting program'
             if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
               if(abs(disthold)>woodrat*ceilsig) then
                 woodrat = 0.0d0
@@ -328,7 +328,7 @@ CONTAINS
               endif
               disthold = 0.0d0
             endif
-            if(allowneg=='yes') then                    !tallies for neg/pos if allowing neg
+            if(flnegxs) then                    !tallies for neg/pos if allowing neg
               if(woodrat<0.0d0) then
                 numpnSamp(2)  =  numpnSamp(2)+1
                 areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
@@ -399,7 +399,7 @@ CONTAINS
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
-            if(woodrat<0.0d0 .and. allowneg=='no') stop 'Neg number sampled in KLWood, exiting program'
+            if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in KLWood, exiting program'
             if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
               if(abs(disthold)>woodrat*ceilsig) then
                 woodrat = 0.0d0
@@ -408,7 +408,7 @@ CONTAINS
               endif
               disthold = 0.0d0
             endif
-            if(allowneg=='yes') then                    !tallies for neg/pos if allowing neg
+            if(flnegxs) then                    !tallies for neg/pos if allowing neg
               if(woodrat<0.0d0) then
                 numpnSamp(2)  =  numpnSamp(2)+1
                 areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
@@ -2035,7 +2035,7 @@ CONTAINS
   subroutine Woodnegstats(icase)
   use genRealzvars, only: numRealz
   use KLvars, only: negcnt
-  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, allowneg, numcSamp, &
+  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, flnegxs, numcSamp, &
                     WAMC, GaussKL, MCcases
 
   integer :: icase
@@ -2043,8 +2043,8 @@ CONTAINS
 
   open(unit=100,file="Woodnegstats.out")
 
-  if((KLWood=='yes'  .and. allowneg=='yes') .or. WAMC=='yes' .or. &
-     (GaussKL=='yes' .and. allowneg=='yes')                       ) then
+  if((KLWood=='yes'  .and. flnegxs) .or. WAMC=='yes' .or. &
+     (GaussKL=='yes' .and. flnegxs)                       ) then
     606 format("--Negative xs stats (",A8," ), neg smoothing off--")
     607 format("--Negative xs stats (",A8," ), neg smoothing on--")
     if(distneg=='no')  write(100,606) MCcases(icase)
