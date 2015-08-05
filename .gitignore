@@ -18,6 +18,7 @@ mods/utilities.mod
 mods/genrealzvars.mod
 mods/klvars.mod
 mods/timevars.mod
+mods/timeman.mod
 
 texts/Acase.out
 plots/MLMCfuncts/spatialconv.out

@@ -168,8 +168,9 @@ CONTAINS
   write(100,119) runtime
 
   allocate(pertime(ntime))
-  othertime = runtime + time(1) / 60 !'time(1)' is genRealz.  It is incorporated within other times already.
-                                !This addition compensates for otherwise double counting.
+  othertime = runtime + time(1) / 60 + time(6) / 60 !'time(1)' is genRealz, 'time(6) is KLrec
+                                                    !These are incorporated within other times already.
+                                                    !This addition compensates for otherwise double counting.
   do i=1,ntime
     time(i)    = time(i) / 60
     othertime  = othertime - time(i)
@@ -177,36 +178,13 @@ CONTAINS
   enddo
   otherpercent = othertime / runtime * 100
 
-  !calculate basic Figure of Merit, consider geometry generation?...
-  !FOM here as 1/(R^2t) where R^2 is relative error and t is cpu time
-  do icase=1,numPosMCmeths
-    if(MCcaseson(icase)==1) then
-      select case (MCcases(icase))
-        case ("radMC")
-          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(2))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_transmission(icase,1))*time(2))
-        case ("radWood")
-          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(3))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_transmission(icase,1))*time(3))
-        case ("KLWood")
-          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(7))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_transmission(icase,1))*time(7))
-        case ("LPMC")
-        case ("atmixMC")
-        case ("GaussKL")
-          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(10))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(10))
-      end select
-    endif
-  enddo
-
   110 format("    genRealz   :",f7.2," min   per:",f6.2," % --- genRealz in others, not part of sum")
+  115 format("    KLrec      :",f7.2," min   per:",f6.2," % ---     Krec in others, not part of sum")
   121 format("    ------------------------------------------------ refl ----- tran --")
   111 format("    radMC      :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
   112 format("    radWood    :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
   113 format("    KLnoise    :",f7.2," min   per:",f6.2," %")
   114 format("    KLcol      :",f7.2," min   per:",f6.2," %")
-  115 format("    KLrec      :",f7.2," min   per:",f6.2," %")
   116 format("    KLWood     :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
   117 format("    other      :",f7.2," min   per:",f6.2," %")
   118 format("    LPMC       :",f7.2," min   per:",f6.2," %")
@@ -214,7 +192,8 @@ CONTAINS
   122 format("    GaussKL    :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
 
 
-                     write(100,110) time(1),pertime(1)
+                     write(100,110) time(1), pertime(1)
+  if(KLrec=='yes')   write(100,115) time(6), pertime(6)
                      write(100,121)
   if(radMC=='yes')   write(100,111) time(2), pertime(2), FOM(1,1),FOM(1,2)
   if(radWood=='yes') write(100,112) time(3), pertime(3), FOM(2,1),FOM(2,2)
@@ -224,13 +203,47 @@ CONTAINS
   if(GaussKL=='yes') write(100,122) time(10),pertime(10),FOM(7,1),FOM(7,2)
   if(KLnoise=='yes') write(100,113) time(4), pertime(4)
   if(KLres=='yes')   write(100,114) time(5), pertime(5)
-  if(KLrec=='yes')   write(100,115) time(6), pertime(6)
                      write(100,117) othertime,otherpercent
 !  write(100,118) runtime
   close(unit=100)
   call system("mv timereport.out texts")
 
   end subroutine timereport
+
+
+
+  subroutine FOM_calculation( icase )
+  !This subroutine calculates a FOM for all realization-based cases.
+  !The FOM = 1/(R^2*t) where R is relative error and t is runtime.
+  !Said another way FOM = (ave^2*N)/(stdev^2*t).
+  use genRealzvars, only: numRealz, numPosRealz
+  use MCvars, only: MCcases, stocMC_reflection, stocMC_transmission, flnegxs
+  use timevars, only: FOM, time
+  integer :: icase
+  integer :: tnumRealz
+
+  tnumRealz = numRealz
+  if( .not.flnegxs .and. (MCcases(icase)=='KLWood' .or. MCcases(icase)=='GaussKL')) &
+    tnumRealz = numPosRealz
+
+  select case (MCcases(icase))
+    case ("radMC")
+      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(2))
+      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(2))
+    case ("radWood")
+      FOM(icase,1) = stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(3))
+      FOM(icase,2) = stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(3))
+    case ("KLWood")
+      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(7))
+      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(7))
+    case ("LPMC")
+    case ("atmixMC")
+    case ("GaussKL")
+      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(10))
+      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(10))
+  end select
+
+  end subroutine FOM_calculation
 
 
 

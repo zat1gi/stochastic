@@ -608,7 +608,7 @@ CONTAINS
   subroutine MCWood_setceils( j,icase )
   !This subroutine sets up ceiling values for Woodcock Monte Carlo.
   !These ceilings of course need to be recalculated for each new realization
-  use genRealzvars, only: s, lamc, nummatSegs, sig
+  use genRealzvars, only: s, lamc, nummatSegs, sig, posRealz
   use KLvars, only: numEigs
   use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin, &
                     refsigMode, negwgtbinnum
@@ -629,7 +629,7 @@ CONTAINS
         nceilbin = numEigs
     end select
 
-    if(j==1) then
+    if(sum(posRealz(1:j))==1) then
       if(allocated(binmaxind)) deallocate(binmaxind)
       if(allocated(binmaxes)) deallocate(binmaxes)
       if(allocated(fbinmax)) deallocate(fbinmax)
@@ -1198,6 +1198,7 @@ CONTAINS
                     MCcases, fluxnumcells, fluxall, flnegxs, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
+  use timeman, only: FOM_calculation
   integer :: icase,ibin,tnumRealz,j
   real(8) :: dx,p1,p2
   real(8), allocatable :: posreflect(:),postransmit(:),posabsorb(:)
@@ -1321,6 +1322,9 @@ CONTAINS
 
   !leakage pdfs
   call MCLeakage_pdfbinprint( icase )         !bin and print pdf of leakage values
+
+  !calculate FOMs
+  call FOM_calculation( icase )
 
   end subroutine stocMC_stats
 
