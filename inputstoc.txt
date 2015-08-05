@@ -14,7 +14,7 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
-  'MB',        'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?
+  'GB',        'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?
   1.11,0.41,    Ave total cross section, total cross section variance
   0.51,        Scattering ratio, c
   1.11,        Correlation length, lamc

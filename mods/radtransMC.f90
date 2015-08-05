@@ -2183,8 +2183,8 @@ CONTAINS
   subroutine MCprintstats
   !This subroutine prints reflection, transmission, and absorption stats to a '.out' file,
   !then prints that file to the screen for user friendliness.
-  !Stats are from Adams89, Brantley11, and those generated here!
-  use genRealzvars, only: Adamscase
+  !Stats are from Adams89, Brantley11, and those generated here.
+  use genRealzvars, only: Adamscase, flGBgeom
   use KLvars, only: flMarkov
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
@@ -2221,27 +2221,24 @@ CONTAINS
     if(rodOrplanar=='planar') write(100,321) ABreflection(1,3),ABtransmission(1,3)
   endif
 
-  !print my solutions for radMC, radWood, KLWood
+  !print my solutions for radMC, radWood, KLWood, WAMC, GaussKL (if Markov-based geom)
   do icase = 1,numPosMCmeths
     if(MCcaseson(icase)==1) then
       if(MCcases(icase)=='radMC')   write(100,326) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
-!if(MCcases(icase)=='radMC') print *,"flagradMC  :",stocMC_reflection(icase,1),& !used with 'compare.sh'
-!sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+
       if(MCcases(icase)=='radWood') write(100,327) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+
       if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
       if(MCcases(icase)=='WAMC')  write(100,331) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-      if(MCcases(icase)=='GaussKL')  write(100,332) stocMC_reflection(icase,1),&
+      if(MCcases(icase)=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-
-!if(MCcases(icase)=='KLWood') print *,"flagKLWood:",stocMC_reflection(icase,1),&
-!sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
     endif
   enddo
 
@@ -2278,6 +2275,18 @@ CONTAINS
 
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
+
+  if(MCcaseson(7)==1 .and. MCcases(7)=='GaussKL') icase = 7
+  if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
+    write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
+    write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
+    write(100,*) "|----------|-------------------------|---------------------|"
+    write(100,332) stocMC_reflection(icase,1),sqrt(stocMC_reflection(icase,2)),&
+                   stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+    write(100,*) "|----------|-------------------------|---------------------|"
+    write(100,*)
+  endif
+
   close(unit=100)
 
   !move file and print to screen
