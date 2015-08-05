@@ -402,7 +402,7 @@ CONTAINS
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
-            if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in KLWood, exiting program'
+            if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in GaussKL, exiting program'
             if(fldistneg .and. woodrat>0.0d0) then !redistribute neg option
               if(abs(disthold)>woodrat*ceilsig) then
                 woodrat = 0.0d0

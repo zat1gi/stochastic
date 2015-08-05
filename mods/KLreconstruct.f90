@@ -11,12 +11,12 @@ CONTAINS
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
-  use KLvars, only: KLadjust
+  use KLvars, only: flmeanadjust
   integer :: icase
 
   call KLrmeshgen         !creates mesh for fixed x and xi material constructions
   call KLrgenrealz(icase) !selects array of random variables xi and tests for negativity
-  if(KLadjust=='yes') call KLadjustmean !adjusts mean after lopping neg cross sections
+  if(flmeanadjust) call KLadjustmean !adjusts mean after lopping neg cross sections
   call KLrplotrealz       !plots reconstructed realizations
 
   end subroutine KLreconstructions
@@ -413,11 +413,14 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s, sigave
-  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol
   use KLreconstruct, only: KLrxi_point, KLrxi_integral
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
+
+  !initialize meanadjust
+  meanadjust = 0.0d0
 
   !integrate on all as check
   intsigave = 0d0
@@ -444,9 +447,11 @@ CONTAINS
       xr = KLrxi_point(j,0d0,flxstype='total  ')
       xl = 0d0
       do
+        !find next point and area between these two
         xr = findnextpoint(j)
         areacont = KLrxi_integral(j,xl,xr)/KLrnumRealz/s
 
+        !calc aveposarea for tol check, also negstat tallies
         xmid = KLrxi_point(j,(xr+xl)/2d0,flxstype='total  ')
         if(xmid>0d0) then
           aveposarea = aveposarea + areacont
@@ -456,6 +461,7 @@ CONTAINS
           pernegdomain = pernegdomain + (xr - xl)/KLrnumRealz/s * 100
         endif
 
+        !advance lagging point
         xl = xr
         if(xr>=s) exit
       enddo !sum within realization
@@ -464,7 +470,6 @@ CONTAINS
     if(abs(aveposarea-sigave)/sigave<meanadjust_tol) exit
     print *,"avenegarea: ",avenegarea,"  aveposarea: ",aveposarea
     meanadjust = meanadjust + (sigave - aveposarea)
-    if(abs(sigave-aveposarea)<meanadjust_tol) exit
     print *,"meanadjust: ",meanadjust
   enddo !loop over calculating adjustment
     
@@ -507,7 +512,7 @@ CONTAINS
 
 
   function refinenextpoint(j,oldx,curx)
-  !This function takes a range and zeroes in on transision in sign of cross section within tolerance
+  !This function takes a range and zeroes in on transition in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
   use KLreconstruct, only: KLrxi_point

@@ -46,7 +46,7 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
-                                  KLres, KLrec, KLnoise, KLxigentype, KLadjust, meanadjust_tol, &
+                                  KLres, KLrec, KLnoise, KLxigentype, flmeanadjust, meanadjust_tol, &
                                   flMarkov, flGauss, Gaussrandtype, flCorrKL
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
@@ -140,7 +140,8 @@ CONTAINS
   read(2,*) setflags(1),setflags(2)
   if(setflags(1)=='yes') flnegxs  =.true.
   if(setflags(2)=='yes') fldistneg=.true.
-  read(2,*) KLadjust,meanadjust_tol
+  read(2,*) setflags(1),meanadjust_tol
+  if(setflags(1)=='yes') flmeanadjust=.true.
   read(2,*) refsigMode,userrefsig,negwgtbinnum,nwvalsperbin
   read(2,*) wgtmaxmin,wgtmax,wgtmin
 
@@ -324,10 +325,10 @@ CONTAINS
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, &
-                    Gaussrandtype, flCorrKL
+                    Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
-                    KLWoodbinplot, GaussKLbinplot, probtype
+                    KLWoodbinplot, GaussKLbinplot, probtype, flnegxs
   use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
   integer :: fpointorxi(2)
 
@@ -400,6 +401,12 @@ CONTAINS
   if( Gaussrandtype .ne. 'BM' .and. Gaussrandtype .ne. 'inv' ) then
     print *,"--User should enter 'BM' or 'inv' for Gaussian sampling type"
     flstopstatus = .true.
+  endif
+  !Test for meanadjust
+  if(.not.flnegxs .and. flmeanadjust) then
+    print *,"--User chose meanadjust and disallowed realz w/ neg, meanadjust turned off"
+    flmeanadjust = .false.
+    flsleep = .true.
   endif
   !Tests for Leakage pdf plotting options
   if(radMCbinplot  .ne. 'noplot'.or. radWoodbinplot .ne. 'noplot'.or. &
