@@ -17,6 +17,7 @@ mods/radtransmc.mod
 mods/utilities.mod
 mods/genrealzvars.mod
 mods/klvars.mod
+mods/timevars.mod
 
 texts/Acase.out
 plots/MLMCfuncts/spatialconv.out

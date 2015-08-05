@@ -579,7 +579,7 @@ CONTAINS
   subroutine global_allocate
   !This subroutine allocates and initializes all global variables
   use rngvars, only: rngappnum, rngseed
-  use timevars, only: time, ntime, totparts, cumparts, FOM, nFOM
+  use timevars, only: time, ntime, totparts, cumparts, FOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
                           flprint, numPosRealz, posRealz, numRealz
@@ -707,7 +707,7 @@ CONTAINS
   !allocate and initialize timevars
   allocate(time(ntime))
   time = 0.0d0
-  allocate(FOM(nFOM,2))
+  allocate(FOM(ntime,2))
   FOM  = 0.0d0
   allocate(totparts(numPosMCmeths))
   allocate(cumparts(numPosMCmeths))

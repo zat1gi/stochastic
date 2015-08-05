@@ -46,6 +46,10 @@ CONTAINS
       time(9)         = time(9)   + (tt2-tt1)
       localper        = 100.0d0
       cumparts(icase) = LPamnumParts
+    case ("GaussKL")
+      time(10)        = time(10)  + (tt2-tt1)
+      localper        = real(j,8) / numRealz*100
+      cumparts(icase) = j         * numParts
   end select
   tt1 = tt2                         !reset tt1 to tt2
 
@@ -71,6 +75,9 @@ CONTAINS
         case ("atmixMC")
           avetime(ticase) = time(9) / cumparts(ticase)
           wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
+        case ("GaussKL")
+          avetime(ticase) = time(10)/ cumparts(ticase)
+          wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
       end select
     endif
   enddo
@@ -147,7 +154,7 @@ CONTAINS
   use timevars, only: t1, runtime, time, ntime, runtime, FOM
   use KLvars, only: KLres, KLrec, KLnoise
   use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, MCcases, MCcaseson, &
-                    stocMC_transmission, stocMC_reflection, numPosMCmeths
+                    stocMC_transmission, stocMC_reflection, numPosMCmeths, GaussKL
   use utilities, only: calc_time
 
   integer :: i,icase
@@ -177,15 +184,18 @@ CONTAINS
       select case (MCcases(icase))
         case ("radMC")
           FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(2))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(2))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_transmission(icase,1))*time(2))
         case ("radWood")
           FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(3))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(3))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_transmission(icase,1))*time(3))
         case ("KLWood")
           FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(7))
-          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(7))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_transmission(icase,1))*time(7))
         case ("LPMC")
         case ("atmixMC")
+        case ("GaussKL")
+          FOM(icase,1) = 1d0/((stocMC_reflection(icase,2)/stocMC_reflection(icase,1))*time(10))
+          FOM(icase,2) = 1d0/((stocMC_transmission(icase,2)/stocMC_reflection(icase,1))*time(10))
       end select
     endif
   enddo
@@ -201,17 +211,20 @@ CONTAINS
   117 format("    other      :",f7.2," min   per:",f6.2," %")
   118 format("    LPMC       :",f7.2," min   per:",f6.2," %")
   120 format("    atmixMC    :",f7.2," min   per:",f6.2," %")
+  122 format("    GaussKL    :",f7.2," min   per:",f6.2," %   FOM:  ",es9.3,"  ",es9.3)
+
 
                      write(100,110) time(1),pertime(1)
                      write(100,121)
-  if(radMC=='yes')   write(100,111) time(2),pertime(2),FOM(1,1),FOM(1,2)
-  if(radWood=='yes') write(100,112) time(3),pertime(3),FOM(2,1),FOM(2,2)
-  if(KLWood=='yes')  write(100,116) time(7),pertime(7),FOM(3,1),FOM(3,2)
-  if(LPMC=='yes')    write(100,118) time(8),pertime(8)
-  if(atmixMC=='yes') write(100,120) time(9),pertime(9)
-  if(KLnoise=='yes') write(100,113) time(4),pertime(4)
-  if(KLres=='yes')   write(100,114) time(5),pertime(5)
-  if(KLrec=='yes')   write(100,115) time(6),pertime(6)
+  if(radMC=='yes')   write(100,111) time(2), pertime(2), FOM(1,1),FOM(1,2)
+  if(radWood=='yes') write(100,112) time(3), pertime(3), FOM(2,1),FOM(2,2)
+  if(KLWood=='yes')  write(100,116) time(7), pertime(7), FOM(3,1),FOM(3,2)
+  if(LPMC=='yes')    write(100,118) time(8), pertime(8)
+  if(atmixMC=='yes') write(100,120) time(9), pertime(9)
+  if(GaussKL=='yes') write(100,122) time(10),pertime(10),FOM(7,1),FOM(7,2)
+  if(KLnoise=='yes') write(100,113) time(4), pertime(4)
+  if(KLres=='yes')   write(100,114) time(5), pertime(5)
+  if(KLrec=='yes')   write(100,115) time(6), pertime(6)
                      write(100,117) othertime,otherpercent
 !  write(100,118) runtime
   close(unit=100)
