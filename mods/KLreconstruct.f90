@@ -291,23 +291,32 @@ print *,"minpos",minpos,"minsig",minsig
 
 
   function KLrxi_integral(j,xl,xr)
-  ! This function integrates on KL reconstructed realizations from xl to xr
-  use genRealzvars, only: lamc, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust
+  !This function integrates on KL reconstructed realizations from xl to xr.
+  !Integration is always on total cross section, but 'material'- or 'totxs'-
+  !cross sections are adjusted with or without meanadjust.
+  use genRealzvars, only: lamc, sigave, Coscat, Coabs
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs
 
   integer :: j
   real(8) :: xl,xr
   real(8) :: KLrxi_integral
 
   integer :: curEig
-  real(8) :: Eigfintterm
+  real(8) :: Eigfintterm, Coterm
 
-  KLrxi_integral = (sigave + meanadjust) * (xr - xl)
+  if(flmatbasedxs) then
+    Coterm = (sqrt(Coscat)+sqrt(Coabs))**2
+  elseif(.not.flmatbasedxs) then
+    Coterm = 1.0d0
+  endif
+
+  KLrxi_integral = 0d0
   do curEig=1,numEigs
     Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
     KLrxi_integral = KLrxi_integral + sqrt(Eig(curEig)) * &
                                            Eigfintterm * KLrxivals(j,curEig)
   enddo
+  KLrxi_integral = (sigave + meanadjust) * (xr - xl) + (sqrt(Coterm) * KLrxi_integral)
 
   end function KLrxi_integral
 
@@ -341,7 +350,7 @@ print *,"minpos",minpos,"minsig",minsig
   integer, optional :: tnumEigsin
 
   integer :: curEig,tnumEigs
-  real(8) :: Eigfterm, Coterm, avesigval, meanfrac = 0.0d0 !set if needed, only with meanadjust
+  real(8) :: Eigfterm, Coterm, avesigval
   real(8) :: totxsmean, scatxsnomean, totxsnomean, absxsnomean
   logical :: flsolve !solve do-loop (or iteratively use this routine)
 
@@ -351,11 +360,9 @@ print *,"minpos",minpos,"minsig",minsig
   select case (chxstype)
     case ("total")
       if(flmatbasedxs) then
-        meanfrac  = 1d0
         avesigval = sigave
         Coterm    = (sqrt(Coscat)+sqrt(Coabs))**2
       elseif(.not.flmatbasedxs) then
-        meanfrac  = 1d0
         avesigval = sigave
         Coterm    = 1d0
       endif
@@ -405,7 +412,7 @@ print *,"minpos",minpos,"minsig",minsig
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
       KL_point = KL_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
     enddo
-    KL_point = (avesigval + meanadjust*meanfrac) + (sqrt(Coterm) * KL_point)
+    KL_point = (avesigval + meanadjust) + (sqrt(Coterm) * KL_point)
   endif
 
   end function KLrxi_point
