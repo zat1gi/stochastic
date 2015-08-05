@@ -323,54 +323,93 @@ print *,"minpos",minpos,"minsig",minsig
 
 
 
-  function KLrxi_point(j,xpos,chxstype,tnumEigsin)
-  ! Evaluates KL reconstructed realizations at a given point.
-  ! It has options for total, scattering only, or absorption only cross sectional values.
-  ! It has an option to solve for less than the available number of eigenvalues.
+  recursive function KLrxi_point(j,xpos,chxstype,tnumEigsin) result(KL_point)
+  !Evaluates KL reconstructed realizations at a given point.
+  !It has options for total, scattering only, or absorption only cross sectional values.
+  !It has an option to solve for less than the available number of eigenvalues.
+  !It can function when in 'material'-based or 'totxs'-based mode.
+  !It can function when adjusting mean or not adjusting mean.
+  !In some of these settings this function calls itself.
   use genRealzvars, only: lamc, P, sig, scatrat, Coscat, Coabs, sigscatave, sigabsave, &
-                          sigave, CoExp
+                          sigave, CoExp, scatrat
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, flmeanadjust
 
   integer :: j
   real(8) :: xpos
-  real(8) :: KLrxi_point
+  real(8) :: KL_point
   character(*) :: chxstype
   integer, optional :: tnumEigsin
 
   integer :: curEig,tnumEigs
-  real(8) :: Eigfterm, Coterm, avesigval, meanfrac
+  real(8) :: Eigfterm, Coterm, avesigval, meanfrac = 0.0d0 !set if needed, only with meanadjust
+  real(8) :: totxsmean, scatxsnomean, totxsnomean, absxsnomean
+  logical :: flsolve !solve do-loop (or iteratively use this routine)
 
+  flsolve=.true.
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
-  if(flmatbasedxs) then
-    select case (chxstype)
-      case ("total")
+  select case (chxstype)
+    case ("total")
+      if(flmatbasedxs) then
         meanfrac  = 1d0
         avesigval = sigave
         Coterm    = (sqrt(Coscat)+sqrt(Coabs))**2
-        !Coterm    = CoExp
-      case ("scatter")
-        meanfrac  = Coscat/(Coscat+Coabs)
-        avesigval = sigscatave
-        Coterm    = Coscat
-      case ("absorb")
-        meanfrac  = Coabs/(Coscat+Coabs)
-        avesigval = sigabsave
-        Coterm    = Coabs
-    end select
-  else
-    meanfrac  = 1d0
-    avesigval = sigave
-    Coterm    = 1d0
-  endif   
-  KLrxi_point = 0d0
-  do curEig=1,tnumEigs
-    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
-    KLrxi_point = KLrxi_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-  enddo
-  KLrxi_point = (avesigval + meanadjust*meanfrac) + (sqrt(Coterm) * KLrxi_point)
+      elseif(.not.flmatbasedxs) then
+        meanfrac  = 1d0
+        avesigval = sigave
+        Coterm    = 1d0
+      endif
+    case ("scatter")
+      if(flmatbasedxs) then
+        if(.not.flmeanadjust) then
+          avesigval = sigscatave
+          Coterm    = Coscat
+        elseif(flmeanadjust) then
+          totxsmean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+          flmeanadjust = .false. !temporary turn off to get scattering ratio
+          scatxsnomean = KLrxi_point(j,xpos,chxstype='scatter',tnumEigsin=tnumEigs)
+          totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+          flmeanadjust = .true.
+          KL_point = totxsmean * (scatxsnomean / totxsnomean)
+          flsolve = .false.
+        endif
+      elseif(.not.flmatbasedxs) then
+        totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+        KL_point = totxsnomean * scatrat(1)
+        flsolve = .false.
+      endif
+    case ("absorb")
+      if(flmatbasedxs) then
+        if(.not.flmeanadjust) then
+          avesigval = sigabsave
+          Coterm    = Coabs
+        elseif(flmeanadjust) then
+          totxsmean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+          flmeanadjust = .false. !temporary turn off to get scattering ratio
+          absxsnomean = KLrxi_point(j,xpos,chxstype='absorb',tnumEigsin=tnumEigs)
+          totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+          flmeanadjust = .true.
+          KL_point = totxsmean * (absxsnomean / totxsnomean)
+          flsolve = .false.
+        endif
+      elseif(.not.flmatbasedxs) then
+        totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+        KL_point = totxsnomean * scatrat(1)
+        flsolve = .false.
+      endif
+  end select
+
+  if(flsolve) then
+    KL_point = 0d0
+    do curEig=1,tnumEigs
+      Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
+      KL_point = KL_point + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
+    enddo
+    KL_point = (avesigval + meanadjust*meanfrac) + (sqrt(Coterm) * KL_point)
+  endif
 
   end function KLrxi_point
+
 
 
 
