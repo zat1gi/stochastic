@@ -74,8 +74,8 @@ CONTAINS
   read(2,*) rngseed
   read(2,*) probtype
   read(2,*) setflags(1),setflags(2)
-  flMarkov=merge(.true.,.false.,setflags(1)=='yes')
-  flGauss =merge(.true.,.false.,setflags(2)=='yes')
+  if(setflags(1)=='yes') flMarkov=.true.
+  if(setflags(1)=='yes') flGauss=.true.
 
   !--- Geometry - 'material' num of realz ---!
   read(2,*) dumchar

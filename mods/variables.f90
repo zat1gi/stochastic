@@ -147,8 +147,8 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: binLargeBound        ! largest xi value for xi bins
   character(3)         :: KLadjust             ! flag, perform or not
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
-  logical              :: flMarkov             ! run Markov-based KL routines?
-  logical              :: flGauss              ! run Gauss-random-based KL routines?
+  logical              :: flMarkov=.false.     ! run Markov-based KL routines?
+  logical              :: flGauss =.false.     ! run Gauss-random-based KL routines?
   character(3)         :: Gaussrandtype        ! 'BM'-Box-Muller sampling or 'inv' inverse sampling
 
   character(7)         :: pltxiBins(4)         !

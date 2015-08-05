@@ -629,7 +629,7 @@ CONTAINS
         nceilbin = numEigs
     end select
 
-    if(sum(posRealz(1:j))==1) then
+    if(j==1 .or. sum(posRealz(1:j))==1) then
       if(allocated(binmaxind)) deallocate(binmaxind)
       if(allocated(binmaxes)) deallocate(binmaxes)
       if(allocated(fbinmax)) deallocate(fbinmax)
