@@ -317,7 +317,7 @@ CONTAINS
             endif
           case ("KLWood")
             !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point(j,newpos,flxstype='total  ')/ceilsig
+            woodrat = KLrxi_point(j,newpos,chxstype='total')/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
@@ -360,8 +360,8 @@ CONTAINS
               curbin = solvecurbin(newpos)
               refsig = binmaxes(curbin)
               !use the next 7 lines for refsig locally
-              refsig = localrefsig(KLrxi_point(j,newpos,flxstype='scatter'),&
-                                   KLrxi_point(j,newpos,flxstype='total  '))
+              refsig = localrefsig(KLrxi_point(j,newpos,chxstype='scatter'),&
+                                   KLrxi_point(j,newpos,chxstype='total'))
               if(refsig>ceilsig) then
                 !write(*,'(A,es9.2,A,es9.2,A,es9.2,A)') "refsig:",refsig,&
                 !      " ceilsig:",ceilsig," truncation %:",(ceilsig-refsig)/refsig*100," %"
@@ -373,8 +373,8 @@ CONTAINS
             endif
             if(flIntType=='clean') then !if refsigMode==1,2 or (==3 and not rejected yet)
               !adjust weights, choose type of interaction, flip weight sign if needed
-              cursigt = KLrxi_point(j,newpos,flxstype='total  ')
-              cursigs = KLrxi_point(j,newpos,flxstype='scatter')
+              cursigt = KLrxi_point(j,newpos,chxstype='total')
+              cursigs = KLrxi_point(j,newpos,chxstype='scatter')
               weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
 
               if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
@@ -397,7 +397,7 @@ CONTAINS
           endif
           case ("GaussKL")
             !load woodcock ratio for this position and ceiling
-            woodrat = KLrxi_point(j,newpos,flxstype='total  ')/ceilsig
+            woodrat = KLrxi_point(j,newpos,chxstype='total')/ceilsig
             !assert within bounds, tally negstats
             if(woodrat>1.0d0) then                      !assert woodrat
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
@@ -695,8 +695,8 @@ CONTAINS
       pos = binmaxind(anc) + real(mod(i-1,nwvalsperbin),8)/real(nwvalsperbin,8) &
                            * (binmaxind(anc+1)-binmaxind(anc))
     endif
-    negwgtsigs(i,1) = KLrxi_point(j,pos,flxstype='scatter')
-    negwgtsigs(i,2) = KLrxi_point(j,pos,flxstype='total  ')
+    negwgtsigs(i,1) = KLrxi_point(j,pos,chxstype='scatter')
+    negwgtsigs(i,2) = KLrxi_point(j,pos,chxstype='total')
     negwgtsigs(i,3) = localrefsig(negwgtsigs(i,1),negwgtsigs(i,2))
   enddo
 
@@ -747,7 +747,7 @@ CONTAINS
     maxpos=0.0d0
     do k=1,numinnersteps
       xpos=binmaxind(i)+(k-1)*innerstep
-      xsig= KLrxi_point(j,xpos,flxstype='total  ')
+      xsig= KLrxi_point(j,xpos,chxstype='total')
       if(xsig>maxsig) then
         maxsig=xsig
         maxpos=xpos
@@ -756,9 +756,9 @@ CONTAINS
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
-      xsig1= KLrxi_point(j,xpos1,flxstype='total  ')
+      xsig1= KLrxi_point(j,xpos1,chxstype='total')
       xpos2=maxpos+innerstep
-      xsig2= KLrxi_point(j,xpos2,flxstype='total  ')
+      xsig2= KLrxi_point(j,xpos2,chxstype='total')
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
         maxpos=xpos1
@@ -863,20 +863,20 @@ CONTAINS
   !For 'material' type xi generation, it generates tot, scat, and abs xs values,
   !uses them to assert the same total xs and produce the local scattering ratio.  
   use genRealzvars, only: scatrat
-  use KLvars, only: KLxigentype
+  use KLvars, only: flmatbasedxs
   use KLreconstruct, only: KLrxi_point
   use MCvars, only: numcSamp
   integer :: j
   real(8) :: eps = 0.1d0
   real(8) :: KLWood_actscatrat, xpos, scatxs, absxs, totxs
 
-  if( KLxigentype .eq. 'totxs' ) then
+  if(.not.flmatbasedxs) then
     KLWood_actscatrat = scatrat(1)
-  elseif( KLxigentype .eq. 'material' ) then
+  elseif(flmatbasedxs) then
     numcSamp(2) = numcSamp(2) + 1 !tally all scatrat samples
-    scatxs = KLrxi_point(j,xpos,flxstype='scatter')
-    absxs  = KLrxi_point(j,xpos,flxstype='absorb ')
-    totxs  = KLrxi_point(j,xpos,flxstype='total  ')
+    scatxs = KLrxi_point(j,xpos,chxstype='scatter')
+    absxs  = KLrxi_point(j,xpos,chxstype='absorb')
+    totxs  = KLrxi_point(j,xpos,chxstype='total')
     if( scatxs*absxs<0d0 ) numcSamp(1) = numcSamp(1) + 1 !tally neg scatrat samples
                            !print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
 !    print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
@@ -1765,7 +1765,7 @@ CONTAINS
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
                     nwvalsperbin, flfluxplot, fluxfaces
-  use KLvars, only: KLxigentype
+  use KLvars, only: flmatbasedxs
   integer :: icase,tnumParts,tnumRealz,i
 
   flprint = .false.
@@ -1779,12 +1779,12 @@ CONTAINS
 
   !Gauss-based input set (or not)
   if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
-    sigave     = GBsigave
-    CoExp      = GBsigvar
-    scatrat(1) = GBscatrat
-    lamc       = GBlamc
-    s          = GBs
-    KLxigentype= 'totxs'
+    sigave       = GBsigave
+    CoExp        = GBsigvar
+    scatrat(1)   = GBscatrat
+    lamc         = GBlamc
+    s            = GBs
+    flmatbasedxs =.false.
     if(flfluxplot) then
       if(allocated(fluxfaces)) deallocate(fluxfaces)
       allocate(fluxfaces(fluxnumcells+1))

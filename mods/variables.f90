@@ -136,7 +136,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   character(3)         :: KLnoise              ! perform "KL noise" operations?
   integer              :: KLrnumRealz          ! num of realizations to reconstruct
   integer              :: KLrprintat           ! print at this many realizations
-  character(8)         :: KLxigentype          ! 'totxs' 'material', xi gen method, allows dissimilar cs?
+  logical              :: flmatbasedxs=.true.  ! material (or totxs) based KL xs generation
   character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
   real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)

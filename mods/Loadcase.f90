@@ -46,7 +46,7 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
-                                  KLres, KLrec, KLnoise, KLxigentype, flmeanadjust, meanadjust_tol, &
+                                  KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
                                   flMarkov, flGauss, Gaussrandtype, flCorrKL
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
@@ -124,7 +124,8 @@ CONTAINS
 
   !--- Lesser KL Options ---!
   read(2,*) dumchar
-  read(2,*) KLxigentype
+  read(2,*) setflags(1)
+  if(setflags(1)=='totxs') flmatbasedxs = .false.
   read(2,*) KLrnumpoints(2),KLrnumpoints(1)     !fixed xi, fixed point
   read(2,*) levsrefEig
   read(2,*) binSmallBound,binLargeBound
@@ -324,7 +325,7 @@ CONTAINS
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, &
+                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, flmatbasedxs, flGauss, &
                     Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
@@ -482,7 +483,7 @@ CONTAINS
       print *,"--User attempting KLWood w/o either KLres or KLrec, both have been set to 'yes'"
       flsleep = .true.
     endif
-    if( KLxigentype .ne. 'material' .and. abs(scatrat(1)-scatrat(2))>eps ) then
+    if( .not.flmatbasedxs .and. abs(scatrat(1)-scatrat(2))>eps ) then
       print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
       flstopstatus = .true.
     endif

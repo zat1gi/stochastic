@@ -320,7 +320,7 @@ CONTAINS
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P, &
                           sigave
-  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, KLxigentype
+  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, flmatbasedxs
   use MCvars, only: trannprt
   use genRealz, only: genReal
   use timeman, only: KL_timeupdate
@@ -332,7 +332,7 @@ CONTAINS
   call cpu_time(tt1)
 
   write(*,*) "Starting method: ",flKLtype  
-  if(KLxigentype=='material') then
+  if(flmatbasedxs) then
     lsig = merge(1,2,sig(1)>sig(2))
     ssig = merge(1,2,sig(1)<sig(2))
   endif
@@ -350,10 +350,10 @@ CONTAINS
       do i=2,nummatSegs+1
         xl=matLength(i-1)                                         !set xl and xr for calculations
         xr=matLength(i)
-        if( KLxigentype=='totxs' ) then                           !set variables to integrate
+        if(.not.flmatbasedxs) then                                !set variables to integrate
           hilowterm = sig(matType(i-1))
           aveterm   = sigave
-        elseif( KLxigentype=='material' ) then
+        elseif(flmatbasedxs) then
           hilowterm = merge(sqrt(P(ssig)/P(lsig)),-sqrt(P(lsig)/P(ssig)),matType(i-1)==lsig)
 !          hilowterm = merge(sqrt(P(2)/P(1)),-sqrt(P(1)/P(2)),matType(i-1)==1)
           aveterm   = 0d0
