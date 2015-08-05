@@ -226,7 +226,7 @@ module MCvars
   character(7)         :: GaussKLbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
 
   logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
-  character(3)         :: distneg              ! allow on the fly smoothing of negs? 'yes', 'no'
+  logical              :: fldistneg=.false.    ! allow on the fly smoothing of negs?
 
   integer              :: refsigMode           ! 1-3, 1) userinp, 2) adaptive, 3) adaptive woodcock
   real(8)              :: userrefsig           ! option 7, manually set refsig value as this

@@ -83,7 +83,7 @@ CONTAINS
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
-                    nceilbin, Wood_rej, flnegxs, distneg, MCcases, fbinmax, &
+                    nceilbin, Wood_rej, flnegxs, fldistneg, MCcases, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
                     refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs, flCorrMC
   use genRealz, only: genReal
@@ -323,7 +323,7 @@ CONTAINS
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
             if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in KLWood, exiting program'
-            if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
+            if(fldistneg .and. woodrat>0.0d0) then !redistribute neg option
               if(abs(disthold)>woodrat*ceilsig) then
                 woodrat = 0.0d0
               else
@@ -336,7 +336,7 @@ CONTAINS
                 numpnSamp(2)  =  numpnSamp(2)+1
                 areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
                 if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
-                if(distneg=='yes') disthold = woodrat*ceilsig
+                if(fldistneg) disthold = woodrat*ceilsig
                 woodrat=0.0d0
               else
                 numpnSamp(1)  =  numpnSamp(1)+1
@@ -403,7 +403,7 @@ CONTAINS
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
             if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in KLWood, exiting program'
-            if(distneg=='yes' .and. woodrat>0.0d0) then !redistribute neg option
+            if(fldistneg .and. woodrat>0.0d0) then !redistribute neg option
               if(abs(disthold)>woodrat*ceilsig) then
                 woodrat = 0.0d0
               else
@@ -416,7 +416,7 @@ CONTAINS
                 numpnSamp(2)  =  numpnSamp(2)+1
                 areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
                 if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
-                if(distneg=='yes') disthold = woodrat*ceilsig
+                if(fldistneg) disthold = woodrat*ceilsig
                 woodrat=0.0d0
               else
                 numpnSamp(1)  =  numpnSamp(1)+1
@@ -2126,20 +2126,18 @@ CONTAINS
 
   subroutine Woodnegstats(icase)
   use genRealzvars, only: numRealz, numPosRealz
-  use MCvars, only: numpnSamp, areapnSamp, distneg, KLWood, flnegxs, numcSamp, &
-                    WAMC, GaussKL, MCcases
+  use MCvars, only: numpnSamp, areapnSamp, fldistneg, flnegxs, numcSamp, MCcases
 
   integer :: icase
   real(8) :: pos,neg
 
   open(unit=100,file="Woodnegstats.out")
 
-  if((KLWood=='yes'  .and. flnegxs) .or. WAMC=='yes' .or. &
-     (GaussKL=='yes' .and. flnegxs)                       ) then
-    606 format("--Negative xs stats (",A8," ), neg smoothing off--")
-    607 format("--Negative xs stats (",A8," ), neg smoothing on--")
-    if(distneg=='no')  write(100,606) MCcases(icase)
-    if(distneg=='yes') write(100,607) MCcases(icase)
+  if((MCcases(icase)=='KLWood' .and. flnegxs) .or. &
+     (MCcases(icase)=='WAMC'   .and. flnegxs) .or. &
+     (MCcases(icase)=='GaussKL'.and. flnegxs)        ) then
+    606 format("--Negative xs stats (",A8," ), keep neg xs: ",L,", neg smoothing: ",L," --")
+
     600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)
     601 format("  Neg samples : ",f8.5,"%, ",i21," /",i21)
     602 format("  Neg area    : ",f8.5,"%")
@@ -2147,6 +2145,7 @@ CONTAINS
     603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
     604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
+    write(100,606) MCcases(icase),flnegxs,fldistneg
     write(100,600) real(numRealz-numPosRealz,8)/real(numRealz,8)*100d0,numRealz-numPosRealz,numRealz
     pos = real(numpnSamp(1),8)
     neg = real(numpnSamp(2),8)
@@ -2156,6 +2155,15 @@ CONTAINS
     write(100,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
     write(100,604) areapnSamp(4),areapnSamp(3)
     write(100,*)
+  elseif((MCcases(icase)=='KLWood' .and. .not.flnegxs) .or. &
+         (MCcases(icase)=='WAMC'   .and. .not.flnegxs) .or. &
+         (MCcases(icase)=='GaussKL'.and. .not.flnegxs)        ) then
+    610 format("--Negative xs stats (",A8," ), keep neg xs: ",L," --")
+
+    write(100,610) MCcases(icase),flnegxs
+    write(100,600) real(numRealz-numPosRealz,8)/real(numRealz,8)*100d0,numRealz-numPosRealz,numRealz
+    write(100,*)
+
   else
     write(100,*)
   endif

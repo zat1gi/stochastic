@@ -50,7 +50,7 @@ CONTAINS
                                   flMarkov, flGauss, Gaussrandtype, flCorrKL
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, flnegxs, distneg, radMC, radWood, WAMC, GaussKL, &
+                                  pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype, flCorrMC
@@ -137,8 +137,9 @@ CONTAINS
   read(2,*) dumchar 
   read(2,*) rodOrplanar
   read(2,*) sourceType
-  read(2,*) setflags(1),distneg
-  if(setflags(1)=='yes') flnegxs=.true.
+  read(2,*) setflags(1),setflags(2)
+  if(setflags(1)=='yes') flnegxs  =.true.
+  if(setflags(2)=='yes') fldistneg=.true.
   read(2,*) KLadjust,meanadjust_tol
   read(2,*) refsigMode,userrefsig,negwgtbinnum,nwvalsperbin
   read(2,*) wgtmaxmin,wgtmax,wgtmin
@@ -324,7 +325,7 @@ CONTAINS
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
                     pltKLrrealzPointorXi, KLres, KLrec, KLnoise, KLxigentype, flGauss, &
                     Gaussrandtype, flCorrKL
-  use MCvars, only: trannprt, sourceType, pltflux, distneg, radMC, radWood, KLWood, &
+  use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, probtype
   use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
