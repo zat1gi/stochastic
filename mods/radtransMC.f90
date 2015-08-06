@@ -37,8 +37,10 @@ CONTAINS
 
   do j=1,tnumRealz
 
-    if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. flnegxs .or. &
+    if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
+       MCcases(icase)=='LPMC'  .or. MCcases(icase)=='atmixMC' .or. flnegxs .or. &
        (.not.flnegxs .and. posRealz(j)==1)) then !if not WMC, neg ok, or realz positive
+
         if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
       call genReal( j,'binary ',icase )         !gen binary geometry
         if(MCcases(icase)=='atmixMC') &
@@ -2261,6 +2263,7 @@ CONTAINS
   do icase = 1,numPosMCmeths
     if(MCcaseson(icase)==1 .and. MCcases(icase)=='LPMC') write(100,329) stocMC_reflection(icase,1),&
                                                                       stocMC_transmission(icase,1)
+print *,"stocMC_reflection(icase,1):",stocMC_reflection(icase,1)
   enddo
 
   !print for formatting if any atomic mix solutions printed
@@ -2286,6 +2289,7 @@ CONTAINS
   if(flGauss) then
 
   if(GaussKL=='yes' .and. flGBgeom) then
+    icase=7
     write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
     write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
     write(100,*) "|----------|-------------------------|---------------------|"

@@ -5,7 +5,7 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  2.2,           Adamscase option, if==0, then user input for next three parameters
+  3.3,           Adamscase option, if==0, then user input for next three parameters
   1.6,4.4 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   5,5,             Lambda path length vals  #0.5,2.0
@@ -27,7 +27,7 @@
   !--- Large MCtrans Options ---!
   no,no,no,yes,yes,no,no  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
-  10000000,          Number of particles for LP or atomic mix calculations
+  100000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
 
   !--- Large MLMC Options ---!
@@ -39,7 +39,7 @@
   30,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
   11,             Levels of refinement for eigenvalue solving
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
-  yes,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
+  no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
   no,0.000001,    Calc KL variance at truncation?/tol for KL variance at truncation
   200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling

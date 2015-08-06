@@ -79,3 +79,17 @@ plots/KLsigvals/KLrxisig.txt
 plots/fluxplots/radWood_fluxall.out
 plots/fluxplots/radWood_fluxmat.out
 plots/tranreflprofile/radWoodtranreflprofile.txt
+
+plots/Eigfplot/Eigfplot.pdf
+plots/Eigfplot/Eigfplot.ps
+plots/Eigfplot/Eigfplot.txt
+plots/whererealz.txt
+plots/xiBinsplot/xiBinsplot.pdf
+plots/xiBinsplot/xiBinsplot.ps
+plots/xiBinsplot/xiBinsplot.txt
+plots/tranreflprofile/radMCtranreflprofile.txt
+plots/fluxplots/LPMC_fluxall.out
+plots/fluxplots/atmixMC_fluxall.out
+plots/fluxplots/radMC_fluxall.out
+
+

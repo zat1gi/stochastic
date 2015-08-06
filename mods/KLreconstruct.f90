@@ -142,8 +142,8 @@ CONTAINS
       if(.not.flrealzneg) then  !counts the number of realz that contain a positive value
         numPosRealz=numPosRealz+1
         posRealz(j) = 1
-        print *,"numNegRealz  : ",j-numPosRealz,"          realz#: ",j
       endif
+      if(flrealzneg) print *,"numNegRealz  : ",j-numPosRealz,"          realz#: ",j
 
       do i=1,KLrnumpoints(2)  !create realization
         KLrxisig(i) = KLrxi_point(j,KLrxi(i),chxstype='total')
