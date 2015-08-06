@@ -723,7 +723,7 @@ CONTAINS
   else
     localrefsig = (abs(sigs)-sigt)/(maxratio-1d0)
   endif
-  end function
+  end function localrefsig
 
 
 
@@ -876,7 +876,7 @@ CONTAINS
     numcSamp(2) = numcSamp(2) + 1 !tally all scatrat samples
     scatxs = KLrxi_point(j,xpos,chxstype='scatter')
     absxs  = KLrxi_point(j,xpos,chxstype='absorb')
-    totxs  = KLrxi_point(j,xpos,chxstype='total')
+    !totxs  = KLrxi_point(j,xpos,chxstype='total')
     if( scatxs*absxs<0d0 ) numcSamp(1) = numcSamp(1) + 1 !tally neg scatrat samples
                            !print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
 !    print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
@@ -2189,10 +2189,10 @@ CONTAINS
   !then prints that file to the screen for user friendliness.
   !Stats are from Adams89, Brantley11, and those generated here.
   use genRealzvars, only: Adamscase, flGBgeom
-  use KLvars, only: flMarkov
+  use KLvars, only: flMarkov, flGauss
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
-                    numPosMCmeths, LPMC, atmixMC
+                    numPosMCmeths, LPMC, atmixMC, GaussKL
   integer :: icase
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
@@ -2213,8 +2213,9 @@ CONTAINS
   !print to file
   open(unit=100,file="MCleakage.out")
 
+  if(flMarkov) then
 
-  !print headings/benchmark solutions for full problem
+    !print headings/benchmark solutions for full problem
   write(100,*)
   if(Adamscase/=0) write(100,325) Adamscase
   if(Adamscase==0) write(100,*) "|--------------- Reflection and Transmission Results ------|"
@@ -2280,8 +2281,11 @@ CONTAINS
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
 
-  if(MCcaseson(7)==1 .and. MCcases(7)=='GaussKL') icase = 7
-  if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
+  endif !(flMarkov)
+
+  if(flGauss) then
+
+  if(GaussKL=='yes' .and. flGBgeom) then
     write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
     write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
     write(100,*) "|----------|-------------------------|---------------------|"
@@ -2290,6 +2294,8 @@ CONTAINS
     write(100,*) "|----------|-------------------------|---------------------|"
     write(100,*)
   endif
+
+  endif !(flGauss)
 
   close(unit=100)
 

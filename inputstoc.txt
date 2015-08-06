@@ -1,34 +1,33 @@
-  634915341,         Random number seed
+  13642759,         Random number seed
   material,        Transport problem type, 'material', or 'coeffs'
-  yes,yes,          'yes' or 'no', Markov, Gauss, 'material' problem type(s)
   !--- Geometry - 'material', num of realz ---!
-  100,10,         Number of realizations/how often to print
-  100,10,         KLr Number of realizations/how often to print
+  1000,100,         Number of realizations/how often to print
+  1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  3.1,           Adamscase option, if==0, then user input for next three parameters
-  0.4,1.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.95,0.3, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
-  1.2,0.6,             Lambda path length vals  #0.5,2.0
-  10.0,                 slab thickness           #1.0
+  2.2,           Adamscase option, if==0, then user input for next three parameters
+  1.6,4.4 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  5,5,             Lambda path length vals  #0.5,2.0
+  5.0,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   'MB',        'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?
-  1.11,0.41,    Ave total cross section, total cross section variance
-  0.51,        Scattering ratio, c
-  1.11,        Correlation length, lamc
-  1.11,        Slab thickness, s
+  5.0,2.0,    Ave total cross section, total cross section variance
+  0.5,        Scattering ratio, c
+  1.0,        Correlation length, lamc
+  5.0,        Slab thickness, s
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  3,             Number of eigenvalues
+  4,             Number of eigenvalues
   200,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,yes,yes,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  no,no,no,yes,yes,no,no  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
-  1000000,          Number of particles for LP or atomic mix calculations
+  10000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
 
   !--- Large MLMC Options ---!
@@ -36,11 +35,11 @@
   0.09, 0.5,     Tolerance which signifies iterating complete, Tol splitting err I and II
 
   !--- Lesser KL Options ---!
-  totxs,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
+  material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
   30,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
   11,             Levels of refinement for eigenvalue solving
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
-  no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
+  yes,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
   no,0.000001,    Calc KL variance at truncation?/tol for KL variance at truncation
   200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
@@ -48,8 +47,8 @@
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
-  yes, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
+  no,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
+  no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
 
@@ -101,10 +100,10 @@
   noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   nogauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
   4,             Number of Eig/realz# combos to plot xi for (up to 4)
-  1,1000,          Which Eigs to plot xi for/how many realz to plot at
-  2,1000,
-  3,1000,
-  4,1000
+  1,10000,          Which Eigs to plot xi for/how many realz to plot at
+  2,10000,
+  3,10000,
+  4,10000
 
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
@@ -128,8 +127,8 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,plot,plot,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
-  40,             Numb of bins Leakage profiles
+  preview,preview,preview,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
+  50,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

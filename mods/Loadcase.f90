@@ -47,7 +47,7 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
-                                  flMarkov, flGauss, Gaussrandtype, flCorrKL
+                                  Gaussrandtype, flCorrKL
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
@@ -73,9 +73,6 @@ CONTAINS
 
   read(2,*) rngseed
   read(2,*) probtype
-  read(2,*) setflags(1),setflags(2)
-  if(setflags(1)=='yes') flMarkov=.true.
-  if(setflags(1)=='yes') flGauss=.true.
 
   !--- Geometry - 'material' num of realz ---!
   read(2,*) dumchar
@@ -325,7 +322,7 @@ CONTAINS
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, flmatbasedxs, flGauss, &
+                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, flmatbasedxs, &
                     Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
@@ -389,12 +386,12 @@ CONTAINS
       flstopstatus = .true.
     endif
   endif
-  if( KLres=='no' .AND. .not.flGauss .and. KLrec=='yes' ) then
+  if( KLres=='no' .and. KLrec=='yes' ) then
     KLres = 'yes'
-    print *,"--User attempting KLrec w/o flGauss or KLres, KLres has been set to 'yes'"
+    print *,"--User attempting KLrec w/o KLres, KLres has been set to 'yes'"
     flsleep = .true.
   endif
-  if( flGauss .and. KLrec=='no' ) then
+  if( GaussKL=='yes' .and. KLrec=='no' ) then
     KLrec = 'yes'
     print *,"--User attempting Gauss rand geom w/o KLrec, KLrec has been set to 'yes'"
     flsleep = .true.
@@ -590,9 +587,9 @@ CONTAINS
   use timevars, only: time, ntime, totparts, cumparts, FOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          flprint, numPosRealz, posRealz, numRealz
+                          flprint, numPosRealz, posRealz, numRealz, flGBgeom
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
-                    KLrxisig, numSlice, gam, alpha, Ak, Eig, &
+                    KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
                     xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
   use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
@@ -670,6 +667,8 @@ CONTAINS
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
 
+  if(sum(MCcaseson(1:7))>0 .or. (.not.flGBgeom .and. MCcaseson(7)==1)) flMarkov = .true.
+  if(flGBgeom .and. MCcaseson(7)==1) flGauss = .true.
   
   flfluxplot = .false.  !flux variable allocations
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
