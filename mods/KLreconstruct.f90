@@ -280,7 +280,7 @@ CONTAINS
     enddo
     if(minsig<0) then
       flrealzneg=.true.
-print *,"minpos",minpos,"minsig",minsig
+      print *,"minpos",minpos,"minsig",minsig
       exit
     endif
 
@@ -351,7 +351,7 @@ print *,"minpos",minpos,"minsig",minsig
 
   integer :: curEig,tnumEigs
   real(8) :: Eigfterm, Coterm, avesigval
-  real(8) :: totxsmean, scatxsnomean, totxsnomean, absxsnomean
+  real(8) :: totxsmean, totxsnomean, magscatxsnomean, magabsxsnomean, holdmeanadjust
   logical :: flsolve !solve do-loop (or iteratively use this routine)
 
   flsolve=.true.
@@ -374,10 +374,13 @@ print *,"minpos",minpos,"minsig",minsig
         elseif(flmeanadjust) then
           totxsmean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
           flmeanadjust = .false. !temporary turn off to get scattering ratio
-          scatxsnomean = KLrxi_point(j,xpos,chxstype='scatter',tnumEigsin=tnumEigs)
-          totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+          holdmeanadjust  = meanadjust
+          meanadjust      = 0.0d0
+          magscatxsnomean = abs(KLrxi_point(j,xpos,chxstype='scatter',tnumEigsin=tnumEigs))
+          magabsxsnomean  = abs(KLrxi_point(j,xpos,chxstype='absorb',tnumEigsin=tnumEigs))
+          meanadjust      = holdmeanadjust
           flmeanadjust = .true.
-          KL_point = totxsmean * (scatxsnomean / totxsnomean)
+          KL_point = totxsmean * ( magscatxsnomean / (magscatxsnomean+magabsxsnomean) )
           flsolve = .false.
         endif
       elseif(.not.flmatbasedxs) then
@@ -393,15 +396,18 @@ print *,"minpos",minpos,"minsig",minsig
         elseif(flmeanadjust) then
           totxsmean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
           flmeanadjust = .false. !temporary turn off to get scattering ratio
-          absxsnomean = KLrxi_point(j,xpos,chxstype='absorb',tnumEigsin=tnumEigs)
-          totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
+          holdmeanadjust  = meanadjust
+          meanadjust      = 0.0d0
+          magscatxsnomean = abs(KLrxi_point(j,xpos,chxstype='scatter',tnumEigsin=tnumEigs))
+          magabsxsnomean  = abs(KLrxi_point(j,xpos,chxstype='absorb',tnumEigsin=tnumEigs))
+          meanadjust      = holdmeanadjust
           flmeanadjust = .true.
-          KL_point = totxsmean * (absxsnomean / totxsnomean)
+          KL_point = totxsmean * ( magabsxsnomean / (magscatxsnomean+magabsxsnomean) )
           flsolve = .false.
         endif
       elseif(.not.flmatbasedxs) then
         totxsnomean = KLrxi_point(j,xpos,chxstype='total',tnumEigsin=tnumEigs)
-        KL_point = totxsnomean * scatrat(1)
+        KL_point = totxsnomean * (1.0d0 - scatrat(1))
         flsolve = .false.
       endif
   end select

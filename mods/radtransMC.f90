@@ -881,20 +881,10 @@ CONTAINS
     !totxs  = KLrxi_point(j,xpos,chxstype='total')
     if( scatxs*absxs<0d0 ) numcSamp(1) = numcSamp(1) + 1 !tally neg scatrat samples
                            !print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
-!    print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
-!    print *,"totxs         :                                                     ",totxs
-!print *
-!    if( abs(scatxs+absxs-totxs)/totxs>eps ) then
-!      print *,"scat/abs/added: ",scatxs,absxs,scatxs+absxs
-!      print *,"totxs         :                                                     ",totxs
-!      stop 'in KLWood_actscatrat, xs recreation not conserved'
-!    endif
-!read(*,*)
-!print *,"numcSamp:",numcSamp," percentage:",real(numcSamp(1),8)/real(numcSamp(2),8)*100d0,"%"
     if( scatxs<0d0 ) scatxs = 0d0
     if( absxs <0d0 ) absxs  = 0d0
+
     KLWood_actscatrat = scatxs/(scatxs+absxs)
-!    KLWood_actscatrat = scatrat(1)
   endif
 
   end function KLWood_actscatrat
@@ -1222,7 +1212,6 @@ CONTAINS
       call pos_all_pop( reflect,posreflect )
       call pos_all_pop( transmit,postransmit )
       call pos_all_pop( absorb,posabsorb )
-
       call mean_and_var_s( posreflect,numPosRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
       call mean_and_var_s( postransmit,numPosRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
       call mean_and_var_s( posabsorb,numPosRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
@@ -2263,7 +2252,6 @@ CONTAINS
   do icase = 1,numPosMCmeths
     if(MCcaseson(icase)==1 .and. MCcases(icase)=='LPMC') write(100,329) stocMC_reflection(icase,1),&
                                                                       stocMC_transmission(icase,1)
-print *,"stocMC_reflection(icase,1):",stocMC_reflection(icase,1)
   enddo
 
   !print for formatting if any atomic mix solutions printed
