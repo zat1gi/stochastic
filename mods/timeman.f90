@@ -216,31 +216,26 @@ CONTAINS
   !This subroutine calculates a FOM for all realization-based cases.
   !The FOM = 1/(R^2*t) where R is relative error and t is runtime.
   !Said another way FOM = (ave^2*N)/(stdev^2*t).
-  use genRealzvars, only: numRealz, numPosRealz
-  use MCvars, only: MCcases, stocMC_reflection, stocMC_transmission, flnegxs
+  use genRealzvars, only: numRealz
+  use MCvars, only: MCcases, stocMC_reflection, stocMC_transmission
   use timevars, only: FOM, time
   integer :: icase
-  integer :: tnumRealz
-
-  tnumRealz = numRealz
-  if( .not.flnegxs .and. (MCcases(icase)=='KLWood' .or. MCcases(icase)=='GaussKL')) &
-    tnumRealz = numPosRealz
 
   select case (MCcases(icase))
     case ("radMC")
-      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(2))
-      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(2))
+      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(2))
+      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(2))
     case ("radWood")
-      FOM(icase,1) = stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(3))
-      FOM(icase,2) = stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(3))
+      FOM(icase,1) = stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(3))
+      FOM(icase,2) = stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(3))
     case ("KLWood")
-      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(7))
-      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(7))
+      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(7))
+      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(7))
     case ("LPMC")
     case ("atmixMC")
     case ("GaussKL")
-      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(tnumRealz,8)/(stocMC_reflection(icase,2)**2*time(10))
-      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(tnumRealz,8)/(stocMC_transmission(icase,2)**2*time(10))
+      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(10))
+      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(10))
   end select
 
   end subroutine FOM_calculation

@@ -61,28 +61,33 @@ CONTAINS
   subroutine KLrgenrealz(icase)
   !This subroutine reconstructs realizations based upon the KL expansion.
   !It reconstructs based upon the fixed point and fixed xi methods.
+  !It tests for negative realizations, rejecting and replacing them is specified.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use utilities, only: TwoGaussrandnums, erfi
-  use genRealzvars, only: s, lamc, sigave, numPosRealz, posRealz
+  use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, &
                           pltKLrrealzPointorXi, Gaussrandtype, flCorrKL
-  use MCvars, only: MCcases
+  use MCvars, only: MCcases, flnegxs
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,j,curEig,w,u,icase
+  integer :: i,tentj,realj,curEig,w,u,icase
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
-  logical :: flrealzneg
-  character(5) :: flKLtype = 'KLrec'
+  logical :: flrealzneg, flacceptrealz
 
   call cpu_time(tt1)
 
-  write(*,*) "Starting method: ",flKLtype  
-  do j=1,KLrnumRealz
+  write(*,*) "Starting method: KLrec"
+  tentj=0
+  realj=1
+  do
+    tentj=tentj+1
+    flacceptrealz=.true.
+
     !set random number application
     if(MCcases(icase)=='KLWood' .or. (MCcases(icase)=='GaussKL' .and. flCorrKL)) then
       call setrngappnum('KLRealzMarkov')
@@ -90,7 +95,7 @@ CONTAINS
       call setrngappnum('KLRealzGaussB')
     endif
     !set random number based on application
-    call RN_init_particle( int(rngappnum*rngstride+j,8) )
+    call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
     if(pltKLrrealzPointorXi(1)=='fpoint') then !create a realization, fixed point
       KLrsig = 0
@@ -102,7 +107,7 @@ CONTAINS
           Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,KLrx(i))
           rand = rang()
           do u=1,pltKLrrealznumof   !capture rand if useful to plot later
-            if( pltKLrrealzwhich(1,u)==j ) then
+            if( pltKLrrealzwhich(1,u)==realj ) then
               KLrrandarray(i,curEig,u+1) = rand
             endif
           enddo
@@ -128,25 +133,27 @@ CONTAINS
             if(mod(curEig,2)==1) rand1 = rand
             if(mod(curEig,2)==0) then
               call TwoGaussrandnums(rand1,rand,xiterms)
-              KLrxivals(j,curEig-1) = xiterms(1)
+              KLrxivals(realj,curEig-1) = xiterms(1)
               xiterm = xiterms(2)
             endif
           elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='inv') then
             xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
           endif
-        if(curEig<=numEigs) KLrxivals(j,curEig) = xiterm
+        if(curEig<=numEigs) KLrxivals(realj,curEig) = xiterm
       enddo
 
+      !count num of realz w/ neg xs, set flag to accept or reject realz
       flrealzneg=.false.
-      call KLr_negsearch( j,flrealzneg )
-      if(.not.flrealzneg) then  !counts the number of realz that contain a positive value
-        numPosRealz=numPosRealz+1
-        posRealz(j) = 1
+      call KLr_negsearch( realj,flrealzneg )
+      if(.not.flrealzneg) numPosRealz=numPosRealz+1
+      if(     flrealzneg) then
+        if(.not.flnegxs) flacceptrealz=.false.
+        numNegRealz=numNegRealz+1
+        print *,"numNegRealz  : ",numNegRealz," tentative realz#: ",tentj
       endif
-      if(flrealzneg) print *,"numNegRealz  : ",j-numPosRealz,"          realz#: ",j
 
       do i=1,KLrnumpoints(2)  !create realization
-        KLrxisig(i) = KLrxi_point(j,KLrxi(i),chxstype='total')
+        KLrxisig(i) = KLrxi_point(realj,KLrxi(i),chxstype='total')
       enddo
       open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
       do i=1,KLrnumpoints(2)
@@ -155,8 +162,14 @@ CONTAINS
       write(11,*)
     endif
 
-
-    if(mod(j,KLrprintat)==0) call KL_timeupdate( j,tt1,flKLtype )
+    if(flnegxs) then
+      if(mod(realj,KLrprintat)==0)       call KL_timeupdate( realj,tt1,'KLrec' )
+      if(KLrnumRealz==realj      ) exit
+    else
+      if(mod(numPosRealz,KLrprintat)==0) call KL_timeupdate( realj,tt1,'KLrec' )
+      if(KLrnumRealz==numPosRealz) exit
+    endif
+    if(flacceptrealz) realj=realj+1
   enddo
 
   end subroutine KLrgenrealz
@@ -167,7 +180,7 @@ CONTAINS
   subroutine KLrplotrealz
   !This subroutine uses the stored array of pseudo-random numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use genRealzvars, only: lamc, sigave, numRealz, numPosRealz
+  use genRealzvars, only: lamc, sigave, numRealz, numPosRealz, numNegRealz
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                          KLrnumpoints, pltKLrrealz, pltKLrrealznumof, &
                          pltKLrrealzwhich, KLrx, KLrxi, pltKLrrealzarray, KLrrandarray, &
@@ -202,8 +215,6 @@ CONTAINS
         enddo
       endif
 
-
-
       if( pltKLrrealzPointorXi(m) .EQ. 'fxi' ) then  !create a realz, fixed xi
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
@@ -215,8 +226,6 @@ CONTAINS
       endif
     enddo
 
-
-
     call generic_plotter( KLrnumpts,pltKLrrealznumof,pltKLrrealzarray,&
                           pltKLrrealz )
 
@@ -225,7 +234,7 @@ CONTAINS
     call system("mv genericplot.pdf plots/KLrrealzplot/KLrrealzplot.pdf")
   endif
 
-  print *," Total num reconstructed realz w/ neg value: ",numRealz-numPosRealz
+  print *," Total num reconstructed realz w/ neg value: ",numNegRealz,"/",numNegRealz+numPosRealz
   print *,
 
   end subroutine KLrplotrealz

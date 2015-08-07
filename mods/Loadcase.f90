@@ -587,7 +587,7 @@ CONTAINS
   use timevars, only: time, ntime, totparts, cumparts, FOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          flprint, numPosRealz, posRealz, numRealz, flGBgeom
+                          flprint, numPosRealz, numNegRealz, numRealz, flGBgeom
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
                     xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
@@ -619,9 +619,7 @@ CONTAINS
   sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
   sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
   numPosRealz= 0
-  allocate(posRealz(numRealz))
-  posRealz   = 0
-
+  numNegRealz= 0
 
   !allocate  KLresearch variables
   allocate(gam(numEigs))

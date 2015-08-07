@@ -101,7 +101,7 @@ module genRealzvars
   real(8)              :: sqrPath(2)           !
   real(8), allocatable :: matdxs(:,:,:)        ! delta x of different materials for flux tallying
   integer              :: numPosRealz          ! tally of num of realz that are always positive
-  integer, allocatable :: posRealz(:)          ! '1' for positive realz, '0' for negative realz
+  integer              :: numNegRealz          ! tally of num of realz that are at some point neg
 
 end module genRealzvars
 

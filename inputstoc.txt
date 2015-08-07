@@ -5,7 +5,7 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  4.2,           Adamscase option, if==0, then user input for next three parameters
+  6.2,           Adamscase option, if==0, then user input for next three parameters
   0.5,5.5 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   0.5,0.5,             Lambda path length vals  #0.5,2.0
@@ -47,7 +47,7 @@
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  no,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
+  yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
