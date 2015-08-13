@@ -305,6 +305,15 @@ CONTAINS
   end function dev_p
 
 
+  function arithmaticsum(nf,nl,gap,N)
+  !This function finds the sum of an arithmatic series of 'N' numbers whose
+  !first number is nf, last number is nl, and the gap between numbers is 'gap'.
+  !Function assumes all numbers (including gap) are integers.
+  integer :: nf,nl,gap,N,arithmaticsum
+  arithmaticsum = ( N * ( nf+nl ) ) / 2 
+  end function arithmaticsum
+
+
   function OneGaussrandnum(rand1,rand2)
   !Uses Box-Muller transformation to transform two uniformly-distributed
   !random numbers to be Guassian-distributed random numbers.

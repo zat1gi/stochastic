@@ -71,17 +71,23 @@ CONTAINS
                           KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                           pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
                           pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, &
-                          pltKLrrealzPointorXi, Gaussrandtype, flCorrKL
-  use MCvars, only: MCcases, flnegxs
+                          pltKLrrealzPointorXi, Gaussrandtype, flCorrKL, flmeanadjust
+  use MCvars, only: MCcases, flnegxs, KLWood, GaussKL
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,w,u,icase
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
   logical :: flrealzneg, flacceptrealz
+  logical :: flpurpose(3)=.false. !1)neg or not, 2)max vals, 3)zeros
 
   call cpu_time(tt1)
 
   write(*,*) "Starting method: KLrec"
+  !set purposes for KLr_realzanalysis (purpose,[planned purpos])
+  flpurpose(1)=.true.                                       !neg or not (no neg, [neg analysis])
+  if(KLWood=='yes' .or. GaussKL=='yes') flpurpose(2)=.true. !max vals (KL WMC)
+  if(flmeanadjust) flpurpose(3)=.true.                      !zeros (mean adjust, [neg analysis])
+
   tentj=0
   realj=1
   do
@@ -144,7 +150,8 @@ CONTAINS
 
       !count num of realz w/ neg xs, set flag to accept or reject realz
       flrealzneg=.false.
-      call KLr_negsearch( realj,flrealzneg )
+!      call KLr_negsearch( realj,flrealzneg )
+      call KLr_analyzerealz( realj,flrealzneg,flpurpose )
       if(.not.flrealzneg) numPosRealz=numPosRealz+1
       if(     flrealzneg) then
         if(.not.flnegxs) flacceptrealz=.false.
@@ -296,6 +303,312 @@ CONTAINS
   enddo
 
   end subroutine KLr_negsearch
+
+
+
+  subroutine KLr_analyzerealz( j,flrealzneg,flpurpose )
+  !This subroutine can 1) discern if realization contains negativity
+  !2) produce all local max values for use in WMC
+  !3) produce all zeros for use in negativity analysis and mean adjustment
+  !It first finds bounds for all extrema, then locates and labels extrema.
+  !It then uses labeled extrema as bounds for zeros, which are found and labeled.
+  !Routine exits when all chosen purposes accomplished.
+  use genRealzvars, only: s, numRealz
+  use KLvars, only: KLr_maxima, KLr_zeros, numEigs
+  logical :: flpurpose(3) !1)neg or not, 2)max vals, 3)zeros
+  logical :: flrealzneg
+  integer :: j
+
+  logical :: flaccomplished(3), flfinished
+  integer :: i, exi, imax, izer, exsize
+  logical, allocatable :: flextremamax(:), flextremapos(:)
+  real(8), allocatable :: derivloc(:), derivval(:)
+  real(8), allocatable :: extrema(:)
+  real(8) :: rtemp, KLpoint1, KLpoint2
+
+  flaccomplished = .false.
+  flfinished     = .false.
+
+  call KLr_findextremabounds( j,derivloc,derivval )              !find extrema bounds
+
+  exsize = arithmaticsum(1,numEigs,1,numEigs)
+  allocate(extrema(exsize+1))
+  allocate(flextremamax(exsize+1))
+  allocate(flextremapos(exsize+1))
+  extrema = 0.0d0
+
+                                                                 !find extream/negativities
+  !label extrema (left boundary)
+  flextremamax(1) = merge(.true.,.false.,KLrxi_point(j,extrema(1),'total') > &
+                                         KLrxi_point(j,extrema(1)+0.000000000001d0,'total'))
+  flextremapos(1) = merge(.true.,.false.,KLrxi_point(j,extrema(1),'total')>0.0d0)
+
+  exi = 2           !index of next extrema to search for
+  do i=1,size(derivloc)-1
+    if(derivval(i)*derivval(i+1)<0.0d0) then  !points are extrema bounds
+      !find extrema
+      extrema(exi) = KLr_findzeros( j,derivloc(i),derivloc(i+1),derivval(i),derivval(i+1),flderiv=.true. )
+      !label extrema (local max or min)
+      flextremamax(exi) = merge(.true.,.false.,KLr_concavity( j,extrema(exi)         )<0.0d0)
+      flextremapos(exi) = merge(.true.,.false.,KLrxi_point(   j,extrema(exi),'total' )>0.0d0)
+      !test if extrema is negative
+      if(.not.flextremapos(exi)) then
+        flrealzneg = .true.
+        if(flpurpose(1)) flaccomplished(1)=.true.       !a negativitiy found
+      endif
+      !advance extrema index
+      exi = exi + 1
+
+      flfinished = flfinishedtest(flpurpose,flaccomplished)
+      if(flfinished) exit
+    endif
+  enddo
+  !label extrema (right boundary)
+  extrema(exi) = s
+  flextremamax(exi) = merge(.true.,.false.,KLrxi_point(j,extrema(exi),'total') > &
+                                           KLrxi_point(j,extrema(exi)-0.000000000001d0,'total'))
+  flextremapos(exi) = merge(.true.,.false.,KLrxi_point(   j,extrema(exi),'total' )>0.0d0)
+  if(flpurpose(1)) flaccomplished(1)=.true.             !any negativities are found
+  flfinished = flfinishedtest(flpurpose,flaccomplished)
+
+
+  if(flpurpose(2) .and. .not.flfinished) then                        !collect maxima
+    if(j==1 .and. allocated(KLr_maxima)) deallocate(KLr_maxima)
+    if(.not.allocated(KLr_maxima)) then
+      allocate(KLr_maxima(numRealz,exsize))
+      KLr_maxima = 0.0d0
+    endif
+    imax = 1
+    do i=1,exi
+      if(flextremamax(i)) then
+        KLr_maxima(j,imax) = extrema(i)
+        imax = imax+1
+      endif
+    enddo
+  endif
+  if(flpurpose(2)) flaccomplished(2)=.true.             !all maxes found
+  flfinished = flfinishedtest(flpurpose,flaccomplished)
+
+
+  if(.not.flfinished) then                                           !find all zeros
+    if(j==1 .and. allocated(KLr_zeros)) deallocate(KLr_zeros)
+    if(.not.allocated(KLr_zeros)) then
+      allocate(KLr_zeros(numRealz,exsize+numEigs))
+       KLr_zeros = 0.0d0
+    endif
+    izer = 1
+    do i=1,exi-1
+      !if extrema are bounds of zero then find zero
+      if(flextremapos(i) .neqv. flextremapos(i+1)) then
+        KLpoint1 = KLrxi_point(j,extrema(i),'total')
+        KLpoint2 = KLrxi_point(j,extrema(i+1),'total')
+        KLr_zeros(j,izer) = KLr_findzeros( j,extrema(i),extrema(i+1),KLpoint1,KLpoint2,flderiv=.false. )
+        izer = izer + 1
+      endif
+    enddo
+    if(flpurpose(3)) flaccomplished(3)=.true.           !all zeros found
+  endif
+
+  deallocate(derivloc)
+  deallocate(derivval)
+  deallocate(extrema)
+  deallocate(flextremamax)
+  deallocate(flextremapos)
+
+
+  end subroutine KLr_analyzerealz
+
+
+  function flfinishedtest( flpurpose,flaccomplished )
+  !This function tests if flpurpose and flaccomplished are the same and returns true of false.
+  logical :: flpurpose(:),flaccomplished(:)
+  logical :: flfinishedtest
+  integer :: i
+
+  flfinishedtest = .false.
+  do i=1,size(flpurpose)
+    if(flpurpose(i) .neqv. flaccomplished(i)) exit
+    if(i==size(flpurpose)) flfinishedtest = .true.
+  enddo
+  end function flfinishedtest
+
+
+
+
+  subroutine KLr_findextremabounds( j,derivloc,derivval )
+  !This takes the derivative of the KL expansion at points on a successively refined grid 
+  !searching for bounds on all zeros of the derivative of the KL expansion (extrema of KL).
+  use genRealzvars, only: s
+  use KLvars, only: numEigs, numextremasameiter
+  integer :: j
+  real(8), allocatable :: derivloc(:), derivval(:), derivnew(:)
+  real(8), allocatable :: derivloc_(:),derivval_(:),derivnew_(:)
+
+  integer :: i, realzwochange, arsum, tallychanges, tallychanges_, itersametally
+  real(8) :: step
+
+  arsum = arithmaticsum(1,numEigs,1,numEigs)
+  allocate(derivloc(arsum))
+  allocate(derivval(arsum))
+  allocate(derivnew(arsum))
+  tallychanges = 0
+  tallychanges_= 0
+  itersametally= 0
+
+  do
+    call move_alloc(derivloc,derivloc_)    !keep old values, but create room for new ones
+    call move_alloc(derivval,derivval_)
+    call move_alloc(derivnew,derivnew_)
+    allocate(derivloc(2*size(derivloc_)-1))
+    allocate(derivval(2*size(derivval_)-1))
+    allocate(derivnew(2*size(derivnew_)-1))
+    derivnew = 0
+    do i=1,size(derivloc_)
+      derivloc(2*i-1) = derivloc_(i)
+      derivval(2*i-1) = derivval_(i)
+      derivnew(2*i-1) = derivnew_(i)
+    enddo
+    if(size(derivnew_)==arsum) derivnew = 0
+    deallocate(derivloc_)
+    deallocate(derivval_)
+    deallocate(derivnew_)
+
+    step = real(s,8)/real(size(derivloc)-1,8)     !setup location values
+    derivloc(1) = 0.0d0
+    do i=2,size(derivloc)
+      derivloc(i) = derivloc(i-1) + step
+    enddo
+
+    do i=1,size(derivloc)                         !solve all new needed values
+     if(derivnew(i)==0) then
+       derivval(i) = KLr_derivative( j,derivloc(i) )
+       derivnew(i) = 1
+     endif
+    enddo
+    
+    tallychanges = 0                              !count number of ranges found
+    do i=1,size(derivloc)-1
+      if(derivval(i)*derivval(i+1)<0.0d0) tallychanges = tallychanges + 1
+    enddo
+
+    if(tallychanges==tallychanges_) then          !tally iters with same number of changes
+      itersametally = itersametally+1
+    else
+      itersametally = 0
+    endif
+    tallychanges_ = tallychanges
+
+    if(itersametally>=numextremasameiter) exit                      !exit loop if not changed for several iters
+  enddo
+
+  deallocate(derivnew)
+  end subroutine KLr_findextremabounds
+
+
+
+
+  function KLr_findzeros( j,loc1,loc2,val1,val2,flderiv )
+  !This function accepts bounds on an zero in either the derivative or value of the KL
+  !expansion and returns the location of the zero.
+  !The algorithm assumes val1 or val2 is negative, the other is positive, and there
+  !is only one transition between positive and negative between the two.
+  integer :: j
+  real(8) :: loc1,loc2
+  real(8) :: KLr_findzeros
+  logical :: flderiv  !.true. means deriv, .false. means value
+
+  real(8) :: loc3 !loc1 (left), loc2 (right), loc3 (middle)
+  real(8) :: val1,val3,val2 !evaluation of loc#, either 'deriv' or 'value'
+
+  do
+    !check for valid bounds
+    if(val1*val2>0.0d0) then
+      print *,"bounds for zero both sign!:",val1,val2
+      stop
+    endif
+
+    !new location and value
+    loc3 = (loc1 + loc2) / 2.0d0
+    val3 = merge(KLr_derivative(j,loc3),KLrxi_point(j,loc3,'total'),flderiv)
+
+    !if found zero, exit loop
+    if(abs(val3)<0.000000000001d0) exit
+
+    !advance location (and value) towards zero
+    if(val1*val3>=0.0d0) then
+      loc1=loc3
+      val1=val3
+    else
+      loc2=loc3
+    endif
+  enddo
+
+  KLr_findzeros = loc3
+  end function KLr_findzeros
+
+
+
+
+  function KLr_concavity( j,xloc )
+  !This function evaluates the value of the second derivative of a total cross section
+  !constructed with the KL expansion at a location in the domain.
+  !Positive values mean concave up, negative values mean concave down.
+  !Originally added to test whether extrema is maxima or minima.
+  use genRealzvars, only: lamc, Coscat, Coabs
+  use KLvars, only: numEigs, alpha, Eig, Ak, KLrxivals, flmatbasedxs
+  real(8) :: xloc, KLr_concavity
+  integer :: j
+
+  integer :: curEig
+  real(8) :: Coterm
+
+  if(flmatbasedxs) then
+    Coterm = (sqrt(Coscat)+sqrt(Coabs))**2
+  elseif(.not.flmatbasedxs) then
+    Coterm = 1.0d0
+  endif
+
+  KLr_concavity = 0d0
+  do curEig=1,numEigs
+    KLr_concavity = KLr_concavity   + sqrt(Eig(curEig)) * KLrxivals(j,curEig) * &
+                                            Ak(curEig)  *    alpha(curEig)**2 * &
+                    (-sin( alpha(curEig)*xloc ) - lamc*alpha(curEig)*cos( alpha(curEig)*xloc ))
+  enddo
+  KLr_concavity = sqrt(Coterm) * KLr_concavity
+
+  end function KLr_concavity
+
+
+
+
+
+  function KLr_derivative( j,xloc )
+  !This function evaluates the value of the derivative of a total cross section
+  !constructed with the KL expansion at a location in the domain.
+  use genRealzvars, only: lamc, Coscat, Coabs
+  use KLvars, only: numEigs, alpha, Eig, Ak, KLrxivals, flmatbasedxs
+  real(8) :: xloc, KLr_derivative
+  integer :: j
+
+  integer :: curEig
+  real(8) :: Coterm
+
+  if(flmatbasedxs) then
+    Coterm = (sqrt(Coscat)+sqrt(Coabs))**2
+  elseif(.not.flmatbasedxs) then
+    Coterm = 1.0d0
+  endif
+
+  KLr_derivative = 0d0
+  do curEig=1,numEigs
+    KLr_derivative = KLr_derivative + sqrt(Eig(curEig)) * KLrxivals(j,curEig) * &
+                                            Ak(curEig)  *       alpha(curEig) * &
+                     (cos( alpha(curEig)*xloc ) - lamc*alpha(curEig)*sin( alpha(curEig)*xloc ))
+  enddo
+  KLr_derivative = sqrt(Coterm) * KLr_derivative
+
+  end function KLr_derivative
+
 
 
 
