@@ -1,15 +1,15 @@
-  46433253,         Random number seed
+  4633253,         Random number seed
   material,        Transport problem type, 'material', or 'coeffs'
   !--- Geometry - 'material', num of realz ---!
-  1000,100,         Number of realizations/how often to print
-  1000,100,         KLr Number of realizations/how often to print
+  10000,1000,         Number of realizations/how often to print
+  10000,1000,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
-  0.1,3.0 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  9.3,           Adamscase option, if==0, then user input for next three parameters
+  0.6,3.4 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
-  0.5,0.05,             Lambda path length vals  #0.5,2.0
-  3.0,                 slab thickness           #1.0
+  6.0,1.0,             Lambda path length vals  #0.5,2.0
+  2.0,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
@@ -21,13 +21,13 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  10,             Number of eigenvalues
-  200,           Number of bins for xi
+  1,             Number of eigenvalues
+  50,           Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,yes,no,no,no,no  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
-  10,            Number of particles to simulate on each realization
-  1000000,          Number of particles for LP or atomic mix calculations
+  yes,no,yes,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  3000,            Number of particles to simulate on each realization
+  30000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
 
   !--- Large MLMC Options ---!
@@ -38,7 +38,7 @@
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
   100,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
   11,             Levels of refinement for eigenvalue solving
-  3,              Num of iters used in extrema locating w/o change before stop, exp says use 3 or more
+  4,              Num of iters used in extrema locating w/o change before stop, exp says use 3 or more
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
   no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
   no,0.000001,    Calc KL variance at truncation?/tol for KL variance at truncation
@@ -48,7 +48,7 @@
   !--- Lesser MCtransport Options ---!
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
+  no,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
@@ -99,7 +99,7 @@
   
   !!--Plotting xiBins                        [in sub KL_eval]
   noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  nogauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
+  gauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
   4,             Number of Eig/realz# combos to plot xi for (up to 4)
   1,10000,          Which Eigs to plot xi for/how many realz to plot at
   2,10000,
@@ -128,8 +128,8 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,noplot,noplot,noplot,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
-  20,             Numb of bins Leakage profiles
+  preview,noplot,preview,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
+  40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

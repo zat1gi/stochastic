@@ -91,5 +91,6 @@ plots/tranreflprofile/radMCtranreflprofile.txt
 plots/fluxplots/LPMC_fluxall.out
 plots/fluxplots/atmixMC_fluxall.out
 plots/fluxplots/radMC_fluxall.out
-
+plots/xiBinsplot/customxiBinsplot.ps
+plots/xiBinsplot/generic.4.hist.gnu
 
