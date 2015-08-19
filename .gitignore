@@ -94,3 +94,12 @@ plots/fluxplots/radMC_fluxall.out
 plots/xiBinsplot/customxiBinsplot.ps
 plots/xiBinsplot/generic.4.hist.gnu
 
+TRISOxiBinsplot.pdf
+TRISOxiBinsplotpt1.pdf
+TRISOxiBinsplotpt2.pdf
+plots/genRealz/genRealzplot.pdf
+plots/genRealz/genRealzplot.ps
+plots/genRealz/genRealzplot1.txt
+plots/genRealz/genRealzplot2.txt
+plots/genRealz/genRealzplot3.txt
+

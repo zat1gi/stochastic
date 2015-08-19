@@ -20,6 +20,7 @@ set xlabel "Random Value"
 
 plot "plots/xiBinsplot/xiBinsplot.txt" using 1:2 with histeps t "Eig 1", \
      "plots/xiBinsplot/xiBinsplot.txt" using 1:3 with histeps t "Eig 2", \
+     "plots/xiBinsplot/xiBinsplot.txt" using 1:4 with histeps t "Eig 3", \
      "plots/xiBinsplot/xiBinsplot.txt" using 1:5 with histeps t "unit Gauss"
 
 #Postscript info

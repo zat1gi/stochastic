@@ -1,15 +1,15 @@
   4633253,         Random number seed
   material,        Transport problem type, 'material', or 'coeffs'
   !--- Geometry - 'material', num of realz ---!
-  10000,1000,         Number of realizations/how often to print
-  10000,1000,         KLr Number of realizations/how often to print
+  100000,1000,         Number of realizations/how often to print
+  100000,1000,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  9.3,           Adamscase option, if==0, then user input for next three parameters
-  0.6,3.4 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
-  6.0,1.0,             Lambda path length vals  #0.5,2.0
-  2.0,                 slab thickness           #1.0
+  0,           Adamscase option, if==0, then user input for next three parameters
+  0.57885,0.38133 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.68387,0.99927, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0.03333,3.80667,             Lambda path length vals  #0.5,2.0
+  6,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
@@ -21,13 +21,13 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  1,             Number of eigenvalues
-  50,           Number of bins for xi
+  8,             Number of eigenvalues
+  200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,no,yes,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
-  3000,            Number of particles to simulate on each realization
-  30000000,          Number of particles for LP or atomic mix calculations
+  no,no,no,no,no,no,no  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  1000,            Number of particles to simulate on each realization
+  1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
 
   !--- Large MLMC Options ---!
@@ -46,9 +46,9 @@
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Lesser MCtransport Options ---!
-  planar,         Choose 'rod' or 'planar' for geometry type
+  rod,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
-  no,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
+  yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
   no, 0.0000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
@@ -98,21 +98,21 @@
   4
   
   !!--Plotting xiBins                        [in sub KL_eval]
-  noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   gauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
   4,             Number of Eig/realz# combos to plot xi for (up to 4)
-  1,10000,          Which Eigs to plot xi for/how many realz to plot at
-  2,10000,
-  3,10000,
-  4,10000
+  4,100000,          Which Eigs to plot xi for/how many realz to plot at
+  5,100000,
+  6,100000,
+  7,100000
 
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  1,10,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
-  2,10,fxi
-  3,10,fxi
-  4,10,fxi
+  1,2,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
+  2,2,fxi
+  3,2,fxi
+  4,2,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
@@ -128,7 +128,7 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  preview,noplot,preview,preview,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
+  noplot,noplot,noplot,noplot,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
