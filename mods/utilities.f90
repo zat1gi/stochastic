@@ -314,6 +314,13 @@ CONTAINS
   end function arithmaticsum
 
 
+  function Heavi(arg)
+  !The Heaviside function, if arg less than (or equal to) zero, return 0, else 1
+  real(8) :: arg, Heavi
+  Heavi = merge(0.0d0,1.0d0,arg<=0.0d0)
+  end function Heavi
+
+
   function OneGaussrandnum(rand1,rand2)
   !Uses Box-Muller transformation to transform two uniformly-distributed
   !random numbers to be Guassian-distributed random numbers.

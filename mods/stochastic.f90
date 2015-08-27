@@ -22,6 +22,21 @@ program stochastic
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
 
+real(8) :: arg1,arg2
+
+arg1 = -0.1d0
+arg2 = Heavi(arg1)
+print *,"arg1:",arg1,"    arg2:",arg2
+arg1 = 0.0d0
+arg2 = Heavi(arg1)
+print *,"arg1:",arg1,"    arg2:",arg2
+arg1 = 0.1d0
+arg2 = Heavi(arg1)
+print *,"arg1:",arg1,"    arg2:",arg2
+
+stop
+
+
   !!read parameters
   call cpu_time(t1)
   call readinputstoc
