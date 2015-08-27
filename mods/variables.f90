@@ -174,7 +174,9 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
   real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
-  real(8)              :: meanadjust = 0.0d0   ! positive translation of mean xs
+  real(8)              :: meanadjust = 0.0d0   ! positive translation of mean xs (totxs mode)
+  real(8)              :: sigsmeanadjust=0.0d0 ! positive translation of sigs mean xs (mat-based mode)
+  real(8)              :: sigameanadjust=0.0d0 ! positive translation of siga mean xs (mat-based mode)
   logical              :: flCorrKL=.false.     ! correlated random numbers for KL Markov and GaussB realz?
 
   integer              :: mostinBin            !

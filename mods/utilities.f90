@@ -317,7 +317,7 @@ CONTAINS
   function Heavi(arg)
   !The Heaviside function, if arg less than (or equal to) zero, return 0, else 1
   real(8) :: arg, Heavi
-  Heavi = merge(0.0d0,1.0d0,arg<=0.0d0)
+  Heavi = merge(-0.0d0,1.0d0,arg<0.0d0)
   end function Heavi
 
 
