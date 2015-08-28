@@ -160,7 +160,7 @@ CONTAINS
       endif
 
       do i=1,KLrnumpoints(2)  !create realization
-        KLrxisig(i) = KLrxi_point(realj,KLrxi(i),chxstype='total')
+        KLrxisig(i) = KLr_point(realj,KLrxi(i),'total')
       enddo
       open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
       do i=1,KLrnumpoints(2)
@@ -226,7 +226,7 @@ CONTAINS
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLrxi_point(pltKLrrealzwhich(1,m),KLrxi(i),chxstype='total',tnumEigsin=tnumEigs)
+          KLrxisig(i) = KLr_point(pltKLrrealzwhich(1,m),KLrxi(i),'total',tnumEigsin=tnumEigs)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
@@ -270,10 +270,10 @@ CONTAINS
 
   do i=1,numEigs
     minpos=(outerstep*(i-1))
-    minsig=KLrxi_point(j,minpos,chxstype='total')
+    minsig=KLr_point(j,minpos,'total')
     do k=2,nminnersteps
       xpos=(outerstep*(i-1)+innerstep*(k-1))
-      xsig= KLrxi_point(j,xpos,chxstype='total')
+      xsig= KLr_point(j,xpos,'total')
       if(xsig<minsig) then
         minsig=xsig
         minpos=xpos
@@ -287,7 +287,7 @@ CONTAINS
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
         if(xpos<0) xpos=0.0d0
         if(xpos>s) xpos=s
-        xsig= KLrxi_point(j,xpos,chxstype='total')
+        xsig= KLr_point(j,xpos,'total')
         if(xsig<minsig) then
           minsig=xsig
           minpos=xpos
@@ -339,9 +339,9 @@ CONTAINS
 
                                                                  !find extream/negativities
   !label extrema (left boundary)
-  flextremamax(1) = merge(.true.,.false.,KLrxi_point(j,extrema(1),'total') > &
-                                         KLrxi_point(j,extrema(1)+0.000000000001d0,'total'))
-  flextremapos(1) = merge(.true.,.false.,KLrxi_point(j,extrema(1),'total')>0.0d0)
+  flextremamax(1) = merge(.true.,.false.,KLr_point(j,extrema(1),'total') > &
+                                         KLr_point(j,extrema(1)+0.000000000001d0,'total'))
+  flextremapos(1) = merge(.true.,.false.,KLr_point(j,extrema(1),'total')>0.0d0)
 
   exi = 2           !index of next extrema to search for
   do i=1,size(derivloc)-1
@@ -349,8 +349,8 @@ CONTAINS
       !find extrema
       extrema(exi) = KLr_findzeros( j,derivloc(i),derivloc(i+1),derivval(i),derivval(i+1),flderiv=.true. )
       !label extrema (local max or min)
-      flextremamax(exi) = merge(.true.,.false.,KLr_concavity( j,extrema(exi)         )< 0.0d0)
-      flextremapos(exi) = merge(.true.,.false.,KLrxi_point(   j,extrema(exi),'total' )>=0.0d0)
+      flextremamax(exi) = merge(.true.,.false.,KLr_point(j,extrema(exi),'total',orderin=2) < 0.0d0)
+      flextremapos(exi) = merge(.true.,.false.,KLr_point(j,extrema(exi),'total' )>=0.0d0)
       !test if extrema is negative
       if(.not.flextremapos(exi)) then
         flrealzneg = .true.
@@ -365,9 +365,9 @@ CONTAINS
   enddo
   !label extrema (right boundary)
   extrema(exi) = s
-  flextremamax(exi) = merge(.true.,.false.,KLrxi_point(j,extrema(exi),'total') > &
-                                           KLrxi_point(j,extrema(exi)-0.000000000001d0,'total'))
-  flextremapos(exi) = merge(.true.,.false.,KLrxi_point(   j,extrema(exi),'total' )>0.0d0)
+  flextremamax(exi) = merge(.true.,.false.,KLr_point(j,extrema(exi),'total') > &
+                                           KLr_point(j,extrema(exi)-0.000000000001d0,'total'))
+  flextremapos(exi) = merge(.true.,.false.,KLr_point(   j,extrema(exi),'total' )>0.0d0)
   if(flpurpose(1)) flaccomplished(1)=.true.             !any negativities are found
   flfinished = flfinishedtest(flpurpose,flaccomplished)
 
@@ -400,8 +400,8 @@ CONTAINS
     do i=1,exi-1
       !if extrema are bounds of zero then find zero
       if(flextremapos(i) .neqv. flextremapos(i+1)) then
-        KLpoint1 = KLrxi_point(j,extrema(i),'total')
-        KLpoint2 = KLrxi_point(j,extrema(i+1),'total')
+        KLpoint1 = KLr_point(j,extrema(i),'total')
+        KLpoint2 = KLr_point(j,extrema(i+1),'total')
         KLr_zeros(j,izer) = KLr_findzeros( j,extrema(i),extrema(i+1),KLpoint1,KLpoint2,flderiv=.false. )
         izer = izer + 1
       endif
@@ -481,7 +481,7 @@ CONTAINS
 
     do i=1,size(derivloc)                         !solve all new needed values
      if(derivnew(i)==0) then
-       derivval(i) = KLr_derivative( j,derivloc(i) )
+       derivval(i) = KLr_point(j,derivloc(i),'total',orderin=1)
        derivnew(i) = 1
      endif
     enddo
@@ -529,7 +529,7 @@ CONTAINS
 
     !new location and value
     loc3 = (loc1 + loc2) / 2.0d0
-    val3 = merge(KLr_derivative(j,loc3),KLrxi_point(j,loc3,'total'),flderiv)
+    val3 = merge(KLr_point(j,loc3,'total',orderin=1),KLr_point(j,loc3,'total',orderin=1),flderiv)
 
     !if found zero, exit loop
     if(abs(val3)<0.000000000001d0) exit
@@ -546,68 +546,6 @@ CONTAINS
   KLr_findzeros = loc3
   end function KLr_findzeros
 
-
-
-
-  function KLr_concavity( j,xloc )
-  !This function evaluates the value of the second derivative of a total cross section
-  !constructed with the KL expansion at a location in the domain.
-  !Positive values mean concave up, negative values mean concave down.
-  !Originally added to test whether extrema is maxima or minima.
-  use genRealzvars, only: lamc, Coscat, Coabs
-  use KLvars, only: numEigs, alpha, Eig, Ak, KLrxivals, flmatbasedxs
-  real(8) :: xloc, KLr_concavity
-  integer :: j
-
-  integer :: curEig
-  real(8) :: Coterm
-
-  if(flmatbasedxs) then
-    Coterm = (sqrt(Coscat)+sqrt(Coabs))**2
-  elseif(.not.flmatbasedxs) then
-    Coterm = 1.0d0
-  endif
-
-  KLr_concavity = 0d0
-  do curEig=1,numEigs
-    KLr_concavity = KLr_concavity   + sqrt(Eig(curEig)) * KLrxivals(j,curEig) * &
-                                            Ak(curEig)  *    alpha(curEig)**2 * &
-                    (-sin( alpha(curEig)*xloc ) - lamc*alpha(curEig)*cos( alpha(curEig)*xloc ))
-  enddo
-  KLr_concavity = sqrt(Coterm) * KLr_concavity
-
-  end function KLr_concavity
-
-
-
-
-
-  function KLr_derivative( j,xloc )
-  !This function evaluates the value of the derivative of a total cross section
-  !constructed with the KL expansion at a location in the domain.
-  use genRealzvars, only: lamc, Coscat, Coabs
-  use KLvars, only: numEigs, alpha, Eig, Ak, KLrxivals, flmatbasedxs
-  real(8) :: xloc, KLr_derivative
-  integer :: j
-
-  integer :: curEig
-  real(8) :: Coterm
-
-  if(flmatbasedxs) then
-    Coterm = (sqrt(Coscat)+sqrt(Coabs))**2
-  elseif(.not.flmatbasedxs) then
-    Coterm = 1.0d0
-  endif
-
-  KLr_derivative = 0d0
-  do curEig=1,numEigs
-    KLr_derivative = KLr_derivative + sqrt(Eig(curEig)) * KLrxivals(j,curEig) * &
-                                            Ak(curEig)  *       alpha(curEig) * &
-                     (cos( alpha(curEig)*xloc ) - lamc*alpha(curEig)*sin( alpha(curEig)*xloc ))
-  enddo
-  KLr_derivative = sqrt(Coterm) * KLr_derivative
-
-  end function KLr_derivative
 
 
 
@@ -680,7 +618,7 @@ CONTAINS
 
 
 
-  function KLrxi_point(j,xpos,chxstype,tnumEigsin,orderin) result(KL_point)
+  function KLr_point(j,xpos,chxstype,tnumEigsin,orderin) result(KL_point)
   !Evaluates KL reconstructed realizations at a given point.
   !It has options for total, scattering only, absorption only, or scattering ratio.
   !It has an option to solve for less than the available number of eigenvalues.
@@ -750,7 +688,7 @@ CONTAINS
     end select
   endif
 
-  end function KLrxi_point
+  end function KLr_point
 
 
 
@@ -836,7 +774,7 @@ CONTAINS
   !chosen tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol
-  use KLreconstruct, only: KLrxi_point, KLrxi_integral
+  use KLreconstruct, only: KLr_point, KLrxi_integral
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
@@ -866,7 +804,7 @@ CONTAINS
 
     print *,"Beginning mean adjustment iteration ",adjustiter
     do j=1,KLrnumRealz
-      xr = KLrxi_point(j,0d0,chxstype='total')
+      xr = KLr_point(j,0d0,'total')
       xl = 0d0
       do
         !find next point and area between these two
@@ -874,7 +812,7 @@ CONTAINS
         areacont = KLrxi_integral(j,xl,xr,chxstype='total')/KLrnumRealz/s
 
         !calc aveposarea for tol check, also negstat tallies
-        xmid = KLrxi_point(j,(xr+xl)/2d0,chxstype='total')
+        xmid = KLr_point(j,(xr+xl)/2d0,'total')
         if(xmid>0d0) then
           aveposarea = aveposarea + areacont
           perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
@@ -904,20 +842,20 @@ CONTAINS
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
-  use KLreconstruct, only: KLrxi_point
+  use KLreconstruct, only: KLr_point
   integer :: j
 
   real(8) :: findnextpoint
   real(8) :: curx,oldx,curs,olds !position, then sigma value
 
   curx = xl
-  curs = KLrxi_point(j,curx,chxstype='total')
+  curs = KLr_point(j,curx,'total')
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
-    curs = KLrxi_point(j,curx,chxstype='total')
+    curs = KLr_point(j,curx,'total')
     if(curs*olds<0d0) then
       curx = refinenextpoint(j,oldx,curx)
       exit
@@ -937,7 +875,7 @@ CONTAINS
   !This function takes a range and zeroes in on transition in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
-  use KLreconstruct, only: KLrxi_point
+  use KLreconstruct, only: KLr_point
   integer :: j
   real(8) :: oldx,curx
 
@@ -945,13 +883,13 @@ CONTAINS
 
   stepsign = -1d0
   curstep = step
-  curs = KLrxi_point(j,curx,chxstype='total')
+  curs = KLr_point(j,curx,'total')
   do
     curstep = curstep/2d0
     oldx = curx
     olds = curs
     curx = curx + curstep*stepsign
-    curs = KLrxi_point(j,curx,chxstype='total')
+    curs = KLr_point(j,curx,'total')
 
     if(abs(curs)<stol) then
       refinenextpoint = curx
