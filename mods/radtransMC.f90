@@ -343,7 +343,7 @@ CONTAINS
             !decide fate of particle
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              tempscatrat = KLWood_actscatrat(j,newpos)
+              tempscatrat = KLrxi_point(j,newpos,chxstype='scatrat')
               flIntType = merge('scatter','absorb ',tempscatrat>rang())
             endif
           case ("LPMC")
@@ -423,7 +423,7 @@ CONTAINS
             !decide fate of particle
             if(woodrat<rang()) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              tempscatrat = KLWood_actscatrat(j,newpos)
+              tempscatrat = KLrxi_point(j,newpos,chxstype='scatrat')
               flIntType = merge('scatter','absorb ',tempscatrat>rang())
             endif
         end select
@@ -852,36 +852,6 @@ CONTAINS
   i = internal_init_i( position )
   radWood_actscatrat=scatrat(matType(i))
   end function radWood_actscatrat
-
-
-  function KLWood_actscatrat(j,xpos)
-  !For 'totxs' type xi generation, this function returns the shared scattering ratio of the materials.
-  !For 'material' type xi generation, it generates tot, scat, and abs xs values,
-  !uses them to assert the same total xs and produce the local scattering ratio.  
-  use genRealzvars, only: scatrat
-  use KLvars, only: flmatbasedxs
-  use KLreconstruct, only: KLrxi_point
-  use MCvars, only: numcSamp
-  integer :: j
-  real(8) :: eps = 0.1d0
-  real(8) :: KLWood_actscatrat, xpos, scatxs, absxs, totxs
-
-  if(.not.flmatbasedxs) then
-    KLWood_actscatrat = scatrat(1)
-  elseif(flmatbasedxs) then
-    numcSamp(2) = numcSamp(2) + 1 !tally all scatrat samples
-    scatxs = KLrxi_point(j,xpos,chxstype='scatter')
-    absxs  = KLrxi_point(j,xpos,chxstype='absorb')
-    !totxs  = KLrxi_point(j,xpos,chxstype='total')
-    if( scatxs*absxs<0d0 ) numcSamp(1) = numcSamp(1) + 1 !tally neg scatrat samples
-                           !print *,"in KLWood_actscatrat, scatxs & absxs not same sign"
-    if( scatxs<0d0 ) scatxs = 0d0
-    if( absxs <0d0 ) absxs  = 0d0
-
-    KLWood_actscatrat = scatxs/(scatxs+absxs)
-  endif
-
-  end function KLWood_actscatrat
 
 
 

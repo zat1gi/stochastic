@@ -699,7 +699,6 @@ CONTAINS
         KL_point = sigt * (1.0d0 - scatrat(1))
       case ("scatrat")
         KL_point = scatrat(1)
-        print *,"why did you call me, you already know this info!"
     end select
   elseif(flmatbasedxs) then
     !cross section values
