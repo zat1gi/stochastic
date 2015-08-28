@@ -612,33 +612,60 @@ CONTAINS
 
 
 
-  function KLrxi_integral(j,xl,xr)
+  function KLrxi_integral(j,xl,xr,chxstype,tnumEigsin) result(KL_int)
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is always on total cross section, but 'material'- or 'totxs'-
   !cross sections are adjusted with or without meanadjust.
-  use genRealzvars, only: lamc, sigave, Coscat, Coabs
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs
-
+  use genRealzvars, only: lamc, sigave, Coscat, Coabs, scatrat, sigscatave, sigabsave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, &
+                    sigsmeanadjust, sigameanadjust
+  use utilities, only: Heavi
   integer :: j
-  real(8) :: xl,xr
-  real(8) :: KLrxi_integral
+  real(8) :: xl,xr,KL_int
+  character(*) :: chxstype
+  integer, optional :: tnumEigsin
 
-  integer :: curEig
-  real(8) :: Eigfintterm, Coterm
+  integer :: curEig, tnumEigs
+  real(8) :: Eigfintterm, KL_sum, sigs, siga, sigt
 
-  if(flmatbasedxs) then
-    Coterm = (sqrt(Coscat)+sqrt(Coabs))**2
-  elseif(.not.flmatbasedxs) then
-    Coterm = 1.0d0
-  endif
+  tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
-  KLrxi_integral = 0d0
-  do curEig=1,numEigs
+  !solve summation of KL terms to use below
+  KL_sum = 0d0
+  do curEig=1,tnumEigs
     Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-    KLrxi_integral = KLrxi_integral + sqrt(Eig(curEig)) * &
-                                           Eigfintterm * KLrxivals(j,curEig)
+    KL_sum   = KL_sum + sqrt(Eig(curEig)) * Eigfintterm * KLrxivals(j,curEig)
   enddo
-  KLrxi_integral = (sigave + meanadjust) * (xr - xl) + (sqrt(Coterm) * KLrxi_integral)
+
+  if(.not.flmatbasedxs) then
+    !determine underlying value
+    sigt = (sigave + meanadjust)*(xr - xl) + KL_sum
+    !determine point value
+    select case (chxstype)
+      case ("total")
+        KL_int = sigt
+      case ("scatter")
+        KL_int = sigt * scatrat(1)
+      case ("absorb")
+        KL_int = sigt * (1.0d0 - scatrat(1))
+    end select
+  elseif(flmatbasedxs) then
+    !cross section values
+    if(chxstype .ne. 'scatter') &
+      siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(Coabs)  * KL_sum
+    if(chxstype .ne. 'absorb') &
+      sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(Coscat) * KL_sum
+
+    !determine point value
+    select case (chxstype)
+      case ("total")
+        KL_int = Heavi(sigs)*sigs + Heavi(siga)*siga
+      case ("scatter")
+        KL_int = sigs
+      case ("absorb")
+        KL_int = siga
+    end select
+  endif
 
   end function KLrxi_integral
 
@@ -655,12 +682,11 @@ CONTAINS
 
 
   function KLrxi_point(j,xpos,chxstype,tnumEigsin) result(KL_point)
-  !!Evaluates KL reconstructed realizations at a given point.
-  !!It has options for total, scattering only, or absorption only cross sectional values.
-  !!It has an option to solve for less than the available number of eigenvalues.
-  !!It can function when in 'material'-based or 'totxs'-based mode.
-  !!It can function when adjusting mean or not adjusting mean.
-  !!In some of these settings this function calls itself.
+  !Evaluates KL reconstructed realizations at a given point.
+  !It has options for total, scattering only, absorption only, or scattering ratio.
+  !It has an option to solve for less than the available number of eigenvalues.
+  !It can function when in 'material'-based or 'totxs'-based mode.
+  !It can function when adjusting mean or not adjusting mean.
   use genRealzvars, only: lamc, scatrat, Coscat, Coabs, sigscatave, sigabsave, &
                           sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, &
@@ -777,7 +803,7 @@ CONTAINS
   intsigave = 0d0
   do j=1,KLrnumRealz
     intsigave = intsigave + &
-                KLrxi_integral(j,0d0,s)/KLrnumRealz/s
+                KLrxi_integral(j,0d0,s,chxstype='total')/KLrnumRealz/s
   enddo
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
   write(*,500) sigave,intsigave,abs(sigave-intsigave)/sigave
@@ -800,7 +826,7 @@ CONTAINS
       do
         !find next point and area between these two
         xr = findnextpoint(j)
-        areacont = KLrxi_integral(j,xl,xr)/KLrnumRealz/s
+        areacont = KLrxi_integral(j,xl,xr,chxstype='total')/KLrnumRealz/s
 
         !calc aveposarea for tol check, also negstat tallies
         xmid = KLrxi_point(j,(xr+xl)/2d0,chxstype='total')
