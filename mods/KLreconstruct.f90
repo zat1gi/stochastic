@@ -611,11 +611,10 @@ CONTAINS
 
 
 
-
   function KLrxi_integral(j,xl,xr,chxstype,tnumEigsin) result(KL_int)
   !This function integrates on KL reconstructed realizations from xl to xr.
-  !Integration is always on total cross section, but 'material'- or 'totxs'-
-  !cross sections are adjusted with or without meanadjust.
+  !Integration is on either total, scattering, or absorbing cross section.
+  !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, sigave, Coscat, Coabs, scatrat, sigscatave, sigabsave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, &
                     sigsmeanadjust, sigameanadjust
@@ -681,16 +680,15 @@ CONTAINS
 
 
 
-  function KLrxi_point(j,xpos,chxstype,tnumEigsin) result(KL_point)
+  function KLrxi_point(j,xpos,chxstype,tnumEigsin,orderin) result(KL_point)
   !Evaluates KL reconstructed realizations at a given point.
   !It has options for total, scattering only, absorption only, or scattering ratio.
   !It has an option to solve for less than the available number of eigenvalues.
+  !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when in 'material'-based or 'totxs'-based mode.
   !It can function when adjusting mean or not adjusting mean.
-  use genRealzvars, only: lamc, scatrat, Coscat, Coabs, sigscatave, sigabsave, &
-                          sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, &
-                    sigsmeanadjust, sigameanadjust
+  use genRealzvars, only: lamc, scatrat, Coscat, Coabs
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, flmatbasedxs
   use utilities, only: Heavi
 
   integer :: j
@@ -698,23 +696,30 @@ CONTAINS
   real(8) :: KL_point
   character(*) :: chxstype
   integer, optional :: tnumEigsin
+  integer, optional :: orderin
 
-  real(8) :: sigt, siga, sigs, KL_sum
-  integer :: curEig,tnumEigs
-  real(8) :: Eigfterm
+  real(8) :: sigt, siga, sigs, KL_sum, Eigfterm
+  integer :: curEig,tnumEigs,order
+  real(8) :: tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
 
+  !load any optional values or their default
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
+  order    = merge(orderin   ,0      ,present(orderin)   )
 
   !solve summation of KL terms to use below
   KL_sum = 0d0
   do curEig=1,tnumEigs
-    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos)
+    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
     KL_sum   = KL_sum + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
   enddo
 
+  !set non-x-dependent values based order
+  call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
+
+  !solve value at point
   if(.not.flmatbasedxs) then
     !determine underlying value
-    sigt = sigave + meanadjust + KL_sum
+    sigt = tsigave + tmeanadjust + KL_sum
     !determine point value
     select case (chxstype)
       case ("total")
@@ -729,10 +734,9 @@ CONTAINS
   elseif(flmatbasedxs) then
     !cross section values
     if(chxstype .ne. 'scatter') &
-      siga = sigabsave  + sigameanadjust + sqrt(Coabs)  * KL_sum
+      siga = tsigabsave  + tsigameanadjust + sqrt(Coabs)  * KL_sum
     if(chxstype .ne. 'absorb') &
-      sigs = sigscatave + sigsmeanadjust + sqrt(Coscat) * KL_sum
-
+      sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sum
     !determine point value
     select case (chxstype)
       case ("total")
@@ -751,13 +755,54 @@ CONTAINS
 
 
 
-  function Eigfunc(Ak,alpha,lamc,xpos)
-  ! Used in KLrxi_point to call reconstructed realization at given point
+  function Eigfunc(Ak,alpha,lamc,xpos,orderin)
+  ! Evaluates Eigenfunction term for any order (0+) derivative of the eigenfunction
   real(8) :: Ak,alpha,lamc,xpos,Eigfunc
+  integer, optional :: orderin
+  integer :: order
 
-  Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
+  order = merge(orderin,0,present(orderin))
+  select case (mod(order,4))
+    case (0)
+      Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
+    case (1)
+      Eigfunc = Ak * (-cos(alpha*xpos) + lamc*alpha*sin(alpha*xpos) )
+    case (2)
+      Eigfunc = Ak * (-sin(alpha*xpos) - lamc*alpha*cos(alpha*xpos) )
+    case (3)
+      Eigfunc = Ak * ( cos(alpha*xpos) - lamc*alpha*sin(alpha*xpos) )
+  end select
+  Eigfunc = Eigfunc/(alpha**order)
 
   end function Eigfunc
+
+
+
+  subroutine KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
+  !This subroutine sets values for non-x-dependent terms based on derivative order
+  use genRealzvars, only: sigave, sigscatave, sigabsave
+  use KLvars, only: meanadjust, sigsmeanadjust, sigameanadjust
+
+  integer :: order
+  real(8) :: tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
+  if(order==0) then
+    tmeanadjust     = meanadjust
+    tsigsmeanadjust = sigsmeanadjust
+    tsigameanadjust = sigameanadjust
+    tsigave         = sigave
+    tsigscatave     = sigscatave
+    tsigabsave      = sigabsave
+  else
+    tmeanadjust     = 0
+    tsigsmeanadjust = 0
+    tsigameanadjust = 0
+    tsigave         = 0
+    tsigscatave     = 0
+    tsigabsave      = 0
+  endif
+
+  end subroutine KLr_setmeans
+
 
 
 end module KLreconstruct
