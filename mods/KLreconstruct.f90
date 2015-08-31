@@ -677,8 +677,8 @@ CONTAINS
       sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sum
     !determine point value
     select case (chxstype)
-      case ("total")
-        KL_point = Heavi(sigs)*sigs + Heavi(siga)*siga
+      case ("total") !if deriv, no Heaviside
+        KL_point = merge(Heavi(sigs)*sigs + Heavi(siga)*siga, sigs+siga, order==0)
       case ("scatter")
         KL_point = sigs
       case ("absorb")
