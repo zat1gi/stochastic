@@ -1,8 +1,8 @@
   4633253,         Random number seed
   material,        Transport problem type, 'material', or 'coeffs'
   !--- Geometry - 'material', num of realz ---!
-  4000,400,         Number of realizations/how often to print
-  4000,400,         KLr Number of realizations/how often to print
+  10000,100,         Number of realizations/how often to print
+  10000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
@@ -21,12 +21,12 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  2,             Number of eigenvalues
+  4,             Number of eigenvalues
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
   no,no,yes,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
-  1000,            Number of particles to simulate on each realization
+  100,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
 
@@ -38,7 +38,7 @@
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
   100,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
   11,             Levels of refinement for eigenvalue solving
-  4,              Num of iters used in extrema locating w/o change before stop, exp says use 3 or more
+  6,              Num of iters used in extrema locating w/o change before stop, exp says use 6 or more
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
   no,             Perform KL_Noise subroutine? ('yes' or 'no') (expensive, ~*60)
   no,0.000001,    Calc KL variance at truncation?/tol for KL variance at truncation
@@ -109,10 +109,10 @@
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  1,2,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
-  2,2,fxi
-  3,2,fxi
-  4,2,fxi
+  1,4,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
+  2,4,fxi
+  3,4,fxi
+  4,4,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

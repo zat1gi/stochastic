@@ -314,6 +314,19 @@ CONTAINS
   end function arithmaticsum
 
 
+  function geometricsum(base,mult,numterms)
+  !This function finds the sum of a geometric series of 'numterms' where the
+  !first number is 'base' and each number grows by a factor of 'mult'.
+  !Function assumes all numbers (including gap) are integers.
+  integer :: base, mult, numterms, i, geometricsum
+  geometricsum = 0
+  do i=1,numterms
+    geometricsum = geometricsum + base*mult**(i-1)
+  enddo
+  end function geometricsum
+
+
+
   function Heavi(arg)
   !The Heaviside function, if arg less than (or equal to) zero, return 0, else 1
   real(8) :: arg, Heavi

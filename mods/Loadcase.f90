@@ -47,7 +47,7 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
-                                  Gaussrandtype, flCorrKL, numextremasameiter
+                                  Gaussrandtype, flCorrKL, numrefinesameiter
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
@@ -122,10 +122,10 @@ CONTAINS
   !--- Lesser KL Options ---!
   read(2,*) dumchar
   read(2,*) setflags(1)
-  if(setflags(1)=='totxs') flmatbasedxs = .false.
+  if(setflags(1)=='tot') flmatbasedxs = .false.
   read(2,*) KLrnumpoints(2),KLrnumpoints(1)     !fixed xi, fixed point
   read(2,*) levsrefEig
-  read(2,*) numextremasameiter
+  read(2,*) numrefinesameiter
   read(2,*) binSmallBound,binLargeBound
   read(2,*) KLnoise
   read(2,*) KLvarcalc,KLvarkept_tol

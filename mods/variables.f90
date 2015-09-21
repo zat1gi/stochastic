@@ -147,7 +147,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: binLargeBound        ! largest xi value for xi bins
   logical              :: flmeanadjust         ! flag, perform mean adjust or not
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
-  integer              :: numextremasameiter   ! num of iters for extrema determ w/ no change to stop
+  integer              :: numrefinesameiter    ! num of iters for extrema determ w/ no change to stop
   logical              :: flMarkov=.false.     ! run Markov-based KL routines?
   logical              :: flGauss =.false.     ! run Gauss-random-based KL routines?
   character(3)         :: Gaussrandtype        ! 'BM'-Box-Muller sampling or 'inv' inverse sampling
@@ -196,7 +196,9 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLrxisig(:)          !
 
   real(8), allocatable :: KLr_maxima(:,:)      ! location of local maxima in KL reconstructions
-  real(8), allocatable :: KLr_zeros(:,:)       ! location of zeros in KL reconstructions
+  real(8), allocatable :: KLr_zerostot(:,:)    ! location of zeros in tot xs KL reconstructions
+  real(8), allocatable :: KLr_zerosabs(:,:)    ! location of zeros in abs xs KL reconstructions
+  real(8), allocatable :: KLr_zerosscat(:,:)   ! location of zeros in scat xs KL reconstructions
 end module KLvars
 
 
