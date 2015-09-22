@@ -14,6 +14,12 @@ exec: $(OBJ)
 	$(FC) -fbounds-check -o astochastic  $(OBJ) $(MODS)
 	mv *.mod mods/
 
+profile: $(OBJ)
+	make mods
+	$(FC) -pg -fbounds-check -o astochastic  $(OBJ) $(MODS)
+	mv *.mod mods/
+	#to use profile tools: 'make profile'; './astochastic'; './auxiliary/profiletools/profile.sh'
+
 debug: $(OBJ)
 	make mods
 	$(FC) -g -fbounds-check -Wall -fbacktrace -finit-real=nan -o astochastic  $(OBJ) $(MODS)

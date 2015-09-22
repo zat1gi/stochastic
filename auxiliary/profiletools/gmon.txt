@@ -1,0 +1,100 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 32.74      4.63     4.63 54965220     0.00     0.00  __klreconstruct_MOD_klr_point
+ 25.96      8.30     3.67 219862480     0.00     0.00  __klreconstruct_MOD_eigfunc
+ 16.27     10.60     2.30    20000     0.00     0.00  __radtransmc_MOD_mctransport
+  8.91     11.86     1.26   333683     0.00     0.00  __klreconstruct_MOD_klr_refinezerogrid
+  3.61     12.37     0.51  2030001     0.00     0.00  __mcnp_random_MOD_rn_skip_ahead
+  3.39     12.85     0.48 58291899     0.00     0.00  __mcnp_random_MOD_rang
+  1.98     13.13     0.28 54965220     0.00     0.00  __klreconstruct_MOD_klr_setmeans
+  1.98     13.41     0.28 20536035     0.00     0.00  __radtransmc_MOD_solvecurbin
+  1.98     13.69     0.28 72303501     0.00     0.00  __utilities_MOD_heavi
+  1.13     13.85     0.16    35708     0.00     0.00  __klreconstruct_MOD_klr_realznegandzeros
+  0.35     13.90     0.05 20536035     0.00     0.00  __radtransmc_MOD_mcinc_pos
+  0.35     13.95     0.05  7658917     0.00     0.00  __radtransmc_MOD_newmu
+  0.21     13.98     0.03  2000000     0.00     0.00  __radtransmc_MOD_isoboundmu
+  0.21     14.01     0.03    40000     0.00     0.00  __utilities_MOD_select_from_pdf
+  0.21     14.04     0.03        2     0.02     2.77  __klreconstruct_MOD_klrgenrealz
+  0.21     14.07     0.03                             __radtransmc_MOD_radwood_actscatrat
+  0.14     14.09     0.02    20000     0.00     0.00  __radtransmc_MOD_mcwood_setceils
+  0.14     14.11     0.02    20000     0.00     0.00  __utilities_MOD_twogaussrandnums
+  0.14     14.13     0.02                             __radtransmc_MOD_mcprecalc_fluxmatnorm
+  0.07     14.14     0.01  2030001     0.00     0.00  __mcnp_random_MOD_rn_init_particle
+  0.00     14.14     0.00  2030000     0.00     0.00  __rngvars_MOD_setrngappnum
+  0.00     14.14     0.00  2000000     0.00     0.00  __radtransmc_MOD_gensourcepart
+  0.00     14.14     0.00    35708     0.00     0.00  __utilities_MOD_arithmaticsum
+  0.00     14.14     0.00    35708     0.00     0.00  __utilities_MOD_geometricsum
+  0.00     14.14     0.00    20000     0.00     0.00  __radtransmc_MOD_klwood_binmaxes
+  0.00     14.14     0.00    10000     0.00     0.00  __genrealz_MOD_genreal
+  0.00     14.14     0.00      300     0.00     0.00  __timeman_MOD_kl_timeupdate
+  0.00     14.14     0.00      200     0.00     0.00  __timeman_MOD_radtrans_timeupdate
+  0.00     14.14     0.00       18     0.00     0.00  __klresearch_MOD_eigenvalue
+  0.00     14.14     0.00        6     0.00     0.00  __utilities_MOD_mean_and_var_s
+  0.00     14.14     0.00        4     0.00     0.00  __utilities_MOD_store_in_bins
+  0.00     14.14     0.00        2     0.00     2.77  __klreconstruct_MOD_klreconstructions
+  0.00     14.14     0.00        2     0.00     0.00  __klreconstruct_MOD_klrmeshgen
+  0.00     14.14     0.00        2     0.00     0.00  __klreconstruct_MOD_klrplotrealz
+  0.00     14.14     0.00        2     0.00     0.00  __loadcase_MOD_acase_print
+  0.00     14.14     0.00        2     0.00     0.00  __radtransmc_MOD_mcallocate
+  0.00     14.14     0.00        2     0.00     0.00  __radtransmc_MOD_mcleakage_pdfbinprint
+  0.00     14.14     0.00        2     0.00     0.00  __radtransmc_MOD_stocmc_stats
+  0.00     14.14     0.00        2     0.00     7.04  __radtransmc_MOD_uq_mc
+  0.00     14.14     0.00        2     0.00     0.00  __radtransmc_MOD_woodnegstats
+  0.00     14.14     0.00        2     0.00     0.00  __timeman_MOD_fom_calculation
+  0.00     14.14     0.00        1     0.00    14.09  MAIN__
+  0.00     14.14     0.00        1     0.00     0.00  __genrealz_MOD_genreal_stats
+  0.00     14.14     0.00        1     0.00     0.00  __genrealz_MOD_reset_genrealtals
+  0.00     14.14     0.00        1     0.00     0.00  __klresearch_MOD_kl_cochart
+  0.00     14.14     0.00        1     0.00     0.00  __klresearch_MOD_kl_collect
+  0.00     14.14     0.00        1     0.00     0.00  __klresearch_MOD_kl_correlation
+  0.00     14.14     0.00        1     0.00     0.00  __klresearch_MOD_kl_eigenvalue
+  0.00     14.14     0.00        1     0.00     0.00  __klresearch_MOD_kl_eval
+  0.00     14.14     0.00        1     0.00     0.00  __loadcase_MOD_acase_load
+  0.00     14.14     0.00        1     0.00     0.00  __loadcase_MOD_clearreports
+  0.00     14.14     0.00        1     0.00     0.00  __loadcase_MOD_finalreport
+  0.00     14.14     0.00        1     0.00     0.00  __loadcase_MOD_global_allocate
+  0.00     14.14     0.00        1     0.00     0.00  __loadcase_MOD_readinputstoc
+  0.00     14.14     0.00        1     0.00     0.00  __loadcase_MOD_testinputstoc
+  0.00     14.14     0.00        1     0.00     0.00  __mcnp_random_MOD_rn_init_problem
+  0.00     14.14     0.00        1     0.00     0.00  __radtransmc_MOD_mcfluxplot
+  0.00     14.14     0.00        1     0.00     0.00  __radtransmc_MOD_mcfluxprint
+  0.00     14.14     0.00        1     0.00     0.00  __radtransmc_MOD_mcleakage_pdfplot
+  0.00     14.14     0.00        1     0.00     0.00  __radtransmc_MOD_mcprintstats
+  0.00     14.14     0.00        1     0.00     0.00  __timeman_MOD_timereport
+  0.00     14.14     0.00        1     0.00     0.00  __utilities_MOD_calc_time
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
