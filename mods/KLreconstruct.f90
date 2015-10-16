@@ -380,8 +380,25 @@ flfindzeros=.false.
   enddo
   deallocate(zloc)
   deallocate(zval)
+print *,"zlocmaster(:,1):",zlocmaster(:,1)
+print *,"zvalmaster(:,1):",zvalmaster(:,1)
+stop
 
-  !search in each cell which contains a zero and find the zero
+  if(findzeros) then
+    !search in each cell which contains a zero and find the zero
+    do isec = 1,numslabsecs
+      do ipt = 1,size(zlocmaster(:,1))-1
+        if(zvalmaster(ipt,isec)*zvalmaster(ipt,isec)<0) then
+          !call zero finder and store
+        endif
+      enddo
+    enddo
+  endif
+  !do through all locations and sections
+  !use routine to find zeros in each place where switch sign
+
+
+
   !store the zeros in the appropriate array.
 
 
