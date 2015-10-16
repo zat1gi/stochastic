@@ -320,7 +320,7 @@ flfindzeros=.true.
   !first sighting of negativity.  Otherwise it will then cycle through each set of bounds on
   !a zero and find and store the zeros.
   use genRealzvars, only: s, numRealz
-  use KLvars, only: KLzerostot, KLzerosabs, KLzerosscat, numEigs, numrefinesameiter, KLrmaxnumzeros
+  use KLvars, only: KLzerostot, KLzerosabs, KLzerosscat, KLzerostotn, numEigs, numrefinesameiter, KLrmaxnumzeros
   use utilities, only: arithmaticsum, geometricsum
   integer :: j
   character(*) :: chxstype
@@ -335,7 +335,7 @@ flfindzeros=.true.
   real(8), allocatable :: zlocmaster_(:,:),zvalmaster_(:,:)!temporary arrays for above when enlarging
   integer, allocatable :: zlocsizes(:) !size of zloc(:) held in zlocmaster(:,#)
   real(8), allocatable :: KLzeros(:) !zeros of realization
-  real(8), allocatable :: KLzerosabs_(:,:),KLzerosscat_(:,:) !temporary arrays for increasing size
+  real(8), allocatable :: KLzerosabs_(:,:),KLzerosscat_(:,:),KLzerostotn_(:,:) !temporary arrays for increasing size
 
   integer :: i, exi, imax, izer, exsize, izero
   logical, allocatable :: flextremamax(:), flextremapos(:)
@@ -382,29 +382,21 @@ flfindzeros=.true.
   deallocate(zloc)
   deallocate(zval)
 
-!print *,"zlocsizes:",zlocsizes
-!print *,"zlocmaster(1:zlocsizes(1),1):",zlocmaster(1:zlocsizes(1),1)
-!print *,"zvalmaster(1:zlocsizes(1),1):",zvalmaster(1:zlocsizes(1),1)
-!print *,"flfindzeros:",flfindzeros
   if(flfindzeros) then
     !search in each cell which contains a zero and find the zero
     allocate(KLzeros(KLrmaxnumzeros))
     izero = 1
-!print *,"KLrmaxnumzeros:",KLrmaxnumzeros
     do isec = 1,numslabsecs
       do ipt = 1,zlocsizes(isec)-1
         if(zvalmaster(ipt,isec)*zvalmaster(ipt+1,isec)<0) then
           !call zero finder and store
-          !print *,"zvalmaster(ipt,isec),zvalmaster(ipt+1,isec):",zvalmaster(ipt,isec),zvalmaster(ipt+1,isec)
-          !print *,"zlocmaster(ipt,isec),zlocmaster(ipt+1,isec):",zlocmaster(ipt,isec),zlocmaster(ipt+1,isec)
           KLzeros(izero) = KLr_findzeros(j,zlocmaster(ipt,isec),zlocmaster(ipt+1,isec), &
-                                             zvalmaster(ipt,isec),zvalmaster(ipt+1,isec),chxstype,order=0) 
+                                           zvalmaster(ipt,isec),zvalmaster(ipt+1,isec),chxstype,order=0) 
           izero = izero + 1
         endif
       enddo
     enddo
-!print *,"KLzeros(:):",KLzeros(:)
-!read *
+
     !store zeros in absorb module array
     if(chxstype .eq. 'absorb') then
       if(.not.allocated(KLzerosabs)) allocate(KLzerosabs(KLrmaxnumzeros,numRealz))
@@ -427,6 +419,18 @@ flfindzeros=.true.
       endif
       KLzerosscat(1:size(KLzeros),j) = KLzeros
     endif
+    !store zeros in totaln module array
+    if(chxstype .eq. 'totaln') then
+      if(.not.allocated(KLzerostotn)) allocate(KLzerostotn(KLrmaxnumzeros,numRealz))
+      if(size(KLzerostotn(:,1))<KLrmaxnumzeros) then
+        call move_alloc(KLzerostotn,KLzerostotn_)
+        allocate(KLzerostotn(KLrmaxnumzeros,numRealz))
+        KLzerostotn( 1:size(KLzerostotn_(:,1)) , 1:size(KLzerostotn_(1,:)) ) = KLzerostotn_
+        deallocate(KLzerostotn_)
+      endif
+      KLzerostotn(1:size(KLzeros),j) = KLzeros
+    endif
+
 
     deallocate(zlocmaster)
     deallocate(zvalmaster)
@@ -850,12 +854,12 @@ flfindzeros=.true.
     tsigscatave     = sigscatave
     tsigabsave      = sigabsave
   else
-    tmeanadjust     = 0
-    tsigsmeanadjust = 0
-    tsigameanadjust = 0
-    tsigave         = 0
-    tsigscatave     = 0
-    tsigabsave      = 0
+    tmeanadjust     = 0.0d0
+    tsigsmeanadjust = 0.0d0
+    tsigameanadjust = 0.0d0
+    tsigave         = 0.0d0
+    tsigscatave     = 0.0d0
+    tsigabsave      = 0.0d0
   endif
 
   end subroutine KLr_setmeans
