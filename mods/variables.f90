@@ -195,10 +195,11 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLrsig(:)            !
   real(8), allocatable :: KLrxisig(:)          !
 
+  integer              :: KLrmaxnumzeros       ! number of zeros in realization with most, for allocating
   real(8), allocatable :: KLr_maxima(:,:)      ! location of local maxima in KL reconstructions
-  real(8), allocatable :: KLr_zerostot(:,:)    ! location of zeros in tot xs KL reconstructions
-  real(8), allocatable :: KLr_zerosabs(:,:)    ! location of zeros in abs xs KL reconstructions
-  real(8), allocatable :: KLr_zerosscat(:,:)   ! location of zeros in scat xs KL reconstructions
+  real(8), allocatable :: KLzerostot(:,:)      ! location of zeros in tot xs KL reconstructions
+  real(8), allocatable :: KLzerosabs(:,:)      ! location of zeros in abs xs KL reconstructions
+  real(8), allocatable :: KLzerosscat(:,:)     ! location of zeros in scat xs KL reconstructions
 end module KLvars
 
 

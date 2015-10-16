@@ -151,7 +151,7 @@ CONTAINS
 !      call KLr_negsearch( realj, 'absorb' , flrealzneg )
 !      call KLr_negsearch( realj, 'total' , flrealzneg )
 !print *,"flrealzneg old:",flrealzneg
-flfindzeros=.false.
+flfindzeros=.true.
       flrealzneg=.false.
       call KLr_realznegandzeros( realj, 'scatter', flrealzneg, flfindzeros )
       if(flfindzeros .or. .not.flrealzneg) call KLr_realznegandzeros( realj, 'absorb', flrealzneg, flfindzeros )
@@ -320,7 +320,7 @@ flfindzeros=.false.
   !first sighting of negativity.  Otherwise it will then cycle through each set of bounds on
   !a zero and find and store the zeros.
   use genRealzvars, only: s, numRealz
-  use KLvars, only: KLr_zerostot, KLr_zerosabs, KLr_zerosscat, numEigs, numrefinesameiter
+  use KLvars, only: KLzerostot, KLzerosabs, KLzerosscat, numEigs, numrefinesameiter, KLrmaxnumzeros
   use utilities, only: arithmaticsum, geometricsum
   integer :: j
   character(*) :: chxstype
@@ -334,11 +334,15 @@ flfindzeros=.false.
   real(8), allocatable :: zlocmaster(:,:), zvalmaster(:,:) !these hold zloc and zval for each material segment zval
   real(8), allocatable :: zlocmaster_(:,:),zvalmaster_(:,:)!temporary arrays for above when enlarging
   integer, allocatable :: zlocsizes(:) !size of zloc(:) held in zlocmaster(:,#)
+  real(8), allocatable :: KLzeros(:) !zeros of realization
+  real(8), allocatable :: KLzerosabs_(:,:),KLzerosscat_(:,:) !temporary arrays for increasing size
 
-  integer :: i, exi, imax, izer, exsize
+  integer :: i, exi, imax, izer, exsize, izero
   logical, allocatable :: flextremamax(:), flextremapos(:)
   real(8), allocatable :: extrema(:)
   real(8) :: rtemp, KLpoint1, KLpoint2
+
+  KLrmaxnumzeros = 0
 
   !find bounds on zeros, if only care if negative abort when negative sampled
   arsum = arithmaticsum(1,numEigs,1,numEigs)
@@ -346,9 +350,6 @@ flfindzeros=.false.
   secpts = ceiling(real(arsum,8)/real(numslabsecs))
   secpts = merge(secpts,3,secpts<3)          !limit min # pts per segment
   minfinalsize = secpts*2**(numrefinesameiter-1)-geometricsum(1,2,numrefinesameiter-1) !initial size plus min adjustments
-  if(allocated(zlocmaster)) deallocate(zlocmaster)
-  if(allocated(zvalmaster)) deallocate(zvalmaster)
-  if(allocated(zlocsizes))  deallocate(zlocsizes)
   allocate(zlocmaster(minfinalsize,numslabsecs))
   allocate(zvalmaster(minfinalsize,numslabsecs))
   allocate(zlocsizes(numslabsecs))
@@ -380,20 +381,60 @@ flfindzeros=.false.
   enddo
   deallocate(zloc)
   deallocate(zval)
-print *,"zlocmaster(:,1):",zlocmaster(:,1)
-print *,"zvalmaster(:,1):",zvalmaster(:,1)
-stop
 
-  if(findzeros) then
+!print *,"zlocsizes:",zlocsizes
+!print *,"zlocmaster(1:zlocsizes(1),1):",zlocmaster(1:zlocsizes(1),1)
+!print *,"zvalmaster(1:zlocsizes(1),1):",zvalmaster(1:zlocsizes(1),1)
+!print *,"flfindzeros:",flfindzeros
+  if(flfindzeros) then
     !search in each cell which contains a zero and find the zero
+    allocate(KLzeros(KLrmaxnumzeros))
+    izero = 1
+!print *,"KLrmaxnumzeros:",KLrmaxnumzeros
     do isec = 1,numslabsecs
-      do ipt = 1,size(zlocmaster(:,1))-1
-        if(zvalmaster(ipt,isec)*zvalmaster(ipt,isec)<0) then
+      do ipt = 1,zlocsizes(isec)-1
+        if(zvalmaster(ipt,isec)*zvalmaster(ipt+1,isec)<0) then
           !call zero finder and store
+          !print *,"zvalmaster(ipt,isec),zvalmaster(ipt+1,isec):",zvalmaster(ipt,isec),zvalmaster(ipt+1,isec)
+          !print *,"zlocmaster(ipt,isec),zlocmaster(ipt+1,isec):",zlocmaster(ipt,isec),zlocmaster(ipt+1,isec)
+          KLzeros(izero) = KLr_findzeros(j,zlocmaster(ipt,isec),zlocmaster(ipt+1,isec), &
+                                             zvalmaster(ipt,isec),zvalmaster(ipt+1,isec),chxstype,order=0) 
+          izero = izero + 1
         endif
       enddo
     enddo
-  endif
+!print *,"KLzeros(:):",KLzeros(:)
+!read *
+    !store zeros in absorb module array
+    if(chxstype .eq. 'absorb') then
+      if(.not.allocated(KLzerosabs)) allocate(KLzerosabs(KLrmaxnumzeros,numRealz))
+      if(size(KLzerosabs(:,1))<KLrmaxnumzeros) then
+        call move_alloc(KLzerosabs,KLzerosabs_)
+        allocate(KLzerosabs(KLrmaxnumzeros,numRealz))
+        KLzerosabs( 1:size(KLzerosabs_(:,1)) , 1:size(KLzerosabs_(1,:)) ) = KLzerosabs_
+        deallocate(KLzerosabs_)
+      endif
+      KLzerosabs(1:size(KLzeros),j) = KLzeros
+    endif
+    !store zeros in scatter module array
+    if(chxstype .eq. 'scatter') then
+      if(.not.allocated(KLzerosscat)) allocate(KLzerosscat(KLrmaxnumzeros,numRealz))
+      if(size(KLzerosscat(:,1))<KLrmaxnumzeros) then
+        call move_alloc(KLzerosscat,KLzerosscat_)
+        allocate(KLzerosscat(KLrmaxnumzeros,numRealz))
+        KLzerosscat( 1:size(KLzerosscat_(:,1)) , 1:size(KLzerosscat_(1,:)) ) = KLzerosscat_
+        deallocate(KLzerosscat_)
+      endif
+      KLzerosscat(1:size(KLzeros),j) = KLzeros
+    endif
+
+    deallocate(zlocmaster)
+    deallocate(zvalmaster)
+    deallocate(zlocsizes)
+    if(allocated(KLzeros)) deallocate(KLzeros)
+  endif !if(flfindzeros)
+
+
   !do through all locations and sections
   !use routine to find zeros in each place where switch sign
 
@@ -490,7 +531,7 @@ stop
   !'secpts' number of locations.  Locations and values are returned in 'zloc' and 'zval'.
   !'j' is realization number.  If only interested in whether realizations are negative or not
   !(.not.'flfindzeros') then exit with 'flrealzneg'=.true. .
-  use KLvars, only: numrefinesameiter
+  use KLvars, only: numrefinesameiter, KLrmaxnumzeros
   integer :: j, order
   integer, intent(in) :: secpts
   character(*) :: chxstype
@@ -573,6 +614,8 @@ stop
 
     if(itersametally>=numrefinesameiter) exit                      !exit loop if not changed for several iters
   enddo outerdoloop
+
+  KLrmaxnumzeros = KLrmaxnumzeros + tallychanges
 
   deallocate(znew)
   end subroutine KLr_refinezerogrid
