@@ -200,6 +200,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLzerostot(:,:)      ! location of zeros in tot xs KL reconstructions
   real(8), allocatable :: KLzerosabs(:,:)      ! location of zeros in abs xs KL reconstructions
   real(8), allocatable :: KLzerosscat(:,:)     ! location of zeros in scat xs KL reconstructions
+  real(8), allocatable :: KLzerostotn(:,:)     ! location of zeros in native total xs KL reconstructions
 end module KLvars
 
 

@@ -149,7 +149,7 @@ CONTAINS
       flrealzneg=.false.
 !      call KLr_negsearch( realj, 'scatter', flrealzneg )
 !      call KLr_negsearch( realj, 'absorb' , flrealzneg )
-!      call KLr_negsearch( realj, 'total' , flrealzneg )
+!      call KLr_negsearch( realj, 'totaln' , flrealzneg )
 !print *,"flrealzneg old:",flrealzneg
 flfindzeros=.true.
       flrealzneg=.false.
@@ -165,7 +165,7 @@ flfindzeros=.true.
       endif
 
       do i=1,KLrnumpoints(2)  !create realization
-        KLrxisig(i) = KLr_point(realj,KLrxi(i),'total')
+        KLrxisig(i) = KLr_point(realj,KLrxi(i),'totale')
       enddo
       open(unit=11,file="KLrxisig.txt") !print sigma values to text file, fixed xi
       do i=1,KLrnumpoints(2)
@@ -231,7 +231,7 @@ flfindzeros=.true.
         KLrnumpts=KLrnumpoints(2)
         KLrxisig = 0
         do i=1,KLrnumpoints(2)
-          KLrxisig(i) = KLr_point(pltKLrrealzwhich(1,m),KLrxi(i),'total',tnumEigsin=tnumEigs)
+          KLrxisig(i) = KLr_point(pltKLrrealzwhich(1,m),KLrxi(i),'totale',tnumEigsin=tnumEigs)
           pltKLrrealzarray(i,1)   = KLrxi(i)     !record x values
           pltKLrrealzarray(i,m+1) = KLrxisig(i)  !record that realization
         enddo
@@ -699,7 +699,9 @@ flfindzeros=.true.
     sigt = (sigave + meanadjust)*(xr - xl) + KL_sum
     !determine point value
     select case (chxstype)
-      case ("total")
+      case ("totale")
+        KL_int = Heavi(sigt)*sigt
+      case ("totaln")
         KL_int = sigt
       case ("scatter")
         KL_int = sigt * scatrat(1)
@@ -715,8 +717,10 @@ flfindzeros=.true.
 
     !determine point value
     select case (chxstype)
-      case ("total")
+      case ("totale")
         KL_int = Heavi(sigs)*sigs + Heavi(siga)*siga
+      case ("totaln")
+        KL_int = sigs + siga
       case ("scatter")
         KL_int = sigs
       case ("absorb")
@@ -745,6 +749,7 @@ flfindzeros=.true.
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when in 'material'-based or 'totxs'-based mode.
   !It can function when adjusting mean or not adjusting mean.
+  !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, Coscat, Coabs
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, flmatbasedxs
   use utilities, only: Heavi
@@ -773,14 +778,15 @@ flfindzeros=.true.
 
   !set non-x-dependent values based order
   call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
-!print *,"chxstype:",chxstype
   !solve value at point
   if(.not.flmatbasedxs) then
     !determine underlying value
     sigt = tsigave + tmeanadjust + KL_sum
     !determine point value
     select case (chxstype)
-      case ("total")
+      case ("totale") !if deriv, no Heaviside
+        KL_point = merge(Heavi(sigt)*sigt,sigt,order==0)
+      case ("totaln")
         KL_point = sigt
       case ("scatter")
         KL_point = sigt * scatrat(1)
@@ -793,24 +799,22 @@ flfindzeros=.true.
     !cross section values
     if(chxstype .ne. 'scatter') &
       siga = tsigabsave  + tsigameanadjust + sqrt(Coabs)  * KL_sum
-!print *,"siga:",siga
     if(chxstype .ne. 'absorb') &
       sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sum
     !determine point value
     select case (chxstype)
-      case ("total") !if deriv, no Heaviside
+      case ("totale") !if deriv, no Heaviside
         KL_point = merge(Heavi(sigs)*sigs + Heavi(siga)*siga, sigs+siga, order==0)
+      case ("totaln")
+        KL_point = sigs + siga
       case ("scatter")
         KL_point = sigs
       case ("absorb")
         KL_point = siga
-!print *,"KL_point1:",KL_point
       case ("scatrat")
         KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
     end select
   endif
-!if(chxstype .eq. 'absorb') print *,"KL_point2:",KL_point
-!  chxstype = chxstype//'  '
   end function KLr_point
 
 
@@ -909,7 +913,7 @@ CONTAINS
   intsigave = 0d0
   do j=1,KLrnumRealz
     intsigave = intsigave + &
-                KLrxi_integral(j,0d0,s,chxstype='total')/KLrnumRealz/s
+                KLrxi_integral(j,0d0,s,chxstype='totaln')/KLrnumRealz/s
   enddo
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
   write(*,500) sigave,intsigave,abs(sigave-intsigave)/sigave
@@ -927,15 +931,15 @@ CONTAINS
 
     print *,"Beginning mean adjustment iteration ",adjustiter
     do j=1,KLrnumRealz
-      xr = KLr_point(j,0d0,'total')
+      xr = KLr_point(j,0d0,'totaln')
       xl = 0d0
       do
         !find next point and area between these two
         xr = findnextpoint(j)
-        areacont = KLrxi_integral(j,xl,xr,chxstype='total')/KLrnumRealz/s
+        areacont = KLrxi_integral(j,xl,xr,chxstype='totale')/KLrnumRealz/s
 
         !calc aveposarea for tol check, also negstat tallies
-        xmid = KLr_point(j,(xr+xl)/2d0,'total')
+        xmid = KLr_point(j,(xr+xl)/2d0,'totaln')
         if(xmid>0d0) then
           aveposarea = aveposarea + areacont
           perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
@@ -972,13 +976,13 @@ CONTAINS
   real(8) :: curx,oldx,curs,olds !position, then sigma value
 
   curx = xl
-  curs = KLr_point(j,curx,'total')
+  curs = KLr_point(j,curx,'totaln')
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
-    curs = KLr_point(j,curx,'total')
+    curs = KLr_point(j,curx,'totaln')
     if(curs*olds<0d0) then
       curx = refinenextpoint(j,oldx,curx)
       exit
@@ -1006,13 +1010,13 @@ CONTAINS
 
   stepsign = -1d0
   curstep = step
-  curs = KLr_point(j,curx,'total')
+  curs = KLr_point(j,curx,'totaln')
   do
     curstep = curstep/2d0
     oldx = curx
     olds = curs
     curx = curx + curstep*stepsign
-    curs = KLr_point(j,curx,'total')
+    curs = KLr_point(j,curx,'totaln')
 
     if(abs(curs)<stol) then
       refinenextpoint = curx
