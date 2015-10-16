@@ -108,3 +108,6 @@ plots/KLrrealzplot/KLrrealzplot.ps
 plots/KLrrealzplot/KLrrealzplot.txt
 plots/genRealz/genRealz.gnu
 plots/genRealz/genRealzgnuprefix.txt
+
+auxiliary/profiletools/gmon.out
+auxiliary/profiletools/gmon.txt

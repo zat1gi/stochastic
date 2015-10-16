@@ -147,16 +147,13 @@ CONTAINS
 
       !count num of realz w/ neg xs, set flag to accept or reject realz
       flrealzneg=.false.
-!      call KLr_negsearch( realj, 'scatter', flrealzneg )
-!      call KLr_negsearch( realj, 'absorb' , flrealzneg )
-!      call KLr_negsearch( realj, 'totaln' , flrealzneg )
-!print *,"flrealzneg old:",flrealzneg
-flfindzeros=.true.
-      flrealzneg=.false.
-      call KLr_realznegandzeros( realj, 'scatter', flrealzneg, flfindzeros )
-      if(flfindzeros .or. .not.flrealzneg) call KLr_realznegandzeros( realj, 'absorb', flrealzneg, flfindzeros )
-      !call combine zeros from abs and scat into one array
-!print *,"flrealzneg new:",flrealzneg
+      call KLr_negsearch( realj, 'scatter', flrealzneg )
+      if(.not.flrealzneg) call KLr_negsearch( realj, 'absorb' , flrealzneg )
+      !call KLr_negsearch( realj, 'totaln' , flrealzneg ) !don't need, only need if abs or scat is neg
+      !!flrealzneg=.false.  !can use this routine, but it is much slower, more thourough, but mothballed!
+      !!call KLr_realznegandzeros( realj, 'scatter', flrealzneg, flfindzeros )
+      !!if(flfindzeros .or. .not.flrealzneg) call KLr_realznegandzeros( realj, 'absorb', flrealzneg, flfindzeros )
+
       if(.not.flrealzneg) numPosRealz=numPosRealz+1
       if(     flrealzneg) then
         if(.not.flnegxs) flacceptrealz=.false.
@@ -328,7 +325,7 @@ flfindzeros=.true.
   logical :: flfindzeros !find zeros (or only test if neg or not)?
   integer :: numslabsecs = 10
 
-  integer :: arsum, secpts, isec, ipt, minfinalsize
+  integer :: arsum, secpts, isec, ipt, minfinalsize, izero
   real(8) :: zl,zr
   real(8), allocatable :: zloc(:), zval(:) !zloc and zval for finding zeros in a segment of the domain
   real(8), allocatable :: zlocmaster(:,:), zvalmaster(:,:) !these hold zloc and zval for each material segment zval
@@ -336,11 +333,6 @@ flfindzeros=.true.
   integer, allocatable :: zlocsizes(:) !size of zloc(:) held in zlocmaster(:,#)
   real(8), allocatable :: KLzeros(:) !zeros of realization
   real(8), allocatable :: KLzerosabs_(:,:),KLzerosscat_(:,:),KLzerostotn_(:,:) !temporary arrays for increasing size
-
-  integer :: i, exi, imax, izer, exsize, izero
-  logical, allocatable :: flextremamax(:), flextremapos(:)
-  real(8), allocatable :: extrema(:)
-  real(8) :: rtemp, KLpoint1, KLpoint2
 
   KLrmaxnumzeros = 0
 
@@ -437,92 +429,6 @@ flfindzeros=.true.
     deallocate(zlocsizes)
     if(allocated(KLzeros)) deallocate(KLzeros)
   endif !if(flfindzeros)
-
-
-  !do through all locations and sections
-  !use routine to find zeros in each place where switch sign
-
-
-
-  !store the zeros in the appropriate array.
-
-
-!everything after here is old code.  It is only still around to refer to if it is useful.
-!once this subroutine is complete, delete it.
-!  exsize = arithmaticsum(1,numEigs,1,numEigs)
-!  allocate(extrema(exsize+1))
-!  allocate(flextremamax(exsize+1))
-!  allocate(flextremapos(exsize+1))
-!  extrema = 0.0d0
-
-                                                                 !find extream/negativities
-  !label extrema (left boundary)
-!  flextremamax(1) = merge(.true.,.false.,KLr_point(j,extrema(1),'total') > &
-!                                         KLr_point(j,extrema(1)+0.000000000001d0,'total'))
-!  flextremapos(1) = merge(.true.,.false.,KLr_point(j,extrema(1),'total')>0.0d0)
-
-!  exi = 2           !index of next extrema to search for
-!  do i=1,size(derivloc)-1
-!    if(derivval(i)*derivval(i+1)<0.0d0) then  !points are extrema bounds
-      !find extrema
-!      extrema(exi) = KLr_findzeros( j,derivloc(i),derivloc(i+1),derivval(i),derivval(i+1),chxstype,order=1 )
-      !label extrema (local max or min)
-!      flextremamax(exi) = merge(.true.,.false.,KLr_point(j,extrema(exi),'total',orderin=2) < 0.0d0)
-!      flextremapos(exi) = merge(.true.,.false.,KLr_point(j,extrema(exi),'total' )>=0.0d0)
-      !test if extrema is negative
-!      if(.not.flextremapos(exi)) then
-!        flrealzneg = .true.
-!      endif
-      !advance extrema index
-!      exi = exi + 1
-
-!    endif
-!  enddo
-  !label extrema (right boundary)
-!  extrema(exi) = s
-!  flextremamax(exi) = merge(.true.,.false.,KLr_point(j,extrema(exi),'total') > &
-!                                           KLr_point(j,extrema(exi)-0.000000000001d0,'total'))
-!  flextremapos(exi) = merge(.true.,.false.,KLr_point(   j,extrema(exi),'total' )>0.0d0)
-
-
-!    if(j==1 .and. allocated(KLr_maxima)) deallocate(KLr_maxima)
-!    if(.not.allocated(KLr_maxima)) then
-!      allocate(KLr_maxima(numRealz,exsize))
-!      KLr_maxima = 0.0d0
-!    endif
-!    imax = 1
-!    do i=1,exi
-!      if(flextremamax(i)) then
-!        KLr_maxima(j,imax) = extrema(i)
-!        imax = imax+1
-!      endif
-!    enddo
-!  endif
-
-
-!    if(j==1 .and. allocated(KLr_zeros)) deallocate(KLr_zeros)
-!    if(.not.allocated(KLr_zeros)) then
-!      allocate(KLr_zeros(numRealz,exsize+numEigs))
-!       KLr_zeros = 0.0d0
-!    endif
-!    izer = 1
-!    do i=1,exi-1
-      !if extrema are bounds of zero then find zero
-!      if(flextremapos(i) .neqv. flextremapos(i+1)) then
-!        KLpoint1 = KLr_point(j,extrema(i),'total')
-!        KLpoint2 = KLr_point(j,extrema(i+1),'total')
-!        KLr_zeros(j,izer) = KLr_findzeros( j,extrema(i),extrema(i+1),KLpoint1,KLpoint2,chxstype,order=1 )
-!        izer = izer + 1
-!      endif
-!    enddo
-!  endif
-
-!  deallocate(derivloc)
-!  deallocate(derivval)
-!  deallocate(extrema)
-!  deallocate(flextremamax)
-!  deallocate(flextremapos)
-
 
   end subroutine KLr_realznegandzeros
 
