@@ -11,12 +11,14 @@ CONTAINS
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
-  use KLvars, only: flmeanadjust
+  use KLvars, only: flmeanadjust,flmatbasedxs
   integer :: icase
 
   call KLrmeshgen         !creates mesh for fixed x and xi material constructions
   call KLrgenrealz(icase) !selects array of random variables xi and tests for negativity
-  if(flmeanadjust) call KLadjustmean !adjusts mean after lopping neg cross sections
+  if(flmeanadjust .and. .not.flmatbasedxs) call KLadjustmean('totaln') !adjusts tot mean after lopping neg cross sections
+  if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
+  if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
 
   end subroutine KLreconstructions
@@ -801,18 +803,23 @@ module KLmeanadjust
 CONTAINS
   ! print statements in this module use # 500-599
 
-  subroutine KLadjustmean
+  subroutine KLadjustmean(chxstype)
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
-  use genRealzvars, only: s, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol
+  use genRealzvars, only: s, sigave, sigscatave, sigabsave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol, sigsmeanadjust, &
+                    sigameanadjust
   use KLreconstruct, only: KLr_point, KLrxi_integral
+
+  character(*) :: chxstype
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
 
   !initialize meanadjust
+  if(chxstype=='scatter') sigsmeanadjust = 0.0d0
+  sigameanadjust = 0.0d0
   meanadjust = 0.0d0
 
   !integrate on all as check
@@ -821,36 +828,38 @@ CONTAINS
     intsigave = intsigave + &
                 KLrxi_integral(j,0d0,s,chxstype='totaln')/KLrnumRealz/s
   enddo
+  write(*,*)
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
   write(*,500) sigave,intsigave,abs(sigave-intsigave)/sigave
 
 
   !meanadjust solver
   step = s/(numEigs*32d0) !hard parameter, relative step size
+
   adjustiter=0
   do
     adjustiter=adjustiter+1
-    aveposarea = 0d0
+    aveposarea   = 0d0
     perposdomain = 0d0
-    avenegarea = 0d0
+    avenegarea   = 0d0
     pernegdomain = 0d0
 
-    print *,"Beginning mean adjustment iteration ",adjustiter
+    print *,"Beginning mean adjustment iteration ",adjustiter," for cross section:",chxstype
     do j=1,KLrnumRealz
-      xr = KLr_point(j,0d0,'totaln')
+      xr = KLr_point(j,0d0,chxstype)
       xl = 0d0
       do
         !find next point and area between these two
-        xr = findnextpoint(j)
-        areacont = KLrxi_integral(j,xl,xr,chxstype='totale')/KLrnumRealz/s
+        xr = findnextpoint(j,chxstype)
+        areacont = KLrxi_integral(j,xl,xr,chxstype=chxstype)/KLrnumRealz/s
 
         !calc aveposarea for tol check, also negstat tallies
-        xmid = KLr_point(j,(xr+xl)/2d0,'totaln')
+        xmid = KLr_point(j,(xr+xl)/2d0,chxstype)
         if(xmid>0d0) then
-          aveposarea = aveposarea + areacont
+          aveposarea   = aveposarea + areacont
           perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
         else
-          avenegarea = avenegarea + areacont
+          avenegarea   = avenegarea + areacont
           pernegdomain = pernegdomain + (xr - xl)/KLrnumRealz/s * 100
         endif
 
@@ -860,37 +869,51 @@ CONTAINS
       enddo !sum within realization
     enddo !loop over realizations
 
-    if(abs(aveposarea-sigave)/sigave<meanadjust_tol) exit
     print *,"avenegarea: ",avenegarea,"  aveposarea: ",aveposarea
-    meanadjust = meanadjust + (sigave - aveposarea)
-    print *,"meanadjust: ",meanadjust
+    if(chxstype=='totaln') then
+      meanadjust     = meanadjust     + (sigave - aveposarea)
+      if(abs(aveposarea-sigave)/sigave<meanadjust_tol) exit
+    elseif(chxstype=='scatter') then
+      sigsmeanadjust = sigsmeanadjust + (sigscatave - aveposarea)
+      meanadjust     = sigsmeanadjust +    sigameanadjust
+print *,"sigscatave",sigscatave,"   aveposarea:",aveposarea,"  sigsmeanadjust:",sigsmeanadjust
+      print *,"sigsmeanadjust: ",sigsmeanadjust
+      if(abs(aveposarea-sigscatave)/sigave<meanadjust_tol) exit
+    elseif(chxstype=='absorb') then
+      sigameanadjust = sigameanadjust + (sigabsave - aveposarea)
+      meanadjust     = sigsmeanadjust +    sigameanadjust
+      print *,"sigameanadjust: ",sigameanadjust
+      if(abs(aveposarea-sigabsave)/sigave<meanadjust_tol) exit
+    endif
+    print *,"meanadjust    : ",meanadjust
   enddo !loop over calculating adjustment
     
   end subroutine KLadjustmean
 
 
 
-  function findnextpoint(j)
+  function findnextpoint(j,chxstype)
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
   use KLreconstruct, only: KLr_point
   integer :: j
+  character(*) :: chxstype
 
   real(8) :: findnextpoint
   real(8) :: curx,oldx,curs,olds !position, then sigma value
 
   curx = xl
-  curs = KLr_point(j,curx,'totaln')
+  curs = KLr_point(j,curx,chxstype)
   do 
     oldx = curx
     olds = curs
 
     curx = curx + step
-    curs = KLr_point(j,curx,'totaln')
+    curs = KLr_point(j,curx,chxstype)
     if(curs*olds<0d0) then
-      curx = refinenextpoint(j,oldx,curx)
+      curx = refinenextpoint(j,oldx,curx,chxstype)
       exit
     elseif(curx>=s) then
       curx = s
@@ -904,25 +927,26 @@ CONTAINS
 
 
 
-  function refinenextpoint(j,oldx,curx)
+  function refinenextpoint(j,oldx,curx,chxstype)
   !This function takes a range and zeroes in on transition in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
   use KLreconstruct, only: KLr_point
   integer :: j
   real(8) :: oldx,curx
+  character(*) :: chxstype
 
   real(8) :: refinenextpoint,stepsign,curs,olds,curstep
 
   stepsign = -1d0
   curstep = step
-  curs = KLr_point(j,curx,'totaln')
+  curs = KLr_point(j,curx,chxstype)
   do
     curstep = curstep/2d0
     oldx = curx
     olds = curs
     curx = curx + curstep*stepsign
-    curs = KLr_point(j,curx,'totaln')
+    curs = KLr_point(j,curx,chxstype)
 
     if(abs(curs)<stol) then
       refinenextpoint = curx
