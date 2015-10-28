@@ -71,8 +71,8 @@ CONTAINS
   use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
-                          pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, &
-                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, &
+                          pltKLrrealznumof, pltKLrrealzwhich, KLrx, KLrxi, KLrxivals, KLrxivalss, &
+                          pltKLrrealzarray, KLrrandarray, KLrsig, KLrxisig, flGaussdiffrand, &
                           pltKLrrealzPointorXi, Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: MCcases, flnegxs, KLWood, GaussKL
   use timeman, only: KL_timeupdate
@@ -130,7 +130,7 @@ CONTAINS
 
     if(pltKLrrealzPointorXi(1)=='fxi') then !create a realization, fixed xi
       KLrxisig = 0
-      do curEig=1,numEigs + mod(numEigs,2)  !select xi values
+      do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivals
           rand = rang()
           if((MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') .and. curEig<=numEigs) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
@@ -146,6 +146,26 @@ CONTAINS
           endif
         if(curEig<=numEigs) KLrxivals(realj,curEig) = xiterm
       enddo
+
+      if(flGaussdiffrand) then
+        do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivalss
+          rand = rang()
+          if((MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') .and. curEig<=numEigs) then
+            call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+          elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='BM') then
+            if(mod(curEig,2)==1) rand1 = rand
+            if(mod(curEig,2)==0) then
+              call TwoGaussrandnums(rand1,rand,xiterms)
+              KLrxivalss(realj,curEig-1) = xiterms(1)
+              xiterm = xiterms(2)
+            endif
+          elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='inv') then
+            xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+          endif
+          if(curEig<=numEigs) KLrxivalss(realj,curEig) = xiterm
+        enddo
+      endif
+
 
       !count num of realz w/ neg xs, set flag to accept or reject realz
       flrealzneg=.false.
@@ -583,7 +603,7 @@ CONTAINS
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, sigave, Coscat, Coabs, scatrat, sigscatave, sigabsave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, &
-                    sigsmeanadjust, sigameanadjust
+                    sigsmeanadjust, sigameanadjust, KLrxivalss, flGaussdiffrand
   use utilities, only: Heavi
   integer :: j
   real(8) :: xl,xr,KL_int
@@ -591,7 +611,7 @@ CONTAINS
   integer, optional :: tnumEigsin
 
   integer :: curEig, tnumEigs
-  real(8) :: Eigfintterm, KL_sum, sigs, siga, sigt
+  real(8) :: Eigfintterm, KL_sum, KL_sums, sigs, siga, sigt
 
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
@@ -601,6 +621,16 @@ CONTAINS
     Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
     KL_sum   = KL_sum + sqrt(Eig(curEig)) * Eigfintterm * KLrxivals(j,curEig)
   enddo
+  KL_sums = KL_sum
+  !solve other summation if needed
+  if(flGaussdiffrand .and. chxstype/='absorb') then
+    KL_sums = 0d0
+    do curEig=1,tnumEigs
+      Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
+      KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalss(j,curEig)
+    enddo
+  endif
+
 
   if(.not.flmatbasedxs) then
     !determine underlying value
@@ -621,7 +651,7 @@ CONTAINS
     if(chxstype .ne. 'scatter') &
       siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(Coabs)  * KL_sum
     if(chxstype .ne. 'absorb') &
-      sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(Coscat) * KL_sum
+      sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(Coscat) * KL_sums
 
     !determine point value
     select case (chxstype)
@@ -659,7 +689,7 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, Coscat, Coabs
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, flmatbasedxs
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flmatbasedxs, flGaussdiffrand
   use utilities, only: Heavi
 
   integer :: j
@@ -669,7 +699,7 @@ CONTAINS
   integer, optional :: tnumEigsin
   integer, optional :: orderin
 
-  real(8) :: sigt, siga, sigs, KL_sum, Eigfterm
+  real(8) :: sigt, siga, sigs, KL_sum, KL_sums, Eigfterm
   integer :: curEig,tnumEigs,order
   real(8) :: tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
 
@@ -683,6 +713,23 @@ CONTAINS
     Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
     KL_sum   = KL_sum + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
   enddo
+  KL_sums = KL_sum
+  !solve other summation if needed
+  if(flGaussdiffrand .and. chxstype/='absorb') then
+    KL_sums = 0d0
+    do curEig=1,tnumEigs
+      Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
+      KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
+    enddo
+  endif
+!print *,"flGaussdiffrand:",flGaussdiffrand
+!print *,"KLrxivals(1,1):",KLrxivals(1,1)
+!print *,"KLrxivalss(1,1):",KLrxivalss(1,1)
+!print *,"KLrxivals(1,2):",KLrxivals(1,2)
+!print *,"KLrxivalss(1,2):",KLrxivalss(1,2)
+!print *,"KLrxivals(1,3):",KLrxivals(1,3)
+!print *,"KLrxivalss(1,3):",KLrxivalss(1,3)
+!stop
 
   !set non-x-dependent values based order
   call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
@@ -708,7 +755,7 @@ CONTAINS
     if(chxstype .ne. 'scatter') &
       siga = tsigabsave  + tsigameanadjust + sqrt(Coabs)  * KL_sum
     if(chxstype .ne. 'absorb') &
-      sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sum
+      sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sums
     !determine point value
     select case (chxstype)
       case ("totale") !if deriv, no Heaviside

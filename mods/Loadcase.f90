@@ -47,7 +47,7 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
-                                  Gaussrandtype, flCorrKL, numrefinesameiter
+                                  Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
@@ -63,7 +63,7 @@ CONTAINS
   character(6) :: chosennorm        !norm to convert from text to number
 
   real(8)       :: dumreal,s2
-  character(3)  :: setflags(3)
+  character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
 
   integer :: i,default_ufunctc
@@ -93,8 +93,9 @@ CONTAINS
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
-  read(2,*) setflags(1)
+  read(2,*) setflags(1),setflags(2)
   if(setflags(1)=='MB') flGBgeom = .false.
+  if(setflags(2)=='same') flglGaussdiffrand = .false.
   read(2,*) GBsigave,GBsigvar
   read(2,*) GBscatrat
   read(2,*) GBlamc
@@ -591,7 +592,8 @@ CONTAINS
                           flprint, numPosRealz, numNegRealz, numRealz, flGBgeom
   use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
-                    xi, KLrxivals, pltKLrrealzarray, KLrnumRealz
+                    xi, KLrxivals, KLrxivalss, pltKLrrealzarray, KLrnumRealz, flglGaussdiffrand, &
+                    flGaussdiffrand
   use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
@@ -634,6 +636,8 @@ CONTAINS
   allocate(KLrrandarray(KLrnumpoints(1),numEigs,pltKLrrealznumof+1))  !fpoint allocations
   allocate(KLrsig(KLrnumpoints(1)))
   allocate(KLrxivals(KLrnumRealz,numEigs))                            !fxi allocations
+  if(GaussKL=='yes' .and. flglGaussdiffrand) allocate(KLrxivalss(KLrnumRealz,numEigs))
+  flGaussdiffrand = .false.
   allocate(KLrxisig(KLrnumpoints(2)))
   allocate(pltKLrrealzarray(maxval(KLrnumpoints),pltKLrrealznumof+1)) !fpoint and/or fxi all
 

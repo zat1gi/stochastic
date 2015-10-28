@@ -189,7 +189,10 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: binSize              !
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !
-  real(8), allocatable :: KLrxivals(:,:)       !
+  real(8), allocatable :: KLrxivals(:,:)       ! psuedo-random numbers for KL media
+  real(8), allocatable :: KLrxivalss(:,:)      ! same, but for scattering xs when Gauss-Based methods (diff xis)
+  logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
+  logical              :: flGaussdiffrand      ! local Gauss-Based methods to use different rand vars for xi samps?
   real(8), allocatable :: pltKLrrealzarray(:,:)!
   real(8), allocatable :: KLrrandarray(:,:,:)  !
   real(8), allocatable :: KLrsig(:)            !

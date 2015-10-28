@@ -5,7 +5,7 @@
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  9.3,           Adamscase option, if==0, then user input for next three parameters
+  3.1,           Adamscase option, if==0, then user input for next three parameters
   0.15,3.85 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   0.2,0.2,             Lambda path length vals  #0.5,2.0
@@ -13,7 +13,7 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
-  'MB',        'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?
+  'MB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
   5.0,2.0,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
   1.0,        Correlation length, lamc
@@ -25,7 +25,7 @@
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,yes,no,no,no,no  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  no,no,no,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?

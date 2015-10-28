@@ -1659,7 +1659,7 @@ CONTAINS
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
                     nwvalsperbin, flfluxplot, fluxfaces
-  use KLvars, only: flmatbasedxs
+  use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand
   integer :: icase,tnumParts,tnumRealz,i
 
   flprint = .false.
@@ -1672,6 +1672,7 @@ CONTAINS
   endif
 
   !Gauss-based input set (or not)
+  if(MCcases(icase)=='GaussKL') flGaussdiffrand = flglGaussdiffrand
   if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
     sigave       = GBsigave
     CoExp        = GBsigvar
