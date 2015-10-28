@@ -876,7 +876,6 @@ CONTAINS
     elseif(chxstype=='scatter') then
       sigsmeanadjust = sigsmeanadjust + (sigscatave - aveposarea)
       meanadjust     = sigsmeanadjust +    sigameanadjust
-print *,"sigscatave",sigscatave,"   aveposarea:",aveposarea,"  sigsmeanadjust:",sigsmeanadjust
       print *,"sigsmeanadjust: ",sigsmeanadjust
       if(abs(aveposarea-sigscatave)/sigave<meanadjust_tol) exit
     elseif(chxstype=='absorb') then

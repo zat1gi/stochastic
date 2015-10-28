@@ -228,7 +228,7 @@ CONTAINS
   numPath   = 0  !setup Markov material tallies
   sumPath   = 0d0
   sqrPath   = 0d0
-  largesti  = 0d0
+  largesti  = 0
   totLength = 0d0
   end subroutine reset_genRealtals
 

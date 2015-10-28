@@ -611,7 +611,7 @@ CONTAINS
   numPath    = 0  !setup Markov material tallies
   sumPath    = 0d0
   sqrPath    = 0d0
-  largesti   = 0d0
+  largesti   = 0
   totLength  = 0d0
   P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
   P(2)       = lam(2)/(lam(1)+lam(2))
