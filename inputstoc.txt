@@ -1,23 +1,24 @@
-  35521313,         Random number seed
+  11241399,         Random number seed
   material,        Transport problem type, 'material', or 'coeffs'
   !--- Geometry - 'material', num of realz ---!
   1000,100,         Number of realizations/how often to print
   1000,100,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
-  3.1,           Adamscase option, if==0, then user input for next three parameters
-  0.15,3.85 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
-  0.2,0.2,             Lambda path length vals  #0.5,2.0
+  0,           Adamscase option, if==0, then user input for next three parameters
+  2.25,7.75 Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.9,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0.4,0.2,             Lambda path length vals  #0.5,2.0
   2,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
   'MB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
+  'LN','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
   5.0,2.0,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
   1.0,        Correlation length, lamc
-  1.0,        Slab thickness, s
+  5.0,        Slab thickness, s
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
@@ -25,7 +26,7 @@
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  no,no,no,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  yes,no,yes,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
@@ -49,7 +50,7 @@
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
-  yes, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
+  no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
 
@@ -107,7 +108,7 @@
   7,100000
 
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
-  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
   1,4,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
   2,4,fxi

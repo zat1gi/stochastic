@@ -1650,17 +1650,18 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, &
+  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, P, sig,  &
                           GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp, &
-                          numPosRealz, numNegRealz
+                          numPosRealz, numNegRealz, Coscat, Coabs, sigscatave, sigabsave
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
                     nwvalsperbin, flfluxplot, fluxfaces
-  use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand
+  use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
   integer :: icase,tnumParts,tnumRealz,i
+  real(8) :: sigave_
 
   flprint = .false.
 
@@ -1672,14 +1673,12 @@ CONTAINS
   endif
 
   !Gauss-based input set (or not)
-  if(MCcases(icase)=='GaussKL') flGaussdiffrand = flglGaussdiffrand
   if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
     sigave       = GBsigave
     CoExp        = GBsigvar
     scatrat(1)   = GBscatrat
     lamc         = GBlamc
     s            = GBs
-    flmatbasedxs =.false.
     if(flfluxplot) then
       if(allocated(fluxfaces)) deallocate(fluxfaces)
       allocate(fluxfaces(fluxnumcells+1))
@@ -1687,6 +1686,31 @@ CONTAINS
       do i=1,fluxnumcells+1
         fluxfaces(i) = (s/fluxnumcells) * (i-1)
       enddo
+    endif
+  endif
+  if(MCcases(icase)=='GaussKL') then
+    flGaussdiffrand = flglGaussdiffrand
+    flLN = flglLN
+    if(flLN) then
+      sigave_= sigave
+      sigave = log(sigave_**2/sqrt(CoExp+sigave_**2))
+      CoExp  = log(CoExp/sigave_**2+1.0d0)
+      sig(1) = log(sig(1)**2/sqrt(CoExp+sig(1) **2))
+      sig(2) = log(sig(2)**2/sqrt(CoExp+sig(2) **2))
+    endif
+    if(flmatbasedxs .and. .not.flGBgeom) then
+      sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
+      sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+      Coscat     = CoExp  *      scatrat(1) **2
+      Coabs      = CoExp  * (1d0-scatrat(1))**2
+    elseif(flmatbasedxs .and. flGBgeom) then
+      sigscatave = sigave *      scatrat(1)
+      sigabsave  = sigave * (1d0-scatrat(1))
+      Coscat     = CoExp  *      scatrat(1) **2
+      Coabs      = CoExp  * (1d0-scatrat(1))**2
+    endif
+    if(flLN .and. chLNmode=='fitlamc') then
+      !python script for lamc(lamc)
     endif
   endif
 

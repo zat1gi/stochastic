@@ -168,6 +168,10 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: pltKLrrealznumof     !
   integer, allocatable :: pltKLrrealzwhich(:,:)!
   character(7),allocatable :: pltKLrrealzPointorXi(:) ! which type of reconstruction, pt or xi based?
+
+  logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
+  logical              :: flglLN = .false.     ! global flag to denote 'GaussKL' is Log-normal
+  character(7)         :: chLNmode = 'Glamc'   ! Log-normal cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
@@ -178,7 +182,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8)              :: sigsmeanadjust=0.0d0 ! positive translation of sigs mean xs (mat-based mode)
   real(8)              :: sigameanadjust=0.0d0 ! positive translation of siga mean xs (mat-based mode)
   logical              :: flCorrKL=.false.     ! correlated random numbers for KL Markov and GaussB realz?
-
+  logical              :: flLN=.false.         ! local flag to denote we are using Log-normal modeling
   integer              :: mostinBin            !
   integer              :: Corrnumpoints        ! Number of points used when confirming covariance func
   real(8), allocatable :: binPDF(:,:)          ! 
@@ -191,7 +195,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLrxi(:)             !
   real(8), allocatable :: KLrxivals(:,:)       ! psuedo-random numbers for KL media
   real(8), allocatable :: KLrxivalss(:,:)      ! same, but for scattering xs when Gauss-Based methods (diff xis)
-  logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
   logical              :: flGaussdiffrand      ! local Gauss-Based methods to use different rand vars for xi samps?
   real(8), allocatable :: pltKLrrealzarray(:,:)!
   real(8), allocatable :: KLrrandarray(:,:,:)  !

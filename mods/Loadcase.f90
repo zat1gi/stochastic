@@ -47,7 +47,8 @@ CONTAINS
                                   Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
-                                  Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand
+                                  Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
+                                  flglLN, chLNmode
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
@@ -96,6 +97,8 @@ CONTAINS
   read(2,*) setflags(1),setflags(2)
   if(setflags(1)=='MB') flGBgeom = .false.
   if(setflags(2)=='same') flglGaussdiffrand = .false.
+  read(2,*) setflags(1),chLNmode
+  if(setflags(1)=='LN') flglLN = .true.
   read(2,*) GBsigave,GBsigvar
   read(2,*) GBscatrat
   read(2,*) GBlamc

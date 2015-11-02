@@ -256,7 +256,6 @@ CONTAINS
         enddo
       endif
     enddo
-
     call generic_plotter( KLrnumpts,pltKLrrealznumof,pltKLrrealzarray,&
                           pltKLrrealz )
 
@@ -689,7 +688,7 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, Coscat, Coabs
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flmatbasedxs, flGaussdiffrand
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flmatbasedxs, flGaussdiffrand, flLN
   use utilities, only: Heavi
 
   integer :: j
@@ -722,14 +721,6 @@ CONTAINS
       KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
     enddo
   endif
-!print *,"flGaussdiffrand:",flGaussdiffrand
-!print *,"KLrxivals(1,1):",KLrxivals(1,1)
-!print *,"KLrxivalss(1,1):",KLrxivalss(1,1)
-!print *,"KLrxivals(1,2):",KLrxivals(1,2)
-!print *,"KLrxivalss(1,2):",KLrxivalss(1,2)
-!print *,"KLrxivals(1,3):",KLrxivals(1,3)
-!print *,"KLrxivalss(1,3):",KLrxivalss(1,3)
-!stop
 
   !set non-x-dependent values based order
   call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
@@ -741,12 +732,16 @@ CONTAINS
     select case (chxstype)
       case ("totale") !if deriv, no Heaviside
         KL_point = merge(Heavi(sigt)*sigt,sigt,order==0)
+        if(flLN) KL_point = exp(sigt)
       case ("totaln")
         KL_point = sigt
+        if(flLN) KL_point = exp(sigt)
       case ("scatter")
         KL_point = sigt * scatrat(1)
+        if(flLN) KL_point = exp(sigt)*scatrat(1)
       case ("absorb")
         KL_point = sigt * (1.0d0 - scatrat(1))
+        if(flLN) KL_point = exp(sigt)*(1d0-scatrat(1))
       case ("scatrat")
         KL_point = scatrat(1)
     end select
@@ -769,6 +764,8 @@ CONTAINS
       case ("scatrat")
         KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
     end select
+    if(flLN) KL_point = exp(KL_point)
+    if(flLN .and. chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
   endif
   end function KLr_point
 
