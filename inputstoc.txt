@@ -13,8 +13,8 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
-  'MB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
-  'LN','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
+  'GB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
+  'G','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
   5.0,2.0,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
   1.0,        Correlation length, lamc
@@ -26,7 +26,7 @@
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  yes,no,yes,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
+  no,no,no,no,no,no,yes  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   1000,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
@@ -108,7 +108,7 @@
   7,100000
 
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
-  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
   1,4,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
   2,4,fxi

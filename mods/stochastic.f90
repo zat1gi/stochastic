@@ -22,13 +22,6 @@ program stochastic
   ! pass by reference
   integer :: j,icase !current realization, current MCtransport case
 
-
-  real(8) :: lamcw
-  lamcw = exponentialfit(s=3.0d0,a=30.0d0,lamcsig=2.0d0)
-  print *,"lamcw:",lamcw
-stop
-
-
   !!read parameters
   call cpu_time(t1)
   call readinputstoc

@@ -1691,6 +1691,9 @@ CONTAINS
   if(MCcases(icase)=='GaussKL') then
     flGaussdiffrand = flglGaussdiffrand
     flLN = flglLN
+    if(flLN .and. chLNmode=='fitlamc') then
+      lamc = exponentialfit(s,1d0+CoExp/sigave,lamc)
+    endif
     if(flLN) then
       sigave_= sigave
       sigave = log(sigave_**2/sqrt(CoExp+sigave_**2))
@@ -1708,9 +1711,6 @@ CONTAINS
       sigabsave  = sigave * (1d0-scatrat(1))
       Coscat     = CoExp  *      scatrat(1) **2
       Coabs      = CoExp  * (1d0-scatrat(1))**2
-    endif
-    if(flLN .and. chLNmode=='fitlamc') then
-      !python script for lamc(lamc)
     endif
   endif
 
