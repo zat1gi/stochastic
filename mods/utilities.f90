@@ -361,6 +361,28 @@ CONTAINS
   end subroutine TwoGaussrandnums
 
 
+  
+  function exponentialfit(s,a,lamcsig) result(lamcw)
+  !This function prints s, a, and lamcsig (log-normal correlation length) to a text file,
+  !executes a python script which fits and exponential curve fit to this log-normal
+  !covariance data, and reads in the correlation length of the exponential fit
+  real(8) :: s,a,lamcsig,lamcw
+
+  open(unit = 101, file = "auxiliary/expfit/s.a.lamcsig.txt")
+  write(101,*) s
+  write(101,*) a
+  write(101,*) lamcsig
+  close(101)
+
+  call system("./auxiliary/expfit/fexpfit.py")
+  open(unit = 101, file = "auxiliary/expfit/lamcw.txt")
+  read(101, *) lamcw
+  close(101)
+
+  end function exponentialfit
+ 
+
+
   function erfi(z)
   !Solves value for inverse error function to certain tolerance using
   !Maclaurin series.  Alerts user if not solved to tolerance due to 

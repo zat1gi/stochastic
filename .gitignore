@@ -111,3 +111,6 @@ plots/genRealz/genRealzgnuprefix.txt
 
 auxiliary/profiletools/gmon.out
 auxiliary/profiletools/gmon.txt
+genericplot.pdf
+genericplot.ps
+genericplot.txt
