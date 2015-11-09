@@ -1652,7 +1652,8 @@ CONTAINS
   !MCtransport if multiple cases were selected.
   use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, P, sig,  &
                           GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp, &
-                          numPosRealz, numNegRealz, Coscat, Coabs, sigscatave, sigabsave
+                          numPosRealz, numNegRealz, Coscat, Coabs, sigscatave, sigabsave, &
+                          sigave_, CoExp_
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
@@ -1661,7 +1662,6 @@ CONTAINS
                     nwvalsperbin, flfluxplot, fluxfaces
   use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
   integer :: icase,tnumParts,tnumRealz,i
-  real(8) :: sigave_
 
   flprint = .false.
 
@@ -1697,6 +1697,7 @@ CONTAINS
     if(flLN) then
       sigave_= sigave
       sigave = log(sigave_**2/sqrt(CoExp+sigave_**2))
+      CoExp_ = CoExp
       CoExp  = log(CoExp/sigave_**2+1.0d0)
       sig(1) = log(sig(1)**2/sqrt(CoExp+sig(1) **2))
       sig(2) = log(sig(2)**2/sqrt(CoExp+sig(2) **2))

@@ -80,7 +80,9 @@ module genRealzvars
   real(8), allocatable :: matLength(:)         ! material boundaries
   real(8)              :: atmixsig             ! atomically mixed cross section value
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
+  real(8)              :: sigave_              ! maintains input sigave when sigave is translated to LN
   real(8)              :: CoExp                ! variance of total xs in KL expansion
+  real(8)              :: CoExp_              ! maintains input CoExp when CoExp is translated to LN
   real(8)              :: Coscat               ! variance of scat xs in KL expansion, 'material' mode
   real(8)              :: Coabs                ! variance of abs  xs in KL expansion, 'material' mode
   real(8)              :: sigave               ! weighted average sigma value for binary mixtures
@@ -173,6 +175,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   logical              :: flglLN = .false.     ! global flag to denote 'GaussKL' is Log-normal
   character(7)         :: chLNmode = 'Glamc'   ! Log-normal cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
   logical              :: flLNxscheck = .false.! perform mean, var, and pdf check of LN xs distributions?
+  character(7)         :: chLNxschecktype      ! type of cross section to analyze
   integer              :: numLNxspts           ! number of x-values to perform checks at
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
   !non-inputs

@@ -13,7 +13,7 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
-  'GB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
+  'MB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
   'G','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
   5.0,2.0,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
@@ -22,7 +22,7 @@
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  4,             Number of eigenvalues
+  10,             Number of eigenvalues
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
@@ -53,7 +53,7 @@
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
-  yes,10,50,      perform LN dist check?/num x-vals to check/num bins for pdf
+  yes,totaln,10,50,      perform LN dist check?/chxstype'totaln'.../num x-vals to check/num bins for pdf
 
   !--- Lesser MLMC Options ---!
   3,            Refinement factor with which to increase each Level

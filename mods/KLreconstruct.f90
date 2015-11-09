@@ -11,7 +11,8 @@ CONTAINS
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
-  use KLvars, only: flmeanadjust,flmatbasedxs
+  use MCvars, only: MCcases
+  use KLvars, only: flmeanadjust,flmatbasedxs,flLNxscheck
   integer :: icase
 
   call KLrmeshgen         !creates mesh for fixed x and xi material constructions
@@ -20,8 +21,87 @@ CONTAINS
   if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
   if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
+  if(MCcases(icase)=='GaussKL' .and. flLNxscheck) call LNxsvalstest
 
   end subroutine KLreconstructions
+
+
+
+
+  subroutine LNxsvalstest
+  !This subroutine observes the xs of choice's value at points in the slab for each realization,
+  !finding the average and variance of the cross section at these points, and plotting
+  !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
+  !process are represented well.  The pdf further checks.
+  use utilities, only: mean_and_var_s
+  use genRealzvars, only: sigave, CoExp, sigave_, CoExp_, numRealz, s
+  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, flLN
+
+  integer :: j, ix
+  real(8) :: step
+  real(8), allocatable :: LNxsvals(:,:),xvals(:),LNxsaves(:),LNxsvars(:),LNxspdf(:,:)
+  real(8), allocatable :: pdfLNxsBounds(:)
+  integer, allocatable :: pdfLNxsCounts(:,:)
+
+  allocate(LNxsvals(numRealz,numLNxspts))
+  allocate(xvals(numLNxspts))
+  allocate(LNxsaves(numLNxspts))
+  allocate(LNxsvars(numLNxspts))
+  allocate(LNxspdf(numLNxsbins,numLNxspts))
+  allocate(pdfLNxsCounts(numLNxspts,numLNxsbins))
+  allocate(pdfLNxsBounds(numLNxsbins))
+
+  !populate LNxsvals
+  step = s /(real(numLnxspts,8)-1d0)
+  do ix = 1,numLNxspts
+    if(ix==1) then
+      xvals(ix) = 0.0d0
+    else
+      xvals(ix) = xvals(ix-1) + step
+    endif
+    do j=1,numRealz
+      LNxsvals(j,ix) = KLr_point(j,xvals(ix),chLNxschecktype)
+    enddo
+  enddo
+
+  !calulate and print averages and variances
+  print *
+  504 format(" --- Moment (and pdf) check for Log-Norm reconstructions ---")
+  503 format(" --- Moment (and pdf) check for Gaussian reconstructions ---")
+  501 format("#inp sigave   obs sigave     inp var      obs var      x")
+  502 format(f10.5,"   ",f10.5,"   ",f10.5,"   ",f10.5,f10.5)
+  if(flLN)      write(*,504)
+  if(.not.flLN) write(*,503)
+  write(*,501) 
+  do ix = 1,numLNxspts
+    call mean_and_var_s( LNxsvals(:,ix),size(LNxsvals(:,ix)),LNxsaves(ix),LNxsvars(ix))
+    if(flLN)      write(*,502) sigave_,LNxsaves(ix),CoExp_,LNxsvars(ix),xvals(ix)
+    if(.not.flLN) write(*,502) sigave,LNxsaves(ix),CoExp,LNxsvars(ix),xvals(ix)
+  enddo
+
+  !bin LNxsvals, print, and plot
+  do ix=1,numLNxspts
+    call store_in_bins( min(0d0,minval(LNxsvals)-step/0.5d0) , maxval(LNxsvals)+step/0.5d0, &
+          numLNxsbins , pdfLNxsCounts(:,ix), pdfLNxsBounds(:) , LNxsvals(:,ix) , numRealz )
+  enddo
+
+  !print to file
+  !plot using gnuplot
+
+
+  deallocate(LNxsvals)
+  deallocate(xvals)
+  deallocate(LNxsaves)
+  deallocate(LNxsvars)
+  deallocate(LNxspdf)
+  deallocate(pdfLNxsCounts)
+  deallocate(pdfLNxsBounds)
+stop
+
+  end subroutine LNxsvalstest
+
+
+
 
 
 
