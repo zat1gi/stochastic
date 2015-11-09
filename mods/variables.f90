@@ -172,6 +172,9 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
   logical              :: flglLN = .false.     ! global flag to denote 'GaussKL' is Log-normal
   character(7)         :: chLNmode = 'Glamc'   ! Log-normal cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
+  logical              :: flLNxscheck = .false.! perform mean, var, and pdf check of LN xs distributions?
+  integer              :: numLNxspts           ! number of x-values to perform checks at
+  integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam
