@@ -34,12 +34,13 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: sigave, CoExp, sigave_, CoExp_, numRealz, s
-  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, flLN
+  use genRealzvars, only: sigave, CoExp, sigave_, CoExp_, numRealz, s, &
+                          sigscatave, sigabsave, Coscat, Coabs
+  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, flLN, chLNxsplottype
 
-  integer :: j, ix
-  real(8) :: step
-  real(8), allocatable :: LNxsvals(:,:),xvals(:),LNxsaves(:),LNxsvars(:),LNxspdf(:,:)
+  integer :: j, ix, ibin
+  real(8) :: step, tsigave, tCoExp
+  real(8), allocatable :: LNxsvals(:,:),xvals(:),LNxsaves(:),LNxsvars(:)
   real(8), allocatable :: pdfLNxsBounds(:)
   integer, allocatable :: pdfLNxsCounts(:,:)
 
@@ -47,9 +48,8 @@ CONTAINS
   allocate(xvals(numLNxspts))
   allocate(LNxsaves(numLNxspts))
   allocate(LNxsvars(numLNxspts))
-  allocate(LNxspdf(numLNxsbins,numLNxspts))
-  allocate(pdfLNxsCounts(numLNxspts,numLNxsbins))
-  allocate(pdfLNxsBounds(numLNxsbins))
+  allocate(pdfLNxsCounts(numLNxsbins,numLNxspts))
+  allocate(pdfLNxsBounds(numLNxsbins+1))
 
   !populate LNxsvals
   step = s /(real(numLnxspts,8)-1d0)
@@ -64,36 +64,103 @@ CONTAINS
     enddo
   enddo
 
+  !set average and variance values for selected case
+  if(flLN) then
+    if(chLNxschecktype=='totaln')  tsigave = sigave_
+    if(chLNxschecktype=='scatter') tsigave = sigscatave
+    if(chLNxschecktype=='absorb')  tsigave = sigabsave
+
+    if(chLNxschecktype=='totaln')  tCoExp = CoExp_
+    if(chLNxschecktype=='scatter') tCoExp = Coscat
+    if(chLNxschecktype=='absorb')  tCoExp = Coabs
+  else
+    if(chLNxschecktype=='totaln')  tsigave = sigave
+    if(chLNxschecktype=='scatter') tsigave = sigscatave
+    if(chLNxschecktype=='absorb')  tsigave = sigabsave
+
+    if(chLNxschecktype=='totaln')  tCoExp = CoExp
+    if(chLNxschecktype=='scatter') tCoExp = Coscat
+    if(chLNxschecktype=='absorb')  tCoExp = Coabs
+  endif
+
   !calulate and print averages and variances
+  open(unit=15,file="plots/LNxsstats/aveandvar.txt")
   print *
-  504 format(" --- Moment (and pdf) check for Log-Norm reconstructions ---")
-  503 format(" --- Moment (and pdf) check for Gaussian reconstructions ---")
+  503 format("#--- Moment (and pdf) check for")
+  520 format(" absorb xs")
+  521 format(" scattr xs")
+  522 format(" total  xs")
+  523 format(" Log-Norm")
+  524 format(" Gaussian")
+  504 format(" reconstructions ---")
   501 format("#inp sigave   obs sigave     inp var      obs var      x")
   502 format(f10.5,"   ",f10.5,"   ",f10.5,"   ",f10.5,f10.5)
-  if(flLN)      write(*,504)
-  if(.not.flLN) write(*,503)
-  write(*,501) 
+  write(15,503,advance='no')
+  if(chLNxschecktype=='totaln')  write(15,522,advance='no')
+  if(chLNxschecktype=='scatter') write(15,521,advance='no')
+  if(chLNxschecktype=='absorb')  write(15,520,advance='no')
+  if(flLN) then
+    write(15,523,advance='no')
+  else
+    write(15,524,advance='no')
+  endif
+  write(15,504)
+  write(15,501) 
   do ix = 1,numLNxspts
     call mean_and_var_s( LNxsvals(:,ix),size(LNxsvals(:,ix)),LNxsaves(ix),LNxsvars(ix))
-    if(flLN)      write(*,502) sigave_,LNxsaves(ix),CoExp_,LNxsvars(ix),xvals(ix)
-    if(.not.flLN) write(*,502) sigave,LNxsaves(ix),CoExp,LNxsvars(ix),xvals(ix)
+    write(15,502) tsigave,LNxsaves(ix),tCoExp,LNxsvars(ix),xvals(ix)
   enddo
+  close(unit=15)
+  call system("cat plots/LNxsstats/aveandvar.txt")
 
   !bin LNxsvals, print, and plot
   do ix=1,numLNxspts
-    call store_in_bins( min(0d0,minval(LNxsvals)-step/0.5d0) , maxval(LNxsvals)+step/0.5d0, &
+    call store_in_bins( merge(0d0,minval(LNxsvals)-step/0.5d0,flLN) , maxval(LNxsvals)+step/0.5d0, &
           numLNxsbins , pdfLNxsCounts(:,ix), pdfLNxsBounds(:) , LNxsvals(:,ix) , numRealz )
   enddo
 
   !print to file
-  !plot using gnuplot
+  open(unit=15,file="plots/LNxsstats/pdfLNxs.txt")
+  506 format("#xs-value")
+  507 format("     x=",f6.3)
+  508 format(" ")
+  write(15,506,advance='no')
+  do ix=1,numLNxspts
+    write(15,507,advance='no') xvals(ix)
+  enddo    
+  write(15,508)
 
+  509 format(f12.6)
+  510 format(i12)
+  do ibin=1,numLNxsbins
+    write(15,509,advance='no') pdfLNxsBounds(ibin)
+
+    do ix=1,numLNxspts
+      write(15,510,advance='no') pdfLNxsCounts(ibin,ix)
+    enddo
+    write(15,508)
+  enddo
+  close(unit=15)
+
+  !plot using gnuplot
+  if(chLNxsplottype=='preview' .or. chLNxsplottype=='plot') then
+    if(chLNxsplottype=='preview') then
+      call system("gnuplot plots/LNxsstats/aveandvar.preview.gnu")
+      call system("gnuplot plots/LNxsstats/pdfLNxs.preview.gnu")
+    else
+      call system("gnuplot plots/LNxsstats/aveandvar.plot.gnu")
+      call system("gnuplot plots/LNxsstats/pdfLNxs.plot.gnu")
+    endif
+    call system("ps2pdf aveandvar.ps")
+    call system("ps2pdf pdfLNxs.ps")
+    call system("mv aveandvar.ps aveandvar.pdf plots/LNxsstats/")
+    call system("mv pdfLNxs.ps pdfLNxs.pdf plots/LNxsstats/")
+  endif
 
   deallocate(LNxsvals)
   deallocate(xvals)
   deallocate(LNxsaves)
   deallocate(LNxsvars)
-  deallocate(LNxspdf)
   deallocate(pdfLNxsCounts)
   deallocate(pdfLNxsBounds)
 stop

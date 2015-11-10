@@ -40,8 +40,11 @@ CONTAINS
   integer :: binToStore,j,k
   real(8) :: binSize
 
+  binCounts = 0
+  binBounds = 0d0
+
   !set up bins
-  binSize = ( binLargeBound - binSmallBound ) / ( binNumof - 1 )
+  binSize = ( binLargeBound - binSmallBound ) / ( binNumof )
   binBounds(1)=binSmallBound
   do k=2,binNumof+1
     binBounds(k) = binBounds(k-1) + binSize

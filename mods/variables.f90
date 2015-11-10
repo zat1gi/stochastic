@@ -178,6 +178,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
   integer              :: numLNxspts           ! number of x-values to perform checks at
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
+  character(7)         :: chLNxsplottype       ! 'noplot','preview', or 'plot'
   !non-inputs
   real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
   real(8), allocatable :: alpha(:)             ! other form of gam

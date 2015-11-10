@@ -116,3 +116,11 @@ auxiliary/expfit/s.a.lamcsig.txt
 genericplot.pdf
 genericplot.ps
 genericplot.txt
+
+plots/LNxsstats/aveandvar.pdf
+plots/LNxsstats/aveandvar.ps
+plots/LNxsstats/aveandvar.txt
+plots/LNxsstats/pdfLNxs.pdf
+plots/LNxsstats/pdfLNxs.ps
+plots/LNxsstats/pdfLNxs.txt
+

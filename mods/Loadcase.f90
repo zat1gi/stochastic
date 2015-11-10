@@ -48,7 +48,8 @@ CONTAINS
                                   pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
-                                  flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, chLNxschecktype
+                                  flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
+                                  chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
@@ -147,7 +148,7 @@ CONTAINS
   if(setflags(1)=='yes') flmeanadjust=.true.
   read(2,*) refsigMode,userrefsig,negwgtbinnum,nwvalsperbin
   read(2,*) wgtmaxmin,wgtmax,wgtmin
-  read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins
+  read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins,chLNxsplottype
   if(setflags(1)=='yes') flLNxscheck=.true.
 
   !--- Lesser MLMC Options ---!
