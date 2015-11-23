@@ -13,16 +13,16 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
-  'MB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
-  'G','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
-  2.0,2.0,    Ave total cross section, total cross section variance
+  'GB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
+  'G','fGlamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
+  2.0,1.5,    Ave total cross section, total cross section variance
   0.1,        Scattering ratio, c
   0.5,        Correlation length, lamc
   2.0,        Slab thickness, s
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  50,             Number of eigenvalues
+  40,             Number of eigenvalues
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
@@ -53,7 +53,7 @@
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
   no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
-  no,totaln,4,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
+  yes,totaln,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
   !--- Lesser MLMC Options ---!
   3,            Refinement factor with which to increase each Level
@@ -117,7 +117,7 @@
   4,4,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
-  preview,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  plot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of Eig/type combos to plot (up to 4)
   1,1            Which Eigenmode to plot/"1" for CoEffExp, "2" for CoEffAct
   2,1

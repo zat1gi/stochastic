@@ -47,7 +47,7 @@ program stochastic
   endif
 
   !!Perform KL reconstructions if no transport to use them
-  if(KLrec=='yes' .and. KLWood=='no' .and. WAMC=='no' .and. GaussKL=='no') then
+  if(KLrec=='yes' .and. KLWood=='no' .and. WAMC=='no') then
     call KLreconstructions(2)  !'2' means passes information as KLWood
   endif
 

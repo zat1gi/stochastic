@@ -11,6 +11,7 @@ CONTAINS
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
+  use genRealzvars, only: flGBgeom
   use MCvars, only: MCcases
   use KLvars, only: flmeanadjust,flmatbasedxs,flLNxscheck
   integer :: icase
@@ -21,7 +22,8 @@ CONTAINS
   if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
   if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
-  if(MCcases(icase)=='GaussKL' .and. flLNxscheck) call LNxsvalstest
+  if((.not.MCcases(icase)=='GaussKL' .and. flLNxscheck .and. .not.flGBgeom) .or.   &
+     (     MCcases(icase)=='GaussKL' .and. flLNxscheck .and.      flGBgeom)) call LNxsvalstest
 
   end subroutine KLreconstructions
 
@@ -35,7 +37,7 @@ CONTAINS
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
   use genRealzvars, only: sigave, CoExp, sigave_, CoExp_, numRealz, s, &
-                          sigscatave, sigabsave, Coscat, Coabs
+                          sigscatave, sigabsave, Coscat, Coabs, flGBgeom
   use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, flLN, chLNxsplottype
 
   integer :: j, ix, ibin
@@ -65,7 +67,7 @@ CONTAINS
   enddo
 
   !set average and variance values for selected case
-  if(flLN) then
+  if(flLN .and. flGBgeom) then
     if(chLNxschecktype=='totaln')  tsigave = sigave_
     if(chLNxschecktype=='scatter') tsigave = sigscatave
     if(chLNxschecktype=='absorb')  tsigave = sigabsave
