@@ -243,7 +243,6 @@ CONTAINS
 
       !sum Eigs to calc Corryield
       do curEig=1,numEigs
-if(curEig==numEigs) print *,"curEig:",curEig,"    Correxpect(1,1):",Correxpect(1,1),"  Corryield(1,1):",Corryield(1,1)
         Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
         Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
         Corryield(x,y) = Corryield(x,y) + Eig(curEig) * Eigfx * Eigfy
@@ -370,37 +369,27 @@ if(curEig==numEigs) print *,"curEig:",curEig,"    Correxpect(1,1):",Correxpect(1
 
 
 
-
-
   
   subroutine KL_Cochart
-  !This subroutine calculates the ratio of the calculated variance (Co) using a chosen
-  !number of eigenmodes to the total variance, which is equivalent to using all
-  !eigenmodes.  The ratio will thus always be less than 1.  The closer to 1 the ratio
-  !is, the more efficient that approximation is.  This calculation is made using the
-  !Co value given by input parameters (P(1) & P(2)), and by the generated actual
-  !probabilities.  Since the eigenvalue contains the variance, this baseline Co
-  !actually divides itself out, so that the efficiency by either method is the same.
-  !This subroutine calculates both, then prints those that are chosen in the input.
+  !This subroutine calculates the variance normalized to 1 at each point in the domain.
+  !The closer to 1 the ratio is, the more efficient that approximation is.
   use genRealzvars, only: sig, s, numRealz, P, lamc, totLength, CoExp
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo
   use KLreconstruct, only: Eigfunc
 
-  integer :: curCS,curEig,twice,check
+  integer :: curCS,curEig,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
-  real(8) :: Co,CoAct,CoPerDiff,totLPer(2),tottotLength
+  real(8) :: CoPerDiff,totLPer(2),tottotLength
   real(8) :: x,phi
   real(8),allocatable :: Coplotarray(:,:)
 
   allocate(Coplotarray(numSlice,pltConumof+1))
   Coplotarray = 0
 
+  !This is a statistical test of the reconstructions
   444 format("totLength(1):",f15.2,"    totLength(2):",f15.2,"    tottotLength:",f15.2)
   445 format("expLength(1):",f15.2,"    expLength(2):",f15.2,"    exptotLength:",f15.2)
-  446 format("       CoAct:",f15.5)
-  447 format("       CoExp:",f15.5,"       CoPerdiff:",f15.2," %")
-
 
   totLPer(1)=totLength(1)/(totLength(1)+totLength(2))
   totLPer(2)=totLength(2)/(totLength(1)+totLength(2))
@@ -416,83 +405,53 @@ if(curEig==numEigs) print *,"curEig:",curEig,"    Correxpect(1,1):",Correxpect(1
     sliceval(curCS)=sliceval(curCS-1)+slicesize
   enddo
 
-  CoAct     = totLPer(1) *totLPer(2) *(sig(1)-sig(2))**2
-  CoPerDiff = abs( ( CoExp - CoAct ) / CoExp ) * 100
-  write(*,446) CoAct
-  write(*,447) CoExp,CoPerDiff
-print *,"CoExp: ",CoExp
-
-  do twice=1,2
-
-    if( twice==1 ) then
-      Co=CoExp
-    else
-      Co=CoAct
-      do curEig=1,numEigs
-        !I think I can get rid of this now that variance has been taken out of the 
-        !eigenvalue calculations.  This would include the instance at the end of this
-        !subroutine as well.
-        Eig(curEig) = Eigenvalue( gam(curEig) )
-      enddo
-    endif
-
-    do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
-      cumCo=0
-      x=sliceval(curCS)
-      do curEig=1,numEigs
-        phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
-        cumCo=cumCo+  Eig(curEig)*phi**2
-
-        CoEff(curEig,curCS)=cumCo/Co
-      enddo
-    enddo
-print *,"cumCo:",cumCo
-
-
-    440 format("#    slicenum    sliceval ")
-    441 format("     CoEff",i5)
-    442 format("     ",i5,"     ",f10.6)
-    443 format("     ",f10.6)
-
-    open(unit=14, file="CoEff.txt")
-    write(14,440,advance="no")
+  do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
+    cumCo=0
+    x=sliceval(curCS)
     do curEig=1,numEigs
-      write(14,441,advance="no") curEig
+      phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
+      cumCo=cumCo+  Eig(curEig)*phi**2
+
+      CoEff(curEig,curCS)=cumCo
     enddo
-    do curCS=1,numSlice       !print CoEff results to file
-      write(14,*)
-      write(14,442,advance="no") curCS,sliceval(curCS)
-      do curEig=1,numEigs
-        write(14,443,advance="no") CoEff(curEig,curCS)
+  enddo
+
+
+  440 format("#    slicenum    sliceval ")
+  441 format("     CoEff",i5)
+  442 format("     ",i5,"     ",f10.6)
+  443 format("     ",f10.6)
+
+  open(unit=14, file="CoEff.txt")
+  write(14,440,advance="no")
+  do curEig=1,numEigs
+    write(14,441,advance="no") curEig
+  enddo
+  do curCS=1,numSlice       !print CoEff results to file
+    write(14,*)
+    write(14,442,advance="no") curCS,sliceval(curCS)
+    do curEig=1,numEigs
+      write(14,443,advance="no") CoEff(curEig,curCS)
+    enddo
+  enddo
+
+  call system("mv CoEff.txt texts/CoEffExp.txt")
+
+  do check=1,pltConumof  !load values to plot according to selected options
+    if( pltCo(1) .NE. 'noplot' ) then
+      curEig = pltCowhich(1,check)
+      do curCS=1,numSlice
+        Coplotarray(curCS,1) = sliceval(curCS)
+        Coplotarray(curCS,check+1) = CoEff(curEig,curCS)
       enddo
-    enddo
-
-    if( twice==1 ) then
-      call system("mv CoEff.txt texts/CoEffExp.txt")
-    else
-      call system("mv CoEff.txt texts/CoEffAct.txt")
     endif
+  enddo
 
-    do check=1,pltConumof  !load values to plot according to selected options
-      if( pltCowhich(2,check)==twice .AND. pltCo(1) .NE. 'noplot' ) then
-        curEig = pltCowhich(1,check)
-        do curCS=1,numSlice
-          Coplotarray(curCS,1) = sliceval(curCS)
-          Coplotarray(curCS,check+1) = CoEff(curEig,curCS)
-        enddo
-      endif
-    enddo
+  call generic_plotter( numSlice,pltConumof,Coplotarray,pltCo ) !plot
 
-  enddo !end twice, loop for expected and actual Co values
-
-  if(pltCo(1) .NE. 'noplot') then
-    call generic_plotter( numSlice,pltConumof,Coplotarray,pltCo ) !plot
-
-    call system("mv genericplot.txt plots/CoEffplot/CoEffplot.txt")
-    call system("mv genericplot.ps  plots/CoEffplot/CoEffplot.ps")
-    call system("mv genericplot.pdf plots/CoEffplot/CoEffplot.pdf")
-  endif
-
+  call system("mv genericplot.txt plots/CoEffplot/CoEffplot.txt")
+  call system("mv genericplot.ps  plots/CoEffplot/CoEffplot.ps")
+  call system("mv genericplot.pdf plots/CoEffplot/CoEffplot.pdf")
 
   do curEig=1,numEigs  !return 'Eig' to original values
     Eig(curEig) = Eigenvalue( gam(curEig) )

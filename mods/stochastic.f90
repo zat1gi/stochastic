@@ -13,7 +13,8 @@ program stochastic
 
   use genRealzvars
   use timevars, only: t1
-  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, Corropts
+  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, &
+                    Corropts, pltCo
   use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
                     MCcaseson, MCcases, probtype
   use MLMCvars, only: MLMCcaseson, MLMCcases
@@ -39,7 +40,7 @@ program stochastic
     if(Corropts(1).ne."noplot" .and. .not.flGBgeom) call KL_Correlation !calc & plot spacial correlation funcs
     call KL_collect         !collects xi values over realizations
     call genReal_stats      !performs stats on above realizations
-    call KL_Cochart         !creates plots of variance kept to total variance
+    if(pltCo(1).ne.'noplot' .and. .not.flGBgeom)    call KL_Cochart !creates plots of var kept to tot var
     call KL_eval            !creates xi distributions from xi values
     if(KLnoise=='yes') call KL_Noise !does something with xi distributions
     call reset_genRealtals  !resets Markov realz stats for next round of creation

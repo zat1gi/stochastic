@@ -13,9 +13,9 @@ CONTAINS
   use timevars, only: time
   use genRealzvars, only: numRealz, flGBgeom
   use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat, refsigMode
-  use KLvars, only: Corropts
+  use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
-  use KLresearch, only: KL_eigenvalue, KL_Correlation
+  use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use KLreconstruct, only: KLreconstructions
   use timeman, only: radtrans_timeupdate
   integer :: icase
@@ -27,7 +27,7 @@ CONTAINS
   write(*,*) "Starting method: ",MCcases(icase)  
   call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
 
-  if(  MCcases(icase)=='GaussKL' .and. flGBgeom) &
+  if( MCcases(icase)=='GaussKL' .and. flGBgeom) &
     call KL_eigenvalue
 
   if(  MCcases(icase)=='KLWood'   .or. &
@@ -35,9 +35,10 @@ CONTAINS
        MCcases(icase)=='GaussKL'     ) &
     call KLreconstructions(icase)       !create KL realz for cases that need them
 
-  if(  MCcases(icase)=='GaussKL' .and. flGBgeom .and. Corropts(1).ne."noplot") &
-    call KL_Correlation !calc & plot spacial correlation funcs
-
+  if( MCcases(icase)=='GaussKL' .and. flGBgeom) then
+    if(Corropts(1) .ne. 'noplot') call KL_Correlation !calc & plot spacial correlation funcs
+    if(   pltCo(1) .ne. 'noplot') call KL_Cochart !creates plots of var kept to tot var
+  endif
 
   do j=1,tnumRealz
 

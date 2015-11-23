@@ -13,16 +13,16 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Geometry - 'material', Gauss or Gauss-based type problem ---!
-  'GB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
+  'MB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
   'G','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
   2.0,2.0,    Ave total cross section, total cross section variance
   0.1,        Scattering ratio, c
-  5.0,        Correlation length, lamc
-  5.0,        Slab thickness, s
+  0.5,        Correlation length, lamc
+  2.0,        Slab thickness, s
 
   !--- Large KL Options ---!
   yes,yes,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
-  10,             Number of eigenvalues
+  50,             Number of eigenvalues
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
@@ -117,15 +117,15 @@
   4,4,fxi
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
-  noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of Eig/type combos to plot (up to 4)
   1,1            Which Eigenmode to plot/"1" for CoEffExp, "2" for CoEffAct
   2,1
-  3,1
-  4,1
+  5,1
+  10,1
 
   !!--Plotting Correlation contours          [in sub KL_eigenvalue]
-  preview,both,    "preview" "plot" or "noplot","expect" "yield" or "both"
+  plot,both,    "preview" "plot" or "noplot","expect" "yield" or "both"
   40,             Number of points in each dir to create grid at
 
 
