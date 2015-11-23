@@ -13,8 +13,9 @@ CONTAINS
   use timevars, only: time
   use genRealzvars, only: numRealz, flGBgeom
   use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat, refsigMode
+  use KLvars, only: Corropts
   use genRealz, only: genReal
-  use KLresearch, only: KL_eigenvalue
+  use KLresearch, only: KL_eigenvalue, KL_Correlation
   use KLreconstruct, only: KLreconstructions
   use timeman, only: radtrans_timeupdate
   integer :: icase
@@ -33,6 +34,10 @@ CONTAINS
       (MCcases(icase)=='WAMC' .and. MCcaseson(2)==1 .and. MCcases(icase)=='KLWood' ) .or. &
        MCcases(icase)=='GaussKL'     ) &
     call KLreconstructions(icase)       !create KL realz for cases that need them
+
+  if(  MCcases(icase)=='GaussKL' .and. flGBgeom .and. Corropts(1).ne."noplot") &
+    call KL_Correlation !calc & plot spacial correlation funcs
+
 
   do j=1,tnumRealz
 
@@ -1705,13 +1710,13 @@ CONTAINS
     if(flmatbasedxs .and. .not.flGBgeom) then
       sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
       sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
-      Coscat     = CoExp  *      scatrat(1) **2
-      Coabs      = CoExp  * (1d0-scatrat(1))**2
+      Coscat     = CoExp  *      scatrat(1) 
+      Coabs      = CoExp  *  1d0-scatrat(1)
     elseif(flmatbasedxs .and. flGBgeom) then
       sigscatave = sigave *      scatrat(1)
       sigabsave  = sigave * (1d0-scatrat(1))
-      Coscat     = CoExp  *      scatrat(1) **2
-      Coabs      = CoExp  * (1d0-scatrat(1))**2
+      Coscat     = CoExp  *      scatrat(1)
+      Coabs      = CoExp  *  1d0-scatrat(1)
     endif
   endif
 

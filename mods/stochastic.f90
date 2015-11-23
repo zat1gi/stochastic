@@ -13,7 +13,7 @@ program stochastic
 
   use genRealzvars
   use timevars, only: t1
-  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise
+  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, Corropts
   use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
                     MCcaseson, MCcases, probtype
   use MLMCvars, only: MLMCcaseson, MLMCcases
@@ -36,7 +36,7 @@ program stochastic
   !!Perform KL research
   if(KLres=='yes') then
     call KL_eigenvalue      !solves for eigenmode vars
-    call KL_Correlation     !calcs and can plot spacial correlation funcs
+    if(Corropts(1).ne."noplot" .and. .not.flGBgeom) call KL_Correlation !calc & plot spacial correlation funcs
     call KL_collect         !collects xi values over realizations
     call genReal_stats      !performs stats on above realizations
     call KL_Cochart         !creates plots of variance kept to total variance

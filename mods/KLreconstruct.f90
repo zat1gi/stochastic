@@ -163,7 +163,6 @@ CONTAINS
   deallocate(LNxsvars)
   deallocate(pdfLNxsCounts)
   deallocate(pdfLNxsBounds)
-stop
 
   end subroutine LNxsvalstest
 

@@ -14,7 +14,7 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates variance maintained with # of eigvals if input specifies
-  use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave, CoExp
+  use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
                           levsrefEig, pltEigf, KLrnumRealz
@@ -216,7 +216,7 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: sig, s, P, lamc, scatrat, CoExp, Coscat, Coabs
+  use genRealzvars, only: s, lamc
   use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts
   use KLreconstruct, only: Eigfunc
 
@@ -228,34 +228,28 @@ CONTAINS
   character(22) :: Corre    = '"Correlation Expected"'
   character(22) :: Corry    = '"Correlation Yielded "'
 
-  CoExp  = P(1)*P(2) * (sig(1)                  - sig(2)                ) **2 !first calc of variance
-  Coscat = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
-  Coabs  = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
-
-  if( Corropts(1) .NE. "noplot" ) then  !only perform if "plot" or "preview"
-
   Correxpect = 0  !initialize
   Corryield  = 0
 
   stepsize = s/(Corrnumpoints)  !set up stepsize
-
 
   do x=1,Corrnumpoints  !cycle through x and y
     if(x==1) curx=stepsize/2 
     do y=1,Corrnumpoints
       if(y==1) cury=stepsize/2
 
-        !calc Correxpect
-      Correxpect(x,y) = CoExp * exp( - abs(curx-cury)/lamc )
+      !calc Correxpect
+      Correxpect(x,y) = exp( - abs(curx-cury)/lamc )
 
-        !sum Eigs to calc Corryield
+      !sum Eigs to calc Corryield
       do curEig=1,numEigs
+if(curEig==numEigs) print *,"curEig:",curEig,"    Correxpect(1,1):",Correxpect(1,1),"  Corryield(1,1):",Corryield(1,1)
         Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
         Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
         Corryield(x,y) = Corryield(x,y) + Eig(curEig) * Eigfx * Eigfy
       enddo
 
-        !print Correxpect and Corryield
+      !print Correxpect and Corryield
       210 format("#       x                y            Correxpect        Corryield")
       211 format(" ",f12.6,"     ",f12.6,"     ",f12.6,"     ",f12.6)
       open(unit=15,file="Correlation.txt")
@@ -267,7 +261,6 @@ CONTAINS
     curx=curx+stepsize
   enddo !x-cycle
   close(unit=15) !close file
-
 
   open(unit=16,file="Correlationfirst.gnu") !make custom gnu script
   212 format("set dgrid3d ",i10,",",i10)
@@ -300,8 +293,6 @@ CONTAINS
   call system("rm Correlationfirst.gnu")                       !clean up space
   call system("mv Correlation.txt Correlation.ps Correlation.pdf plots/Correlation")
   call system("mv Correlation.gnu plots/Correlation")
-
-  endif !if plot at all
   end subroutine KL_Correlation
 
 
@@ -381,6 +372,7 @@ CONTAINS
 
 
 
+  
   subroutine KL_Cochart
   !This subroutine calculates the ratio of the calculated variance (Co) using a chosen
   !number of eigenmodes to the total variance, which is equivalent to using all
@@ -454,6 +446,7 @@ print *,"CoExp: ",CoExp
         CoEff(curEig,curCS)=cumCo/Co
       enddo
     enddo
+print *,"cumCo:",cumCo
 
 
     440 format("#    slicenum    sliceval ")
