@@ -38,8 +38,6 @@ CONTAINS
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
                                   GBlamc, GBs, flCorrMarkov, flCorrRealz, flGBgeom
-  use genSampvars, only: specialprob, nummat, param1, param2, param1_mean, param1_uncert, &
-                         param2_mean, param2_uncert
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -56,9 +54,6 @@ CONTAINS
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
                                   negwgtbinnum, nwvalsperbin, probtype, flCorrMC
-  use MLMCvars,             only: detMLMC, MLMC_TOL, numcellsLevel0, nextLevelFactor, MLMC_TOLsplit, &
-                                  MLMC_failprob, bnumMLMCsamps, num_ufunct, def_ufunct, spatial_Level, &
-                                  num_benchsamps
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: default_ufunct    !default u functional or not?
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
@@ -119,11 +114,6 @@ CONTAINS
   read(2,*) setflags(1)
   if(setflags(1)=='yes') flCorrMC    =.true.
 
-  !--- Large MLMC Options ---!
-  read(2,*) dumchar
-  read(2,*) detMLMC
-  read(2,*) MLMC_TOL, MLMC_TOLsplit
-
   !--- Lesser KL Options ---!
   read(2,*) dumchar
   read(2,*) setflags(1)
@@ -150,87 +140,6 @@ CONTAINS
   read(2,*) wgtmaxmin,wgtmax,wgtmin
   read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins,chLNxsplottype
   if(setflags(1)=='yes') flLNxscheck=.true.
-
-  !--- Lesser MLMC Options ---!
-  read(2,*) dumchar
-  read(2,*) nextLevelFactor
-  read(2,*) bnumMLMCsamps
-  read(2,*) MLMC_failprob
-  read(2,*) spatial_Level
-  read(2,*) num_benchsamps
-
-  !--- Geometry - 'coeffs' type problem ---!
-  read(2,*) dumchar
-  read(2,*) specialprob
-  read(2,*) dumchar, nummat
-  read(2,*) dumchar, s2
-  if(probtype=='coeffs') s=s2
-  read(2,*) dumchar, numcellsLevel0
-  allocate(param1_mean(nummat))
-  allocate(param1_uncert(nummat))
-  allocate(param2_mean(nummat))
-  allocate(param2_uncert(nummat))
-  read(2,*) param1(1), param1_mean
-  read(2,*) param1(2), param1_uncert
-  read(2,*) param2(1), param2_mean
-  read(2,*) param2(2), param2_uncert
-
-  !--- Functionals - 'coeffs' type problem ---!
-  read(2,*) dumchar
-  read(2,*) num_ufunct
-  read(2,*) default_ufunct,default_ufunctc
-  read(2,*) allL1s,allcenters
-  read(2,*) dumchar
-  allocate(def_ufunct(num_ufunct,4))
-  do i=1,num_ufunct  !read/set non-bulk values for functionals
-    if(i==1 .and. default_ufunct=='yes') then
-      def_ufunct(1,1) = 1               !first cell
-      def_ufunct(1,2) = numcellsLevel0  !last cell
-      def_ufunct(1,3) = 2               !L2 norm
-      def_ufunct(1,4) = default_ufunctc !converge to this or not
-    elseif(i==1) then
-      read(2,*) def_ufunct(1,1),def_ufunct(1,2),chosennorm,def_ufunct(1,4)
-      if(chosennorm=='L1')     def_ufunct(1,3)=1
-      if(chosennorm=='L2')     def_ufunct(1,3)=2
-      if(chosennorm=='center') def_ufunct(1,3)=3
-    elseif(i>1) then
-      read(2,*) def_ufunct(i,1),def_ufunct(i,2),chosennorm,def_ufunct(i,4)
-      if(chosennorm=='L1')     def_ufunct(i,3)=1
-      if(chosennorm=='L2')     def_ufunct(i,3)=2
-      if(chosennorm=='center') def_ufunct(i,3)=3
-    endif
-  enddo
-
-  if(allL1s=='yes') then  !add bulk values for functionals (many at one time)
-    num_ufunct = num_ufunct+numcellsLevel0
-    call move_alloc(def_ufunct,tiarray2)
-    allocate(def_ufunct(num_ufunct,4))
-    def_ufunct = 0
-    def_ufunct(1:size(tiarray2(:,1)),:) = tiarray2
-    do i=1,numcellsLevel0
-      def_ufunct(size(tiarray2(:,1))+i,1) = i
-      def_ufunct(size(tiarray2(:,1))+i,2) = i
-      def_ufunct(size(tiarray2(:,1))+i,3) = 1
-      def_ufunct(size(tiarray2(:,1))+i,4) = 0
-    enddo
-    deallocate(tiarray2)
-  endif 
-  if(allcenters=='yes') then
-    num_ufunct = num_ufunct+numcellsLevel0
-    call move_alloc(def_ufunct,tiarray2)
-    allocate(def_ufunct(num_ufunct,4))
-    def_ufunct = 0
-    def_ufunct(1:size(tiarray2(:,1)),:) = tiarray2
-    do i=1,numcellsLevel0
-      def_ufunct(size(tiarray2(:,1))+i,1) = i
-      def_ufunct(size(tiarray2(:,1))+i,2) = i
-      def_ufunct(size(tiarray2(:,1))+i,3) = 3
-      def_ufunct(size(tiarray2(:,1))+i,4) = 0
-    enddo
-    deallocate(tiarray2)
-  endif 
-
-
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
@@ -326,7 +235,6 @@ CONTAINS
   subroutine testinputstoc
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich, flCorrMarkov, flCorrRealz
-  use genSampvars, only: specialprob, param1, param2
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
                     KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
@@ -335,7 +243,6 @@ CONTAINS
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, probtype, flnegxs
-  use MLMCvars, only: def_ufunct, numcellsLevel0, nextLevelFactor
   integer :: fpointorxi(2)
 
   integer :: i, ones, zeros
@@ -516,72 +423,6 @@ CONTAINS
     flstopstatus = .true.
   endif
 
-
-  if( specialprob/='none' .and. specialprob/='mc2013.1' .and. specialprob/='mc2013.2' .and. &
-      specialprob/='mc2015.1') then !Tests for genSampvars input
-    print *,"--Enter 'none' or a valid special problem for genSamp specialproblem"
-    flstopstatus = .true.
-  endif
-  if( param1(1)/='sigt' .and. param1(1)/='sigs' ) then
-    print *,"--Enter 'sigt' or 'sigs' as first parameter type for genSamp"
-    flstopstatus = .true.
-  endif
-  if( param2(1)/='c' .and. param2(1)/='siga' .and. param2(1)/='sigs' ) then
-    print *,"--Enter 'c', 'siga', or 'sigs' as second parameter type for genSamp"
-    flstopstatus = .true.
-  endif
-  if( (param1(1)=='sigt' .and. (param1(2)/='sigt1-abs' .and. param1(2)/='sigt1-frac')) .or. &
-      (param1(1)=='sigs' .and. (param1(2)/='sigs1-abs' .and. param1(2)/='sigs1-frac')) ) then
-    print *,"--Enter the uncertainty on param1 of a same type as the mean"
-    flstopstatus = .true.
-  endif
-  if( (param2(1)=='c' .and. (param2(2)/='c1-abs' .and. param2(2)/='c1-frac')) .or. &
-      (param2(1)=='siga' .and. (param2(2)/='siga1-abs' .and. param2(2)/='siga1-frac')) .or. &
-      (param2(1)=='sigs' .and. (param2(2)/='sigs1-abs' .and. param2(2)/='sigs1-frac')) ) then
-    print *,"--Enter the uncertainty on param2 of a same type as the mean"
-    flstopstatus = .true.
-  endif
-  if( param1(1)=='sigs' .and. param2(1)/='siga' ) then
-    print *,"--If param1 is sigs, param2 must be siga"
-    flstopstatus = .true.
-  endif 
-
-  if(probtype=='coeffs') then
-    ones  = 0
-    zeros = 0
-    do i=1,size(def_ufunct(:,1))
-      if(def_ufunct(i,3)==3) then
-        if(def_ufunct(i,1)/=def_ufunct(i,2)) then
-          print *,"--Use 'center' option for functionals only over one cell"
-          flstopstatus = .true.
-        endif
-        if(mod(nextLevelFactor,2)/=1) then
-          print *,"--Use 'center' option only with odd refinement factor"
-          flstopstatus = .true.
-        endif
-      endif
-      if(def_ufunct(i,1)<1 .or. def_ufunct(i,2)>numcellsLevel0 .or. &
-                                def_ufunct(i,1)>def_ufunct(i,2)) then
-        print *,"--Define functionals over range of cells that exist"
-        flstopstatus = .true.
-      endif
-      if(def_ufunct(i,4)==1) ones  = ones+1
-      if(def_ufunct(i,4)==0) zeros = zeros+1
-    enddo
-    if(ones>1) then
-      print *,"--Only first functional set to 1 will be required to converge"
-      flsleep = .true.
-    endif
-    if(ones<1) then
-      print *,"--Must choose a functional to converge"
-      flstopstatus = .true.
-    endif
-    if(ones+zeros/=size(def_ufunct(:,1))) then
-      print *,"--Set each functional's convergence status to either 0 or 1"
-      flstopstatus = .true.
-    endif
-  endif
-
   if(flstopstatus) STOP 'killed'
   if(flsleep) call sleep(4)
 
@@ -606,8 +447,6 @@ CONTAINS
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
-  use MLMCvars, only: MLMCcaseson, numPosMLMCmeths, MLMCcases, detMLMC
-  use FEDiffSn, only: fliterstudy
   use mcnp_random, only: RN_init_problem
   integer :: i,icase
 
@@ -706,24 +545,6 @@ CONTAINS
     stocMC_fluxmat1 = 0.0d0
     stocMC_fluxmat2 = 0.0d0
   endif
-
-
-  !allocate/initialize MLMCvars
-  allocate(MLMCcaseson(numPosMLMCmeths))
-  MLMCcaseson = 0
-  if(detMLMC=='detMLMC') MLMCcaseson(1) = 1
-  if(detMLMC=='spatial') MLMCcaseson(2) = 1
-  if(detMLMC=='iter')    MLMCcaseson(3) = 1
-  if(detMLMC=='bench')   MLMCcaseson(4) = 1
-
-  allocate(MLMCcases(numPosMLMCmeths))
-  MLMCcases(1) = 'detMLMC'
-  MLMCcases(2) = 'spatial'
-  MLMCcases(3) = 'iter'
-  MLMCcases(4) = 'bench'
-
-  !initialize FEDiffSn variables
-  fliterstudy = .false.
 
   !allocate and initialize timevars
   allocate(time(ntime))

@@ -32,8 +32,6 @@ contains
       rngappnum = 13
     case ("KLRealzGaussB")                      !possible correlation 4
       rngappnum = 14
-    case ("MLMCsamp")      !other
-      rngappnum = 20
   end select
   end subroutine setrngappnum
 end module rngvars
@@ -106,26 +104,6 @@ module genRealzvars
   integer              :: numNegRealz          ! tally of num of realz that are at some point neg
 
 end module genRealzvars
-
-
-
-module genSampvars
-  implicit none
-  !inputs
-  character(8)         :: specialprob          ! such as 'mc2013.1' 'mc2013.2' 'mc2015.1'
-  integer              :: nummat               ! number of materials in problem
-  character(10)        :: param1(2)            ! designation for parameter 1 and its uncertainty
-  character(10)        :: param2(2)            ! designation for parameter 2 and its uncertainty
-  real(8), allocatable :: param1_mean(:)       ! average of parameter 1
-  real(8), allocatable :: param1_uncert(:)     ! uncertainty of parameter 1
-  real(8), allocatable :: param2_mean(:)       ! average of parameter 2
-  real(8), allocatable :: param2_uncert(:)     ! uncertainty of parameter 2
-
-  !non-inputs
-  real(8), allocatable :: sigt(:)              ! total cross sections
-  real(8), allocatable :: FE_c(:)              ! 'c' for FEDiffSn input
-
-end module genSampvars
 
 
 
@@ -316,42 +294,4 @@ module MCvars
   real(8)              :: maxratio             ! for adaptive negwgts, max acceptable increase ratio
   real(8), allocatable :: negwgtsigs(:,:)      ! sigs for ad negwgts, rank 2, 1=sigs, 2=sigt, 3=refsig
 end module MCvars
-
-
-
-!--- UQ_MLMC   ---!
-module MLMCvars
-  implicit none
-  !inputs
-  character(7)         :: detMLMC              ! perform deterministic MLMC on varying coefs? yes or no
-  real(8)              :: MLMC_TOL             ! Tolerance to iterate until achieved
-  real(8)              :: MLMC_TOLsplit        ! Phi - Tol split param, how much to type I or II err
-  real(8)              :: MLMC_failprob        ! alpha - prob of fail to converge for MC in stoc dim
-  integer              :: numcellsLevel0       ! number of cells in initial Level of MLMC 
-  integer              :: nextLevelFactor      ! factor to increase number of cells in each Level by
-  integer              :: bnumMLMCsamps        ! baseline number of samples for new Level
-  integer              :: num_ufunct           ! number of functionals to 'u' to be considered
-  integer              :: spatial_Level        ! max level for spat conv study or benchmark (base for err)
-  integer              :: num_benchsamps       ! number of samples for benchmark at each level
-
-  !non inputs
-  real(8)              :: linsolveEff = 1      ! =1 for tri-diag (diff), 1 for Sn (tested)
-  real(8), parameter   :: numDimensions = 1    ! only currently have plans to do 1D problems
-  integer, parameter   :: numPosMLMCmeths = 4  ! tot # of MLMC meths, MLMC, spatial conv, iter conv, benchmark
-  integer, allocatable :: MLMCcaseson(:)       ! reference of on or not on, cases selected or not
-  character(7), allocatable :: MLMCcases(:)    ! library of MLMC transport cases
-  real(8)              :: C_alpha              ! coefficient based on conv fail prob for MC in stoc dim
-  real(8)              :: spatcRate            ! spatial convergence based on solve and QoI
-  integer, allocatable :: numMLMCcells(:)      ! number of cells in each Level of MLMC
-  integer, allocatable :: M_optsamps(:,:)      ! optimal # of samps (1-new est/2-old est/3-small est,Level)
-  real(8), allocatable :: MLMCerrest(:)        ! error estimate for each functional chosen
-  real(8), allocatable :: ncellwidth(:)        ! cell width at levels
-  integer, allocatable :: def_ufunct(:,:)      ! options for which functionals to take/converge
-
-  real(8), allocatable :: Q_ufunctional(:,:,:) ! functional of u, (functional#,samp#,Level)
-  real(8), allocatable :: G_ufunctional(:,:,:) ! functional of u MLMC form, (functional#,samp#,Level)
-  real(8), allocatable :: Gave(:,:)            ! ave of funct of u MLMC form, (functional#,Level)
-  real(8), allocatable :: Gvar(:,:)            ! var of funct of u MLMC form, (functional#,Level)
-
-end module MLMCvars
 

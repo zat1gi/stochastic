@@ -76,7 +76,7 @@ CONTAINS
 
   subroutine MCtransport( j,icase,tnumParts )
   !This subroutine performs MC transport over a specified geometry and method.
-  !It can be used by a UQ_MC wrapper, and likely in the future by UQ_MLMC and/or UQ_SC.
+  !It can be used by a UQ_MC wrapper, and likely in the future by UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
   !'icase' denotes which predefined transport method over which the MC transport is performed.
   !'tnumParts' is the number of particles over which the MC transport is performed.
@@ -1722,22 +1722,6 @@ CONTAINS
       Coabs      = CoExp  * (1d0-scatrat(1))
     endif
   endif
-
-!  sigave = log(2.0d0**2/sqrt(1.5d0+4.0d0))
-!  CoExp  = log(1.5d0/4.0d0 + 1.0d0)
-  
-!  print *,"real ave:",2.0d0,"  Gave:",sigave
-!  print *,"real var:",1.5d0,"  Gvar:",CoExp
-
-!  tot = 0d0
-!  sqr = 0d0
-!  do i=1,100000
-!    val = exp(sigave + sqrt(CoExp) * OneGaussrandnum( rang(),rang() ))
-!    tot = tot + val
-!    sqr = sqr + val**2
-!  enddo
-!  print *,"real ave:",tot/100000.0d0
-!  print *,"real var:",sqr/100000.0d0-(tot/100000.0d0)**2
 
   !current tally allocations
   if(MCcases(icase)=='radMC'  .or. MCcases(icase)=='radWood'.or. &

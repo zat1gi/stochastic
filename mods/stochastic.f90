@@ -8,8 +8,6 @@ program stochastic
   use KLresearch
   use KLreconstruct
   use KLmeanadjust
-  use MLMC
-  use FEDiffSn
 
   use genRealzvars
   use timevars, only: t1
@@ -17,7 +15,6 @@ program stochastic
                     Corropts, pltCo
   use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
                     MCcaseson, MCcases, probtype
-  use MLMCvars, only: MLMCcaseson, MLMCcases
 
   implicit none
   ! pass by reference
@@ -62,24 +59,6 @@ program stochastic
   call MCfluxPrint
   call MCfluxPlot
   call MCLeakage_pdfplot
-
-  !!Perform MLMC with deterministic transport
-  if( sum(MLMCcaseson)>0 .and. probtype=='coeffs') then                  !perform if at least one case chosen
-    do icase = 1,size(MLMCcaseson)                                       !cycle through possible cases
-      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='detMLMC' ) then !run 'detMLMC' if chosen
-        call UQ_MLMC( icase )                                            !perform UQ problem
-      endif
-      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='spatial' ) then !run 'spatial'
-        call UQ_spatialconv( icase )                                     !perform spatial convergence study
-      endif
-      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='iter' ) then    !run 'iter'
-        call UQ_iterconv( icase )                                        !perform iter convergence study
-      endif
-      if( MLMCcaseson(icase)==1 .and. MLMCcases(icase)=='bench' ) then   !run 'bench'
-        call UQ_benchmark( icase )                                       !generate benchmark values (conv study)
-      endif
-    enddo
-  endif
 
   !!print final reports
   if(probtype=='material') then
