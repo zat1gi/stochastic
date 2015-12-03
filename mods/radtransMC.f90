@@ -1669,6 +1669,8 @@ CONTAINS
   use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
   integer :: icase,tnumParts,tnumRealz,i
 
+  real(8) :: tot, sqr, val
+
   flprint = .false.
 
   !number of realizations allocation
@@ -1717,9 +1719,25 @@ CONTAINS
       sigscatave = sigave *      scatrat(1)
       sigabsave  = sigave * (1d0-scatrat(1))
       Coscat     = CoExp  *      scatrat(1)
-      Coabs      = CoExp  *  1d0-scatrat(1)
+      Coabs      = CoExp  * (1d0-scatrat(1))
     endif
   endif
+
+!  sigave = log(2.0d0**2/sqrt(1.5d0+4.0d0))
+!  CoExp  = log(1.5d0/4.0d0 + 1.0d0)
+  
+!  print *,"real ave:",2.0d0,"  Gave:",sigave
+!  print *,"real var:",1.5d0,"  Gvar:",CoExp
+
+!  tot = 0d0
+!  sqr = 0d0
+!  do i=1,100000
+!    val = exp(sigave + sqrt(CoExp) * OneGaussrandnum( rang(),rang() ))
+!    tot = tot + val
+!    sqr = sqr + val**2
+!  enddo
+!  print *,"real ave:",tot/100000.0d0
+!  print *,"real var:",sqr/100000.0d0-(tot/100000.0d0)**2
 
   !current tally allocations
   if(MCcases(icase)=='radMC'  .or. MCcases(icase)=='radWood'.or. &
