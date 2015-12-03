@@ -12,7 +12,7 @@ CONTAINS
   !in UQ space.
   use timevars, only: time
   use genRealzvars, only: numRealz, flGBgeom
-  use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat, refsigMode
+  use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat
   use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
@@ -30,9 +30,7 @@ CONTAINS
   if( MCcases(icase)=='GaussKL' .and. flGBgeom) &
     call KL_eigenvalue
 
-  if(  MCcases(icase)=='KLWood'   .or. &
-      (MCcases(icase)=='WAMC' .and. MCcaseson(2)==1 .and. MCcases(icase)=='KLWood' ) .or. &
-       MCcases(icase)=='GaussKL'     ) &
+  if(  MCcases(icase)=='KLWood'   .or. MCcases(icase)=='GaussKL'     ) &
     call KLreconstructions(icase)       !create KL realz for cases that need them
 
   if( MCcases(icase)=='GaussKL' .and. flGBgeom) then
@@ -51,7 +49,6 @@ CONTAINS
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
 
       if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-        (MCcases(icase)=='WAMC' .and. (refsigMode==2 .or. refsigMode==3)) .or. &
          MCcases(icase)=='GaussKL') &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
@@ -86,8 +83,8 @@ CONTAINS
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, flnegxs, fldistneg, MCcases, fbinmax, &
-                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, weight, &
-                    refsig, wgtmax, wgtmin, wgtmaxmin, refsigMode, negwgtsigs, flCorrMC
+                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
+                    flCorrMC
   use genRealz, only: genReal
   use KLreconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
@@ -132,12 +129,6 @@ CONTAINS
         case ("atmixMC")
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("WAMC")
-          curbin =solvecurbin(position)
-          if(refsigMode==2) then
-            db = merge(binmaxind(curbin+1)-position,position-binmaxind(curbin),mu>=0)/abs(mu)
-          elseif(refsigMode==1 .or. refsigMode==3) then
-            db = merge(s-position,position,mu>=0)/abs(mu)
-          endif
         case ("GaussKL")
           db = merge(s-position,position,mu>=0)/abs(mu)
       end select
@@ -163,16 +154,6 @@ CONTAINS
         case ("atmixMC")
           dc = -log(rang())/atmixsig
         case ("WAMC")
-          if(refsigMode==1) then
-            dc = -log(rang())/refsig 
-          elseif(refsigMode==2) then
-            curbin =solvecurbin(position)
-            refsig =binmaxes(curbin)
-            dc = -log(rang())/refsig
-          elseif(refsigMode==3) then
-            ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
-            dc = -log(rang())/ceilsig
-          endif
         case ("GaussKL")
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
@@ -223,22 +204,6 @@ CONTAINS
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
             case ("WAMC")
-              if(refsigMode==2) then
-                newpos = binmaxind(curbin+1) + 0.00000000001d0
-              elseif(refsigMode==1 .or. refsigMode==3) then  
-                newpos = s
-              endif
-              if(refsigMode/=2 .or. curbin+1==size(binmaxind)) then
-                if(wgtmaxmin=='yes') then
-                  if(    weight>wgtmax) then !option to truncate large weight values
-                    weight=wgtmax
-                  elseif(weight<wgtmin) then
-                    weight=wgtmin
-                  endif
-                endif
-                transmit(j) = transmit(j) + weight
-                flExit='exit'
-              endif
             case ("GaussKL")
               newpos = s
               transmit(j) = transmit(j) + 1.0d0
@@ -269,22 +234,6 @@ CONTAINS
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
             case ("WAMC")
-              if(refsigMode==2) then
-                newpos = binmaxind(curbin) - 0.00000000001d0
-              elseif(refsigMode==1 .or. refsigMode==3) then
-                newpos = 0.0d0
-              endif
-              if(refsigMode/=2 .or. curbin==1) then
-                if(wgtmaxmin=='yes') then
-                  if(   weight>wgtmax) then !option to truncate large weight values
-                    weight=wgtmax
-                  elseif(weight<wgtmin) then
-                    weight=wgtmin
-                  endif
-                endif
-                reflect(j) = reflect(j) + weight
-                flExit='exit'
-              endif
             case ("GaussKL")
               newpos = 0.0d0
               reflect(j)  = reflect(j) + 1.0d0
@@ -357,46 +306,6 @@ CONTAINS
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
           case ("WAMC")
-            if(refsigMode==3) then !for adaptive, decide woodcock possible or rejected interaction
-              !use the next two lines for refsig from the bin
-              curbin = solvecurbin(newpos)
-              refsig = binmaxes(curbin)
-              !use the next 7 lines for refsig locally
-              refsig = localrefsig(KLr_point(j,newpos,'scatter'),&
-                                   KLr_point(j,newpos,'totaln'))
-              if(refsig>ceilsig) then
-                !write(*,'(A,es9.2,A,es9.2,A,es9.2,A)') "refsig:",refsig,&
-                !      " ceilsig:",ceilsig," truncation %:",(ceilsig-refsig)/refsig*100," %"
-                refsig = ceilsig
-              endif
-
-              woodrat = refsig/ceilsig
-              if(woodrat<rang()) flIntType='reject'
-            endif
-            if(flIntType=='clean') then !if refsigMode==1,2 or (==3 and not rejected yet)
-              !adjust weights, choose type of interaction, flip weight sign if needed
-              cursigt = KLr_point(j,newpos,'totaln')
-              cursigs = KLr_point(j,newpos,'scatter')
-              weight  = (abs(cursigs)+abs(-cursigt+refsig)) / refsig  *  weight
-
-              if(rang()<abs(cursigs)/(abs(cursigs)+abs(-cursigt+refsig))) then
-                flIntType = 'scatter'
-                if(cursigs<0d0)         weight = -1d0 * weight
-              else
-                flIntType = 'reject '
-                if(-cursigt+refsig<0d0) weight = -1d0 * weight
-              endif
-            endif
-
-            if(cursigt<0.0d0) then  !negativity stats, currently overrides KLWood negstats
-              numpnSamp(2)  =  numpnSamp(2)+1
-              areapnSamp(2) = areapnSamp(2)+cursigt          
-              if(cursigt<areapnSamp(4)) areapnSamp(4)=cursigt
-            else
-              numpnSamp(1)  =  numpnSamp(1)+1
-              areapnSamp(1) = areapnSamp(1)+cursigt
-              if(cursigt>areapnSamp(3)) areapnSamp(3)=cursigt
-          endif
           case ("GaussKL")
             !load woodcock ratio for this position and ceiling
             woodrat = KLr_point(j,newpos,'totale')/ceilsig
@@ -451,7 +360,7 @@ CONTAINS
             endif
           case ("LPMC")
           case ("atmixMC")
-          case ("WAMC")  !!!WAMCchange
+          case ("WAMC")
           case ("GaussKL")
             if(flIntType=='reject') then
               Wood_rej(2)=Wood_rej(2)+1
@@ -461,12 +370,6 @@ CONTAINS
         end select
 
       endif !endif fldist=='collision'
-
-      !If 'interface' interaction, set new position (LP)
-      if(fldist=='interface') then    !!!WAMCchange careful not to do this at interfaces
-        newpos = position + di*mu
-      endif
-
 
       !increment position
       if(newpos==101010.0d0) stop 'newpos was not set in MCtransport'
@@ -496,8 +399,6 @@ CONTAINS
 !            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
 !            if(rodOrplanar=='planar') mu = newmu()
 !          case ("WAMC")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
 !          case ("GaussKL")
 !            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
 !            if(rodOrplanar=='planar') mu = newmu()
@@ -523,8 +424,6 @@ CONTAINS
             LPamMCsums(3) = LPamMCsums(3) + 1.0d0
             flExit='exit'
           case ("WAMC")
-            absorb(j)     = absorb(j)     + weight
-            flExit='exit'
           case ("GaussKL")
             absorb(j)     = absorb(j)     + 1.0d0
             flExit='exit'
@@ -577,7 +476,7 @@ CONTAINS
   !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
   use genRealzvars, only: s
-  use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases, weight
+  use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases
   integer :: i,icase
 
   if( sourceType=='left' ) then  !generate source particles
@@ -595,8 +494,6 @@ CONTAINS
   if(MCcases(icase)=='radMC') then !if bin need be set
     if(sourceType=='left')   i = 1
     if(sourceType=='intern') i = internal_init_i(position)
-  elseif(MCcases(icase)=='WAMC') then !initialize weight
-    weight = 1d0
   endif
 
   end subroutine genSourcePart
@@ -612,8 +509,7 @@ CONTAINS
   !These ceilings of course need to be recalculated for each new realization
   use genRealzvars, only: s, lamc, nummatSegs, sig
   use KLvars, only: numEigs
-  use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin, &
-                    refsigMode, negwgtbinnum
+  use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
   integer :: j,icase
 
   integer :: i
@@ -626,7 +522,6 @@ CONTAINS
       case ("KLWood")
         nceilbin = numEigs
       case ("WAMC")
-        if(refsigMode==2 .or. refsigMode==3) nceilbin = negwgtbinnum
       case ("GaussKL")
         nceilbin = numEigs
     end select
@@ -661,7 +556,6 @@ CONTAINS
       case ("KLWood")
         call KLWood_binmaxes( j )
       case ("WAMC")
-        if(refsigMode==2 .or. refsigMode==3) call WAMC_binmaxes( j )
       case ("GaussKL")
         call KLWood_binmaxes( j )
     end select
@@ -677,56 +571,6 @@ CONTAINS
     enddo
 
   end subroutine MCWood_setceils
-
-
-
-  subroutine WAMC_binmaxes( j )
-  use MCvars, only: binmaxind, binmaxes, nceilbin, negwgtsigs, nwvalsperbin
-  use KLreconstruct, only: KLr_point
-  integer, intent(in) :: j
-
-  integer :: i, anc	
-  real(8) :: pos
-
-  !load sigs, sigt, and solve refsig at each location
-  do i=1,nceilbin*nwvalsperbin+1
-    if( mod(i-1,nwvalsperbin)==0 ) then
-      pos = binmaxind(i/nwvalsperbin+1)
-    else
-      anc = (i-1)/nwvalsperbin+1
-      pos = binmaxind(anc) + real(mod(i-1,nwvalsperbin),8)/real(nwvalsperbin,8) &
-                           * (binmaxind(anc+1)-binmaxind(anc))
-    endif
-    negwgtsigs(i,1) = KLr_point(j,pos,'scatter')
-    negwgtsigs(i,2) = KLr_point(j,pos,'totaln')
-    negwgtsigs(i,3) = localrefsig(negwgtsigs(i,1),negwgtsigs(i,2))
-  enddo
-
-  !take max of values in/on bin in each bin as bin max refsig value
-  do i=1,nceilbin
-    binmaxes(i) = maxval(negwgtsigs((i-1)*nwvalsperbin+1:i*nwvalsperbin+1,3))
-  enddo
-  end subroutine WAMC_binmaxes
-
-
-
-  function localrefsig(sigs,sigt)
-  !based on maxind, find optimal refsig choice.  See notes on 1-23-15.
-  use MCvars, only: maxratio
-  real(8), intent(in) :: sigs,sigt
-  real(8) :: localrefsig
-
-  if(sigt<0.0d0) then
-    localrefsig = (abs(sigs)+abs(sigt))/(maxratio-1d0)
-  elseif(abs(sigs)<sigt) then
-    localrefsig = sigt
-  elseif(maxratio<abs(sigs)/sigt) then
-    localrefsig = (abs(sigs)+sigt)/(maxratio+1d0)
-  else
-    localrefsig = (abs(sigs)-sigt)/(maxratio-1d0)
-  endif
-  end function localrefsig
-
 
 
 
@@ -997,7 +841,7 @@ CONTAINS
       if(ibin==0) ibin=1  !adjust if at ends
       do
         call MCfluxtallysetflag( flcontribtype, ibin, minpos, maxpos )
-        select case (flcontribtype)  !!!WAMCchange add seperate one for WAMC present with weight factored in
+        select case (flcontribtype)
           case ("neither")
             fluxall(ibin,j) = fluxall(ibin,j) +  dx                        / absmu !niether in bin
           case ("first")
@@ -1186,7 +1030,7 @@ CONTAINS
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
-     MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'        ) then !!!WAMCchange add here
+     MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'        ) then
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
     if(flfluxplotmat) then
                       fluxmat1= fluxmat1/ dx / numParts !normalize part 1
@@ -1202,7 +1046,7 @@ CONTAINS
 
   if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
      MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'       ) then
-    if( flfluxplotall ) then  !!!WAMCchange
+    if( flfluxplotall ) then
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
                  stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
@@ -1664,8 +1508,7 @@ CONTAINS
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
-                    fluxmatnorm, refsig, refsigMode, negwgtsigs, negwgtbinnum, &
-                    nwvalsperbin, flfluxplot, fluxfaces
+                    fluxmatnorm, flfluxplot, fluxfaces
   use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
   integer :: icase,tnumParts,tnumRealz,i
 
@@ -1755,14 +1598,6 @@ CONTAINS
     disthold   =0.0d0
   endif
 
-  !set initial WAMC reference sigma value
-  if(MCcases(icase)=='WAMC') then
-    call setrefsig()
-    if(refsigMode==2 .or. refsigMode==3) then !sig samples from which to create sigrefs
-      allocate(negwgtsigs(negwgtbinnum*nwvalsperbin+1,3))
-      negwgtsigs = 0d0
-    endif
-  endif
 
   !flux tally allocations
   flfluxplotall = .false.
@@ -1807,25 +1642,6 @@ CONTAINS
   end subroutine MCallocate
 
 
-  subroutine setrefsig()
-  !This subruotine sets the value of refsig according to the user's choice of different methods.
-  !It can be used to set the value only once, or during transport simulations.
-  use genRealzvars, only: sig, scatrat, P
-  use MCvars, only: refsigMode,refsig,userrefsig, maxratio
-  real(8) :: cursiga, cursigs
-
-  refsig = 0.0d0
-  select case(refsigMode)
-    case (1)                           !set to user defined value
-      refsig = userrefsig
-    case (2)                           !largest sigma value
-      maxratio = userrefsig
-    case (3)
-      maxratio = userrefsig
-  end select
-
-  end subroutine setrefsig
-
 
   subroutine MCLeakage_pdfbinprint( icase )
   !This subroutine bins leakage data, and prints this data to files to later be plotted
@@ -1839,7 +1655,7 @@ CONTAINS
 
   !this nasty if statement decides whether to proceed at all.
   !from here only MCcases is needed.
-  if( (MCcaseson(icase) == 1      .and. MCcases(icase) =='radMC'      .and. &  !!!WAMCchange
+  if( (MCcaseson(icase) == 1      .and. MCcases(icase) =='radMC'      .and. &
       (radMCbinplot     =='plot'  .or.  radMCbinplot   =='preview'))  .or.  &
       (MCcaseson(icase) == 1      .and. MCcases(icase) =='radWood'    .and. &
       (radWoodbinplot   =='plot'  .or.  radWoodbinplot =='preview'))  .or.  &
@@ -1894,9 +1710,7 @@ CONTAINS
         call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
       case("LPMC")
       case("atmixMC")
-      case("WAMC")  !!!WAMCchange
-        call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
-        call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
+      case("WAMC")
       case("GaussKL")
         call system("mv tranreflprofile.txt GaussKLtranreflprofile.txt")
         call system("mv GaussKLtranreflprofile.txt plots/tranreflprofile")
@@ -2042,7 +1856,6 @@ CONTAINS
   open(unit=100,file="Woodnegstats.out")
 
   if((MCcases(icase)=='KLWood' .and. flnegxs) .or. &
-     (MCcases(icase)=='WAMC'   .and. flnegxs) .or. &
      (MCcases(icase)=='GaussKL'.and. flnegxs)        ) then
     606 format("--Negative xs stats (",A8," ), keep neg xs: ",L,", neg smoothing: ",L," --")
 
@@ -2064,7 +1877,6 @@ CONTAINS
     write(100,604) areapnSamp(4),areapnSamp(3)
     write(100,*)
   elseif((MCcases(icase)=='KLWood' .and. .not.flnegxs) .or. &
-         (MCcases(icase)=='WAMC'   .and. .not.flnegxs) .or. &
          (MCcases(icase)=='GaussKL'.and. .not.flnegxs)        ) then
     610 format("--Negative xs stats (",A8," ), keep neg xs: ",L," --")
 
@@ -2140,9 +1952,6 @@ CONTAINS
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
       if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
-      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
-
-      if(MCcases(icase)=='WAMC')  write(100,331) stocMC_reflection(icase,1),&
       sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
       if(MCcases(icase)=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&

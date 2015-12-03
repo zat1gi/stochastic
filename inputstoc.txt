@@ -47,8 +47,6 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  3,20.3,200,20,  WAMCMode 1-user,2-adapt,3-adwood/if 1-refsig,2,3-max rat/if 2,3-binnum/if 2,3-valperbin
-  no,2.0,-20.0    WAMC enforce max and min weights?/wgtmax/wgtmin
   yes,totaln,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
   !!--All Plotting Option

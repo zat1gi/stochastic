@@ -192,6 +192,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLzerosabs(:,:)      ! location of zeros in abs xs KL reconstructions
   real(8), allocatable :: KLzerosscat(:,:)     ! location of zeros in scat xs KL reconstructions
   real(8), allocatable :: KLzerostotn(:,:)     ! location of zeros in native total xs KL reconstructions
+
 end module KLvars
 
 
@@ -226,14 +227,6 @@ module MCvars
 
   logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
   logical              :: fldistneg=.false.    ! allow on the fly smoothing of negs?
-
-  integer              :: refsigMode           ! 1-3, 1) userinp, 2) adaptive, 3) adaptive woodcock
-  real(8)              :: userrefsig           ! option 7, manually set refsig value as this
-  real(8)              :: wgtmax               ! limit max weights tallied with WAMC method
-  real(8)              :: wgtmin               ! limit min weights tallied with WAMC method
-  character(3)         :: wgtmaxmin            ! chop wgt tallies off at max and min values?
-  integer              :: negwgtbinnum         ! number of bins for adaptive negwgts
-  integer              :: nwvalsperbin         ! number of values in bin (and one edge value)
 
   !non inputs
   integer, parameter   :: numPosMCmeths = 7    ! total number of MC transport methods available
@@ -288,10 +281,5 @@ module MCvars
   integer, allocatable :: MCcaseson(:)         ! reference of on or not on, cases selected or not
   character(7), allocatable :: MCcases(:)      ! library of MC transport cases
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
-
-  real(8)              :: weight               ! weight of particle history for WAMC
-  real(8)              :: refsig               ! arbitrary reference xs for WAMC distance and weight calcs
-  real(8)              :: maxratio             ! for adaptive negwgts, max acceptable increase ratio
-  real(8), allocatable :: negwgtsigs(:,:)      ! sigs for ad negwgts, rank 2, 1=sigs, 2=sigt, 3=refsig
 end module MCvars
 

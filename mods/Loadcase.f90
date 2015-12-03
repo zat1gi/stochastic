@@ -52,8 +52,7 @@ CONTAINS
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype, refsigMode, userrefsig, wgtmax, wgtmin, wgtmaxmin, &
-                                  negwgtbinnum, nwvalsperbin, probtype, flCorrMC
+                                  pltfluxtype, probtype, flCorrMC
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: default_ufunct    !default u functional or not?
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
@@ -136,8 +135,6 @@ CONTAINS
   if(setflags(2)=='yes') fldistneg=.true.
   read(2,*) setflags(1),meanadjust_tol
   if(setflags(1)=='yes') flmeanadjust=.true.
-  read(2,*) refsigMode,userrefsig,negwgtbinnum,nwvalsperbin
-  read(2,*) wgtmaxmin,wgtmax,wgtmin
   read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins,chLNxsplottype
   if(setflags(1)=='yes') flLNxscheck=.true.
 
