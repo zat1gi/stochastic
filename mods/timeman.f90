@@ -108,7 +108,6 @@ CONTAINS
   !fly in this subroutine.
   use timevars, only: time
   use genRealzvars, only: numRealz
-  use KLvars, only: KLrnumRealz
   integer :: j
   real(8) :: tt1,localper,local_time,timeeta
   character(5) :: flKLtype
@@ -134,7 +133,7 @@ CONTAINS
       timeeta    = local_time / (localper/100)
       write(*,1110) flKLtype,local_time/60.0d0,localper,timeeta/60.0d0
     case ("KLrec")
-      localper   = real(j,8)/KLrnumRealz*100
+      localper   = real(j,8)/numRealz*100
       local_time = time(6)
       timeeta    = local_time / (localper/100)
       write(*,1110) flKLtype,local_time/60.0d0,localper,timeeta/60.0d0

@@ -11,7 +11,7 @@ program stochastic
 
   use genRealzvars
   use timevars, only: t1
-  use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, &
+  use KLvars, only: KLres, KLrec, KLnoise, &
                     Corropts, pltCo
   use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
                     MCcaseson, MCcases

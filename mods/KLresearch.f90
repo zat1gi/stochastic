@@ -17,7 +17,7 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
-                          levsrefEig, pltEigf, KLrnumRealz
+                          levsrefEig, pltEigf
   use KLreconstruct, only: Eigfunc
 
   real(8) :: stepGam=0 !if 0 code chooses

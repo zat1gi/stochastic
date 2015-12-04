@@ -42,8 +42,7 @@ CONTAINS
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
-                                  Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrealz, &
-                                  pltKLrealznumof, pltKLrealzwhich, &
+                                  Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
                                   flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
@@ -72,7 +71,6 @@ CONTAINS
   !--- Geometry - 'material' num of realz ---!
   read(2,*) dumchar
   read(2,*) numRealz,trannprt
-  read(2,*) KLrnumRealz,KLrprintat
 
   !--- Geometry - 'material', 'Markov' type problem ---!
   read(2,*) dumchar
@@ -232,7 +230,7 @@ CONTAINS
                           pltgenrealzwhich, flCorrMarkov, flCorrRealz
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, &
-                    KLrnumRealz, KLrprintat, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
+                    pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                     KLres, KLrec, KLnoise, flmatbasedxs, Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
@@ -263,14 +261,8 @@ CONTAINS
     endif
   enddo
 
-                              !Test KLreconstruct print frequency
-  if( (KLrprintat>KLrnumRealz .or. mod(KLrnumRealz,KLrprintat)/=0) .AND. KLrec=='yes' ) then 
-    print *,"--Print to screen frequency for KLreconstruct must be factor of number of KLrealizations"
-    flstopstatus = .true.
-  endif
-
   do i=1,pltKLrealznumof
-    if( pltKLrealzwhich(1,i)>KLrnumRealz .AND. pltKLrealz(1) .NE. 'noplot' ) then
+    if( pltKLrealzwhich(1,i)>numRealz .AND. pltKLrealz(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot more reconstructed realz than reconstructed"
       flstopstatus = .true.
     endif
@@ -377,10 +369,6 @@ CONTAINS
       print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
       flstopstatus = .true.
     endif
-    if( KLWood=='yes' .and. numRealz/=KLrnumRealz ) then
-      print *,"--User attempting to do transport over original and reconstructed with dif num of realz"
-      flstopstatus = .true.
-    endif
   endif
   
   if( flCorrRealz .and. (.not.flCorrMarkov .or. .not.flCorrKL)) then !Test for correlation deficiency
@@ -418,7 +406,7 @@ CONTAINS
                           Coscat, Coabs
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
-                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, KLrnumRealz, flglGaussdiffrand, &
+                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, flglGaussdiffrand, &
                     flGaussdiffrand
   use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
@@ -461,8 +449,8 @@ CONTAINS
 
 
   !allocate and initialize KLreconstruction variables
-  allocate(KLrxivals(KLrnumRealz,numEigs))
-  if(GaussKL=='yes' .and. flglGaussdiffrand) allocate(KLrxivalss(KLrnumRealz,numEigs))
+  allocate(KLrxivals(numRealz,numEigs))
+  if(GaussKL=='yes' .and. flglGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
   flGaussdiffrand = .false.
   allocate(KLrxisig(KLrnumpoints))
   allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))

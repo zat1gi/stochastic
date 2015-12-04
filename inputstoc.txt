@@ -1,7 +1,6 @@
   92823659,         Random number seed
   !--- Geometry - 'material', num of realz ---!
   10000,1000,         Number of realizations/how often to print
-  10000,1000,         KLr Number of realizations/how often to print
 
   !--- Geometry - 'material', 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters

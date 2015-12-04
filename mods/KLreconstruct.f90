@@ -198,13 +198,13 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use utilities, only: TwoGaussrandnums, erfi
-  use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz
+  use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz, numRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
-                          KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrealz, &
+                          KLrnumpoints, pltKLrealz, &
                           pltKLrealznumof, pltKLrealzwhich, KLrx, KLrxi, KLrxivals, KLrxivalss, &
                           pltKLrealzarray, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
-  use MCvars, only: MCcases, flnegxs, KLWood, GaussKL
+  use MCvars, only: MCcases, flnegxs, KLWood, GaussKL, trannprt
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,w,u,icase
@@ -297,17 +297,16 @@ CONTAINS
     write(11,*)
 
     if(flnegxs) then
-      if(mod(realj,KLrprintat)==0)       call KL_timeupdate( realj,tt1,'KLrec' )
-      if(KLrnumRealz==realj      ) exit
+      if(mod(realj,trannprt)==0)       call KL_timeupdate( realj,tt1,'KLrec' )
+      if(numRealz==realj      ) exit
     else
-      if(mod(numPosRealz,KLrprintat)==0) call KL_timeupdate( realj,tt1,'KLrec' )
-      if(KLrnumRealz==numPosRealz) exit
+      if(mod(numPosRealz,trannprt)==0) call KL_timeupdate( realj,tt1,'KLrec' )
+      if(numRealz==numPosRealz) exit
     endif
     if(flacceptrealz) realj=realj+1
   enddo
 
   end subroutine KLrgenrealz
-
 
 
 
@@ -931,8 +930,8 @@ CONTAINS
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
-  use genRealzvars, only: s, sigave, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz, meanadjust, meanadjust_tol, sigsmeanadjust, &
+  use genRealzvars, only: s, sigave, sigscatave, sigabsave, numRealz
+  use KLvars, only: alpha, Ak, Eig, numEigs, meanadjust, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLreconstruct, only: KLr_point, KLrxi_integral
 
@@ -948,9 +947,9 @@ CONTAINS
 
   !integrate on all as check
   intsigave = 0d0
-  do j=1,KLrnumRealz
+  do j=1,numRealz
     intsigave = intsigave + &
-                KLrxi_integral(j,0d0,s,chxstype='totaln')/KLrnumRealz/s
+                KLrxi_integral(j,0d0,s,chxstype='totaln')/numRealz/s
   enddo
   write(*,*)
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
@@ -969,22 +968,22 @@ CONTAINS
     pernegdomain = 0d0
 
     print *,"Beginning mean adjustment iteration ",adjustiter," for cross section:",chxstype
-    do j=1,KLrnumRealz
+    do j=1,numRealz
       xr = KLr_point(j,0d0,chxstype)
       xl = 0d0
       do
         !find next point and area between these two
         xr = findnextpoint(j,chxstype)
-        areacont = KLrxi_integral(j,xl,xr,chxstype=chxstype)/KLrnumRealz/s
+        areacont = KLrxi_integral(j,xl,xr,chxstype=chxstype)/numRealz/s
 
         !calc aveposarea for tol check, also negstat tallies
         xmid = KLr_point(j,(xr+xl)/2d0,chxstype)
         if(xmid>0d0) then
           aveposarea   = aveposarea + areacont
-          perposdomain = perposdomain + (xr - xl)/KLrnumRealz/s * 100
+          perposdomain = perposdomain + (xr - xl)/numRealz/s * 100
         else
           avenegarea   = avenegarea + areacont
-          pernegdomain = pernegdomain + (xr - xl)/KLrnumRealz/s * 100
+          pernegdomain = pernegdomain + (xr - xl)/numRealz/s * 100
         endif
 
         !advance lagging point
@@ -1019,7 +1018,7 @@ CONTAINS
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s, sigave
-  use KLvars,       only: alpha, Ak, Eig, numEigs, KLrnumRealz
+  use KLvars,       only: alpha, Ak, Eig, numEigs
   use KLreconstruct, only: KLr_point
   integer :: j
   character(*) :: chxstype
@@ -1053,7 +1052,7 @@ CONTAINS
   function refinenextpoint(j,oldx,curx,chxstype)
   !This function takes a range and zeroes in on transition in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrnumRealz
+  use KLvars, only: alpha, Ak, Eig, numEigs
   use KLreconstruct, only: KLr_point
   integer :: j
   real(8) :: oldx,curx
