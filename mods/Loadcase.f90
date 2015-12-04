@@ -33,7 +33,7 @@ CONTAINS
 
 
 
-  subroutine readinputstoc
+  subroutine read_test_inputstoc
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
@@ -53,16 +53,15 @@ CONTAINS
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, flCorrMC
   character(7) :: pltallopt                         !Plot all same opt
-  character(3) :: default_ufunct    !default u functional or not?
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
   character(6) :: chosennorm        !norm to convert from text to number
 
   real(8)       :: dumreal,s2
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-
-  integer :: i,default_ufunctc
-  integer, allocatable :: tiarray2(:,:)
+  integer         :: i, ones, zeros
+  real(8)         :: eps = 0.000001d0
+  logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")
 
@@ -195,9 +194,6 @@ CONTAINS
 
 
 
-
-
-
   if( pltallopt .NE. 'default' ) then
     radMCbinplot   = pltallopt
     radWoodbinplot = pltallopt
@@ -212,34 +208,18 @@ CONTAINS
     pltflux(1)     = pltallopt
     pltmatflux     = pltallopt
   endif
-  end subroutine readinputstoc
 
 
 
 
 
+  call Acase_load !need to load these to test
 
 
 
 
-
-  subroutine testinputstoc
-  use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
-                          pltgenrealzwhich, flCorrMarkov, flCorrRealz
-  use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
-                    pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, &
-                    pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
-                    KLres, KLrec, KLnoise, Gaussrandtype, flCorrKL, flmeanadjust
-  use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
-                    GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
-                    KLWoodbinplot, GaussKLbinplot, flnegxs
-
-  integer :: i, ones, zeros
-  real(8) :: eps = 0.000001d0
-  logical :: flstopstatus = .false., flsleep = .false.
-
+  !begin tests of valid input
   print *,"  "
-
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigs .AND. pltEigf(1) .NE. 'noplot' ) then
@@ -386,7 +366,8 @@ CONTAINS
   if(flstopstatus) STOP 'killed'
   if(flsleep) call sleep(4)
 
-  end subroutine testinputstoc
+  end subroutine read_test_inputstoc
+
 
 
 

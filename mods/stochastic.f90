@@ -22,9 +22,7 @@ program stochastic
 
   !!read parameters
   call cpu_time(t1)
-  call readinputstoc
-  call Acase_load !need to load these to test
-  call testinputstoc
+  call read_test_inputstoc
 
   !!allocate/prepare global parameters
   call global_allocate
