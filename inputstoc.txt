@@ -33,7 +33,7 @@
 
   !--- Lesser KL Options ---!
   material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
-  100,8,           Num of pts to plot KLr (and neg check) fixed xi/fixed point
+  100,            Num of pts to plot KLr (and neg check)
   11,             Levels of refinement for eigenvalue solving
   6,              Num of iters used in extrema locating w/o change before stop, exp says use 6 or more
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
@@ -47,7 +47,7 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,no          Allow neg xss?(as 0? [or ignore realz])/Redistribute negs? ('yes' or 'no')
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  yes,totaln,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
+  yes,totaln,20,40,plot,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
   !!--All Plotting Option
   default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
@@ -77,12 +77,12 @@
   7,100000
 
   !!--Plotting KLreconstructed realizations  [in sub KLreval]
-  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  1,4,fxi      Which realz to plot/num of Eigs to contribute/"fpoint" or "fxi" fixed point or xi
-  2,4,fxi
-  3,4,fxi
-  4,4,fxi
+  1,4,           Which realz to plot/num of Eigs to contribute
+  2,4
+  3,4
+  4,4
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

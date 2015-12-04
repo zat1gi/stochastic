@@ -143,11 +143,10 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   integer              :: pltxiBinsnumof       ! 
   integer              :: pltEigfnumof         !
   integer              :: pltConumof           !
-  integer              :: KLrnumpoints(2)      !
-  character(7)         :: pltKLrrealz(4)       !
-  integer              :: pltKLrrealznumof     !
-  integer, allocatable :: pltKLrrealzwhich(:,:)!
-  character(7),allocatable :: pltKLrrealzPointorXi(:) ! which type of reconstruction, pt or xi based?
+  integer              :: KLrnumpoints         ! Number of points to plot in KL reconstructions
+  character(7)         :: pltKLrealz(4)        !
+  integer              :: pltKLrealznumof      !
+  integer, allocatable :: pltKLrealzwhich(:,:) !
 
   logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
   logical              :: flglLN = .false.     ! global flag to denote 'GaussKL' is Log-normal
@@ -181,9 +180,7 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   real(8), allocatable :: KLrxivals(:,:)       ! psuedo-random numbers for KL media
   real(8), allocatable :: KLrxivalss(:,:)      ! same, but for scattering xs when Gauss-Based methods (diff xis)
   logical              :: flGaussdiffrand      ! local Gauss-Based methods to use different rand vars for xi samps?
-  real(8), allocatable :: pltKLrrealzarray(:,:)!
-  real(8), allocatable :: KLrrandarray(:,:,:)  !
-  real(8), allocatable :: KLrsig(:)            !
+  real(8), allocatable :: pltKLrealzarray(:,:) !
   real(8), allocatable :: KLrxisig(:)          !
 
   integer              :: KLrmaxnumzeros       ! number of zeros in realization with most, for allocating

@@ -1,12 +1,12 @@
 mv inputstoc.txt inputstoc_hold.txt
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 
 
 
 ##Begin smalllamc
 #Progression 1
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -23,7 +23,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -40,7 +40,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -54,7 +54,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -71,7 +71,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -88,7 +88,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -105,7 +105,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -122,7 +122,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -139,7 +139,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -156,7 +156,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_smalllamc_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_smalllamc_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -167,12 +167,12 @@ cat inputstoc.txt
 
 ##Begin medlamc
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  1.0,1.0,     Lambda (path-length) values/c \
   5.0,5.0,     Lambda (path-length) values' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -189,7 +189,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -206,7 +206,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -220,7 +220,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -237,7 +237,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -254,7 +254,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -271,7 +271,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -288,7 +288,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -305,7 +305,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -322,7 +322,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_medlamc_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_medlamc_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -336,12 +336,12 @@ cat inputstoc.txt
 
 ##Begin largelamc
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  1.0,1.0,     Lambda (path-length) values/c \
   10.0,10.0,     Lambda (path-length) values' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -358,7 +358,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -375,7 +375,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -389,7 +389,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -406,7 +406,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -423,7 +423,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -440,7 +440,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -457,7 +457,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -474,7 +474,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -491,7 +491,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_largelamc_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_largelamc_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -505,12 +505,12 @@ cat inputstoc.txt
 
 ##Begin Adams1.1
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  0,           Adamscase option/c \
   1.1,           Adamscase option, if==0, then user input for next three parameters' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -527,7 +527,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -544,7 +544,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -558,7 +558,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -575,7 +575,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -592,7 +592,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -609,7 +609,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -626,7 +626,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -643,7 +643,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -660,7 +660,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.1_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.1_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -675,12 +675,12 @@ cat inputstoc.txt
 
 ##Begin Adams1.2
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  0,           Adamscase option/c \
   1.2,           Adamscase option, if==0, then user input for next three parameters' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -697,7 +697,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -714,7 +714,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -728,7 +728,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -745,7 +745,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -762,7 +762,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -779,7 +779,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -796,7 +796,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -813,7 +813,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -830,7 +830,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.2_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.2_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -846,12 +846,12 @@ cat inputstoc.txt
 
 ##Begin Adams1.3
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  0,           Adamscase option/c \
   1.3,           Adamscase option, if==0, then user input for next three parameters' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -868,7 +868,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -885,7 +885,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -899,7 +899,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -916,7 +916,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -933,7 +933,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -950,7 +950,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -967,7 +967,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -984,7 +984,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -1001,7 +1001,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams1.3_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams1.3_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -1017,12 +1017,12 @@ cat inputstoc.txt
 
 ##Begin Adams9.1
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  0,           Adamscase option/c \
   9.1,           Adamscase option, if==0, then user input for next three parameters' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -1039,7 +1039,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -1056,7 +1056,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -1070,7 +1070,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -1087,7 +1087,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -1104,7 +1104,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -1121,7 +1121,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -1138,7 +1138,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -1155,7 +1155,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -1172,7 +1172,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.1_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.1_fpntxiEig3.pdf
 cat inputstoc.txt
 
 
@@ -1187,12 +1187,12 @@ cat inputstoc.txt
 
 ##Begin Adams9.3
 #Progression 1
-cp plots/reserveplots/KLrrealz/inputstoc_KLrr.txt inputstoc.txt
+cp plots/reserveplots/KLrealz/inputstoc_KLrr.txt inputstoc.txt
 mv inputstoc.txt inputstoc_old.txt
 sed '/  0,           Adamscase option/c \
   9.3,           Adamscase option, if==0, then user input for next three parameters' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Prog1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Prog1.pdf
 cat inputstoc.txt
 
 #Progression 2
@@ -1209,7 +1209,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  1,10,fxi/c \
   2,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Prog2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Prog2.pdf
 cat inputstoc.txt
 
 #Progression 3
@@ -1226,7 +1226,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,10,fxi/c \
   3,10,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Prog3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Prog3.pdf
 cat inputstoc.txt
 
 #Progression 3&4
@@ -1240,7 +1240,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  3,10,fxi/c \
   4,5,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Prog3_4.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Prog3_4.pdf
 cat inputstoc.txt
 
 #1st Eig, 4 realz
@@ -1257,7 +1257,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,5,fxi/c \
   4,1,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Eig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Eig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, 4 realz
@@ -1274,7 +1274,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,1,fxi/c \
   4,2,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Eig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Eig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, 4 realz
@@ -1291,7 +1291,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,2,fxi/c \
   4,3,fxi' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_Eig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_Eig3.pdf
 cat inputstoc.txt
 
 #1st Eig, fxi & fpoint
@@ -1308,7 +1308,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  4,3,fxi/c \
   2,1,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_fpntxiEig1.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_fpntxiEig1.pdf
 cat inputstoc.txt
 
 #2nd Eig, fxi & fpoint
@@ -1325,7 +1325,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,1,fpoint/c \
   2,2,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_fpntxiEig2.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_fpntxiEig2.pdf
 cat inputstoc.txt
 
 #3rd Eig, fxi & fpoint
@@ -1342,7 +1342,7 @@ mv inputstoc.txt inputstoc_old.txt
 sed '/  2,2,fpoint/c \
   2,3,fpoint' inputstoc_old.txt > inputstoc.txt
 ./astochastic.exe
-cp plots/KLrrealzplot.pdf plots/reserveplots/KLrrealz/KLrr_Adams9.3_fpntxiEig3.pdf
+cp plots/KLrealzplot.pdf plots/reserveplots/KLrealz/KLrr_Adams9.3_fpntxiEig3.pdf
 cat inputstoc.txt
 
 

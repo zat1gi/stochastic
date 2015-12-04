@@ -42,8 +42,8 @@ CONTAINS
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
-                                  Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrrealz, &
-                                  pltKLrrealznumof, pltKLrrealzwhich, pltKLrrealzPointorXi, &
+                                  Corropts, KLrnumpoints, KLrnumRealz, KLrprintat, pltKLrealz, &
+                                  pltKLrealznumof, pltKLrealzwhich, &
                                   KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
                                   flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
@@ -117,7 +117,7 @@ CONTAINS
   read(2,*) dumchar
   read(2,*) setflags(1)
   if(setflags(1)=='tot') flmatbasedxs = .false.
-  read(2,*) KLrnumpoints(2),KLrnumpoints(1)     !fixed xi, fixed point
+  read(2,*) KLrnumpoints
   read(2,*) levsrefEig
   read(2,*) numrefinesameiter
   read(2,*) binSmallBound,binLargeBound
@@ -167,13 +167,12 @@ CONTAINS
     read(2,*) pltxiBinswhich(1,i),pltxiBinswhich(2,i)
   enddo
 
-  read(2,*) dumchar    !Plotting KLreconstructed realz
-  read(2,*) pltKLrrealz(1),pltKLrrealz(2),pltKLrrealz(3),pltKLrrealz(4)
-  read(2,*) pltKLrrealznumof
-  allocate(pltKLrrealzwhich(2,pltKLrrealznumof))
-  allocate(pltKLrrealzPointorXi(pltKLrrealznumof))
-  do i=1,pltKLrrealznumof
-    read(2,*) pltKLrrealzwhich(1,i),pltKLrrealzwhich(2,i),pltKLrrealzPointorXi(i)
+  read(2,*) dumchar    !Plotting KLrealz
+  read(2,*) pltKLrealz(1),pltKLrealz(2),pltKLrealz(3),pltKLrealz(4)
+  read(2,*) pltKLrealznumof
+  allocate(pltKLrealzwhich(2,pltKLrealznumof))
+  do i=1,pltKLrealznumof
+    read(2,*) pltKLrealzwhich(1,i),pltKLrealzwhich(2,i)
   enddo
 
   read(2,*) dumchar    !Plotting Variace (Co)
@@ -212,7 +211,7 @@ CONTAINS
     pltEigf(1)     = pltallopt
     Corropts(1)    = pltallopt
     pltxiBins(1)   = pltallopt
-    pltKLrrealz(1) = pltallopt
+    pltKLrealz(1) = pltallopt
     pltgenrealz(1) = pltallopt
     pltCo(1)       = pltallopt
     pltflux(1)     = pltallopt
@@ -233,14 +232,12 @@ CONTAINS
   use genRealzvars, only: sig, scatrat, numRealz, pltgenrealznumof, pltgenrealz, &
                           pltgenrealzwhich, flCorrMarkov, flCorrRealz
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
-                    pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, KLrnumpoints, &
-                    KLrnumRealz, KLrprintat, pltKLrrealz, pltKLrrealznumof, pltKLrrealzwhich, &
-                    pltKLrrealzPointorXi, KLres, KLrec, KLnoise, flmatbasedxs, &
-                    Gaussrandtype, flCorrKL, flmeanadjust
+                    pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, &
+                    KLrnumRealz, KLrprintat, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
+                    KLres, KLrec, KLnoise, flmatbasedxs, Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, probtype, flnegxs
-  integer :: fpointorxi(2)
 
   integer :: i, ones, zeros
   real(8) :: eps = 0.000001d0
@@ -273,31 +270,16 @@ CONTAINS
     flstopstatus = .true.
   endif
 
-  fpointorxi = 0    !Test KLreconstruction num of realz, order of Eigs, and plot types
-  do i=1,pltKLrrealznumof
-    if( pltKLrrealzwhich(1,i)>KLrnumRealz .AND. pltKLrrealz(1) .NE. 'noplot' ) then
+  do i=1,pltKLrealznumof
+    if( pltKLrealzwhich(1,i)>KLrnumRealz .AND. pltKLrealz(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot more reconstructed realz than reconstructed"
       flstopstatus = .true.
     endif
-    if( pltKLrrealzwhich(2,i)>numEigs .AND. pltKLrrealz(1) .NE. 'noplot' ) then
+    if( pltKLrealzwhich(2,i)>numEigs .AND. pltKLrealz(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot reconstructed realz using more than calced num of Eigs"
       flstopstatus = .true.
     endif
-    if( pltKLrrealzPointorXi(i) .NE. 'fpoint' .AND. pltKLrrealzPointorXi(i) .NE. 'fxi' ) then
-      print *,"--User plot option for type of reconstruction needs to be either 'fpoint' or 'fxi'"
-      flstopstatus = .true.
-    endif
-    !tally if more than one type present
-    if(pltKLrrealzPointorXi(i) .EQ. 'fpoint') fpointorxi(1) = 1
-    if(pltKLrrealzPointorXi(i) .EQ. 'fxi')    fpointorxi(2) = 1
   enddo
-  !use tally to see if valid to plot
-  if( fpointorxi(1) .NE. 0 .AND. fpointorxi(2) .NE. 0 .AND. pltKLrrealz(1) .NE. 'noplot' ) then
-    if ( KLrnumpoints(1) .NE. KLrnumpoints(2) ) then
-      print *,"--User must either plot only fpoint or fxi, or make num of points to plot same"
-      flstopstatus = .true.
-    endif
-  endif
   if( KLres=='no' .and. KLrec=='yes' ) then
     KLres = 'yes'
     print *,"--User attempting KLrec w/o KLres, KLres has been set to 'yes'"
@@ -435,9 +417,9 @@ CONTAINS
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
                           flprint, numPosRealz, numNegRealz, numRealz, flGBgeom, CoExp, &
                           Coscat, Coabs
-  use KLvars, only: KLrrandarray, KLrnumpoints, numEigs, pltKLrrealznumof, KLrsig, &
+  use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
-                    xi, KLrxivals, KLrxivalss, pltKLrrealzarray, KLrnumRealz, flglGaussdiffrand, &
+                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, KLrnumRealz, flglGaussdiffrand, &
                     flGaussdiffrand
   use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
@@ -480,13 +462,11 @@ CONTAINS
 
 
   !allocate and initialize KLreconstruction variables
-  allocate(KLrrandarray(KLrnumpoints(1),numEigs,pltKLrrealznumof+1))  !fpoint allocations
-  allocate(KLrsig(KLrnumpoints(1)))
-  allocate(KLrxivals(KLrnumRealz,numEigs))                            !fxi allocations
+  allocate(KLrxivals(KLrnumRealz,numEigs))
   if(GaussKL=='yes' .and. flglGaussdiffrand) allocate(KLrxivalss(KLrnumRealz,numEigs))
   flGaussdiffrand = .false.
-  allocate(KLrxisig(KLrnumpoints(2)))
-  allocate(pltKLrrealzarray(maxval(KLrnumpoints),pltKLrrealznumof+1)) !fpoint and/or fxi all
+  allocate(KLrxisig(KLrnumpoints))
+  allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
 
 
   !allocate/initialize MCvars
