@@ -30,7 +30,6 @@
   no,             Correlated-Random number Monte Carlo?
 
   !--- Lesser KL Options ---!
-  material,       method for creating xis, 'totxs' 'material', second allows dissimilar c vals
   100,            Num of pts to plot KLr (and neg check)
   11,             Levels of refinement for eigenvalue solving
   6,              Num of iters used in extrema locating w/o change before stop, exp says use 6 or more

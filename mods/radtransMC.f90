@@ -1509,7 +1509,7 @@ CONTAINS
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, flfluxplot, fluxfaces
-  use KLvars, only: flmatbasedxs, flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
+  use KLvars, only: flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
   integer :: icase,tnumParts,tnumRealz,i
 
   real(8) :: tot, sqr, val
@@ -1553,12 +1553,12 @@ CONTAINS
       sig(1) = log(sig(1)**2/sqrt(CoExp+sig(1) **2))
       sig(2) = log(sig(2)**2/sqrt(CoExp+sig(2) **2))
     endif
-    if(flmatbasedxs .and. .not.flGBgeom) then
+    if(.not.flGBgeom) then
       sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
       sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
       Coscat     = CoExp  *      scatrat(1) 
       Coabs      = CoExp  *  1d0-scatrat(1)
-    elseif(flmatbasedxs .and. flGBgeom) then
+    elseif(flGBgeom) then
       sigscatave = sigave *      scatrat(1)
       sigabsave  = sigave * (1d0-scatrat(1))
       Coscat     = CoExp  *      scatrat(1)

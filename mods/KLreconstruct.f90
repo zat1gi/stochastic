@@ -13,14 +13,13 @@ CONTAINS
   use KLmeanadjust, only: KLadjustmean
   use genRealzvars, only: flGBgeom
   use MCvars, only: MCcases
-  use KLvars, only: flmeanadjust,flmatbasedxs,flLNxscheck
+  use KLvars, only: flmeanadjust,flLNxscheck
   integer :: icase
 
   call KLrmeshgen         !creates mesh for fixed x and xi material constructions
   call KLrgenrealz(icase) !selects array of random variables xi and tests for negativity
-  if(flmeanadjust .and. .not.flmatbasedxs) call KLadjustmean('totaln') !adjusts tot mean after lopping neg cross sections
-  if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
-  if(flmeanadjust .and.      flmatbasedxs) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
+  if(flmeanadjust) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
+  if(flmeanadjust) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
   if((.not.MCcases(icase)=='GaussKL' .and. flLNxscheck .and. .not.flGBgeom) .or.   &
      (     MCcases(icase)=='GaussKL' .and. flLNxscheck .and.      flGBgeom)) call LNxsvalstest
@@ -680,7 +679,7 @@ print *,"I am here, where files should be moved"
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, sigave, Coscat, Coabs, scatrat, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, flmatbasedxs, &
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, &
                     sigsmeanadjust, sigameanadjust, KLrxivalss, flGaussdiffrand
   use utilities, only: Heavi
   integer :: j
@@ -710,39 +709,23 @@ print *,"I am here, where files should be moved"
   endif
 
 
-  if(.not.flmatbasedxs) then
-    !determine underlying value
-    sigt = (sigave + meanadjust)*(xr - xl) + KL_sum
-    !determine point value
-    select case (chxstype)
-      case ("totale")
-        KL_int = Heavi(sigt)*sigt
-      case ("totaln")
-        KL_int = sigt
-      case ("scatter")
-        KL_int = sigt * scatrat(1)
-      case ("absorb")
-        KL_int = sigt * (1.0d0 - scatrat(1))
-    end select
-  elseif(flmatbasedxs) then
-    !cross section values
-    if(chxstype .ne. 'scatter') &
-      siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(Coabs)  * KL_sum
-    if(chxstype .ne. 'absorb') &
-      sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(Coscat) * KL_sums
+  !cross section values
+  if(chxstype .ne. 'scatter') &
+    siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(Coabs)  * KL_sum
+  if(chxstype .ne. 'absorb') &
+    sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(Coscat) * KL_sums
 
-    !determine point value
-    select case (chxstype)
-      case ("totale")
-        KL_int = Heavi(sigs)*sigs + Heavi(siga)*siga
-      case ("totaln")
-        KL_int = sigs + siga
-      case ("scatter")
-        KL_int = sigs
-      case ("absorb")
-        KL_int = siga
-    end select
-  endif
+  !determine point value
+  select case (chxstype)
+    case ("totale")
+      KL_int = Heavi(sigs)*sigs + Heavi(siga)*siga
+    case ("totaln")
+      KL_int = sigs + siga
+    case ("scatter")
+      KL_int = sigs
+    case ("absorb")
+      KL_int = siga
+  end select
 
   end function KLrxi_integral
 
@@ -767,7 +750,7 @@ print *,"I am here, where files should be moved"
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, Coscat, Coabs
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flmatbasedxs, flGaussdiffrand, flLN
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand, flLN
   use utilities, only: Heavi
 
   integer :: j
@@ -804,48 +787,28 @@ print *,"I am here, where files should be moved"
   !set non-x-dependent values based order
   call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
   !solve value at point
-  if(.not.flmatbasedxs) then
-    !determine underlying value
-    sigt = tsigave + tmeanadjust + KL_sum
-    !determine point value
-    select case (chxstype)
-      case ("totale") !if deriv, no Heaviside
-        KL_point = merge(Heavi(sigt)*sigt,sigt,order==0)
-        if(flLN) KL_point = exp(sigt)
-      case ("totaln")
-        KL_point = sigt
-        if(flLN) KL_point = exp(sigt)
-      case ("scatter")
-        KL_point = sigt * scatrat(1)
-        if(flLN) KL_point = exp(sigt)*scatrat(1)
-      case ("absorb")
-        KL_point = sigt * (1.0d0 - scatrat(1))
-        if(flLN) KL_point = exp(sigt)*(1d0-scatrat(1))
-      case ("scatrat")
-        KL_point = scatrat(1)
-    end select
-  elseif(flmatbasedxs) then
-    !cross section values
-    if(chxstype .ne. 'scatter') &
-      siga = tsigabsave  + tsigameanadjust + sqrt(Coabs)  * KL_sum
-    if(chxstype .ne. 'absorb') &
-      sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sums
-    !determine point value
-    select case (chxstype)
-      case ("totale") !if deriv, no Heaviside
-        KL_point = merge(Heavi(sigs)*sigs + Heavi(siga)*siga, sigs+siga, order==0)
-      case ("totaln")
-        KL_point = sigs + siga
-      case ("scatter")
-        KL_point = sigs
-      case ("absorb")
-        KL_point = siga
-      case ("scatrat")
-        KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
-    end select
-    if(flLN) KL_point = exp(KL_point)
-    if(flLN .and. chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
-  endif
+
+  !cross section values
+  if(chxstype .ne. 'scatter') &
+    siga = tsigabsave  + tsigameanadjust + sqrt(Coabs)  * KL_sum
+  if(chxstype .ne. 'absorb') &
+    sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sums
+  !determine point value
+  select case (chxstype)
+    case ("totale") !if deriv, no Heaviside
+      KL_point = merge(Heavi(sigs)*sigs + Heavi(siga)*siga, sigs+siga, order==0)
+    case ("totaln")
+      KL_point = sigs + siga
+    case ("scatter")
+      KL_point = sigs
+    case ("absorb")
+      KL_point = siga
+    case ("scatrat")
+      KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
+  end select
+  if(flLN) KL_point = exp(KL_point)
+  if(flLN .and. chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
+
   end function KLr_point
 
 

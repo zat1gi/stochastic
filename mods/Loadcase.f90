@@ -43,7 +43,7 @@ CONTAINS
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
-                                  KLres, KLrec, KLnoise, flmatbasedxs, flmeanadjust, meanadjust_tol, &
+                                  KLres, KLrec, KLnoise, flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
                                   flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
@@ -112,8 +112,6 @@ CONTAINS
 
   !--- Lesser KL Options ---!
   read(2,*) dumchar
-  read(2,*) setflags(1)
-  if(setflags(1)=='tot') flmatbasedxs = .false.
   read(2,*) KLrnumpoints
   read(2,*) levsrefEig
   read(2,*) numrefinesameiter
@@ -231,7 +229,7 @@ CONTAINS
   use KLvars, only: pltEigfwhich, pltxiBinswhich, pltCowhich, pltxiBinsnumof, pltEigfnumof, &
                     pltConumof, binNumof, numEigs, pltxiBins, pltEigf, pltCo, &
                     pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
-                    KLres, KLrec, KLnoise, flmatbasedxs, Gaussrandtype, flCorrKL, flmeanadjust
+                    KLres, KLrec, KLnoise, Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
                     KLWoodbinplot, GaussKLbinplot, flnegxs
@@ -364,10 +362,6 @@ CONTAINS
       KLrec='yes'
       print *,"--User attempting KLWood w/o either KLres or KLrec, both have been set to 'yes'"
       flsleep = .true.
-    endif
-    if( .not.flmatbasedxs .and. abs(scatrat(1)-scatrat(2))>eps ) then
-      print *,"--User attempting to run KLWood w/ non-identical scattering ratios"
-      flstopstatus = .true.
     endif
   endif
   

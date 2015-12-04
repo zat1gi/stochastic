@@ -114,7 +114,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   character(3)         :: KLres                ! perform "KL research" operations?
   character(3)         :: KLrec                ! perform "KL reconstruct" operations?
   character(3)         :: KLnoise              ! perform "KL noise" operations?
-  logical              :: flmatbasedxs=.true.  ! material (or totxs) based KL xs generation
   character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
   real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)

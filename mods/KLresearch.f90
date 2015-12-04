@@ -302,15 +302,14 @@ CONTAINS
 
 
   subroutine KL_collect
-  !This subroutine calculates xi values from binary Markov realizations.
-  !Currently it does so by integrating over the total cross section in each region,
-  !soon it will by integrating over a factor which only considers information that 
-  !distinguishes one material from another.
+  !This subroutine calculates xi values from binary Markov realizations.  It does 
+  !this by integrating over a variable related only to geometry-based material
+  !properties so that it can later be used for any cross section material property.
   use rngvars, only: rngappnum, rngstride
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P, &
                           sigave
-  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs, flmatbasedxs
+  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs
   use MCvars, only: trannprt
   use genRealz, only: genReal
   use timeman, only: KL_timeupdate
@@ -322,10 +321,8 @@ CONTAINS
   call cpu_time(tt1)
 
   write(*,*) "Starting method: ",flKLtype  
-  if(flmatbasedxs) then
-    lsig = merge(1,2,sig(1)>sig(2))
-    ssig = merge(1,2,sig(1)<sig(2))
-  endif
+  lsig = merge(1,2,sig(1)>sig(2))
+  ssig = merge(1,2,sig(1)<sig(2))
   !advance rng
   call RN_init_particle( int(rngappnum*rngstride,8) )
   rngappnum = rngappnum + 1
@@ -340,14 +337,8 @@ CONTAINS
       do i=2,nummatSegs+1
         xl=matLength(i-1)                                         !set xl and xr for calculations
         xr=matLength(i)
-        if(.not.flmatbasedxs) then                                !set variables to integrate
-          hilowterm = sig(matType(i-1))
-          aveterm   = sigave
-        elseif(flmatbasedxs) then
-          hilowterm = merge(sqrt(P(ssig)/P(lsig)),-sqrt(P(lsig)/P(ssig)),matType(i-1)==lsig)
-!          hilowterm = merge(sqrt(P(2)/P(1)),-sqrt(P(1)/P(2)),matType(i-1)==1)
-          aveterm   = 0d0
-        endif
+        hilowterm = merge(sqrt(P(ssig)/P(lsig)),-sqrt(P(lsig)/P(ssig)),matType(i-1)==lsig)
+        aveterm   = 0d0
 
         xiterm= (hilowterm-aveterm)*&                                  !actual calculation
                 (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
