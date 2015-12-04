@@ -52,7 +52,7 @@ CONTAINS
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype, probtype, flCorrMC
+                                  pltfluxtype, flCorrMC
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: default_ufunct    !default u functional or not?
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
@@ -68,7 +68,6 @@ CONTAINS
   open(unit=2,file="inputstoc.txt")
 
   read(2,*) rngseed
-  read(2,*) probtype
 
   !--- Geometry - 'material' num of realz ---!
   read(2,*) dumchar
@@ -237,7 +236,7 @@ CONTAINS
                     KLres, KLrec, KLnoise, flmatbasedxs, Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: trannprt, sourceType, pltflux, radMC, radWood, KLWood, &
                     GaussKL, pltfluxtype, LPMC, atmixMC, radMCbinplot, radWoodbinplot, &
-                    KLWoodbinplot, GaussKLbinplot, probtype, flnegxs
+                    KLWoodbinplot, GaussKLbinplot, flnegxs
 
   integer :: i, ones, zeros
   real(8) :: eps = 0.000001d0

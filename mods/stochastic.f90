@@ -14,7 +14,7 @@ program stochastic
   use KLvars, only: KLrnumRealz, KLrprintat, KLres, KLrec, KLnoise, &
                     Corropts, pltCo
   use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
-                    MCcaseson, MCcases, probtype
+                    MCcaseson, MCcases
 
   implicit none
   ! pass by reference
@@ -29,7 +29,7 @@ program stochastic
   !!allocate/prepare global parameters
   call global_allocate
   call Acase_print
-  if(probtype=='material') call clearreports
+  call clearreports
 
   !!Perform KL research
   if(KLres=='yes') then
@@ -49,7 +49,7 @@ program stochastic
   endif
 
   !!Perform UQ-MC for transport problems  
-  if( sum(MCcaseson)>0 .and. probtype=='material') then !perform if at least one case chosen
+  if( sum(MCcaseson)>0) then !perform if at least one case chosen
     do icase=1,size(MCcaseson)       !cycle through possible cases
       if( MCcaseson(icase)==1 ) then !run case if chosen
         call UQ_MC( icase )          !perform transport
@@ -61,11 +61,9 @@ program stochastic
   call MCLeakage_pdfplot
 
   !!print final reports
-  if(probtype=='material') then
-    call Acase_print
-    if(sum(MCcaseson)/=0) call MCprintstats
-    call timereport
-    call finalreport
-  endif
+  call Acase_print
+  if(sum(MCcaseson)/=0) call MCprintstats
+  call timereport
+  call finalreport
 
 end program stochastic
