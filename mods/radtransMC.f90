@@ -1501,9 +1501,9 @@ CONTAINS
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
   use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, P, sig,  &
-                          GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, CoExp, &
-                          numPosRealz, numNegRealz, Coscat, Coabs, sigscatave, sigabsave, &
-                          sigave_, CoExp_
+                          GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, sigvar, &
+                          numPosRealz, numNegRealz, scatvar, absvar, sigscatave, sigabsave, &
+                          sigave_, sigvar_
   use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
@@ -1526,7 +1526,7 @@ CONTAINS
   !Gauss-based input set (or not)
   if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
     sigave       = GBsigave
-    CoExp        = GBsigvar
+    sigvar       = GBsigvar
     scatrat(1)   = GBscatrat
     lamc         = GBlamc
     s            = GBs
@@ -1543,26 +1543,26 @@ CONTAINS
     flGaussdiffrand = flglGaussdiffrand
     flLN = flglLN
     if(flLN .and. chLNmode=='fitlamc') then
-      lamc = exponentialfit(s,1d0+CoExp/sigave,lamc)
+      lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
     endif
     if(flLN) then
       sigave_= sigave
-      sigave = log(sigave_**2/sqrt(CoExp+sigave_**2))
-      CoExp_ = CoExp
-      CoExp  = log(CoExp/sigave_**2+1.0d0)
-      sig(1) = log(sig(1)**2/sqrt(CoExp+sig(1) **2))
-      sig(2) = log(sig(2)**2/sqrt(CoExp+sig(2) **2))
+      sigave = log(sigave_**2/sqrt(sigvar+sigave_**2))
+      sigvar_ = sigvar
+      sigvar  = log(sigvar/sigave_**2+1.0d0)
+      sig(1) = log(sig(1)**2/sqrt(sigvar+sig(1) **2))
+      sig(2) = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
     endif
     if(.not.flGBgeom) then
       sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
       sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
-      Coscat     = CoExp  *      scatrat(1) 
-      Coabs      = CoExp  *  1d0-scatrat(1)
+      scatvar    = sigvar  *      scatrat(1) 
+      absvar     = sigvar  *  1d0-scatrat(1)
     elseif(flGBgeom) then
       sigscatave = sigave *      scatrat(1)
       sigabsave  = sigave * (1d0-scatrat(1))
-      Coscat     = CoExp  *      scatrat(1)
-      Coabs      = CoExp  * (1d0-scatrat(1))
+      scatvar    = sigvar  *      scatrat(1)
+      absvar     = sigvar  * (1d0-scatrat(1))
     endif
   endif
 

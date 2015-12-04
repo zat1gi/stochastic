@@ -364,7 +364,7 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength, CoExp
+  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo
   use KLreconstruct, only: Eigfunc

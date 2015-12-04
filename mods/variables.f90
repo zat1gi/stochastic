@@ -79,10 +79,10 @@ module genRealzvars
   real(8)              :: atmixsig             ! atomically mixed cross section value
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
   real(8)              :: sigave_              ! maintains input sigave when sigave is translated to LN
-  real(8)              :: CoExp                ! variance of total xs in KL expansion
-  real(8)              :: CoExp_              ! maintains input CoExp when CoExp is translated to LN
-  real(8)              :: Coscat               ! variance of scat xs in KL expansion, 'material' mode
-  real(8)              :: Coabs                ! variance of abs  xs in KL expansion, 'material' mode
+  real(8)              :: sigvar               ! variance of total xs in KL expansion
+  real(8)              :: sigvar_              ! maintains input sigvar when sigvar is translated to LN
+  real(8)              :: scatvar              ! variance of scat xs in KL expansion, 'material' mode
+  real(8)              :: absvar               ! variance of abs  xs in KL expansion, 'material' mode
   real(8)              :: sigave               ! weighted average sigma value for binary mixtures
   real(8)              :: sigscatave           ! average scattering xs
   real(8)              :: sigabsave            ! average absorption xs

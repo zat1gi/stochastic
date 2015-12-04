@@ -35,12 +35,12 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: sigave, CoExp, sigave_, CoExp_, numRealz, s, &
-                          sigscatave, sigabsave, Coscat, Coabs, flGBgeom
+  use genRealzvars, only: sigave, sigvar, sigave_, sigvar_, numRealz, s, &
+                          sigscatave, sigabsave, scatvar, absvar, flGBgeom
   use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, flLN, chLNxsplottype
 
   integer :: j, ix, ibin
-  real(8) :: step, tsigave, tCoExp
+  real(8) :: step, tsigave, tsigvar
   real(8), allocatable :: LNxsvals(:,:),xvals(:),LNxsaves(:),LNxsvars(:)
   real(8), allocatable :: pdfLNxsBounds(:)
   integer, allocatable :: pdfLNxsCounts(:,:)
@@ -71,17 +71,17 @@ CONTAINS
     if(chLNxschecktype=='scatter') tsigave = sigscatave
     if(chLNxschecktype=='absorb')  tsigave = sigabsave
 
-    if(chLNxschecktype=='totaln')  tCoExp = CoExp_
-    if(chLNxschecktype=='scatter') tCoExp = Coscat
-    if(chLNxschecktype=='absorb')  tCoExp = Coabs
+    if(chLNxschecktype=='totaln')  tsigvar = sigvar_
+    if(chLNxschecktype=='scatter') tsigvar = scatvar
+    if(chLNxschecktype=='absorb')  tsigvar = absvar
   else
     if(chLNxschecktype=='totaln')  tsigave = sigave
     if(chLNxschecktype=='scatter') tsigave = sigscatave
     if(chLNxschecktype=='absorb')  tsigave = sigabsave
 
-    if(chLNxschecktype=='totaln')  tCoExp = CoExp
-    if(chLNxschecktype=='scatter') tCoExp = Coscat
-    if(chLNxschecktype=='absorb')  tCoExp = Coabs
+    if(chLNxschecktype=='totaln')  tsigvar = sigvar
+    if(chLNxschecktype=='scatter') tsigvar = scatvar
+    if(chLNxschecktype=='absorb')  tsigvar = absvar
   endif
 
   !calulate and print averages and variances
@@ -109,7 +109,7 @@ CONTAINS
   write(15,501) 
   do ix = 1,numLNxspts
     call mean_and_var_s( LNxsvals(:,ix),size(LNxsvals(:,ix)),LNxsaves(ix),LNxsvars(ix))
-    write(15,502) tsigave,LNxsaves(ix),tCoExp,LNxsvars(ix),xvals(ix)
+    write(15,502) tsigave,LNxsaves(ix),tsigvar,LNxsvars(ix),xvals(ix)
   enddo
   close(unit=15)
   call system("cat plots/LNxsstats/aveandvar.txt")
@@ -678,7 +678,7 @@ print *,"I am here, where files should be moved"
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
-  use genRealzvars, only: lamc, sigave, Coscat, Coabs, scatrat, sigscatave, sigabsave
+  use genRealzvars, only: lamc, sigave, scatvar, absvar, scatrat, sigscatave, sigabsave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, &
                     sigsmeanadjust, sigameanadjust, KLrxivalss, flGaussdiffrand
   use utilities, only: Heavi
@@ -711,9 +711,9 @@ print *,"I am here, where files should be moved"
 
   !cross section values
   if(chxstype .ne. 'scatter') &
-    siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(Coabs)  * KL_sum
+    siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(absvar)  * KL_sum
   if(chxstype .ne. 'absorb') &
-    sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(Coscat) * KL_sums
+    sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(scatvar) * KL_sums
 
   !determine point value
   select case (chxstype)
@@ -749,7 +749,7 @@ print *,"I am here, where files should be moved"
   !It can function when in 'material'-based or 'totxs'-based mode.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamc, scatrat, Coscat, Coabs
+  use genRealzvars, only: lamc, scatrat, scatvar, absvar
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand, flLN
   use utilities, only: Heavi
 
@@ -790,9 +790,9 @@ print *,"I am here, where files should be moved"
 
   !cross section values
   if(chxstype .ne. 'scatter') &
-    siga = tsigabsave  + tsigameanadjust + sqrt(Coabs)  * KL_sum
+    siga = tsigabsave  + tsigameanadjust + sqrt(absvar)  * KL_sum
   if(chxstype .ne. 'absorb') &
-    sigs = tsigscatave + tsigsmeanadjust + sqrt(Coscat) * KL_sums
+    sigs = tsigscatave + tsigsmeanadjust + sqrt(scatvar) * KL_sums
   !determine point value
   select case (chxstype)
     case ("totale") !if deriv, no Heaviside
