@@ -159,6 +159,7 @@ CONTAINS
 
 
   subroutine genReal_stats
+  !stats and plotting for binary material construction
   use genRealzvars, only: sig, lam, numRealz, numPath, pltgenrealznumof, P, &
                           perFirstTally, devFirstTally, matFirstTally, sumPath, &
                           sqrPath, pltgenrealz

@@ -59,8 +59,7 @@ CONTAINS
   call stocMC_stats( tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
-  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) &
-    call Woodnegstats
+  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) call Woodnegstats
 
   end subroutine UQ_MC
 
@@ -1035,7 +1034,7 @@ CONTAINS
   endif
 
   !leakage pdfs
-  call MCLeakage_pdfbinprint         !bin and print pdf of leakage values
+  if(.not.binplot=='noplot') call MCLeakage_pdfbinprint  !bin and print pdf of leakage values
 
   end subroutine stocMC_stats
 
@@ -1070,133 +1069,131 @@ CONTAINS
 
   376 format("#cell center,       ave mat1 flux,   ave mat2 flux")
 
-  if(flfluxplot) then
-    select case (chTrantype)
-      case ("radMC")
-        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-          open(unit=24, file="radMC_fluxall.out")
-          write(24,370)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
-          enddo
-          close(unit=24)
-        endif
-        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-          open(unit=24, file="radMC_fluxmat.out")
-          write(24,372)
-          do ibin=1,fluxnumcells
-            write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxmat1(ibin,1),sqrt(stocMC_fluxmat1(ibin,2)),&
-                          stocMC_fluxmat2(ibin,1),sqrt(stocMC_fluxmat2(ibin,2))
-          enddo
-          close(unit=24)
-        endif
+  select case (chTrantype)
+    case ("radMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+        open(unit=24, file="radMC_fluxall.out")
+        write(24,370)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
+        enddo
+        close(unit=24)
+      endif
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+        open(unit=24, file="radMC_fluxmat.out")
+        write(24,372)
+        do ibin=1,fluxnumcells
+          write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxmat1(ibin,1),sqrt(stocMC_fluxmat1(ibin,2)),&
+                        stocMC_fluxmat2(ibin,1),sqrt(stocMC_fluxmat2(ibin,2))
+        enddo
+        close(unit=24)
+      endif
 
-      case ("radWood")
-        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-          open(unit=24, file="radWood_fluxall.out")
-          write(24,370)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
-          enddo
-          close(unit=24)
-        endif
-        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-          open(unit=24, file="radWood_fluxmat.out")
-          write(24,372)
-          do ibin=1,fluxnumcells
-            write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxmat1(ibin,1),sqrt(stocMC_fluxmat1(ibin,2)),&
-                          stocMC_fluxmat2(ibin,1),sqrt(stocMC_fluxmat2(ibin,2))
-          enddo
-          close(unit=24)
-        endif
+    case ("radWood")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+        open(unit=24, file="radWood_fluxall.out")
+        write(24,370)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
+        enddo
+        close(unit=24)
+      endif
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+        open(unit=24, file="radWood_fluxmat.out")
+        write(24,372)
+        do ibin=1,fluxnumcells
+          write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxmat1(ibin,1),sqrt(stocMC_fluxmat1(ibin,2)),&
+                        stocMC_fluxmat2(ibin,1),sqrt(stocMC_fluxmat2(ibin,2))
+        enddo
+        close(unit=24)
+      endif
 
-      case ("KLWood")
-        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-          open(unit=24, file="KLWood_fluxall.out")
-          write(24,370)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
-          enddo
-          close(unit=24)
-        endif
-        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-          open(unit=24, file="KLWood_fluxmat.out")
-          write(24,370)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
-          enddo
-          close(unit=24)
-        endif
+    case ("KLWood")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+        open(unit=24, file="KLWood_fluxall.out")
+        write(24,370)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
+        enddo
+        close(unit=24)
+      endif
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+        open(unit=24, file="KLWood_fluxmat.out")
+        write(24,370)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
+        enddo
+        close(unit=24)
+      endif
 
-      case ("LPMC")
-        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-          open(unit=24, file="LPMC_fluxall.out")
-          write(24,371)
-          do ibin=1,fluxnumcells
-            write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1)
-          enddo
-          close(unit=24)
-        endif
-        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-          open(unit=24, file="LPMC_fluxmat.out")
-          write(24,376)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxmat1(ibin,1),&
-                          stocMC_fluxmat2(ibin,1)
-          enddo
-          close(unit=24)
-        endif
+    case ("LPMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+        open(unit=24, file="LPMC_fluxall.out")
+        write(24,371)
+        do ibin=1,fluxnumcells
+          write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1)
+        enddo
+        close(unit=24)
+      endif
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+        open(unit=24, file="LPMC_fluxmat.out")
+        write(24,376)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxmat1(ibin,1),&
+                        stocMC_fluxmat2(ibin,1)
+        enddo
+        close(unit=24)
+      endif
 
-      case ("atmixMC")
-        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-          open(unit=24, file="atmixMC_fluxall.out")
-          write(24,374)
-          do ibin=1,fluxnumcells
-            write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1)
-          enddo
-          close(unit=24)
-        endif
-        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-          open(unit=24, file="atmixMC_fluxmat.out")
-          write(24,374)
-          do ibin=1,fluxnumcells
-            write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1)
-          enddo
-          close(unit=24)
-        endif
+    case ("atmixMC")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+        open(unit=24, file="atmixMC_fluxall.out")
+        write(24,374)
+        do ibin=1,fluxnumcells
+          write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1)
+        enddo
+        close(unit=24)
+      endif
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+        open(unit=24, file="atmixMC_fluxmat.out")
+        write(24,374)
+        do ibin=1,fluxnumcells
+          write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1)
+        enddo
+        close(unit=24)
+      endif
 
-      case ("GaussKL")
-        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-          open(unit=24, file="GaussKL_fluxall.out")
-          write(24,370)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
-          enddo
-          close(unit=24)
-        endif
-        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-          open(unit=24, file="GaussKL_fluxmat.out")
-          write(24,370)
-          do ibin=1,fluxnumcells
-            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
-          enddo
-          close(unit=24)
-        endif
+    case ("GaussKL")
+      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+        open(unit=24, file="GaussKL_fluxall.out")
+        write(24,370)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
+        enddo
+        close(unit=24)
+      endif
+      if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+        open(unit=24, file="GaussKL_fluxmat.out")
+        write(24,370)
+        do ibin=1,fluxnumcells
+          write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                        stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
+        enddo
+        close(unit=24)
+      endif
 
-    end select
-  endif
+  end select
 
   call system("test -e radMC_fluxall.out   && mv radMC_fluxall.out plots/fluxplots")
   call system("test -e radMC_fluxmat.out   && mv radMC_fluxmat.out plots/fluxplots")
@@ -1689,26 +1686,21 @@ CONTAINS
   subroutine MCLeakage_pdfplot
   !This subroutine plots MC Leakage value pdfs from data files generated
   !in MCLeakage_pdfbinprint.
-  use MCvars,       only: binplot
-  logical :: flplot = .false.
+  use MCvars, only: binplot
 
   !preview if at least one chose this, otherwise simply plot
   if( binplot =='preview' ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
-    flplot = .true.
   elseif( binplot =='plot' ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
-    flplot = .true.
   endif
   !convert and store
-  if(flplot) then
-    call system("ps2pdf tranprofile.ps")
-    call system("ps2pdf reflprofile.ps")
-    call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
-    call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
-  endif
+  call system("ps2pdf tranprofile.ps")
+  call system("ps2pdf reflprofile.ps")
+  call system("mv tranprofile.ps tranprofile.pdf plots/tranreflprofile")
+  call system("mv reflprofile.ps reflprofile.pdf plots/tranreflprofile")
 
   end subroutine MCLeakage_pdfplot
 

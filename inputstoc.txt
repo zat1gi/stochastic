@@ -20,7 +20,6 @@
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Large KL Options ---!
-  no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   5,             Number of eigenvalues
   200,            Number of bins for xi
 
@@ -74,7 +73,7 @@
   6,100000,
   7,100000
 
-  !!--Plotting KLreconstructed realizations  [in sub KLreval]
+  !!--Plotting KLconstructed realizations  [in sub KLreval]
   plot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
   1,4,           Which realz to plot/num of Eigs to contribute

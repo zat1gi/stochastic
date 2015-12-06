@@ -4,35 +4,6 @@ module Loadcase
 CONTAINS
   ! print statements in this module use # 100-199
 
-
-
-  subroutine Acase_print
-  use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc
-
-  100 format("  Values loaded for special Adamscase :",f5.1)
-  101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
-  102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
-  103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
-  104 format("    s         :",f6.2,"       lamc      :",f6.2)
-
-  open(unit=100,file="Acase.out")
-  write(100,*)
-  write(100,100) Adamscase
-  write(100,101) sig(1),sig(2)
-  write(100,102) scatrat(1),scatrat(2)
-  write(100,103) lam(1),lam(2)
-  write(100,104) s,lamc
-  write(100,*)
-
-  close(unit=100)
-  call system("mv Acase.out texts")
-
-  end subroutine Acase_print
-
-
-
-
-
   subroutine read_test_inputstoc
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
@@ -43,7 +14,7 @@ CONTAINS
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
-                                  KLres, KLrec, flmeanadjust, meanadjust_tol, &
+                                  flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
                                   chGausstype, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
@@ -94,7 +65,6 @@ CONTAINS
 
   !--- Large KL Options ---!
   read(2,*) dumchar
-  read(2,*) KLres,KLrec
   read(2,*) numEigs
   read(2,*) binNumof
 
@@ -204,8 +174,7 @@ CONTAINS
 
 
 
-
-  call Acase_load !need to load these to test
+  if(chgeomtype=='binary' .and. Adamscase/=0) call Acase_load !need to load these to test
 
 
 
@@ -252,16 +221,6 @@ CONTAINS
       flstopstatus = .true.
     endif
   enddo
-  if( KLres=='no' .and. KLrec=='yes' ) then
-    KLres = 'yes'
-    print *,"--User attempting KLrec w/o KLres, KLres has been set to 'yes'"
-    flsleep = .true.
-  endif
-  if( chTrantype=='GaussKL' .and. KLrec=='no' ) then
-    KLrec = 'yes'
-    print *,"--User attempting Gauss rand geom w/o KLrec, KLrec has been set to 'yes'"
-    flsleep = .true.
-  endif
   if( Gaussrandtype .ne. 'BM' .and. Gaussrandtype .ne. 'inv' ) then
     print *,"--User should enter 'BM' or 'inv' for Gaussian sampling type"
     flstopstatus = .true.
@@ -314,17 +273,6 @@ CONTAINS
     endif
   enddo
 
-  if( chTrantype=='KLWood' ) then  !Tests for KLWood
-    if( KLres=='no' .or. KLrec=='no' ) then
-      !print *,"--User attempting to run KLWood w/o either KLresearch or KLconstruct"
-      !flstopstatus = .true.
-      KLres='yes'
-      KLrec='yes'
-      print *,"--User attempting KLWood w/o either KLres or KLrec, both have been set to 'yes'"
-      flsleep = .true.
-    endif
-  endif
-  
   if( flCorrRealz .and. (.not.flCorrMarkov .or. .not.flCorrKL)) then !Test for correlation deficiency
     print *,"--User trying to correlate KLres w/ others w/o corr Markov or KL, both set to true"
     flCorrMarkov=.true.
@@ -449,8 +397,6 @@ CONTAINS
   call system("cat texts/Acase.out texts/Woodnegstats.out texts/MCleakage.out > texts/finalreport.out")
   call system("cat texts/finalreport.out")
   end subroutine finalreport
-
-
 
 
 
@@ -1107,8 +1053,28 @@ CONTAINS
 
 
 
+  subroutine Acase_print
+  use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc
 
+  100 format("  Values loaded for special Adamscase :",f5.1)
+  101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
+  102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
+  103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
+  104 format("    s         :",f6.2,"       lamc      :",f6.2)
 
+  open(unit=100,file="Acase.out")
+  write(100,*)
+  write(100,100) Adamscase
+  write(100,101) sig(1),sig(2)
+  write(100,102) scatrat(1),scatrat(2)
+  write(100,103) lam(1),lam(2)
+  write(100,104) s,lamc
+  write(100,*)
+
+  close(unit=100)
+  call system("mv Acase.out texts")
+
+  end subroutine Acase_print
 
 
 

@@ -261,7 +261,6 @@ CONTAINS
 
         xitermtot = xitermtot + xiterm
       enddo
-!print *,"flag xitermtot:",xitermtot
       xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot     !find resulting xi
     enddo
 
@@ -301,14 +300,6 @@ CONTAINS
   binBounds = 0
   mostinBin = 0
 
-  !print xi to screen
-  !do j=j,numRealz
-  !  do curEig=1,numEigs
-  !    480 format("xi( ):  ",f18.5)
-  !    write(*,480) xi(j,curEig)
-  !  enddo
-  !enddo
-  
   smallestxi=minval(xi)  !get largest and smallest xi values
   largestxi=maxval(xi)
 
@@ -359,7 +350,6 @@ CONTAINS
 
     call generic_plotter( binNumof,pltxiBinsnumof,binPDFplotarray,pltxiBins )
 
-  !rename "generic" plotting files
     call system("mv genericplot.txt plots/xiBinsplot/xiBinsplot.txt")
     call system("mv genericplot.ps  plots/xiBinsplot/xiBinsplot.ps")
     call system("mv genericplot.pdf plots/xiBinsplot/xiBinsplot.pdf")

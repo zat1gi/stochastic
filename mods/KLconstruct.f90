@@ -7,26 +7,6 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLconstructions
-  !Master subroutine for those which create and plot realizations for Markov KL or 
-  !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
-  use KLmeanadjust, only: KLadjustmean
-  use MCvars, only: chTrantype
-  use KLvars, only: flmeanadjust,flLNxscheck
-
-  call KLrmeshgen         !creates mesh for fixed x and xi material constructions
-  call KLrgenrealz !selects array of random variables xi and tests for negativity
-  if(flmeanadjust) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
-  if(flmeanadjust) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
-  call KLrplotrealz       !plots reconstructed realizations
-  if((.not.chTrantype=='GaussKL' .and. flLNxscheck) .or.   &
-     (     chTrantype=='GaussKL' .and. flLNxscheck)) call LNxsvalstest
-
-  end subroutine KLconstructions
-
-
-
-
   subroutine LNxsvalstest
   !This subroutine observes the xs of choice's value at points in the slab for each realization,
   !finding the average and variance of the cross section at these points, and plotting
@@ -202,11 +182,14 @@ CONTAINS
                           pltKLrealzarray, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
+  use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   logical :: flpurpose(3)=.false. !1)neg or not, 2)max vals, 3)zeros
+
+  call initialize_t1
 
   write(*,*) "Starting method: KLrec"
   if(flmeanadjust) flfindzeros=.true.                      !zeros (mean adjust, [neg analysis])
@@ -296,7 +279,12 @@ CONTAINS
       if(numRealz==numPosRealz) exit
     endif
     if(flacceptrealz) realj=realj+1
+
+    call timeupdate( 'KLrtest',reaj,numRealz )
   enddo
+
+  print *," Total num reconstructed realz w/ neg value: ",numNegRealz,"/",numNegRealz+numPosRealz
+  print *,
 
   end subroutine KLrgenrealz
 
@@ -305,7 +293,7 @@ CONTAINS
   subroutine KLrplotrealz
   !This subroutine uses the stored array of pseudo-random numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use genRealzvars, only: lamc, sigave, numRealz, numPosRealz, numNegRealz
+  use genRealzvars, only: lamc, sigave, numRealz
   use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                          KLrnumpoints, pltKLrealz, pltKLrealznumof, &
                          pltKLrealzwhich, KLrx, KLrxi, pltKLrealzarray, KLrxisig
@@ -313,30 +301,23 @@ CONTAINS
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
 
-  call system("mv KLrxisig.txt plots/KLsigvals")
+  call system("mv KLrxisig.txt plots/KLsigvals/")
 
-  if( pltKLrealz(1) .ne. 'noplot' ) then  !plot using generic plotter
-    do m=1,pltKLrealznumof
-      tnumEigs=pltKLrealzwhich(2,m)
+  do m=1,pltKLrealznumof
+    tnumEigs=pltKLrealzwhich(2,m)
 
-      KLrnumpts=KLrnumpoints
-      KLrxisig = 0
-      do i=1,KLrnumpoints
-        KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',tnumEigsin=tnumEigs)
-        pltKLrealzarray(i,1)   = KLrxi(i)     !record x values
-        pltKLrealzarray(i,m+1) = KLrxisig(i)  !record that realization
-      enddo
+    KLrnumpts=KLrnumpoints
+    KLrxisig = 0
+    do i=1,KLrnumpoints
+      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',tnumEigsin=tnumEigs)
+      pltKLrealzarray(i,1)   = KLrxi(i)     !record x values
+      pltKLrealzarray(i,m+1) = KLrxisig(i)  !record that realization
     enddo
-    call generic_plotter( KLrnumpts,pltKLrealznumof,pltKLrealzarray,&
-                          pltKLrealz )
-print *,"I am here, where files should be moved"
-    call system("mv genericplot.txt plots/KLrealzplot/KLrealzplot.txt")
-    call system("mv genericplot.ps  plots/KLrealzplot/KLrealzplot.ps")
-    call system("mv genericplot.pdf plots/KLrealzplot/KLrealzplot.pdf")
-  endif
-
-  print *," Total num reconstructed realz w/ neg value: ",numNegRealz,"/",numNegRealz+numPosRealz
-  print *,
+  enddo
+  call generic_plotter( KLrnumpts,pltKLrealznumof,pltKLrealzarray,pltKLrealz )
+  call system("mv genericplot.txt plots/KLrealzplot/KLrealzplot.txt")
+  call system("mv genericplot.ps  plots/KLrealzplot/KLrealzplot.ps")
+  call system("mv genericplot.pdf plots/KLrealzplot/KLrealzplot.pdf")
 
   end subroutine KLrplotrealz
 
