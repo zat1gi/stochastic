@@ -207,10 +207,7 @@ module MCvars
   character(7)         :: pltmatflux           ! plot material respective fluxes
   character(7)         :: pltfluxtype          ! full 'track' length flux plot or 'point' flux binning? 
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
-  character(7)         :: radMCbinplot         ! 'plot', 'noplot', 'preview', pdf of leakage
-  character(7)         :: radWoodbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
-  character(7)         :: KLWoodbinplot        ! 'plot', 'noplot', 'preview', pdf of leakage
-  character(7)         :: GaussKLbinplot       ! 'plot', 'noplot', 'preview', pdf of leakage
+  character(7)         :: binplot              ! 'plot', 'noplot', 'preview', pdf of leakage
 
   logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
   logical              :: fldistneg=.false.    ! allow on the fly smoothing of negs?

@@ -1605,71 +1605,58 @@ CONTAINS
   !This subroutine bins leakage data, and prints this data to files to later be plotted
   !for methods which contain realizations (radMC, radWood, KLWood).
   use genRealzvars, only: numRealz
-  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot, &
-                          reflect, transmit, chTrantype
+  use MCvars,       only: reflect, transmit, chTrantype
 
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
-  !this nasty if statement decides whether to proceed at all.
-  if( (chTrantype =='radMC'      .and. &
-      (radMCbinplot     =='plot'  .or.  radMCbinplot   =='preview'))  .or.  &
-      (chTrantype =='radWood'    .and. &
-      (radWoodbinplot   =='plot'  .or.  radWoodbinplot =='preview'))  .or.  &
-      (chTrantype =='KLWood'     .and. &
-      (KLWoodbinplot    =='plot'  .or.  KLWoodbinplot  =='preview'))  .or.  &
-      (chTrantype =='GaussKL'    .and. &
-      (GaussKLbinplot    =='plot' .or.  GaussKLbinplot  =='preview'))          ) then
+  !find reflection binning/plotting bounds
+  smrefl = 1d0
+  lgrefl = 0d0
+  smrefl = min(smrefl,minval(reflect))
+  lgrefl = max(lgrefl,maxval(reflect))
+  boundbuff = (lgrefl-smrefl)/8d0
+  smrefl = merge(smrefl-boundbuff,0d0,smrefl-boundbuff>0d0)
+  lgrefl = merge(lgrefl+boundbuff,1d0,lgrefl+boundbuff<1d0)
+  smrefl = smrefl - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
+  lgrefl = lgrefl + 0.0000001d0
 
-    !find reflection binning/plotting bounds
-    smrefl = 1d0
-    lgrefl = 0d0
-    smrefl = min(smrefl,minval(reflect))
-    lgrefl = max(lgrefl,maxval(reflect))
-    boundbuff = (lgrefl-smrefl)/8d0
-    smrefl = merge(smrefl-boundbuff,0d0,smrefl-boundbuff>0d0)
-    lgrefl = merge(lgrefl+boundbuff,1d0,lgrefl+boundbuff<1d0)
-    smrefl = smrefl - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
-    lgrefl = lgrefl + 0.0000001d0
+  !find tranmission binning/plotting bounds
+  smtran = 1d0
+  lgtran = 0d0
+  smtran = min(smtran,minval(transmit))
+  lgtran = max(lgtran,maxval(transmit))
+  boundbuff = (lgtran-smtran)/8d0
+  smtran = merge(smtran-boundbuff,0d0,smtran-boundbuff>0d0)
+  lgtran = merge(lgtran+boundbuff,1d0,lgtran+boundbuff<1d0)
+  smtran = smtran - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
+  lgtran = lgtran + 0.0000001d0
 
-    !find tranmission binning/plotting bounds
-    smtran = 1d0
-    lgtran = 0d0
-    smtran = min(smtran,minval(transmit))
-    lgtran = max(lgtran,maxval(transmit))
-    boundbuff = (lgtran-smtran)/8d0
-    smtran = merge(smtran-boundbuff,0d0,smtran-boundbuff>0d0)
-    lgtran = merge(lgtran+boundbuff,1d0,lgtran+boundbuff<1d0)
-    smtran = smtran - 0.0000001d0 !these to ensure binning works in case of opaque or transparent
-    lgtran = lgtran + 0.0000001d0
+  !remove old data files (do only first time)
+  call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
+  call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
+  call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+  call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
 
-    !remove old data files (do only first time)
-    call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
-    call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
-    call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-    call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
+  !bin and print data
+  call radtrans_bin( smrefl,lgrefl,smtran,lgtran ) 
 
-    !bin and print data
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran ) 
-
-    !bin and print data, give printed data files appropriate name
-    select case (chTrantype)
-      case("radMC")
-        call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
-        call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
-      case("radWood")
-        call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
-        call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
-      case("KLWood")
-        call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
-        call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
-      case("LPMC")
-      case("atmixMC")
-      case("GaussKL")
-        call system("mv tranreflprofile.txt GaussKLtranreflprofile.txt")
-        call system("mv GaussKLtranreflprofile.txt plots/tranreflprofile")
-    end select
-
-  endif
+  !bin and print data, give printed data files appropriate name
+  select case (chTrantype)
+    case("radMC")
+      call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
+      call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
+    case("radWood")
+      call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
+      call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
+    case("KLWood")
+      call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
+      call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
+    case("LPMC")
+    case("atmixMC")
+    case("GaussKL")
+      call system("mv tranreflprofile.txt GaussKLtranreflprofile.txt")
+      call system("mv GaussKLtranreflprofile.txt plots/tranreflprofile")
+  end select
 
   end subroutine MCLeakage_pdfbinprint
 
@@ -1735,17 +1722,15 @@ CONTAINS
   subroutine MCLeakage_pdfplot
   !This subroutine plots MC Leakage value pdfs from data files generated
   !in MCLeakage_pdfbinprint.
-  use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot
+  use MCvars,       only: binplot
   logical :: flplot = .false.
 
   !preview if at least one chose this, otherwise simply plot
-  if(    radMCbinplot  =='preview' .or. radWoodbinplot=='preview' .or. &
-         KLWoodbinplot =='preview' .or. GaussKLbinplot=='preview'      ) then
+  if( binplot =='preview' ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.p.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.p.gnu")
     flplot = .true.
-  elseif(radMCbinplot  =='plot' .or. radWoodbinplot=='plot' .or. &
-         KLWoodbinplot =='plot' .or. GaussKLbinplot=='plot'         ) then
+  elseif( binplot =='plot' ) then
     call system("gnuplot plots/tranreflprofile/tranprofile.gnu")
     call system("gnuplot plots/tranreflprofile/reflprofile.gnu")
     flplot = .true.

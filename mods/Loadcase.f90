@@ -47,8 +47,7 @@ CONTAINS
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
                                   flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
-  use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
-                                  GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
+  use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, flCorrMC, chTrantype
   character(7) :: pltallopt                         !Plot all same opt
@@ -182,7 +181,7 @@ CONTAINS
 
 
   read(2,*) dumchar    !Leakage pdf
-  read(2,*) radMCbinplot,radWoodbinplot,KLWoodbinplot,GaussKLbinplot
+  read(2,*) binplot
   read(2,*) trprofile_binnum
 
   read(2,*) dumchar    !Plotting flux
@@ -194,10 +193,7 @@ CONTAINS
 
 
   if( pltallopt .NE. 'default' ) then
-    radMCbinplot   = pltallopt
-    radWoodbinplot = pltallopt
-    KLWoodbinplot  = pltallopt
-    GaussKLbinplot = pltallopt
+    binplot   = pltallopt
     pltEigf(1)     = pltallopt
     Corropts(1)    = pltallopt
     pltxiBins(1)   = pltallopt
@@ -267,30 +263,6 @@ CONTAINS
     print *,"--User chose meanadjust and disallowed realz w/ neg, meanadjust turned off"
     flmeanadjust = .false.
     flsleep = .true.
-  endif
-  !Tests for Leakage pdf plotting options
-  if(radMCbinplot  .ne. 'noplot'.or. radWoodbinplot .ne. 'noplot'.or. &
-     KLWoodbinplot .ne. 'noplot'     ) then
-    if(radMCbinplot .ne. 'noplot' .and. .not.chTrantype=='radMC') then
-      radMCbinplot = 'noplot'
-      print *,"--User attempting to plot radMC leakage values w/o radMC, set to 'noplot'"
-      flsleep = .true.
-    endif
-    if(radWoodbinplot .ne. 'noplot' .and. .not.chTrantype=='radWood') then
-      radWoodbinplot = 'noplot'
-      print *,"--User attempting to plot radWood leakage values w/o radWood, set to 'noplot'"
-      flsleep = .true.
-    endif
-    if(KLWoodbinplot .ne. 'noplot' .and. .not.chTrantype=='KLWood') then
-      KLWoodbinplot = 'noplot'
-      print *,"--User attempting to plot KLWood leakage values w/o KLWood, set to 'noplot'"
-      flsleep = .true.
-    endif
-    if(GaussKLbinplot .ne. 'noplot' .and. .not.chTrantype=='yes') then
-      GaussKLbinplot = 'noplot'
-      print *,"--User attempting to plot GaussKL leakage values w/o GaussKL, set to 'noplot'"
-      flsleep = .true.
-    endif
   endif
 
                               !Test radtransMC print frequency

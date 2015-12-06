@@ -95,7 +95,7 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,noplot,noplot,noplot,    Plot Leakage profile?: radMC,radWood,KLWood,GaussKL
+  noplot,    Plot Leakage profile?
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
