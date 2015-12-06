@@ -27,10 +27,10 @@ program stochastic
   !!Perform KL research
   if(KLres=='yes') then
     call KL_eigenvalue      !solves for eigenmode vars
-    if(Corropts(1).ne."noplot" .and. .not.flGBgeom) call KL_Correlation !calc & plot spacial correlation funcs
+    if(Corropts(1).ne."noplot") call KL_Correlation !calc & plot spacial correlation funcs
     call KL_collect         !collects xi values over realizations
     call genReal_stats      !performs stats on above realizations
-    if(pltCo(1).ne.'noplot' .and. .not.flGBgeom)    call KL_Cochart !creates plots of var kept to tot var
+    if(pltCo(1).ne.'noplot')    call KL_Cochart !creates plots of var kept to tot var
     call KL_binrandvarvals  !creates xi distributions from xi values
     call reset_genRealtals  !resets Markov realz stats for next round of creation
   endif

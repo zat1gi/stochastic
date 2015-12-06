@@ -56,6 +56,7 @@ module genRealzvars
   real(8)              :: GBscatrat            ! Gauss-based scattering ratio
   real(8)              :: GBlamc               ! Gauss-based correlation length
   real(8)              :: GBs                  ! Gauss-based slab thickness
+  character(6)         :: chgeomtype           ! 'contin'uous or 'binary'
 
   integer              :: pltgenrealznumof     !
   character(7)         :: pltgenrealz(4)       !
@@ -78,7 +79,6 @@ module genRealzvars
   real(8)              :: sigabsave            ! average absorption xs
   logical              :: flCorrMarkov=.false. ! correlated sampling for Markov realizations?
   logical              :: flCorrRealz =.false. ! correlated KLres (for KL recon) and Markov realz?
-  logical              :: flGBgeom    =.true.  ! Gauss-based geom? (or defer to Markov-based)
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
@@ -114,8 +114,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   logical              :: flmeanadjust         ! flag, perform mean adjust or not
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
   integer              :: numrefinesameiter    ! num of iters for extrema determ w/ no change to stop
-  logical              :: flMarkov=.false.     ! run Markov-based KL routines?
-  logical              :: flGauss =.false.     ! run Gauss-random-based KL routines?
   character(3)         :: Gaussrandtype        ! 'BM'-Box-Muller sampling or 'inv' inverse sampling
 
   character(7)         :: pltxiBins(4)         !
@@ -135,7 +133,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer, allocatable :: pltKLrealzwhich(:,:) !
 
   logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
-  logical              :: flglLN = .false.     ! global flag to denote 'GaussKL' is Log-normal
+  character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'
   character(7)         :: chLNmode = 'Glamc'   ! Log-normal cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
   logical              :: flLNxscheck = .false.! perform mean, var, and pdf check of LN xs distributions?
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
@@ -152,7 +150,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8)              :: sigsmeanadjust=0.0d0 ! positive translation of sigs mean xs (mat-based mode)
   real(8)              :: sigameanadjust=0.0d0 ! positive translation of siga mean xs (mat-based mode)
   logical              :: flCorrKL=.false.     ! correlated random numbers for KL Markov and GaussB realz?
-  logical              :: flLN=.false.         ! local flag to denote we are using Log-normal modeling
   integer              :: mostinBin            !
   integer              :: Corrnumpoints        ! Number of points used when confirming covariance func
   real(8), allocatable :: binPDF(:,:)          ! 

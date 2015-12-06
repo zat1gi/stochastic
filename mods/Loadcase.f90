@@ -37,7 +37,7 @@ CONTAINS
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
-                                  GBlamc, GBs, flCorrMarkov, flCorrRealz, flGBgeom
+                                  GBlamc, GBs, flCorrMarkov, flCorrRealz, chgeomtype
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -45,7 +45,7 @@ CONTAINS
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   KLres, KLrec, flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
-                                  flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
+                                  chGausstype, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, &
@@ -64,10 +64,21 @@ CONTAINS
   open(unit=2,file="inputstoc.txt")
 
   read(2,*) rngseed
+  read(2,*) chgeomtype
 
   !--- Geometry - num of realz ---!
   read(2,*) dumchar
   read(2,*) numRealz,trannprt
+
+  !--- Geometry - Gauss or Gauss-based type problem ---!
+  read(2,*) dumchar
+  read(2,*) chGausstype
+  read(2,*) chLNmode,setflags(1)
+  if(setflags(1)=='same') flglGaussdiffrand = .false.
+  read(2,*) GBsigave,GBsigvar
+  read(2,*) GBscatrat
+  read(2,*) GBlamc
+  read(2,*) GBs
 
   !--- Geometry - 'Markov' type problem ---!
   read(2,*) dumchar
@@ -80,18 +91,6 @@ CONTAINS
   if(setflags(1)=='yes') flCorrMarkov=.true.
   if(setflags(2)=='yes') flCorrKL    =.true.
   if(setflags(3)=='yes') flCorrRealz =.true.
-
-  !--- Geometry - Gauss or Gauss-based type problem ---!
-  read(2,*) dumchar
-  read(2,*) setflags(1),setflags(2)
-  if(setflags(1)=='MB') flGBgeom = .false.
-  if(setflags(2)=='same') flglGaussdiffrand = .false.
-  read(2,*) setflags(1),chLNmode
-  if(setflags(1)=='LN') flglLN = .true.
-  read(2,*) GBsigave,GBsigvar
-  read(2,*) GBscatrat
-  read(2,*) GBlamc
-  read(2,*) GBs
 
   !--- Large KL Options ---!
   read(2,*) dumchar
@@ -213,6 +212,17 @@ CONTAINS
 
   !begin tests of valid input
   print *,"  "
+
+                      !Tests for geometry vs transport type
+  if(chgeomtype=='contin' .and. .not.(chTrantype=='GaussKL' .or. chTrantype=='None') then
+    print *,"--User attempting to use invalid transport type for continuous geometry"
+    flstopstatus = .true.
+  endif
+  if(chgeomtype=='binary' .and. .not.(chTrantype=='radMC' .or. chTrantype=='radWood' .or.&
+     chTrantype=='KLWood'.or. chTrantype=='LPMC'  .or. chTrantype=='atmixMC' .or. chTrantype=='None') then
+    print *,"--User attempting to use invalid transport type for binary material geometry"
+    flstopstatus = .true.
+  endif
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigs .AND. pltEigf(1) .NE. 'noplot' ) then
@@ -341,10 +351,10 @@ CONTAINS
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          flprint, numPosRealz, numNegRealz, numRealz, flGBgeom, sigvar, &
+                          flprint, numPosRealz, numNegRealz, numRealz, sigvar, &
                           scatvar, absvar
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, &
-                    KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
+                    KLrxisig, numSlice, gam, alpha, Ak, Eig, &
                     xi, KLrxivals, KLrxivalss, pltKLrealzarray, flglGaussdiffrand, &
                     flGaussdiffrand
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
@@ -402,9 +412,6 @@ CONTAINS
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
 
-  if(.not.flGBgeom) flMarkov = .true.
-  if(flGBgeom) flGauss = .true.
-  
   flfluxplot = .false.  !flux variable allocations
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
       pltmatflux=='plot' .or. pltmatflux=='preview' ) flfluxplot = .true.

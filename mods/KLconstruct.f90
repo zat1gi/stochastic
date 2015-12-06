@@ -11,7 +11,6 @@ CONTAINS
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
-  use genRealzvars, only: flGBgeom
   use MCvars, only: chTrantype
   use KLvars, only: flmeanadjust,flLNxscheck
 
@@ -20,8 +19,8 @@ CONTAINS
   if(flmeanadjust) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
   if(flmeanadjust) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
-  if((.not.chTrantype=='GaussKL' .and. flLNxscheck .and. .not.flGBgeom) .or.   &
-     (     chTrantype=='GaussKL' .and. flLNxscheck .and.      flGBgeom)) call LNxsvalstest
+  if((.not.chTrantype=='GaussKL' .and. flLNxscheck) .or.   &
+     (     chTrantype=='GaussKL' .and. flLNxscheck)) call LNxsvalstest
 
   end subroutine KLconstructions
 
@@ -35,8 +34,8 @@ CONTAINS
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
   use genRealzvars, only: sigave, sigvar, sigave_, sigvar_, numRealz, s, &
-                          sigscatave, sigabsave, scatvar, absvar, flGBgeom
-  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, flLN, chLNxsplottype
+                          sigscatave, sigabsave, scatvar, absvar
+  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype
 
   integer :: j, ix, ibin
   real(8) :: step, tsigave, tsigvar
@@ -65,7 +64,7 @@ CONTAINS
   enddo
 
   !set average and variance values for selected case
-  if(flLN .and. flGBgeom) then
+  if(chGausstype=='LogN') then
     if(chLNxschecktype=='totaln')  tsigave = sigave_
     if(chLNxschecktype=='scatter') tsigave = sigscatave
     if(chLNxschecktype=='absorb')  tsigave = sigabsave
@@ -73,7 +72,7 @@ CONTAINS
     if(chLNxschecktype=='totaln')  tsigvar = sigvar_
     if(chLNxschecktype=='scatter') tsigvar = scatvar
     if(chLNxschecktype=='absorb')  tsigvar = absvar
-  else
+  elseif(chGausstype=='Gaus')
     if(chLNxschecktype=='totaln')  tsigave = sigave
     if(chLNxschecktype=='scatter') tsigave = sigscatave
     if(chLNxschecktype=='absorb')  tsigave = sigabsave
@@ -99,9 +98,9 @@ CONTAINS
   if(chLNxschecktype=='totaln')  write(15,522,advance='no')
   if(chLNxschecktype=='scatter') write(15,521,advance='no')
   if(chLNxschecktype=='absorb')  write(15,520,advance='no')
-  if(flLN) then
+  if(chGausstype=='LogN') then
     write(15,523,advance='no')
-  else
+  elseif(chGausstype=='Gaus')
     write(15,524,advance='no')
   endif
   write(15,504)
@@ -115,7 +114,8 @@ CONTAINS
 
   !bin LNxsvals, print, and plot
   do ix=1,numLNxspts
-    call store_in_bins( merge(0d0,minval(LNxsvals)-step/0.5d0,flLN) , maxval(LNxsvals)+step/0.5d0, &
+    call store_in_bins( merge(0d0,minval(LNxsvals)-step/0.5d0,chGausstype=='LogN') ,&
+           maxval(LNxsvals)+step/0.5d0, &
           numLNxsbins , pdfLNxsCounts(:,ix), pdfLNxsBounds(:) , LNxsvals(:,ix) , numRealz )
   enddo
 
@@ -743,7 +743,7 @@ print *,"I am here, where files should be moved"
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, scatvar, absvar
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand, flLN
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand
   use utilities, only: Heavi
 
   integer :: j
@@ -799,8 +799,8 @@ print *,"I am here, where files should be moved"
     case ("scatrat")
       KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
   end select
-  if(flLN) KL_point = exp(KL_point)
-  if(flLN .and. chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
+  if(chGausstype=='LogN') KL_point = exp(KL_point)
+  if(chGausstype=='LogN' .and. chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
 
   end function KLr_point
 

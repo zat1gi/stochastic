@@ -10,7 +10,7 @@ CONTAINS
   !This subroutine perfoms Monte Carlo in the uncertain space, currently for binary mixtures.
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
-  use genRealzvars, only: numRealz, flGBgeom
+  use genRealzvars, only: numRealz
   use MCvars, only: numParts, trannprt, flfluxplotmat
   use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
@@ -25,13 +25,13 @@ CONTAINS
   write(*,*) "Starting method: ",chTrantype  
   call MCallocate( tnumParts,tnumRealz )!allocate/initialize tallies
 
-  if( chTrantype=='GaussKL' .and. flGBgeom) &
+  if( chTrantype=='GaussKL') &
     call KL_eigenvalue
 
   if(  chTrantype=='KLWood'   .or. chTrantype=='GaussKL'     ) &
     call KLconstructions       !create KL realz for cases that need them
 
-  if( chTrantype=='GaussKL' .and. flGBgeom) then
+  if( chTrantype=='GaussKL') then
     if(Corropts(1) .ne. 'noplot') call KL_Correlation !calc & plot spacial correlation funcs
     if(   pltCo(1) .ne. 'noplot') call KL_Cochart !creates plots of var kept to tot var
   endif
@@ -1436,7 +1436,7 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, flprint, flGBgeom, GBsigave, GBsigvar, P, sig,  &
+  use genRealzvars, only: numRealz, flprint, GBsigave, GBsigvar, P, sig,  &
                           GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, sigvar, &
                           numPosRealz, numNegRealz, scatvar, absvar, sigscatave, sigabsave, &
                           sigave_, sigvar_
@@ -1445,7 +1445,7 @@ CONTAINS
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, flfluxplot, fluxfaces
-  use KLvars, only: flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
+  use KLvars, only: flGaussdiffrand, flglGaussdiffrand, chLNmode
   integer :: tnumParts,tnumRealz,i
 
   real(8) :: tot, sqr, val
@@ -1460,7 +1460,7 @@ CONTAINS
   endif
 
   !Gauss-based input set (or not)
-  if(chTrantype=='GaussKL' .and. flGBgeom) then
+  if(chTrantype=='GaussKL') then
     sigave       = GBsigave
     sigvar       = GBsigvar
     scatrat(1)   = GBscatrat
@@ -1477,11 +1477,10 @@ CONTAINS
   endif
   if(chTrantype=='GaussKL') then
     flGaussdiffrand = flglGaussdiffrand
-    flLN = flglLN
-    if(flLN .and. chLNmode=='fitlamc') then
+    if(chGausstype=='LogN' .and. chLNmode=='fitlamc') then
       lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
     endif
-    if(flLN) then
+    if(chGausstype=='LogN') then
       sigave_= sigave
       sigave = log(sigave_**2/sqrt(sigvar+sigave_**2))
       sigvar_ = sigvar
@@ -1489,17 +1488,10 @@ CONTAINS
       sig(1) = log(sig(1)**2/sqrt(sigvar+sig(1) **2))
       sig(2) = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
     endif
-    if(.not.flGBgeom) then
-      sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
-      sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
-      scatvar    = sigvar  *      scatrat(1) 
-      absvar     = sigvar  *  1d0-scatrat(1)
-    elseif(flGBgeom) then
-      sigscatave = sigave *      scatrat(1)
-      sigabsave  = sigave * (1d0-scatrat(1))
-      scatvar    = sigvar  *      scatrat(1)
-      absvar     = sigvar  * (1d0-scatrat(1))
-    endif
+    sigscatave = sigave *      scatrat(1)
+    sigabsave  = sigave * (1d0-scatrat(1))
+    scatvar    = sigvar  *      scatrat(1)
+    absvar     = sigvar  * (1d0-scatrat(1))
   endif
 
   !current tally allocations
@@ -1815,8 +1807,7 @@ CONTAINS
   !This subroutine prints reflection, transmission, and absorption stats to a '.out' file,
   !then prints that file to the screen for user friendliness.
   !Stats are from Adams89, Brantley11, and those generated here.
-  use genRealzvars, only: Adamscase, flGBgeom
-  use KLvars, only: flMarkov, flGauss
+  use genRealzvars, only: Adamscase
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, chTrantype
 
@@ -1836,8 +1827,6 @@ CONTAINS
 
   !print to file
   open(unit=100,file="MCleakage.out")
-
-  if(flMarkov) then
 
     !print headings/benchmark solutions for full problem
   write(100,*)
@@ -1860,7 +1849,7 @@ CONTAINS
   if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(1),&
   sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(1),&
+  if(chTrantype=='GaussKL')  write(100,332) stocMC_reflection(1),&
   sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
 
@@ -1869,7 +1858,7 @@ CONTAINS
     write(100,*) "|----------|-------------------------|---------------------|"
 
   !print benchmark LP solutions
-  if(Adamscase/=0 .and. flMarkov) then
+  if(Adamscase/=0) then
     write(100,322) ABreflection(1,2),ABtransmission(1,2)
     if(rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
   endif
@@ -1883,7 +1872,7 @@ CONTAINS
     write(100,*) "|----------|-------------------------|---------------------|"
 
   !print benchmark atomic mix solutions
-  if(Adamscase/=0 .and. flMarkov) then
+  if(Adamscase/=0) then
     if(rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
   endif
 
@@ -1894,11 +1883,7 @@ CONTAINS
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
 
-  endif !(flMarkov)
-
-  if(flGauss) then
-
-  if(chTrantype=='GaussKL' .and. flGBgeom) then
+  if(chTrantype=='GaussKL') then
     write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
     write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
     write(100,*) "|----------|-------------------------|---------------------|"
@@ -1907,8 +1892,6 @@ CONTAINS
     write(100,*) "|----------|-------------------------|---------------------|"
     write(100,*)
   endif
-
-  endif !(flGauss)
 
   close(unit=100)
 

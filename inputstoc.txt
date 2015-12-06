@@ -1,6 +1,15 @@
   92823659,         Random number seed
+  contin,          Geometry type: 'contin'uous or 'binary'
   !--- Geometry - num of realz ---!
   10000,1000,         Number of realizations/how often to print
+
+  !--- Geometry - Gauss or Gauss-based type problem ---!
+  'LogN',        GB mode: 'Gaus','LogN','ChiS'
+  'Glamc','diff',  'Glamc','fitlamc','numeric', Cov and lamc mode for LN/'same' rand #s for xss or 'diff'?
+  2.0,0.5,    Ave total cross section, total cross section variance
+  0.1,        Scattering ratio, c
+  0.5,        Correlation length, lamc
+  2.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
@@ -10,21 +19,13 @@
   2.0,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
-  !--- Geometry - Gauss or Gauss-based type problem ---!
-  'GB','diff',    'GB', 'MB', use this Gauss-based input or defer to 'Markov'-based?/same rand or diff?
-  'LN','Glamc',   'G','LN', Gaussian or Log-normal/'Glamc','fitlamc','numeric', C and lamc mode for LN
-  2.0,0.5,    Ave total cross section, total cross section variance
-  0.1,        Scattering ratio, c
-  0.5,        Correlation length, lamc
-  2.0,        Slab thickness, s
-
   !--- Large KL Options ---!
   no,no,       Perform KLresearch/KLreconstruct subroutines? ('yes' or 'no')
   5,             Number of eigenvalues
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
-  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL subroutines?
+  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   10,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
@@ -44,6 +45,7 @@
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
   yes,totaln,20,40,plot,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
+
 
   !!--All Plotting Option
   default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
