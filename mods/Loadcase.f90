@@ -48,7 +48,7 @@ CONTAINS
                                   flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, flnegxs, fldistneg, LPamnumParts, fluxnumcells, pltmatflux, &
+                                  pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, flCorrMC, chTrantype
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
@@ -121,9 +121,8 @@ CONTAINS
   read(2,*) dumchar 
   read(2,*) rodOrplanar
   read(2,*) sourceType
-  read(2,*) setflags(1),setflags(2)
+  read(2,*) setflags(1)
   if(setflags(1)=='yes') flnegxs  =.true.
-  if(setflags(2)=='yes') fldistneg=.true.
   read(2,*) setflags(1),meanadjust_tol
   if(setflags(1)=='yes') flmeanadjust=.true.
   read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins,chLNxsplottype

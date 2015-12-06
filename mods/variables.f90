@@ -199,7 +199,6 @@ module MCvars
   character(7)         :: binplot              ! 'plot', 'noplot', 'preview', pdf of leakage
 
   logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
-  logical              :: fldistneg=.false.    ! allow on the fly smoothing of negs?
 
   !non inputs
   logical              :: flCorrMC=.false.     ! correlated random number MC transport
@@ -245,7 +244,6 @@ module MCvars
   real(8),allocatable  :: binmaxes(:)          ! max value in each bin
   real(8),allocatable  :: fbinmax(:)           ! forward  facing bin max values
   real(8),allocatable  :: bbinmax(:)           ! backward facing bin max values
-  real(8)              :: disthold             ! used in a workaround for neg vals in KLWood
 
   real(8)              :: position             ! 'current' position of particle
   real(8)              :: oldposition          ! most recent position of particle

@@ -78,7 +78,7 @@ CONTAINS
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
-                    nceilbin, Wood_rej, flnegxs, fldistneg, chTrantype, fbinmax, &
+                    nceilbin, Wood_rej, flnegxs, chTrantype, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
                     flCorrMC
   use genRealz, only: genReal
@@ -89,7 +89,7 @@ CONTAINS
 
   !local variables
   integer :: i,o,curbin
-  real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat,disthold, tempscatrat
+  real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat, tempscatrat
   real(8) :: cursigt, cursigs
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
@@ -262,20 +262,11 @@ CONTAINS
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
             if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in KLWood, exiting program'
-            if(fldistneg .and. woodrat>0.0d0) then !redistribute neg option
-              if(abs(disthold)>woodrat*ceilsig) then
-                woodrat = 0.0d0
-              else
-                woodrat = (woodrat*ceilsig + disthold) / ceilsig
-              endif
-              disthold = 0.0d0
-            endif
             if(flnegxs) then                    !tallies for neg/pos if allowing neg
               if(woodrat<0.0d0) then
                 numpnSamp(2)  =  numpnSamp(2)+1
                 areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
                 if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
-                if(fldistneg) disthold = woodrat*ceilsig
                 woodrat=0.0d0
               else
                 numpnSamp(1)  =  numpnSamp(1)+1
@@ -301,20 +292,11 @@ CONTAINS
               stop 'Higher sig samples in KLWood than ceiling, exiting program'
             endif
             if(woodrat<0.0d0 .and. .not.flnegxs) stop 'Neg number sampled in GaussKL, exiting program'
-            if(fldistneg .and. woodrat>0.0d0) then !redistribute neg option
-              if(abs(disthold)>woodrat*ceilsig) then
-                woodrat = 0.0d0
-              else
-                woodrat = (woodrat*ceilsig + disthold) / ceilsig
-              endif
-              disthold = 0.0d0
-            endif
             if(flnegxs) then                    !tallies for neg/pos if allowing neg
               if(woodrat<0.0d0) then
                 numpnSamp(2)  =  numpnSamp(2)+1
                 areapnSamp(2) = areapnSamp(2)+woodrat*ceilsig          
                 if(woodrat*ceilsig<areapnSamp(4)) areapnSamp(4)=woodrat*ceilsig
-                if(fldistneg) disthold = woodrat*ceilsig
                 woodrat=0.0d0
               else
                 numpnSamp(1)  =  numpnSamp(1)+1
@@ -1459,7 +1441,7 @@ CONTAINS
                           numPosRealz, numNegRealz, scatvar, absvar, sigscatave, sigabsave, &
                           sigave_, sigvar_
   use MCvars, only: transmit, reflect, absorb, radtrans_int, chTrantype, &
-                    numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
+                    numpnSamp, areapnSamp, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, flfluxplot, fluxfaces
@@ -1547,7 +1529,6 @@ CONTAINS
     numNegRealz=0
     numpnSamp  =0
     areapnSamp =0.0d0
-    disthold   =0.0d0
   endif
 
 
@@ -1779,7 +1760,7 @@ CONTAINS
 
   subroutine Woodnegstats
   use genRealzvars, only: numRealz, numPosRealz, numNegRealz
-  use MCvars, only: numpnSamp, areapnSamp, fldistneg, flnegxs, numcSamp, chTrantype
+  use MCvars, only: numpnSamp, areapnSamp, flnegxs, numcSamp, chTrantype
 
   real(8) :: pos,neg
 
@@ -1796,7 +1777,7 @@ CONTAINS
     603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
     604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
-    write(100,606) chTrantype,flnegxs,fldistneg
+    write(100,606) chTrantype,flnegxs
     write(100,600) real(numNegRealz,8)/real(numNegRealz+numPosRealz,8)*100d0,numNegRealz,numNegRealz+numPosRealz
     pos = real(numpnSamp(1),8)
     neg = real(numpnSamp(2),8)
