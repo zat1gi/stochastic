@@ -7,15 +7,15 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( j )
-  !creates a realization, plots if specified, and collects tallies for realization stats
-  !creates for 'binary' mode: binary stochastic media, or 'atmix' mode, atomic mix of that
+  subroutine genbinaryReal( j )
+  !creates a binary material realization, plots if specified,
+  !and collects tallies for realization stats
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use timevars, only: time
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
-                          totLength, atmixsig, atmixscatrat, scatrat, flprint, &
+                          totLength, atmixsig, scatrat, flprint, &
                           flCorrMarkov, flCorrRealz
   use MCvars, only: chTrantype
   use mcnp_random, only: RN_init_particle
@@ -31,115 +31,132 @@ CONTAINS
   if(allocated(matType)) deallocate(matType)
   if(allocated(matLength)) deallocate(matLength)
 
-  if(chTrantype=='radMC' .or. chTrantype=='radWood') then
-    if(flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
-      call setrngappnum('genRealzKLres')
-    else
-      if(chTrantype=='radMC' .or. (chTrantype=='radWood' .and. flCorrMarkov)) then
-        call setrngappnum('genRealzTMC')
-      elseif(chTrantype=='radWood' .and. .not.flCorrMarkov) then
-        call setrngappnum('genRealzWMC')
-      endif
+  if(flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
+    call setrngappnum('genRealzKLres')
+  else
+    if(chTrantype=='radMC' .or. (chTrantype=='radWood' .and. flCorrMarkov)) then
+      call setrngappnum('genRealzTMC')
+    elseif(chTrantype=='radWood' .and. .not.flCorrMarkov) then
+      call setrngappnum('genRealzWMC')
     endif
-    call RN_init_particle( int(rngappnum*rngstride+j,8) )
-
-    matLength_temp=0d0
-    matType_temp=0
-
-    200 format("P(1),(2)            :",f12.4,f12.4)
-    201 format("matFirstTally(1),(2):",f12.0,f12.0)
-    202 format("matLength_temp:",f10.4,"    matType:",i7)
-  
-    if( rang() < P(1) ) then  !choose which material first and tally
-      matType_temp(1) = 1
-      matFirstTally(1) = matFirstTally(1)+1
-    else
-      matType_temp(1) = 2
-      matFirstTally(2) = matFirstTally(2)+1
-    endif
-
-    matLength_temp(1)=0d0
-    i=2
-    do while ( matLength_temp(i-1)<s )
-
-      !decide total length at next segment
-      matLength_temp(i)=matLength_temp(i-1)+lam(matType_temp(i-1))*log(1/(1-rang())) 
-
-      if(matType_temp(i-1)==1) matType_temp(i)=2    !change mat for next seg
-      if(matType_temp(i-1)==2) matType_temp(i)=1
-
-      if(matLength_temp(i)>s) then !truncate if necessary
-        matLength_temp(i)=s
-        nummatSegs = i-1
-      endif
-
-      numPath(matType_temp(i-1))=numPath(matType_temp(i-1))+1  !tallies for stats
-
-      sumPath(matType_temp(i-1))=sumPath(matType_temp(i-1))+matLength_temp(i)-matLength_temp(i-1)
-      sqrPath(matType_temp(i-1))=sqrPath(matType_temp(i-1))+(matLength_temp(i)-matLength_temp(i-1))**2
-
-      if(i>largesti) largesti=1 !track largest i
-
-
-      if( pltgenrealz(1) .ne. 'noplot' .and. flprint ) then  !print to plot selected realizations
-      203 format("          ",A7,"            ",A7)
-      204 format("      0.00000000     ",f16.8)
-      205 format(f16.8,"     ",f16.8)
-
-      if( j==pltgenrealzwhich(1) ) then
-        if(i==2) open(unit=20, file="genRealzplot1.txt")
-        if(i==2) write(20,203) pltgenrealz(3),pltgenrealz(4)
-                 write(20,205) matLength_temp(i-1),sig(matType_temp(i-1))
-                 write(20,205) matLength_temp(i),  sig(matType_temp(i-1))
-      endif
-      if( pltgenrealznumof>=2 .and. j==pltgenrealzwhich(2) ) then
-        if(i==2) open(unit=21, file="genRealzplot2.txt")
-        if(i==2) write(21,203) pltgenrealz(3),pltgenrealz(4)
-                 write(21,205) matLength_temp(i-1),sig(matType_temp(i-1))
-                 write(21,205) matLength_temp(i),  sig(matType_temp(i-1))
-      endif
-      if( pltgenrealznumof>=3 .and. j==pltgenrealzwhich(3) ) then
-        if(i==2) open(unit=22, file="genRealzplot3.txt")
-        if(i==2) write(22,203) pltgenrealz(3),pltgenrealz(4)
-                 write(22,205) matLength_temp(i-1),sig(matType_temp(i-1))
-                 write(22,205) matLength_temp(i),  sig(matType_temp(i-1))
-      endif
-      endif
-
-     i=i+1
-    enddo
-
-    allocate(matType(nummatSegs))
-    allocate(matLength(nummatSegs+1))
-    matType   = 0
-    matLength = 0.0d0
-
-    do i=1,nummatSegs !translate to allocated arrays
-      matType(i)   = matType_temp(i)
-      matLength(i) = matLength_temp(i)
-    enddo
-    matLength(nummatSegs+1) = matLength_temp(nummatSegs+1)
-
-    do i=2,nummatSegs+1 !collect total length data for Actual Co calculations
-      totLength(matType(i-1))=totLength(matType(i-1))+matLength(i)-matLength(i-1)
-    enddo
-
-    close(unit=20) !close three files printing xs data to
-    close(unit=21)
-    close(unit=22)
-  elseif(chTrantype=='LPMC') then
-    nummatSegs   = 1
-    if(.not.allocated(matType)) allocate(matType(nummatSegs))
-    matType(1) = merge(1,2,rang()<P(1))
-  elseif(chTrantype=='atmixMC') then
-    atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
-    atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
   endif
+  call RN_init_particle( int(rngappnum*rngstride+j,8) )
+
+  matLength_temp=0d0
+  matType_temp=0
+
+  200 format("P(1),(2)            :",f12.4,f12.4)
+  201 format("matFirstTally(1),(2):",f12.0,f12.0)
+  202 format("matLength_temp:",f10.4,"    matType:",i7)
+  
+  if( rang() < P(1) ) then  !choose which material first and tally
+    matType_temp(1) = 1
+    matFirstTally(1) = matFirstTally(1)+1
+  else
+    matType_temp(1) = 2
+    matFirstTally(2) = matFirstTally(2)+1
+  endif
+
+  matLength_temp(1)=0d0
+  i=2
+  do while ( matLength_temp(i-1)<s )
+
+    !decide total length at next segment
+    matLength_temp(i)=matLength_temp(i-1)+lam(matType_temp(i-1))*log(1/(1-rang())) 
+
+    if(matType_temp(i-1)==1) matType_temp(i)=2    !change mat for next seg
+    if(matType_temp(i-1)==2) matType_temp(i)=1
+
+    if(matLength_temp(i)>s) then !truncate if necessary
+      matLength_temp(i)=s
+      nummatSegs = i-1
+    endif
+
+    numPath(matType_temp(i-1))=numPath(matType_temp(i-1))+1  !tallies for stats
+
+    sumPath(matType_temp(i-1))=sumPath(matType_temp(i-1))+matLength_temp(i)-matLength_temp(i-1)
+    sqrPath(matType_temp(i-1))=sqrPath(matType_temp(i-1))+(matLength_temp(i)-matLength_temp(i-1))**2
+
+    if(i>largesti) largesti=1 !track largest i
+
+
+    if( pltgenrealz(1) .ne. 'noplot' .and. flprint ) then  !print to plot selected realizations
+    203 format("          ",A7,"            ",A7)
+    204 format("      0.00000000     ",f16.8)
+    205 format(f16.8,"     ",f16.8)
+
+    if( j==pltgenrealzwhich(1) ) then
+      if(i==2) open(unit=20, file="genRealzplot1.txt")
+      if(i==2) write(20,203) pltgenrealz(3),pltgenrealz(4)
+               write(20,205) matLength_temp(i-1),sig(matType_temp(i-1))
+               write(20,205) matLength_temp(i),  sig(matType_temp(i-1))
+    endif
+    if( pltgenrealznumof>=2 .and. j==pltgenrealzwhich(2) ) then
+      if(i==2) open(unit=21, file="genRealzplot2.txt")
+      if(i==2) write(21,203) pltgenrealz(3),pltgenrealz(4)
+               write(21,205) matLength_temp(i-1),sig(matType_temp(i-1))
+               write(21,205) matLength_temp(i),  sig(matType_temp(i-1))
+    endif
+    if( pltgenrealznumof>=3 .and. j==pltgenrealzwhich(3) ) then
+      if(i==2) open(unit=22, file="genRealzplot3.txt")
+      if(i==2) write(22,203) pltgenrealz(3),pltgenrealz(4)
+               write(22,205) matLength_temp(i-1),sig(matType_temp(i-1))
+               write(22,205) matLength_temp(i),  sig(matType_temp(i-1))
+    endif
+    endif
+
+   i=i+1
+  enddo
+
+  allocate(matType(nummatSegs))
+  allocate(matLength(nummatSegs+1))
+  matType   = 0
+  matLength = 0.0d0
+
+  do i=1,nummatSegs !translate to allocated arrays
+    matType(i)   = matType_temp(i)
+    matLength(i) = matLength_temp(i)
+  enddo
+  matLength(nummatSegs+1) = matLength_temp(nummatSegs+1)
+
+  do i=2,nummatSegs+1 !collect total length data for Actual Co calculations
+    totLength(matType(i-1))=totLength(matType(i-1))+matLength(i)-matLength(i-1)
+  enddo
+
+  close(unit=20) !close three files printing xs data to
+  close(unit=21)
+  close(unit=22)
 
   call cpu_time(tt2)
   time(1) = time(1) + (tt2 - tt1)
 
-  end subroutine genReal
+  end subroutine genbinaryReal
+
+
+
+  subroutine genLPReal
+  !chooses material to come next for Levermore-Pomraning transport
+  use genRealzvars, only: P, matType
+  use mcnp_random, only: RN_init_particle
+
+  if(.not.allocated(matType)) allocate(matType(1))
+  matType(1) = merge(1,2,rang()<P(1))
+
+  end subroutine genLPReal
+
+
+
+  subroutine genatmixReal
+  !sets material properties for atomic mix transport
+  use genRealzvars, only: P, sig, scatrat, atmixsig
+
+  atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
+  atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
+
+  end subroutine genatmixReal
+
+
+
 
 
 

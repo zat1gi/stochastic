@@ -40,9 +40,9 @@ CONTAINS
   do j=1,tnumRealz
 
       if(chTrantype=='radMC' .or. chTrantype=='radWood') &
-    call genReal( j )         !gen binary geometry
+    call genbinaryReal( j )         !gen binary geometry
       if(chTrantype=='atmixMC') &
-    call genReal( j )         !gen atomic mix geometry
+    call genatmixMCReal( j )         !gen atomic mix geometry
 
       if(flfluxplotmat .and. (chTrantype=='radMC' .or. chTrantype=='radWood')) &
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
@@ -100,7 +100,7 @@ CONTAINS
     call RN_init_particle( int(rngappnum*rngstride+j*tnumParts+o,8) )
 
     call genSourcePart( i )      !gen source part pos, dir, and binnum (i), init weight
-    if(chTrantype=='LPMC') call genReal( j ) !for LP, choose starting material
+    if(chTrantype=='LPMC') call genLPReal( j ) !for LP, choose starting material
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
