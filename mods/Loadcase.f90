@@ -386,7 +386,7 @@ CONTAINS
                     flGaussdiffrand
   use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
-                    numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
+                    LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
   use mcnp_random, only: RN_init_problem
@@ -433,9 +433,9 @@ CONTAINS
 
 
   !allocate/initialize MCvars
-  allocate(stocMC_reflection(numPosMCmeths,2))   !global MC variables for each method
-  allocate(stocMC_transmission(numPosMCmeths,2)) !rank 2 holds 1=average, 2=deviation
-  allocate(stocMC_absorption(numPosMCmeths,2))
+  allocate(stocMC_reflection(2))   !global MC variables for each method
+  allocate(stocMC_transmission(2)) !rank 2 holds 1=average, 2=deviation
+  allocate(stocMC_absorption(2))
   stocMC_reflection   = 0.0d0
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
@@ -456,12 +456,12 @@ CONTAINS
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &!mat irrespective flux allocations
     (flfluxplot .and. (KLWood=='yes' .or. atmixMC=='yes')) ) then !KLWood, atmixMC, respective stored
                                                                   !here (actually irresective)
-    allocate(stocMC_fluxall(fluxnumcells,numPosMCmeths,2))
+    allocate(stocMC_fluxall(fluxnumcells,2))
     stocMC_fluxall = 0.0d0
   endif
   if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then !mat respective flux allocations
-    allocate(stocMC_fluxmat1(fluxnumcells,numPosMCmeths,2))
-    allocate(stocMC_fluxmat2(fluxnumcells,numPosMCmeths,2))
+    allocate(stocMC_fluxmat1(fluxnumcells,2))
+    allocate(stocMC_fluxmat2(fluxnumcells,2))
     stocMC_fluxmat1 = 0.0d0
     stocMC_fluxmat2 = 0.0d0
   endif
@@ -471,17 +471,13 @@ CONTAINS
   time = 0.0d0
   allocate(FOM(ntime,2))
   FOM  = 0.0d0
-  allocate(totparts(numPosMCmeths))
-  allocate(cumparts(numPosMCmeths))
   totparts = 0
   cumparts = 0
-  do icase=1,numPosMCmeths
-    if(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
-      totparts(icase) = LPamnumParts
-    else
-      totparts(icase) = numRealz*numParts
-    endif
-  enddo
+  if(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
+    totparts(icase) = LPamnumParts
+  else
+    totparts(icase) = numRealz*numParts
+  endif
 
   end subroutine global_allocate
 

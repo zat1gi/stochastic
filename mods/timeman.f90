@@ -13,14 +13,14 @@ CONTAINS
   !fly in this subroutine.
   use timevars, only: time, totparts, cumparts
   use genRealzvars, only: numRealz
-  use MCvars, only: numParts, chTrantype, LPamnumParts, numPosMCmeths
+  use MCvars, only: numParts, chTrantype, LPamnumParts
   integer :: j,icase
   real(8) :: tt1
 
   integer :: ticase
   real(8) :: ttime,localper,timeeta,wgtavetime,tt2
   real(8) :: local_time,finished_time,local_time_left,non_local_time_left
-  real(8), allocatable :: avetime(:) !average time per MC method
+  real(8), allocatable :: avetime !average time per MC method
 
 
   !log time (in future subtract out any other contributions above)
@@ -54,7 +54,6 @@ CONTAINS
   tt1 = tt2                         !reset tt1 to tt2
 
   !get time estimates
-  if(.not.allocated(avetime)) allocate(avetime(numPosMCmeths))
   avetime    = 0.0d0
   wgtavetime = 0.0d0
   do ticase=1,icase
@@ -150,7 +149,7 @@ CONTAINS
   use timevars, only: t1, runtime, time, ntime, runtime, FOM
   use KLvars, only: KLres, KLrec, KLnoise
   use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, &
-                    stocMC_transmission, stocMC_reflection, numPosMCmeths, GaussKL
+                    stocMC_transmission, stocMC_reflection, GaussKL
   use utilities, only: calc_time
 
   integer :: i,icase

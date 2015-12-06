@@ -223,7 +223,6 @@ module MCvars
   logical              :: fldistneg=.false.    ! allow on the fly smoothing of negs?
 
   !non inputs
-  integer, parameter   :: numPosMCmeths = 7    ! total number of MC transport methods available
   logical              :: flCorrMC=.false.     ! correlated random number MC transport
 
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values

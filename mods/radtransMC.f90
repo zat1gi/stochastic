@@ -1070,7 +1070,7 @@ CONTAINS
   subroutine MCfluxPrint
   !This subroutine prints the results of MC transport methods to '.out' files
   !in order to be printed to the screen.  It also clears out previous plot files.
-  use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, numPosMCmeths, &
+  use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxfaces, fluxnumcells, chTrantype, pltflux, pltmatflux, flfluxplot
   integer :: icase, ibin
 
@@ -1096,135 +1096,133 @@ CONTAINS
 
   376 format("#cell center,       ave mat1 flux,   ave mat2 flux")
 
-  do icase=1,numPosMCmeths
-    if(flfluxplot) then
-      select case (chTrantype)
-        case ("radMC")
-          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-            open(unit=24, file="radMC_fluxall.out")
-            write(24,370)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
-          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-            open(unit=24, file="radMC_fluxmat.out")
-            write(24,372)
-            do ibin=1,fluxnumcells
-              write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
-                            stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
+  if(flfluxplot) then
+    select case (chTrantype)
+      case ("radMC")
+        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+          open(unit=24, file="radMC_fluxall.out")
+          write(24,370)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
+        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+          open(unit=24, file="radMC_fluxmat.out")
+          write(24,372)
+          do ibin=1,fluxnumcells
+            write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
+                          stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
 
-        case ("radWood")
-          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-            open(unit=24, file="radWood_fluxall.out")
-            write(24,370)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
-          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-            open(unit=24, file="radWood_fluxmat.out")
-            write(24,372)
-            do ibin=1,fluxnumcells
-              write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
-                            stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
+      case ("radWood")
+        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+          open(unit=24, file="radWood_fluxall.out")
+          write(24,370)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
+        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+          open(unit=24, file="radWood_fluxmat.out")
+          write(24,372)
+          do ibin=1,fluxnumcells
+            write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
+                          stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
 
-        case ("KLWood")
-          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-            open(unit=24, file="KLWood_fluxall.out")
-            write(24,370)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
-          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-            open(unit=24, file="KLWood_fluxmat.out")
-            write(24,370)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
+      case ("KLWood")
+        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+          open(unit=24, file="KLWood_fluxall.out")
+          write(24,370)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
+        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+          open(unit=24, file="KLWood_fluxmat.out")
+          write(24,370)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
 
-        case ("LPMC")
-          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-            open(unit=24, file="LPMC_fluxall.out")
-            write(24,371)
-            do ibin=1,fluxnumcells
-              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1)
-            enddo
-            close(unit=24)
-          endif
-          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-            open(unit=24, file="LPMC_fluxmat.out")
-            write(24,376)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxmat1(ibin,icase,1),&
-                            stocMC_fluxmat2(ibin,icase,1)
-            enddo
-            close(unit=24)
-          endif
+      case ("LPMC")
+        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+          open(unit=24, file="LPMC_fluxall.out")
+          write(24,371)
+          do ibin=1,fluxnumcells
+            write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1)
+          enddo
+          close(unit=24)
+        endif
+        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+          open(unit=24, file="LPMC_fluxmat.out")
+          write(24,376)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxmat1(ibin,icase,1),&
+                          stocMC_fluxmat2(ibin,icase,1)
+          enddo
+          close(unit=24)
+        endif
 
-        case ("atmixMC")
-          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-            open(unit=24, file="atmixMC_fluxall.out")
-            write(24,374)
-            do ibin=1,fluxnumcells
-              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1)
-            enddo
-            close(unit=24)
-          endif
-          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-            open(unit=24, file="atmixMC_fluxmat.out")
-            write(24,374)
-            do ibin=1,fluxnumcells
-              write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1)
-            enddo
-            close(unit=24)
-          endif
+      case ("atmixMC")
+        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+          open(unit=24, file="atmixMC_fluxall.out")
+          write(24,374)
+          do ibin=1,fluxnumcells
+            write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1)
+          enddo
+          close(unit=24)
+        endif
+        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+          open(unit=24, file="atmixMC_fluxmat.out")
+          write(24,374)
+          do ibin=1,fluxnumcells
+            write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1)
+          enddo
+          close(unit=24)
+        endif
 
-        case ("GaussKL")
-          if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-            open(unit=24, file="GaussKL_fluxall.out")
-            write(24,370)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
-          if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-            open(unit=24, file="GaussKL_fluxmat.out")
-            write(24,370)
-            do ibin=1,fluxnumcells
-              write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                            stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
-            enddo
-            close(unit=24)
-          endif
+      case ("GaussKL")
+        if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
+          open(unit=24, file="GaussKL_fluxall.out")
+          write(24,370)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
+        if(pltmatflux=='plot' .or. pltmatflux=='preview') then
+          open(unit=24, file="GaussKL_fluxmat.out")
+          write(24,370)
+          do ibin=1,fluxnumcells
+            write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
+                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+          enddo
+          close(unit=24)
+        endif
 
-      end select
-    endif
-  enddo
+    end select
+  endif
 
   call system("test -e radMC_fluxall.out   && mv radMC_fluxall.out plots/fluxplots")
   call system("test -e radMC_fluxmat.out   && mv radMC_fluxmat.out plots/fluxplots")
@@ -1867,7 +1865,7 @@ CONTAINS
   use KLvars, only: flMarkov, flGauss
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, chTrantype, &
-                    numPosMCmeths, LPMC, atmixMC, GaussKL
+                    LPMC, atmixMC, GaussKL
   integer :: icase
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
@@ -1901,20 +1899,18 @@ CONTAINS
   endif
 
   !print my solutions for radMC, radWood, KLWood, GaussKL (if Markov-based geom)
-  do icase = 1,numPosMCmeths
-    if(chTrantype=='radMC')   write(100,326) stocMC_reflection(icase,1),&
-    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='radMC')   write(100,326) stocMC_reflection(icase,1),&
+  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    if(chTrantype=='radWood') write(100,327) stocMC_reflection(icase,1),&
-    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='radWood') write(100,327) stocMC_reflection(icase,1),&
+  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
-    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
+  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    if(chTrantype=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
-    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
+  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-  enddo
 
   !print for formatting if any LP solutions printed
   if(Adamscase/=0 .or. LPMC=='yes') &
@@ -1927,10 +1923,8 @@ CONTAINS
   endif
 
   !print my solution for LPMC
-  do icase = 1,numPosMCmeths
-    if(chTrantype=='LPMC') write(100,329) stocMC_reflection(icase,1),&
-                                              stocMC_transmission(icase,1)
-  enddo
+  if(chTrantype=='LPMC') write(100,329) stocMC_reflection(icase,1),&
+                                            stocMC_transmission(icase,1)
 
   !print for formatting if any atomic mix solutions printed
   if(Adamscase/=0 .or. atmixMC=='yes') &
@@ -1942,10 +1936,8 @@ CONTAINS
   endif
 
   !print my solution for atmixMC
-  do icase = 1,numPosMCmeths
-    if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
-                                                 stocMC_transmission(icase,1)
-  enddo
+  if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
+                                               stocMC_transmission(icase,1)
 
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
