@@ -384,7 +384,7 @@ CONTAINS
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
                     xi, KLrxivals, KLrxivalss, pltKLrealzarray, flglGaussdiffrand, &
                     flGaussdiffrand
-  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcases, &
+  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
@@ -433,15 +433,6 @@ CONTAINS
 
 
   !allocate/initialize MCvars
-  allocate(MCcases(numPosMCmeths))
-  MCcases(1) = 'radMC'
-  MCcases(2) = 'radWood'
-  MCcases(3) = 'KLWood'
-  MCcases(4) = 'LPMC'
-  MCcases(5) = 'atmixMC'
-  MCcases(6) = 'WAMC'
-  MCcases(7) = 'GaussKL'
-
   allocate(stocMC_reflection(numPosMCmeths,2))   !global MC variables for each method
   allocate(stocMC_transmission(numPosMCmeths,2)) !rank 2 holds 1=average, 2=deviation
   allocate(stocMC_absorption(numPosMCmeths,2))
@@ -485,7 +476,7 @@ CONTAINS
   totparts = 0
   cumparts = 0
   do icase=1,numPosMCmeths
-    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+    if(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
       totparts(icase) = LPamnumParts
     else
       totparts(icase) = numRealz*numParts

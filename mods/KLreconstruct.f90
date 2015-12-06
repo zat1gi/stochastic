@@ -12,7 +12,7 @@ CONTAINS
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
   use genRealzvars, only: flGBgeom
-  use MCvars, only: MCcases
+  use MCvars, only: chTrantype
   use KLvars, only: flmeanadjust,flLNxscheck
   integer :: icase
 
@@ -21,8 +21,8 @@ CONTAINS
   if(flmeanadjust) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
   if(flmeanadjust) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
-  if((.not.MCcases(icase)=='GaussKL' .and. flLNxscheck .and. .not.flGBgeom) .or.   &
-     (     MCcases(icase)=='GaussKL' .and. flLNxscheck .and.      flGBgeom)) call LNxsvalstest
+  if((.not.chTrantype=='GaussKL' .and. flLNxscheck .and. .not.flGBgeom) .or.   &
+     (     chTrantype=='GaussKL' .and. flLNxscheck .and.      flGBgeom)) call LNxsvalstest
 
   end subroutine KLreconstructions
 
@@ -203,7 +203,7 @@ CONTAINS
                           pltKLrealznumof, pltKLrealzwhich, KLrx, KLrxi, KLrxivals, KLrxivalss, &
                           pltKLrealzarray, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
-  use MCvars, only: MCcases, flnegxs, KLWood, GaussKL, trannprt
+  use MCvars, only: chTrantype, flnegxs, KLWood, GaussKL, trannprt
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,w,u,icase
@@ -223,9 +223,9 @@ CONTAINS
     flacceptrealz=.true.
 
     !set random number application
-    if(MCcases(icase)=='KLWood' .or. (MCcases(icase)=='GaussKL' .and. flCorrKL)) then
+    if(chTrantype=='KLWood' .or. (chTrantype=='GaussKL' .and. flCorrKL)) then
       call setrngappnum('KLRealzMarkov')
-    elseif(MCcases(icase)=='GaussKL') then
+    elseif(chTrantype=='GaussKL') then
       call setrngappnum('KLRealzGaussB')
     endif
     !set random number based on application
@@ -234,16 +234,16 @@ CONTAINS
     KLrxisig = 0
     do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivals
         rand = rang()
-        if((MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') .and. curEig<=numEigs) then
+        if((chTrantype=='KLWood' .or. chTrantype=='WAMC') .and. curEig<=numEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-        elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='BM') then
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
           if(mod(curEig,2)==0) then
             call TwoGaussrandnums(rand1,rand,xiterms)
             KLrxivals(realj,curEig-1) = xiterms(1)
             xiterm = xiterms(2)
           endif
-        elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='inv') then
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
           xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
         endif
       if(curEig<=numEigs) KLrxivals(realj,curEig) = xiterm
@@ -252,16 +252,16 @@ CONTAINS
     if(flGaussdiffrand) then
       do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivalss
         rand = rang()
-        if((MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC') .and. curEig<=numEigs) then
+        if((chTrantype=='KLWood' .or. chTrantype=='WAMC') .and. curEig<=numEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-        elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='BM') then
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
           if(mod(curEig,2)==0) then
             call TwoGaussrandnums(rand1,rand,xiterms)
             KLrxivalss(realj,curEig-1) = xiterms(1)
             xiterm = xiterms(2)
           endif
-        elseif(MCcases(icase)=='GaussKL' .and. Gaussrandtype=='inv') then
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
           xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
         endif
         if(curEig<=numEigs) KLrxivalss(realj,curEig) = xiterm

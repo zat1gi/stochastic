@@ -17,7 +17,7 @@ CONTAINS
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
                           totLength, atmixsig, atmixscatrat, scatrat, flprint, &
                           flCorrMarkov, flCorrRealz
-  use MCvars, only: MCcases
+  use MCvars, only: chTrantype
   use mcnp_random, only: RN_init_particle
 
   integer :: j, icase
@@ -36,9 +36,9 @@ CONTAINS
     if(icase==0 .or. flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
       call setrngappnum('genRealzKLres')
     else
-      if(MCcases(icase)=='radMC' .or. (MCcases(icase)=='radWood' .and. flCorrMarkov)) then
+      if(chTrantype=='radMC' .or. (chTrantype=='radWood' .and. flCorrMarkov)) then
         call setrngappnum('genRealzTMC')
-      elseif(MCcases(icase)=='radWood' .and. .not.flCorrMarkov) then
+      elseif(chTrantype=='radWood' .and. .not.flCorrMarkov) then
         call setrngappnum('genRealzWMC')
       endif
     endif

@@ -12,7 +12,7 @@ CONTAINS
   !in UQ space.
   use timevars, only: time
   use genRealzvars, only: numRealz, flGBgeom
-  use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat
+  use MCvars, only: numParts, trannprt, flfluxplotmat
   use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
@@ -24,37 +24,37 @@ CONTAINS
   real(8) :: tt1
 
   call cpu_time(tt1)
-  write(*,*) "Starting method: ",MCcases(icase)  
+  write(*,*) "Starting method: ",chTrantype  
   call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
 
-  if( MCcases(icase)=='GaussKL' .and. flGBgeom) &
+  if( chTrantype=='GaussKL' .and. flGBgeom) &
     call KL_eigenvalue
 
-  if(  MCcases(icase)=='KLWood'   .or. MCcases(icase)=='GaussKL'     ) &
+  if(  chTrantype=='KLWood'   .or. chTrantype=='GaussKL'     ) &
     call KLreconstructions(icase)       !create KL realz for cases that need them
 
-  if( MCcases(icase)=='GaussKL' .and. flGBgeom) then
+  if( chTrantype=='GaussKL' .and. flGBgeom) then
     if(Corropts(1) .ne. 'noplot') call KL_Correlation !calc & plot spacial correlation funcs
     if(   pltCo(1) .ne. 'noplot') call KL_Cochart !creates plots of var kept to tot var
   endif
 
   do j=1,tnumRealz
 
-      if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood') &
+      if(chTrantype=='radMC' .or. chTrantype=='radWood') &
     call genReal( j,'binary ',icase )         !gen binary geometry
-      if(MCcases(icase)=='atmixMC') &
+      if(chTrantype=='atmixMC') &
     call genReal( j,'atmixMC',icase )         !gen atomic mix geometry
 
-      if(flfluxplotmat .and. (MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood')) &
+      if(flfluxplotmat .and. (chTrantype=='radMC' .or. chTrantype=='radWood')) &
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
 
-      if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-         MCcases(icase)=='GaussKL') &
+      if(chTrantype=='radWood' .or. chTrantype=='KLWood' .or. &
+         chTrantype=='GaussKL') &
     call MCWood_setceils( j,icase )           !for WMC, create ceilings
 
     call MCtransport( j,icase,tnumParts )     !transport over a realization
 
-      if(mod( j,trannprt )==0 .or. MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') &
+      if(mod( j,trannprt )==0 .or. chTrantype=='LPMC' .or. chTrantype=='atmixMC') &
     call radtrans_timeupdate( j,icase,tt1 )   !print time updates
 
   enddo !loops over realizations
@@ -62,7 +62,7 @@ CONTAINS
   call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
-  if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. MCcases(icase)=='GaussKL' ) &
+  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) &
     call Woodnegstats(icase)
 
   end subroutine UQ_MC
@@ -82,7 +82,7 @@ CONTAINS
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
-                    nceilbin, Wood_rej, flnegxs, fldistneg, MCcases, fbinmax, &
+                    nceilbin, Wood_rej, flnegxs, fldistneg, chTrantype, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
                     flCorrMC
   use genRealz, only: genReal
@@ -98,15 +98,11 @@ CONTAINS
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,tnumParts                     !loop over particles
-    if(flCorrMC) then
-      call setrngappnum(MCcases(1))
-    else
-      call setrngappnum(MCcases(icase))
-    endif
+    if(flCorrMC) call setrngappnum(chTrantype)
     call RN_init_particle( int(rngappnum*rngstride+j*tnumParts+o,8) )
 
     call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i), init weight
-    if(MCcases(icase)=='LPMC') call genReal( j,'LPMC   ',icase ) !for LP, choose starting material
+    if(chTrantype=='LPMC') call genReal( j,'LPMC   ',icase ) !for LP, choose starting material
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
@@ -114,10 +110,10 @@ CONTAINS
       flExit      = 'clean'
       newpos      = 101010.0d0 !later throw error if still equal this
       !tally number of interactions
-      if(MCcases(icase)=='radMC') radtrans_int=radtrans_int+1
+      if(chTrantype=='radMC') radtrans_int=radtrans_int+1
 
       !calculate distance to boundary
-      select case (MCcases(icase))
+      select case (chTrantype)
         case ("radMC")
           db = merge(matLength(i+1)-position,position-matLength(i),mu>=0)/abs(mu)
         case ("radWood")
@@ -128,13 +124,12 @@ CONTAINS
           db = merge(s-position,position,mu>=0)/abs(mu)
         case ("atmixMC")
           db = merge(s-position,position,mu>=0)/abs(mu)
-        case ("WAMC")
         case ("GaussKL")
           db = merge(s-position,position,mu>=0)/abs(mu)
       end select
 
       !calculate distance to collision
-      select case (MCcases(icase))
+      select case (chTrantype)
         case ("radMC")
           dc = -log(rang())/sig(matType(i))
         case ("radWood")
@@ -153,7 +148,6 @@ CONTAINS
           dc = -log(rang())/sig(matType(1))
         case ("atmixMC")
           dc = -log(rang())/atmixsig
-        case ("WAMC")
         case ("GaussKL")
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
@@ -161,12 +155,12 @@ CONTAINS
       end select
 
       !calculate distance to interface
-      if(MCcases(icase)=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
+      if(chTrantype=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
 
       !select distance limiter
       dist   = min(db,dc)
       fldist = merge('boundary ','collision',db<dc)
-      if(MCcases(icase)=='LPMC') then
+      if(chTrantype=='LPMC') then
         fldist = merge('interface',fldist,di<dist)
         dist   = min(di,dist)
       endif
@@ -177,12 +171,12 @@ CONTAINS
       if(fldist=='boundary') then
         !set direction flag
         flEscapeDir = merge('transmit','reflect ',mu>0.0d0)
-        if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-           MCcases(icase)=='GaussKL') Wood_rej(1)=Wood_rej(1)+1           !accept path tal
+        if(chTrantype=='radWood' .or. chTrantype=='KLWood' .or. &
+           chTrantype=='GaussKL') Wood_rej(1)=Wood_rej(1)+1           !accept path tal
 
         !evaluate for local or global transmission or reflection
         if(flEscapeDir=='transmit') then   !transmit
-          select case (MCcases(icase))
+          select case (chTrantype)
             case ("radMC")
               newpos = matLength(i+1)
               if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
@@ -203,7 +197,6 @@ CONTAINS
               newpos = s
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
-            case ("WAMC")
             case ("GaussKL")
               newpos = s
               transmit(j) = transmit(j) + 1.0d0
@@ -212,7 +205,7 @@ CONTAINS
         endif
 
         if(flEscapeDir=='reflect') then    !reflect
-          select case (MCcases(icase))
+          select case (chTrantype)
             case ("radMC")
               newpos = matLength(i)
               if(i==1)            reflect(j)=reflect(j) + 1.0d0
@@ -233,7 +226,6 @@ CONTAINS
               newpos = 0.0d0
               LPamMCsums(1)  = LPamMCsums(1) + 1.0d0
               flExit='exit'
-            case ("WAMC")
             case ("GaussKL")
               newpos = 0.0d0
               reflect(j)  = reflect(j) + 1.0d0
@@ -250,7 +242,7 @@ CONTAINS
         newpos = position + dc*mu
 
         !Choose scatter, absorb, or reject (Woodcock) interaction
-        select case (MCcases(icase))
+        select case (chTrantype)
           case ("radMC")
             flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
           case ("radWood")
@@ -305,7 +297,6 @@ CONTAINS
               flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
           case ("atmixMC")
               flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
-          case ("WAMC")
           case ("GaussKL")
             !load woodcock ratio for this position and ceiling
             woodrat = KLr_point(j,newpos,'totale')/ceilsig
@@ -344,7 +335,7 @@ CONTAINS
         end select
 
         !Tally for neg stats
-        select case (MCcases(icase))
+        select case (chTrantype)
           case ("radMC")
           case ("radWood")
             if(flIntType=='reject') then
@@ -360,7 +351,6 @@ CONTAINS
             endif
           case ("LPMC")
           case ("atmixMC")
-          case ("WAMC")
           case ("GaussKL")
             if(flIntType=='reject') then
               Wood_rej(2)=Wood_rej(2)+1
@@ -382,32 +372,11 @@ CONTAINS
       if(flIntType=='scatter') then     !scatter
         if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !all currently do same
         if(rodOrplanar=='planar') mu = newmu()
-!        select case (MCcases(icase))
-!          case ("radMC")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
-!          case ("radWood")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
-!          case ("KLWood")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
-!          case ("LPMC")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
-!          case ("atmixMC")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
-!          case ("WAMC")
-!          case ("GaussKL")
-!            if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
-!            if(rodOrplanar=='planar') mu = newmu()
-!        end select
       endif
 
       !Evaluate absorption
       if(flIntType=='absorb') then      !absorb
-        select case (MCcases(icase))
+        select case (chTrantype)
           case ("radMC")
             absorb(j)     = absorb(j)     + 1.0d0
             flExit='exit'
@@ -423,7 +392,6 @@ CONTAINS
           case ("atmixMC")
             LPamMCsums(3) = LPamMCsums(3) + 1.0d0
             flExit='exit'
-          case ("WAMC")
           case ("GaussKL")
             absorb(j)     = absorb(j)     + 1.0d0
             flExit='exit'
@@ -431,7 +399,7 @@ CONTAINS
       endif
 
       !increment material type indices
-      if(MCcases(icase)=='radMC') then
+      if(chTrantype=='radMC') then
         if(flEscapeDir=='transmit') i = i+1
         if(flEscapeDir=='reflect')  i = i-1
       endif
@@ -476,7 +444,7 @@ CONTAINS
   !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
   use genRealzvars, only: s
-  use MCvars, only: position, mu, rodOrplanar, sourceType, MCcases
+  use MCvars, only: position, mu, rodOrplanar, sourceType, chTrantype
   integer :: i,icase
 
   if( sourceType=='left' ) then  !generate source particles
@@ -491,7 +459,7 @@ CONTAINS
 
   i = 0  !why is this here?  test if I can get rid of it...
 
-  if(MCcases(icase)=='radMC') then !if bin need be set
+  if(chTrantype=='radMC') then !if bin need be set
     if(sourceType=='left')   i = 1
     if(sourceType=='intern') i = internal_init_i(position)
   endif
@@ -509,19 +477,18 @@ CONTAINS
   !These ceilings of course need to be recalculated for each new realization
   use genRealzvars, only: s, lamc, nummatSegs, sig
   use KLvars, only: numEigs
-  use MCvars, only: MCcases, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
+  use MCvars, only: chTrantype, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
   integer :: j,icase
 
   integer :: i
   real(8) :: binlength
     !select local bin maxes
-    select case (MCcases(icase))
+    select case (chTrantype)
       case ("radWood")
         nceilbin = ceiling(s/lamc)
         if(nceilbin>6) nceilbin = 6
       case ("KLWood")
         nceilbin = numEigs
-      case ("WAMC")
       case ("GaussKL")
         nceilbin = numEigs
     end select
@@ -550,12 +517,11 @@ CONTAINS
     enddo
 
     !set individual bin maxes
-    select case (MCcases(icase))
+    select case (chTrantype)
       case ("radWood")
         call radWood_binmaxes( nummatSegs )
       case ("KLWood")
         call KLWood_binmaxes( j )
-      case ("WAMC")
       case ("GaussKL")
         call KLWood_binmaxes( j )
     end select
@@ -771,7 +737,7 @@ CONTAINS
   !Then for most methods it passes that info the the tallier, but for 'radWood'
   !it steps through the tracklength passing on segments at a time to be tallied.
   use genRealzvars, only: matLength, matType
-  use MCvars, only: position, oldposition, flfluxplotall, flfluxplotmat, MCcases, &
+  use MCvars, only: position, oldposition, flfluxplotall, flfluxplotmat, chTrantype, &
                     fluxfaces
   integer :: j, i, ibin, icase
   real(8) :: minpos, maxpos, dx
@@ -781,7 +747,7 @@ CONTAINS
   dx     = fluxfaces(2)-fluxfaces(1)
   !set value for 'i'
   i=1
-  if( MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' ) &
+  if( chTrantype=='radMC' .or. chTrantype=='radWood' ) &
     i = internal_init_i( minpos )
 
   !fluxtally irrespective of mat
@@ -790,7 +756,7 @@ CONTAINS
   endif
 
   !fluxtally respective of mat
-  if(MCcases(icase)=='radWood' .and. flfluxplotmat) then
+  if(chTrantype=='radWood' .and. flfluxplotmat) then
     !tally length through cells
     if(matLength(i)<maxpos .and. maxpos<=matLength(i+1)) then       !first cell = last cell
       call MCfluxtally( j,i,minpos,maxpos,'respective  ' )                  !tally first/last cell
@@ -808,7 +774,7 @@ CONTAINS
     endif
   elseif(flfluxplotmat) then
     call MCfluxtally( j,i,minpos,maxpos,'respective  ' )
-    if(MCcases(icase)=='LPMC') call MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
+    if(chTrantype=='LPMC') call MCLPcalc_fluxmatnorm( minpos,maxpos,dx )
   endif
 
   end subroutine MCfluxtallywrapper
@@ -1001,7 +967,7 @@ CONTAINS
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    MCcases, fluxnumcells, fluxall, &
+                    chTrantype, fluxnumcells, fluxall, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
   use timeman, only: FOM_calculation
@@ -1009,9 +975,8 @@ CONTAINS
   real(8) :: dx,p1,p2
 
   !leakage/absorption stats
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
-     MCcases(icase)=='KLWood'.or. MCcases(icase)=='WAMC'    .or. &
-     MCcases(icase)=='GaussKL'                                     ) then
+  if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
+     chTrantype=='KLWood'.or. chTrantype=='GaussKL'      ) then
     reflect  = reflect  / numParts
     transmit = transmit / numparts
     absorb   = absorb   / numParts
@@ -1019,7 +984,7 @@ CONTAINS
     call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
     call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
     call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
-  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+  elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
     stocMC_reflection(icase,1)   = LPamMCsums(1) / LPamnumParts
     stocMC_transmission(icase,1) = LPamMCsums(2) / LPamnumParts
     stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
@@ -1029,14 +994,14 @@ CONTAINS
   !flux stats
   if(flfluxplot)    dx = fluxfaces(2) - fluxfaces(1)
 
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
-     MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'        ) then
+  if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
+     chTrantype=='KLWood'.or. chTrantype=='GaussKL'        ) then
     if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
     if(flfluxplotmat) then
                       fluxmat1= fluxmat1/ dx / numParts !normalize part 1
                       fluxmat2= fluxmat2/ dx / numParts !normalize part 1
     endif    
-  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+  elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
     if(flfluxplotall) fluxall = fluxall / dx / LPamnumParts !normalize part 1
     if(flfluxplotmat) then
                       fluxmat1= fluxmat1/ dx / LPamnumParts !normalize part 1
@@ -1044,8 +1009,8 @@ CONTAINS
     endif    
   endif
 
-  if(MCcases(icase)=='radMC' .or. MCcases(icase)=='radWood' .or. &
-     MCcases(icase)=='KLWood'.or. MCcases(icase)=='GaussKL'       ) then
+  if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
+     chTrantype=='KLWood'.or. chTrantype=='GaussKL'       ) then
     if( flfluxplotall ) then
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
@@ -1066,7 +1031,7 @@ CONTAINS
       enddo
     endif
 
-  elseif(MCcases(icase)=='LPMC') then
+  elseif(chTrantype=='LPMC') then
     if(flfluxplotall) then
       do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
         stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
@@ -1083,7 +1048,7 @@ CONTAINS
       enddo
     endif
 
-  elseif(MCcases(icase)=='atmixMC') then
+  elseif(chTrantype=='atmixMC') then
     if(flfluxplotall) then
       do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
         stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
@@ -1106,7 +1071,7 @@ CONTAINS
   !This subroutine prints the results of MC transport methods to '.out' files
   !in order to be printed to the screen.  It also clears out previous plot files.
   use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, numPosMCmeths, &
-                    fluxfaces, fluxnumcells, MCcases, pltflux, pltmatflux, flfluxplot
+                    fluxfaces, fluxnumcells, chTrantype, pltflux, pltmatflux, flfluxplot
   integer :: icase, ibin
 
   call system("test -e plots/fluxplots/radMC_fluxall.out   && rm plots/fluxplots/radMC_fluxall.out")
@@ -1133,7 +1098,7 @@ CONTAINS
 
   do icase=1,numPosMCmeths
     if(flfluxplot) then
-      select case (MCcases(icase))
+      select case (chTrantype)
         case ("radMC")
           if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
             open(unit=24, file="radMC_fluxall.out")
@@ -1504,7 +1469,7 @@ CONTAINS
                           GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, sigvar, &
                           numPosRealz, numNegRealz, scatvar, absvar, sigscatave, sigabsave, &
                           sigave_, sigvar_
-  use MCvars, only: transmit, reflect, absorb, radtrans_int, MCcases, &
+  use MCvars, only: transmit, reflect, absorb, radtrans_int, chTrantype, &
                     numpnSamp, areapnSamp, disthold, Wood_rej, LPamMCsums, &
                     numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
@@ -1517,14 +1482,14 @@ CONTAINS
   flprint = .false.
 
   !number of realizations allocation
-  if( MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC' ) then
+  if( chTrantype=='LPMC' .or. chTrantype=='atmixMC' ) then
     tnumRealz = 1
   else
     tnumRealz = numRealz
   endif
 
   !Gauss-based input set (or not)
-  if(MCcases(icase)=='GaussKL' .and. flGBgeom) then
+  if(chTrantype=='GaussKL' .and. flGBgeom) then
     sigave       = GBsigave
     sigvar       = GBsigvar
     scatrat(1)   = GBscatrat
@@ -1539,7 +1504,7 @@ CONTAINS
       enddo
     endif
   endif
-  if(MCcases(icase)=='GaussKL') then
+  if(chTrantype=='GaussKL') then
     flGaussdiffrand = flglGaussdiffrand
     flLN = flglLN
     if(flLN .and. chLNmode=='fitlamc') then
@@ -1567,9 +1532,8 @@ CONTAINS
   endif
 
   !current tally allocations
-  if(MCcases(icase)=='radMC'  .or. MCcases(icase)=='radWood'.or. &
-     MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC'   .or. &
-     MCcases(icase)=='GaussKL'                                     ) then
+  if(chTrantype=='radMC'  .or. chTrantype=='radWood'.or. &
+     chTrantype=='KLWood' .or. chTrantype=='GaussKL'        ) then
     if(.not.allocated(transmit)) allocate(transmit(numRealz))
     if(.not.allocated(reflect))  allocate(reflect(numRealz))
     if(.not.allocated(absorb))   allocate(absorb(numRealz))
@@ -1578,19 +1542,18 @@ CONTAINS
     absorb       = 0.0d0
     radtrans_int = 0
     tnumParts    = numParts
-  elseif(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+  elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
     if(.not.allocated(LPamMCsums)) allocate(LPamMCsums(3))
     LPamMCsums   = 0.0d0
     tnumParts    = LPamnumParts
   endif
 
   !rejection tally allocations
-  if(MCcases(icase)=='radWood' .or. MCcases(icase)=='KLWood' .or. &
-     MCcases(icase)=='GaussKL'                                     ) Wood_rej = 0
+  if(chTrantype=='radWood' .or. chTrantype=='KLWood' .or. &
+     chTrantype=='GaussKL'                                     ) Wood_rej = 0
 
   !negative xs transport tally allocations
-  if(MCcases(icase)=='KLWood' .or. MCcases(icase)=='WAMC' .or. &
-     MCcases(icase)=='GaussKL'                                 ) then
+  if(chTrantype=='KLWood' .or.  chTrantype=='GaussKL' ) then
     numPosRealz=0
     numNegRealz=0
     numpnSamp  =0
@@ -1602,7 +1565,7 @@ CONTAINS
   !flux tally allocations
   flfluxplotall = .false.
   flfluxplotmat = .false.
-  select case(MCcases(icase))
+  select case(chTrantype)
     case ("radMC")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
       if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
@@ -1648,20 +1611,19 @@ CONTAINS
   !for methods which contain realizations (radMC, radWood, KLWood).
   use genRealzvars, only: numRealz
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot, &
-                          reflect, transmit, MCcases
+                          reflect, transmit, chTrantype
 
   integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
   !this nasty if statement decides whether to proceed at all.
-  !from here only MCcases is needed.
-  if( (MCcases(icase) =='radMC'      .and. &
+  if( (chTrantype =='radMC'      .and. &
       (radMCbinplot     =='plot'  .or.  radMCbinplot   =='preview'))  .or.  &
-      (MCcases(icase) =='radWood'    .and. &
+      (chTrantype =='radWood'    .and. &
       (radWoodbinplot   =='plot'  .or.  radWoodbinplot =='preview'))  .or.  &
-      (MCcases(icase) =='KLWood'     .and. &
+      (chTrantype =='KLWood'     .and. &
       (KLWoodbinplot    =='plot'  .or.  KLWoodbinplot  =='preview'))  .or.  &
-      (MCcases(icase) =='GaussKL'    .and. &
+      (chTrantype =='GaussKL'    .and. &
       (GaussKLbinplot    =='plot' .or.  GaussKLbinplot  =='preview'))          ) then
 
     !find reflection binning/plotting bounds
@@ -1696,7 +1658,7 @@ CONTAINS
     call radtrans_bin( smrefl,lgrefl,smtran,lgtran,icase ) 
 
     !bin and print data, give printed data files appropriate name
-    select case (MCcases(icase))
+    select case (chTrantype)
       case("radMC")
         call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
         call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
@@ -1708,7 +1670,6 @@ CONTAINS
         call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
       case("LPMC")
       case("atmixMC")
-      case("WAMC")
       case("GaussKL")
         call system("mv tranreflprofile.txt GaussKLtranreflprofile.txt")
         call system("mv GaussKLtranreflprofile.txt plots/tranreflprofile")
@@ -1725,7 +1686,7 @@ CONTAINS
   !Heart of radtrans_resultplot, for methods with realizations,
   !loads leakage values to bins (pdf), and prints to generic text file
   use genRealzvars, only: numRealz
-  use MCvars, only: trprofile_binnum, reflect, transmit, MCcases
+  use MCvars, only: trprofile_binnum, reflect, transmit, chTrantype
   integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
@@ -1846,15 +1807,15 @@ CONTAINS
 
   subroutine Woodnegstats(icase)
   use genRealzvars, only: numRealz, numPosRealz, numNegRealz
-  use MCvars, only: numpnSamp, areapnSamp, fldistneg, flnegxs, numcSamp, MCcases
+  use MCvars, only: numpnSamp, areapnSamp, fldistneg, flnegxs, numcSamp, chTrantype
 
   integer :: icase
   real(8) :: pos,neg
 
   open(unit=100,file="Woodnegstats.out")
 
-  if((MCcases(icase)=='KLWood' .and. flnegxs) .or. &
-     (MCcases(icase)=='GaussKL'.and. flnegxs)        ) then
+  if((chTrantype=='KLWood' .and. flnegxs) .or. &
+     (chTrantype=='GaussKL'.and. flnegxs)        ) then
     606 format("--Negative xs stats (",A8," ), keep neg xs: ",L,", neg smoothing: ",L," --")
 
     600 format("  Neg realz   : ",f8.5,"%, ",i21," /",i21)
@@ -1864,7 +1825,7 @@ CONTAINS
     603 format("  Ave neg samp: ",f11.4,"   Ave pos samp: ",f11.4)
     604 format("  Max neg samp: ",f11.4,"   Max pos samp: ",f11.4)
 
-    write(100,606) MCcases(icase),flnegxs,fldistneg
+    write(100,606) chTrantype,flnegxs,fldistneg
     write(100,600) real(numNegRealz,8)/real(numNegRealz+numPosRealz,8)*100d0,numNegRealz,numNegRealz+numPosRealz
     pos = real(numpnSamp(1),8)
     neg = real(numpnSamp(2),8)
@@ -1874,11 +1835,11 @@ CONTAINS
     write(100,603) areapnSamp(2)/numpnSamp(2),areapnSamp(1)/numpnSamp(1)
     write(100,604) areapnSamp(4),areapnSamp(3)
     write(100,*)
-  elseif((MCcases(icase)=='KLWood' .and. .not.flnegxs) .or. &
-         (MCcases(icase)=='GaussKL'.and. .not.flnegxs)        ) then
+  elseif((chTrantype=='KLWood' .and. .not.flnegxs) .or. &
+         (chTrantype=='GaussKL'.and. .not.flnegxs)        ) then
     610 format("--Negative xs stats (",A8," ), keep neg xs: ",L," --")
 
-    write(100,610) MCcases(icase),flnegxs
+    write(100,610) chTrantype,flnegxs
     write(100,600) real(numNegRealz,8)/real(numNegRealz+numPosRealz,8)*100d0,numNegRealz,numNegRealz+numPosRealz
     write(100,*)
 
@@ -1905,7 +1866,7 @@ CONTAINS
   use genRealzvars, only: Adamscase, flGBgeom
   use KLvars, only: flMarkov, flGauss
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, stocMC_absorption, MCcases, &
+                    stocMC_transmission, stocMC_absorption, chTrantype, &
                     numPosMCmeths, LPMC, atmixMC, GaussKL
   integer :: icase
 
@@ -1919,7 +1880,6 @@ CONTAINS
   326 format(" |radMC  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  331 format(" |WAMC   :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   332 format(" |GaussKL:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
   330 format(" |atmixMC:  |",f8.5,"                 |",f8.5,"             |")
@@ -1940,18 +1900,18 @@ CONTAINS
     if(rodOrplanar=='planar') write(100,321) ABreflection(1,3),ABtransmission(1,3)
   endif
 
-  !print my solutions for radMC, radWood, KLWood, WAMC, GaussKL (if Markov-based geom)
+  !print my solutions for radMC, radWood, KLWood, GaussKL (if Markov-based geom)
   do icase = 1,numPosMCmeths
-    if(MCcases(icase)=='radMC')   write(100,326) stocMC_reflection(icase,1),&
+    if(chTrantype=='radMC')   write(100,326) stocMC_reflection(icase,1),&
     sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    if(MCcases(icase)=='radWood') write(100,327) stocMC_reflection(icase,1),&
+    if(chTrantype=='radWood') write(100,327) stocMC_reflection(icase,1),&
     sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
+    if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
     sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    if(MCcases(icase)=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
+    if(chTrantype=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
     sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
   enddo
@@ -1968,7 +1928,7 @@ CONTAINS
 
   !print my solution for LPMC
   do icase = 1,numPosMCmeths
-    if(MCcases(icase)=='LPMC') write(100,329) stocMC_reflection(icase,1),&
+    if(chTrantype=='LPMC') write(100,329) stocMC_reflection(icase,1),&
                                               stocMC_transmission(icase,1)
   enddo
 
@@ -1983,7 +1943,7 @@ CONTAINS
 
   !print my solution for atmixMC
   do icase = 1,numPosMCmeths
-    if(MCcases(icase)=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
+    if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
                                                  stocMC_transmission(icase,1)
   enddo
 

@@ -272,7 +272,6 @@ module MCvars
   real(8)              :: position             ! 'current' position of particle
   real(8)              :: oldposition          ! most recent position of particle
   real(8)              :: mu                   ! 'current' direction of particle
-  character(7), allocatable :: MCcases(:)      ! library of MC transport cases
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
 end module MCvars
 

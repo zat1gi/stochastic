@@ -13,7 +13,7 @@ program stochastic
   use timevars, only: t1
   use KLvars, only: KLres, KLrec, KLnoise, &
                     Corropts, pltCo
-  use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, MCcases
+  use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL
 
   implicit none
   ! pass by reference

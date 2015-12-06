@@ -13,7 +13,7 @@ CONTAINS
   !fly in this subroutine.
   use timevars, only: time, totparts, cumparts
   use genRealzvars, only: numRealz
-  use MCvars, only: numParts, MCcases, LPamnumParts, numPosMCmeths
+  use MCvars, only: numParts, chTrantype, LPamnumParts, numPosMCmeths
   integer :: j,icase
   real(8) :: tt1
 
@@ -25,7 +25,7 @@ CONTAINS
 
   !log time (in future subtract out any other contributions above)
   call cpu_time(tt2)
-  select case (MCcases(icase))
+  select case (chTrantype)
     case ("radMC")
       time(2)         = time(2)   + (tt2-tt1)
       localper        = real(j,8) / numRealz*100 !percentage of local method done
@@ -58,7 +58,7 @@ CONTAINS
   avetime    = 0.0d0
   wgtavetime = 0.0d0
   do ticase=1,icase
-    select case (MCcases(ticase)) !load to ttime the time of each method
+    select case (chTrantype) !load to ttime the time of each method
       case ("radMC")
         avetime(ticase) = time(2) / cumparts(ticase) !ave time per particle for method
         wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
@@ -91,7 +91,7 @@ CONTAINS
 
 
   1100 format(A9,"   ",f7.2," min,",f6.1,"% of method   time/est:",f7.2,"/",f7.2," min")
-  write(*,1100) MCcases(icase),local_time/60.0d0,localper,finished_time/60.0d0,timeeta/60.0d0
+  write(*,1100) chTrantype,local_time/60.0d0,localper,finished_time/60.0d0,timeeta/60.0d0
   if(localper==100) print *,
 
   end subroutine radtrans_timeupdate
@@ -149,7 +149,7 @@ CONTAINS
   !This is the timereport that comes at the end of the whole code running, the final time report.
   use timevars, only: t1, runtime, time, ntime, runtime, FOM
   use KLvars, only: KLres, KLrec, KLnoise
-  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, MCcases, &
+  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, &
                     stocMC_transmission, stocMC_reflection, numPosMCmeths, GaussKL
   use utilities, only: calc_time
 
@@ -213,11 +213,11 @@ CONTAINS
   !The FOM = 1/(R^2*t) where R is relative error and t is runtime.
   !Said another way FOM = (ave^2*N)/(stdev^2*t).
   use genRealzvars, only: numRealz
-  use MCvars, only: MCcases, stocMC_reflection, stocMC_transmission
+  use MCvars, only: chTrantype, stocMC_reflection, stocMC_transmission
   use timevars, only: FOM, time
   integer :: icase
 
-  select case (MCcases(icase))
+  select case (chTrantype)
     case ("radMC")
       FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(2))
       FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(2))
