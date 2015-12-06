@@ -43,7 +43,7 @@ CONTAINS
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
-                                  KLres, KLrec, KLnoise, flmeanadjust, meanadjust_tol, &
+                                  KLres, KLrec, flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
                                   flglLN, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
@@ -113,7 +113,6 @@ CONTAINS
   read(2,*) levsrefEig
   read(2,*) numrefinesameiter
   read(2,*) binSmallBound,binLargeBound
-  read(2,*) KLnoise
   read(2,*) KLvarcalc,KLvarkept_tol
   read(2,*) numSlice
   read(2,*) Gaussrandtype
@@ -328,11 +327,6 @@ CONTAINS
     print *,"--User trying to correlate KL realz w/ Box-Muller sampling, switched to inverse sampling"
     Gaussrandtype='inv'
     flsleep = .true.
-  endif
-
-  if( KLnoise == 'yes' .AND. KLres == 'no' ) then !Test KLnoise w/o KLres
-    print *,"--User trying to perform KLnoise without KLres"
-    flstopstatus = .true.
   endif
 
   if(flstopstatus) STOP 'killed'

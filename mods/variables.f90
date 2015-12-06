@@ -40,7 +40,7 @@ end module rngvars
 module timevars
   implicit none
   real(8), allocatable :: time(:)              ! keeps cumulative time data for everything
-                                               ! 1)genR, 2)radMC, 3)radWood, 4)KLnoise, 5)KLcol 
+                                               ! 1)genR, 2)radMC, 3)radWood, 5)KLcol 
                                                ! 6)KLrec, 7)KLWood, 8)LPMC, 9)atmixMC, 10)GaussKL
   integer, parameter   :: ntime = 10           ! size of 'time' array
   real(8), allocatable :: FOM(:,:)             ! Figure of Merit = (1/(Var*cputime))
@@ -113,7 +113,6 @@ module KLvars  !"KLresearch" and "KLreconstruct"
   !inputs
   character(3)         :: KLres                ! perform "KL research" operations?
   character(3)         :: KLrec                ! perform "KL reconstruct" operations?
-  character(3)         :: KLnoise              ! perform "KL noise" operations?
   character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
   real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)
