@@ -7,7 +7,7 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( j,flmode )
+  subroutine genReal( j )
   !creates a realization, plots if specified, and collects tallies for realization stats
   !creates for 'binary' mode: binary stochastic media, or 'atmix' mode, atomic mix of that
   use rngvars, only: rngappnum, rngstride, setrngappnum
@@ -22,7 +22,6 @@ CONTAINS
 
   integer :: j
   real(8) :: tt1,tt2
-  character(7) :: flmode !'binary','LPMC','atmix'
 
   integer, parameter :: numArrSz = 5000 !temp var, don't know how long to make arrays yet
   integer :: i,firstloop,matType_temp(numArrSz)
@@ -32,7 +31,7 @@ CONTAINS
   if(allocated(matType)) deallocate(matType)
   if(allocated(matLength)) deallocate(matLength)
 
-  if(flmode=='binary') then
+  if(chTrantype=='radMC' .or. chTrantype=='radWood') then
     if(flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
       call setrngappnum('genRealzKLres')
     else
@@ -128,11 +127,11 @@ CONTAINS
     close(unit=20) !close three files printing xs data to
     close(unit=21)
     close(unit=22)
-  elseif(flmode=='LPMC') then
+  elseif(chTrantype=='LPMC') then
     nummatSegs   = 1
     if(.not.allocated(matType)) allocate(matType(nummatSegs))
     matType(1) = merge(1,2,rang()<P(1))
-  elseif(flmode=='atmixMC') then
+  elseif(chTrantype=='atmixMC') then
     atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
     atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
   endif

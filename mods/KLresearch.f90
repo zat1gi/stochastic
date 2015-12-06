@@ -328,7 +328,7 @@ CONTAINS
   rngappnum = rngappnum + 1
 
   do j=1,numRealz
-    call genReal( j,'binary ' )
+    call genReal( j ) !-------------------- make sure I call if transport not specified
     do curEig=1,numEigs
       xl       =0d0
       xiterm   =0d0
