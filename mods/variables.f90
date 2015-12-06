@@ -129,7 +129,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: pltKLrealznumof      !
   integer, allocatable :: pltKLrealzwhich(:,:) !
 
-  logical              :: flglGaussdiffrand=.true.! global - want GB meths to use different rand vars for xi samps?
+  logical              :: flGaussdiffrand=.true.! want GB meths to use different rand vars for xi samps?
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'
   character(7)         :: chLNmode = 'Glamc'   ! Log-normal cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
   logical              :: flLNxscheck = .false.! perform mean, var, and pdf check of LN xs distributions?

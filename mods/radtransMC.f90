@@ -18,12 +18,11 @@ CONTAINS
   use KLconstruct, only: KLconstructions
   use timeman, only: initialize_t1, timeupdate
 
-  integer :: j,tnumParts,tnumRealz !'j' is which realization
+  integer :: j !'j' is which realization
 
   call initialize_t1
 
   write(*,*) "Starting method: ",chTrantype  
-  call MCallocate( tnumParts,tnumRealz )!allocate/initialize tallies
 
   if( chTrantype=='GaussKL') &
     call KL_eigenvalue
@@ -36,7 +35,7 @@ CONTAINS
     if(   pltCo(1) .ne. 'noplot') call KL_Cochart !creates plots of var kept to tot var
   endif
 
-  do j=1,tnumRealz
+  do j=1,numRealz
 
       if(chTrantype=='radMC' .or. chTrantype=='radWood') &
     call genbinaryReal( j )         !gen binary geometry
@@ -50,13 +49,13 @@ CONTAINS
          chTrantype=='GaussKL') &
     call MCWood_setceils( j )           !for WMC, create ceilings
 
-    call MCtransport( j,tnumParts )     !transport over a realization
+    call MCtransport( j )     !transport over a realization
 
       if(mod( j,trannprt )==0) call timeupdate( chTrantype,j,numRealz )   !print time updates
 
   enddo !loops over realizations
 
-  call stocMC_stats( tnumRealz )        !calc stats in stochastic space here
+  call stocMC_stats        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) call Woodnegstats
@@ -67,11 +66,10 @@ CONTAINS
 
 
 
-  subroutine MCtransport( j,tnumParts )
+  subroutine MCtransport( j )
   !This subroutine performs MC transport over a specified geometry and method.
   !It can be used by a UQ_MC wrapper, and likely in the future by UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
-  !'tnumParts' is the number of particles over which the MC transport is performed.
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
                           atmixsig, atmixscatrat
@@ -79,12 +77,12 @@ CONTAINS
                     absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
                     nceilbin, Wood_rej, flnegxs, chTrantype, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
-                    flCorrMC
+                    flCorrMC, numParts
   use genRealz, only: genReal
   use KLconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
 
-  integer :: j,tnumParts !realz number/which mode of transport/num of particles
+  integer :: j !realz number
 
   !local variables
   integer :: i,o,curbin
@@ -92,9 +90,9 @@ CONTAINS
   real(8) :: cursigt, cursigs
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
-  do o=1,tnumParts                     !loop over particles
+  do o=1,numParts                     !loop over particles
     if(flCorrMC) call setrngappnum(chTrantype)
-    call RN_init_particle( int(rngappnum*rngstride+j*tnumParts+o,8) )
+    call RN_init_particle( int(rngappnum*rngstride+j*numParts+o,8) )
 
     call genSourcePart( i )      !gen source part pos, dir, and binnum (i), init weight
     if(chTrantype=='LPMC') call genLPReal( j ) !for LP, choose starting material
@@ -933,7 +931,7 @@ CONTAINS
 
 
 
-  subroutine stocMC_stats( tnumRealz )
+  subroutine stocMC_stats
   !This subroutine:
   !1) calculates mean and standard deviation for leakage values over stochastic
   !   space for each MC transport solver.
@@ -947,7 +945,7 @@ CONTAINS
                     chTrantype, fluxnumcells, fluxall, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
-  integer :: ibin,tnumRealz,j
+  integer :: ibin,j
   real(8) :: dx,p1,p2
 
   !leakage/absorption stats
@@ -1425,140 +1423,6 @@ CONTAINS
 
   end subroutine MCfluxPlot
 
-
-
-
-  subroutine MCallocate( tnumparts,tnumRealz )
-  !This subroutine allocates and initializes variables that will be passed
-  !through generic MCtransport subroutine.  These values will later be
-  !stored in different arrays so that the variables can be re-used in
-  !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, GBsigave, GBsigvar, P, sig,  &
-                          GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, sigvar, &
-                          numPosRealz, numNegRealz, scatvar, absvar, sigscatave, sigabsave, &
-                          sigave_, sigvar_
-  use MCvars, only: transmit, reflect, absorb, radtrans_int, chTrantype, &
-                    numpnSamp, areapnSamp, Wood_rej, LPamMCsums, &
-                    numParts, LPamnumParts, fluxnumcells, fluxall, fluxmat1, &
-                    fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
-                    fluxmatnorm, flfluxplot, fluxfaces
-  use KLvars, only: flGaussdiffrand, flglGaussdiffrand, chLNmode
-  integer :: tnumParts,tnumRealz,i
-
-  real(8) :: tot, sqr, val
-
-  !number of realizations allocation
-  if( chTrantype=='LPMC' .or. chTrantype=='atmixMC' ) then
-    tnumRealz = 1
-  else
-    tnumRealz = numRealz
-  endif
-
-
-
-  !Gauss-based input set (or not)
-  if(chTrantype=='GaussKL') then
-    sigave       = GBsigave
-    sigvar       = GBsigvar
-    scatrat(1)   = GBscatrat
-    lamc         = GBlamc
-    s            = GBs
-    if(flfluxplot) then
-      if(allocated(fluxfaces)) deallocate(fluxfaces)
-      allocate(fluxfaces(fluxnumcells+1))
-      fluxfaces = 0.0d0
-      do i=1,fluxnumcells+1
-        fluxfaces(i) = (s/fluxnumcells) * (i-1)
-      enddo
-    endif
-  endif
-  if(chTrantype=='GaussKL') then
-    flGaussdiffrand = flglGaussdiffrand
-    if(chGausstype=='LogN' .and. chLNmode=='fitlamc') then
-      lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
-    endif
-    if(chGausstype=='LogN') then
-      sigave_= sigave
-      sigave = log(sigave_**2/sqrt(sigvar+sigave_**2))
-      sigvar_ = sigvar
-      sigvar  = log(sigvar/sigave_**2+1.0d0)
-      sig(1) = log(sig(1)**2/sqrt(sigvar+sig(1) **2))
-      sig(2) = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
-    endif
-    sigscatave = sigave *      scatrat(1)
-    sigabsave  = sigave * (1d0-scatrat(1))
-    scatvar    = sigvar  *      scatrat(1)
-    absvar     = sigvar  * (1d0-scatrat(1))
-  endif
-
-  !current tally allocations
-  if(chTrantype=='radMC'  .or. chTrantype=='radWood'.or. &
-     chTrantype=='KLWood' .or. chTrantype=='GaussKL'        ) then
-    if(.not.allocated(transmit)) allocate(transmit(numRealz))
-    if(.not.allocated(reflect))  allocate(reflect(numRealz))
-    if(.not.allocated(absorb))   allocate(absorb(numRealz))
-    transmit     = 0.0d0
-    reflect      = 0.0d0
-    absorb       = 0.0d0
-    radtrans_int = 0
-    tnumParts    = numParts
-  elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
-    if(.not.allocated(LPamMCsums)) allocate(LPamMCsums(3))
-    LPamMCsums   = 0.0d0
-    tnumParts    = LPamnumParts
-  endif
-
-  !rejection tally allocations
-  if(chTrantype=='radWood' .or. chTrantype=='KLWood' .or. &
-     chTrantype=='GaussKL'                                     ) Wood_rej = 0
-
-  !negative xs transport tally allocations
-  if(chTrantype=='KLWood' .or.  chTrantype=='GaussKL' ) then
-    numPosRealz=0
-    numNegRealz=0
-    numpnSamp  =0
-    areapnSamp =0.0d0
-  endif
-
-
-  !flux tally allocations
-  flfluxplotall = .false.
-  flfluxplotmat = .false.
-  select case(chTrantype)
-    case ("radMC")
-      if(.not.pltflux(1)=='noplot') flfluxplotall = .true.
-      if(.not.pltmatflux=='noplot') flfluxplotmat = .true.
-    case ("radWood")
-      if(.not.pltflux(1)=='noplot') flfluxplotall = .true.
-      if(.not.pltmatflux=='noplot') flfluxplotmat = .true.
-    case ("KLWood")
-      if(.not.(pltflux(1)=='noplot' .or. .not.pltmatflux=='plot')) flfluxplotall = .true.
-    case ("LPMC")
-      if(.not.pltflux(1)=='noplot') flfluxplotall = .true.
-      if(.not.pltmatflux=='noplot') flfluxplotmat = .true.
-    case ("atmixMC")
-      if(.not.(pltflux(1)=='noplot' .or. pltmatflux=='noplot')) flfluxplotall = .true.
-    case ("GaussKL")
-      if(.not.(pltflux(1)=='noplot' .or. pltmatflux=='noplot')) flfluxplotall = .true.
-  end select
-  if(flfluxplotall) then
-    if(allocated(fluxall)) deallocate(fluxall)
-    allocate(fluxall(fluxnumcells,tnumRealz))
-    fluxall = 0.0d0
-  endif
-  if(flfluxplotmat) then
-    if(allocated(fluxmat1)) deallocate(fluxmat1)
-    if(allocated(fluxmat2)) deallocate(fluxmat2)
-    allocate(fluxmat1(fluxnumcells,tnumRealz))
-    allocate(fluxmat2(fluxnumcells,tnumRealz))
-    fluxmat1 = 0.0d0
-    fluxmat2 = 0.0d0
-    if(allocated(fluxmatnorm)) deallocate(fluxmatnorm)
-    allocate(fluxmatnorm(fluxnumcells,numRealz,2))
-    fluxmatnorm = 0.0d0
-  endif    
-
-  end subroutine MCallocate
 
 
 

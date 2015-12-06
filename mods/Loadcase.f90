@@ -15,7 +15,7 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, &
-                                  Gaussrandtype, flCorrKL, numrefinesameiter, flglGaussdiffrand, &
+                                  Gaussrandtype, flCorrKL, numrefinesameiter, flGaussdiffrand, &
                                   chGausstype, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
@@ -45,7 +45,7 @@ CONTAINS
   read(2,*) dumchar
   read(2,*) chGausstype
   read(2,*) chLNmode,setflags(1)
-  if(setflags(1)=='same') flglGaussdiffrand = .false.
+  if(setflags(1)=='same') flGaussdiffrand = .false.
   read(2,*) GBsigave,GBsigvar
   read(2,*) GBscatrat
   read(2,*) GBlamc
@@ -347,7 +347,7 @@ CONTAINS
                           scatvar, absvar
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, &
-                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, flglGaussdiffrand, &
+                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, flGaussdiffrand, &
                     flGaussdiffrand
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, &
@@ -360,73 +360,121 @@ CONTAINS
   rngappnum  = 0
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
+
   !allocate and initialize genRealzvars
-  numPath    = 0  !setup Markov material tallies
-  sumPath    = 0d0
-  sqrPath    = 0d0
-  largesti   = 0
-  totLength  = 0d0
-  P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
-  P(2)       = lam(2)/(lam(1)+lam(2))
-  lamc       = (lam(1)*lam(2))/(lam(1)+lam(2))
-  sigave     = P(1)*                 sig(1) + P(2)*                 sig(2)
-  sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
-  sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
   numPosRealz= 0
   numNegRealz= 0
-  sigvar     = P(1)*P(2) * (sig(1)                  - sig(2)                ) **2
-  scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
-  absvar     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
+  if(chgeomtype=='contin') then  !Gauss-based input
+    sigave       = GBsigave
+    sigvar       = GBsigvar
+    scatrat(1)   = GBscatrat
+    lamc         = GBlamc
+    s            = GBs
+    if(chGausstype=='LogN') then
+      sigave  = log(GBsigave**2/sqrt(sigvar+sigave_**2))
+      sigvar  = log(sigvar/GBsigave**2+1.0d0)
+      sig(1)  = log(sig(1)**2/sqrt(sigvar+sig(1) **2))
+      sig(2)  = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
+      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
+    endif
+    sigscatave = sigave *      scatrat(1)
+    sigabsave  = sigave * (1d0-scatrat(1))
+    scatvar    = sigvar  *      scatrat(1)
+    absvar     = sigvar  * (1d0-scatrat(1))
+  elseif(chgeomtype=='binary') then
+    numPath    = 0  !setup Markov material tallies
+    sumPath    = 0d0
+    sqrPath    = 0d0
+    largesti   = 0
+    totLength  = 0d0
+    P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
+    P(2)       = lam(2)/(lam(1)+lam(2))
+    lamc       = (lam(1)*lam(2))/(lam(1)+lam(2))
+    sigave     = P(1)*                 sig(1) + P(2)*                 sig(2)
+    sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
+    sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+    sigvar     = P(1)*P(2) * (sig(1)                  - sig(2)                ) **2
+    scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
+    absvar     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
+  endif
 
 
   !allocate  KLresearch variables
-  allocate(gam(numEigs))
-  allocate(alpha(numEigs))
-  allocate(Ak(numEigs))
-  allocate(Eig(numEigs))
-  allocate(xi(numRealz,numEigs))
+  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
+     Corropts(1).ne.'noplot' .or. pltCo(1).ne.'noplot' .or. pltKLrealz(1).ne.'noplot') then
+    allocate(gam(numEigs))
+    allocate(alpha(numEigs))
+    allocate(Ak(numEigs))
+    allocate(Eig(numEigs))
+    allocate(xi(numRealz,numEigs))
+  endif
 
 
   !allocate and initialize KLconstruction variables
-  allocate(KLrxivals(numRealz,numEigs))
-  if(chTrantype=='GaussKL' .and. flglGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
-  flGaussdiffrand = .false.
-  allocate(KLrxisig(KLrnumpoints))
-  allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
+  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. pltKLrealz(1).ne.'noplot') then
+    allocate(KLrxivals(numRealz,numEigs))
+    if(chTrantype=='GaussKL' .and. flGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
+    flGaussdiffrand = .false.
+    allocate(KLrxisig(KLrnumpoints))
+    allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
+  endif
+
 
 
   !allocate/initialize MCvars
-  allocate(stocMC_reflection(2))   !global MC variables for each method
-  allocate(stocMC_transmission(2)) !rank 2 holds 1=average, 2=deviation
-  allocate(stocMC_absorption(2))
-  stocMC_reflection   = 0.0d0
-  stocMC_transmission = 0.0d0
-  stocMC_absorption   = 0.0d0
+  if(.not.chTrantype=='None') then
+    if(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
+      numRealz = 1
+      numParts = LPamnumParts
+      if(.not.allocated(LPamMCsums)) allocate(LPamMCsums(3))
+      LPamMCsums =0.0d0
+    endif
+    allocate(stocMC_reflection(2))   !global MC variables for each method
+    allocate(stocMC_transmission(2)) !rank 2 holds 1=average, 2=deviation
+    allocate(stocMC_absorption(2))
+    stocMC_reflection   = 0.0d0
+    stocMC_transmission = 0.0d0
+    stocMC_absorption   = 0.0d0
+    if(.not.allocated(transmit)) allocate(transmit(numRealz)) !leakage tallies
+    if(.not.allocated(reflect))  allocate(reflect(numRealz))
+    if(.not.allocated(absorb))   allocate(absorb(numRealz))
+    transmit     = 0.0d0
+    reflect      = 0.0d0
+    absorb       = 0.0d0
 
-  flfluxplot = .false.  !flux variable allocations
-  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
-      pltmatflux=='plot' .or. pltmatflux=='preview' ) flfluxplot = .true.
-  if(flfluxplot) then
-    allocate(fluxfaces(fluxnumcells+1))
-    fluxfaces = 0.0d0
-    do i=1,fluxnumcells+1
-      fluxfaces(i) = (s/fluxnumcells) * (i-1)
-    enddo
-  endif
-  if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &!mat irrespective flux allocations
-    (flfluxplot .and. (chTrantype=='KLWood' .or. chTrantype=='atmixMC')) ) then
-                     !KLWood, atmixMC, respective stored here (actually irresective)
-    allocate(stocMC_fluxall(fluxnumcells,2))
-    stocMC_fluxall = 0.0d0
-  endif
-  if( pltmatflux=='plot' .or. pltmatflux=='preview' ) then !mat respective flux allocations
-    allocate(stocMC_fluxmat1(fluxnumcells,2))
-    allocate(stocMC_fluxmat2(fluxnumcells,2))
-    stocMC_fluxmat1 = 0.0d0
-    stocMC_fluxmat2 = 0.0d0
+    flfluxplot = .false.  !flux variable allocations
+    if(.not.(pltflux(1)=='noplot' .and. pltmatflux=='noplot')) flfluxplot = .true.
+    if(flfluxplot) then   !alloc and init flux cells
+      allocate(fluxfaces(fluxnumcells+1))
+      fluxfaces = 0.0d0
+      do i=1,fluxnumcells+1
+        fluxfaces(i) = (s/fluxnumcells) * (i-1)
+      enddo
+    endif
+    if(.not.pltflux(1)=='noplot' .or. &!mat irrespective flux allocations
+      (flfluxplot .and. (chTrantype=='LPMC' .or. chTrantype=='atmixMC')) ) then
+      allocate(stocMC_fluxall(fluxnumcells,2))
+      stocMC_fluxall = 0.0d0
+    endif
+    if(.not.pltmatflux=='noplot') then !mat respective flux allocations
+      allocate(stocMC_fluxmat1(fluxnumcells,2))
+      allocate(stocMC_fluxmat2(fluxnumcells,2))
+      stocMC_fluxmat1 = 0.0d0
+      stocMC_fluxmat2 = 0.0d0
+    endif
+    if(chTrantype=='radWood' .or. chTrantype=='KLWood' .or. & !rejection tally allocations
+       chTrantype=='GaussKL'                                ) Wood_rej = 0
+    radtrans_int = 0
+    if(chTrantype=='KLWood' .or.  chTrantype=='GaussKL' ) then !negative xs transport tally allocations
+      numPosRealz=0
+      numNegRealz=0
+      numpnSamp  =0
+      areapnSamp =0.0d0
+    endif
   endif
 
   end subroutine global_allocate
+
 
 
 
