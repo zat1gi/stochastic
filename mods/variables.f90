@@ -39,17 +39,7 @@ end module rngvars
 
 module timevars
   implicit none
-  real(8), allocatable :: time(:)              ! keeps cumulative time data for everything
-                                               ! 1)genR, 2)radMC, 3)radWood, 5)KLcol 
-                                               ! 6)KLrec, 7)KLWood, 8)LPMC, 9)atmixMC, 10)GaussKL
-  integer, parameter   :: ntime = 10           ! size of 'time' array
-  real(8), allocatable :: FOM(:,:)             ! Figure of Merit = (1/(Var*cputime))
-                                               ! (1==radMC/2==radWood/3==KLWood, 1==refl/2==tran)     
   real(8)              :: t1                   ! initial computer time for run
-  real(8)              :: runtime              ! total cpu time code has been running
-  integer, allocatable :: totparts             ! total particles to be run
-  integer, allocatable :: cumparts             ! cumulative particles run
-
 end module timevars
 
 

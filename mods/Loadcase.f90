@@ -340,7 +340,6 @@ CONTAINS
   subroutine global_allocate
   !This subroutine allocates and initializes all global variables
   use rngvars, only: rngappnum, rngseed
-  use timevars, only: time, ntime, totparts, cumparts, FOM
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
                           flprint, numPosRealz, numNegRealz, numRealz, flGBgeom, sigvar, &
@@ -430,19 +429,6 @@ CONTAINS
     stocMC_fluxmat2 = 0.0d0
   endif
 
-  !allocate and initialize timevars
-  allocate(time(ntime))
-  time = 0.0d0
-  allocate(FOM(ntime,2))
-  FOM  = 0.0d0
-  totparts = 0
-  cumparts = 0
-  if(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
-    totparts = LPamnumParts
-  else
-    totparts = numRealz*numParts
-  endif
-
   end subroutine global_allocate
 
 
@@ -454,7 +440,7 @@ CONTAINS
 
 
   subroutine finalreport
-  call system("cat texts/Acase.out texts/Woodnegstats.out texts/MCleakage.out texts/timereport.out > texts/finalreport.out")
+  call system("cat texts/Acase.out texts/Woodnegstats.out texts/MCleakage.out > texts/finalreport.out")
   call system("cat texts/finalreport.out")
   end subroutine finalreport
 

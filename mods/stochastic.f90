@@ -1,6 +1,5 @@
 program stochastic
   use mcnp_random
-  use timeman
   use utilities
   use Loadcase
   use genRealz
@@ -10,7 +9,6 @@ program stochastic
   use KLmeanadjust
 
   use genRealzvars
-  use timevars, only: t1
   use KLvars, only: KLres, KLrec, Corropts, pltCo
   use MCvars, only: pltflux
 
@@ -19,7 +17,6 @@ program stochastic
   integer :: j !current realization
 
   !!read parameters
-  call cpu_time(t1)
   call read_test_inputstoc
 
   !!allocate/prepare global parameters
@@ -52,7 +49,6 @@ program stochastic
   !!print final reports
   call Acase_print
   call MCprintstats
-  call timereport
   call finalreport
 
 end program stochastic

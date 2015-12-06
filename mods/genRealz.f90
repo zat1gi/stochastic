@@ -11,7 +11,6 @@ CONTAINS
   !creates a binary material realization, plots if specified,
   !and collects tallies for realization stats
   use rngvars, only: rngappnum, rngstride, setrngappnum
-  use timevars, only: time
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
@@ -27,7 +26,6 @@ CONTAINS
   integer :: i,firstloop,matType_temp(numArrSz)
   real(8) :: matLength_temp(numArrSz)
 
-  call cpu_time(tt1)
   if(allocated(matType)) deallocate(matType)
   if(allocated(matLength)) deallocate(matLength)
 
@@ -126,9 +124,6 @@ CONTAINS
   close(unit=20) !close three files printing xs data to
   close(unit=21)
   close(unit=22)
-
-  call cpu_time(tt2)
-  time(1) = time(1) + (tt2 - tt1)
 
   end subroutine genbinaryReal
 

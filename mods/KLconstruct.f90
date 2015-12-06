@@ -194,7 +194,6 @@ CONTAINS
   !It tests for negativity in realizations, rejecting and replacing them if specified.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
   use rngvars, only: rngappnum, rngstride, setrngappnum
-  use timevars, only: time
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz, numRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
@@ -203,14 +202,11 @@ CONTAINS
                           pltKLrealzarray, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
-  use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   logical :: flpurpose(3)=.false. !1)neg or not, 2)max vals, 3)zeros
-
-  call cpu_time(tt1)
 
   write(*,*) "Starting method: KLrec"
   if(flmeanadjust) flfindzeros=.true.                      !zeros (mean adjust, [neg analysis])
@@ -295,10 +291,8 @@ CONTAINS
     write(11,*)
 
     if(flnegxs) then
-      if(mod(realj,trannprt)==0)       call KL_timeupdate( realj,tt1,'KLrec' )
       if(numRealz==realj      ) exit
     else
-      if(mod(numPosRealz,trannprt)==0) call KL_timeupdate( realj,tt1,'KLrec' )
       if(numRealz==numPosRealz) exit
     endif
     if(flacceptrealz) realj=realj+1

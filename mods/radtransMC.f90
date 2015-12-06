@@ -10,19 +10,18 @@ CONTAINS
   !This subroutine perfoms Monte Carlo in the uncertain space, currently for binary mixtures.
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
-  use timevars, only: time
   use genRealzvars, only: numRealz, flGBgeom
   use MCvars, only: numParts, trannprt, flfluxplotmat
   use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use KLconstruct, only: KLconstructions
-  use timeman, only: radtrans_timeupdate
+  use timeman, only: initialize_t1, timeupdate
 
   integer :: j,tnumParts,tnumRealz !'j' is which realization
-  real(8) :: tt1
 
-  call cpu_time(tt1)
+  call initialize_t1
+
   write(*,*) "Starting method: ",chTrantype  
   call MCallocate( tnumParts,tnumRealz )!allocate/initialize tallies
 
@@ -53,8 +52,7 @@ CONTAINS
 
     call MCtransport( j,tnumParts )     !transport over a realization
 
-      if(mod( j,trannprt )==0 .or. chTrantype=='LPMC' .or. chTrantype=='atmixMC') &
-    call radtrans_timeupdate( j,tt1 )   !print time updates
+      if(mod( j,trannprt )==0) call timeupdate( chTrantype,j,numRealz )   !print time updates
 
   enddo !loops over realizations
 
@@ -968,7 +966,6 @@ CONTAINS
                     chTrantype, fluxnumcells, fluxall, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
-  use timeman, only: FOM_calculation
   integer :: ibin,tnumRealz,j
   real(8) :: dx,p1,p2
 
@@ -1057,9 +1054,6 @@ CONTAINS
 
   !leakage pdfs
   call MCLeakage_pdfbinprint         !bin and print pdf of leakage values
-
-  !calculate FOMs
-  call FOM_calculation
 
   end subroutine stocMC_stats
 

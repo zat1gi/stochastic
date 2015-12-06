@@ -222,19 +222,18 @@ CONTAINS
   !this by integrating over a variable related only to geometry-based material
   !properties so that it can later be used for any cross section material property.
   use rngvars, only: rngappnum, rngstride
-  use timevars, only: time
   use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P, &
                           sigave
   use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs
   use MCvars, only: trannprt
   use genRealz, only: genReal
-  use timeman, only: KL_timeupdate
+  use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,j,k,curEig,lsig,ssig
   real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
 
-  call cpu_time(tt1)
+  call initialize_t1
 
   write(*,*) "Starting method: ",flKLtype  
   lsig = merge(1,2,sig(1)>sig(2))
@@ -266,7 +265,8 @@ CONTAINS
       xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot     !find resulting xi
     enddo
 
-    if(mod( j,trannprt )==0) call KL_timeupdate( j,tt1,flKLtype ) !print time updates
+    if(mod(j,trannprt)==0) call timeupdate( 'KL_collect',j,numRealz )
+
   enddo
 
   end subroutine KL_collect
