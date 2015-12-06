@@ -47,8 +47,8 @@ module timevars
                                                ! (1==radMC/2==radWood/3==KLWood, 1==refl/2==tran)     
   real(8)              :: t1                   ! initial computer time for run
   real(8)              :: runtime              ! total cpu time code has been running
-  integer, allocatable :: totparts(:)          ! total particles to be run in each method
-  integer, allocatable :: cumparts(:)          ! cumulative particles run in each method
+  integer, allocatable :: totparts             ! total particles to be run
+  integer, allocatable :: cumparts             ! cumulative particles run
 
 end module timevars
 
@@ -240,9 +240,9 @@ module MCvars
   real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmatnorm(:,:,:)   ! amount of material in bins, (fluxnumbins,numRealz,2) 
-  real(8), allocatable :: stocMC_fluxall(:,:,:) ! flux of MC meths in cells, (fluxnumbins,nummeths,2)
-  real(8), allocatable :: stocMC_fluxmat1(:,:,:)! flux of MC meths in mat1, '2' is mean and var
-  real(8), allocatable :: stocMC_fluxmat2(:,:,:)! flux of MC meths in mat2
+  real(8), allocatable :: stocMC_fluxall(:,:)  ! flux in cells, (fluxnumbins,nummeths,2)
+  real(8), allocatable :: stocMC_fluxmat1(:,:) ! flux in mat1, '2' is mean and var
+  real(8), allocatable :: stocMC_fluxmat2(:,:) ! flux in mat2
 
   real(8), allocatable :: reflect(:)           ! slab reflection tally, TMC on binary mixtures
   real(8), allocatable :: transmit(:)          ! slab reflection tally, TMC on binary mixtures
@@ -252,9 +252,9 @@ module MCvars
 
                                                ! stoc means mean and variance accross stochastic domain
                                                ! MC means for MC transport solves in spatial domain
-  real(8), allocatable :: stocMC_reflection(:,:) ! reflection of MC meths, mean & var in stoc space
-  real(8), allocatable :: stocMC_transmission(:,:)! trans of MC meths, mean & var in stoc space
-  real(8), allocatable :: stocMC_absorption(:,:) ! absorption of MC meths, mean & var in stoc space
+  real(8), allocatable :: stocMC_reflection(:) ! reflection, mean & var in stoc space
+  real(8), allocatable :: stocMC_transmission(:)! trans, mean & var in stoc space
+  real(8), allocatable :: stocMC_absorption(:) ! absorption, mean & var in stoc space
 
 
   integer              :: Wood_rej(2)          ! generic Woodcock rejection tally

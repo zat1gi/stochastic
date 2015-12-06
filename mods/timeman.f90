@@ -8,16 +8,15 @@ CONTAINS
 !! time tracking funcs and subs
 
 
-  subroutine radtrans_timeupdate( j,icase,tt1 )
+  subroutine radtrans_timeupdate( j,tt1 )
   !Print time updates for MCtrans methods.  Also time tracking is performed in part on the 
   !fly in this subroutine.
   use timevars, only: time, totparts, cumparts
   use genRealzvars, only: numRealz
   use MCvars, only: numParts, chTrantype, LPamnumParts
-  integer :: j,icase
+  integer :: j
   real(8) :: tt1
 
-  integer :: ticase
   real(8) :: ttime,localper,timeeta,wgtavetime,tt2
   real(8) :: local_time,finished_time,local_time_left,non_local_time_left
   real(8), allocatable :: avetime !average time per MC method
@@ -29,62 +28,60 @@ CONTAINS
     case ("radMC")
       time(2)         = time(2)   + (tt2-tt1)
       localper        = real(j,8) / numRealz*100 !percentage of local method done
-      cumparts(icase) = j         * numParts     !update cumulative particles
+      cumparts = j         * numParts     !update cumulative particles
     case ("radWood")
       time(3)         = time(3)   + (tt2-tt1)
       localper        = real(j,8) / numRealz*100
-      cumparts(icase) = j         * numParts
+      cumparts = j         * numParts
     case ("KLWood")
       time(7)         = time(7)   + (tt2-tt1)
       localper        = real(j,8) / numRealz*100
-      cumparts(icase) = j         * numParts
+      cumparts = j         * numParts
     case ("LPMC")
       time(8)         = time(8)   + (tt2-tt1)
       localper        = 100.0d0
-      cumparts(icase) = LPamnumParts
+      cumparts = LPamnumParts
     case ("atmixMC")
       time(9)         = time(9)   + (tt2-tt1)
       localper        = 100.0d0
-      cumparts(icase) = LPamnumParts
+      cumparts = LPamnumParts
     case ("GaussKL")
       time(10)        = time(10)  + (tt2-tt1)
       localper        = real(j,8) / numRealz*100
-      cumparts(icase) = j         * numParts
+      cumparts = j         * numParts
   end select
   tt1 = tt2                         !reset tt1 to tt2
 
   !get time estimates
   avetime    = 0.0d0
   wgtavetime = 0.0d0
-  do ticase=1,icase
-    select case (chTrantype) !load to ttime the time of each method
-      case ("radMC")
-        avetime(ticase) = time(2) / cumparts(ticase) !ave time per particle for method
-        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-      case ("radWood")
-        avetime(ticase) = time(3) / cumparts(ticase)
-        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-      case ("KLWood")
-        avetime(ticase) = time(7) / cumparts(ticase)
-        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-      case ("LPMC")
-        avetime(ticase) = time(8) / cumparts(ticase)
-        wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
-      case ("atmixMC")
-        avetime(ticase) = time(9) / cumparts(ticase)
-        wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
-      case ("GaussKL")
-        avetime(ticase) = time(10)/ cumparts(ticase)
-        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-    end select
-  enddo
+  select case (chTrantype) !load to ttime the time of each method
+    case ("radMC")
+      avetime = time(2) / cumparts !ave time per particle for method
+      wgtavetime      = wgtavetime + avetime * numparts * numRealz
+    case ("radWood")
+      avetime = time(3) / cumparts
+      wgtavetime      = wgtavetime + avetime * numparts * numRealz
+    case ("KLWood")
+      avetime = time(7) / cumparts
+      wgtavetime      = wgtavetime + avetime * numparts * numRealz
+    case ("LPMC")
+      avetime = time(8) / cumparts
+      wgtavetime      = wgtavetime + avetime * LPamnumparts
+    case ("atmixMC")
+      avetime = time(9) / cumparts
+      wgtavetime      = wgtavetime + avetime * LPamnumparts
+    case ("GaussKL")
+      avetime = time(10)/ cumparts
+      wgtavetime      = wgtavetime + avetime * numparts * numRealz
+  end select
   wgtavetime = wgtavetime / sum(totparts) !weighted average time per particle estimate
 
-  local_time          = cumparts(icase)                                                  *avetime(icase)
+  local_time          = cumparts                                                  *avetime
 
   finished_time       = sum(time)
-  local_time_left     = (totparts(icase)-cumparts(icase))                                *avetime(icase)
-  non_local_time_left = (sum(totparts)-sum(cumparts) - (totparts(icase)-cumparts(icase)))*wgtavetime
+  local_time_left     = (totparts-cumparts)                                *avetime
+  non_local_time_left = (sum(totparts)-sum(cumparts) - (totparts-cumparts))*wgtavetime
 !print *,"local_time_left: ",local_time_left," non_local_time_left:",non_local_time_left
   timeeta             = finished_time + local_time_left + non_local_time_left
 
@@ -152,7 +149,7 @@ CONTAINS
                     stocMC_transmission, stocMC_reflection, GaussKL
   use utilities, only: calc_time
 
-  integer :: i,icase
+  integer :: i
   real(8) :: t2,othertime,otherpercent
   real(8),allocatable :: pertime(:)
 
@@ -207,30 +204,29 @@ CONTAINS
 
 
 
-  subroutine FOM_calculation( icase )
+  subroutine FOM_calculation
   !This subroutine calculates a FOM for all realization-based cases.
   !The FOM = 1/(R^2*t) where R is relative error and t is runtime.
   !Said another way FOM = (ave^2*N)/(stdev^2*t).
   use genRealzvars, only: numRealz
   use MCvars, only: chTrantype, stocMC_reflection, stocMC_transmission
   use timevars, only: FOM, time
-  integer :: icase
 
   select case (chTrantype)
     case ("radMC")
-      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(2))
-      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(2))
+      FOM(1)=stocMC_reflection(1)**2*real(numRealz,8)/(stocMC_reflection(2)**2*time(2))
+      FOM(2)=stocMC_transmission(1)**2*real(numRealz,8)/(stocMC_transmission(2)**2*time(2))
     case ("radWood")
-      FOM(icase,1) = stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(3))
-      FOM(icase,2) = stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(3))
+      FOM(1) = stocMC_reflection(1)**2*real(numRealz,8)/(stocMC_reflection(2)**2*time(3))
+      FOM(2) = stocMC_transmission(1)**2*real(numRealz,8)/(stocMC_transmission(2)**2*time(3))
     case ("KLWood")
-      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(7))
-      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(7))
+      FOM(1)=stocMC_reflection(1)**2*real(numRealz,8)/(stocMC_reflection(2)**2*time(7))
+      FOM(2)=stocMC_transmission(1)**2*real(numRealz,8)/(stocMC_transmission(2)**2*time(7))
     case ("LPMC")
     case ("atmixMC")
     case ("GaussKL")
-      FOM(icase,1)=stocMC_reflection(icase,1)**2*real(numRealz,8)/(stocMC_reflection(icase,2)**2*time(10))
-      FOM(icase,2)=stocMC_transmission(icase,1)**2*real(numRealz,8)/(stocMC_transmission(icase,2)**2*time(10))
+      FOM(1)=stocMC_reflection(1)**2*real(numRealz,8)/(stocMC_reflection(2)**2*time(10))
+      FOM(2)=stocMC_transmission(1)**2*real(numRealz,8)/(stocMC_transmission(2)**2*time(10))
   end select
 
   end subroutine FOM_calculation

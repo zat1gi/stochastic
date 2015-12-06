@@ -328,7 +328,7 @@ CONTAINS
   rngappnum = rngappnum + 1
 
   do j=1,numRealz
-    call genReal( j,'binary ',0 ) !'0' as if icase=0, signifies KLres call
+    call genReal( j,'binary ' )
     do curEig=1,numEigs
       xl       =0d0
       xiterm   =0d0

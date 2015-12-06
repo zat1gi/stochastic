@@ -390,7 +390,7 @@ CONTAINS
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
   use mcnp_random, only: RN_init_problem
-  integer :: i,icase
+  integer :: i
 
   !initialize rngvars
   rngappnum  = 0
@@ -474,9 +474,9 @@ CONTAINS
   totparts = 0
   cumparts = 0
   if(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
-    totparts(icase) = LPamnumParts
+    totparts = LPamnumParts
   else
-    totparts(icase) = numRealz*numParts
+    totparts = numRealz*numParts
   endif
 
   end subroutine global_allocate

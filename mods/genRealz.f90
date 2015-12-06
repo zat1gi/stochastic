@@ -7,7 +7,7 @@ CONTAINS
   ! print statements in this module use # 200-299
 
 
-  subroutine genReal( j,flmode,icase )
+  subroutine genReal( j,flmode )
   !creates a realization, plots if specified, and collects tallies for realization stats
   !creates for 'binary' mode: binary stochastic media, or 'atmix' mode, atomic mix of that
   use rngvars, only: rngappnum, rngstride, setrngappnum
@@ -20,7 +20,7 @@ CONTAINS
   use MCvars, only: chTrantype
   use mcnp_random, only: RN_init_particle
 
-  integer :: j, icase
+  integer :: j
   real(8) :: tt1,tt2
   character(7) :: flmode !'binary','LPMC','atmix'
 
@@ -33,7 +33,7 @@ CONTAINS
   if(allocated(matLength)) deallocate(matLength)
 
   if(flmode=='binary') then
-    if(icase==0 .or. flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
+    if(flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
       call setrngappnum('genRealzKLres')
     else
       if(chTrantype=='radMC' .or. (chTrantype=='radWood' .and. flCorrMarkov)) then

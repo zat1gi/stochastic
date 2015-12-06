@@ -17,7 +17,7 @@ program stochastic
 
   implicit none
   ! pass by reference
-  integer :: j,icase !current realization, current MCtransport case
+  integer :: j !current realization
 
   !!read parameters
   call cpu_time(t1)
@@ -46,7 +46,7 @@ program stochastic
   endif
 
   !!Perform UQ-MC for transport problems  
-  call UQ_MC( icase )          !perform transport
+  call UQ_MC          !perform transport
   call MCfluxPrint
   call MCfluxPlot
   call MCLeakage_pdfplot

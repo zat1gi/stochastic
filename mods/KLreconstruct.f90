@@ -7,17 +7,16 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLreconstructions(icase)
+  subroutine KLreconstructions
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
   use genRealzvars, only: flGBgeom
   use MCvars, only: chTrantype
   use KLvars, only: flmeanadjust,flLNxscheck
-  integer :: icase
 
   call KLrmeshgen         !creates mesh for fixed x and xi material constructions
-  call KLrgenrealz(icase) !selects array of random variables xi and tests for negativity
+  call KLrgenrealz !selects array of random variables xi and tests for negativity
   if(flmeanadjust) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
   if(flmeanadjust) call KLadjustmean('absorb') !adjusts abs mean after lopping neg xss
   call KLrplotrealz       !plots reconstructed realizations
@@ -190,7 +189,7 @@ CONTAINS
 
 
 
-  subroutine KLrgenrealz(icase)
+  subroutine KLrgenrealz
   !This subroutine constructs material realizations based upon the KL expansion.
   !It tests for negativity in realizations, rejecting and replacing them if specified.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
@@ -206,7 +205,7 @@ CONTAINS
   use MCvars, only: chTrantype, flnegxs, KLWood, GaussKL, trannprt
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig,w,u,icase
+  integer :: i,tentj,realj,curEig,w,u
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   logical :: flpurpose(3)=.false. !1)neg or not, 2)max vals, 3)zeros

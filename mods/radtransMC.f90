@@ -6,7 +6,7 @@ module radtransMC
 CONTAINS
   ! print statements in this module use # 300-399
 
-  subroutine UQ_MC( icase )
+  subroutine UQ_MC
   !This subroutine perfoms Monte Carlo in the uncertain space, currently for binary mixtures.
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
@@ -18,20 +18,19 @@ CONTAINS
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use KLreconstruct, only: KLreconstructions
   use timeman, only: radtrans_timeupdate
-  integer :: icase
 
   integer :: j,tnumParts,tnumRealz !'j' is which realization
   real(8) :: tt1
 
   call cpu_time(tt1)
   write(*,*) "Starting method: ",chTrantype  
-  call MCallocate( icase,tnumParts,tnumRealz )!allocate/initialize tallies
+  call MCallocate( tnumParts,tnumRealz )!allocate/initialize tallies
 
   if( chTrantype=='GaussKL' .and. flGBgeom) &
     call KL_eigenvalue
 
   if(  chTrantype=='KLWood'   .or. chTrantype=='GaussKL'     ) &
-    call KLreconstructions(icase)       !create KL realz for cases that need them
+    call KLreconstructions       !create KL realz for cases that need them
 
   if( chTrantype=='GaussKL' .and. flGBgeom) then
     if(Corropts(1) .ne. 'noplot') call KL_Correlation !calc & plot spacial correlation funcs
@@ -41,29 +40,29 @@ CONTAINS
   do j=1,tnumRealz
 
       if(chTrantype=='radMC' .or. chTrantype=='radWood') &
-    call genReal( j,'binary ',icase )         !gen binary geometry
+    call genReal( j,'binary ' )         !gen binary geometry
       if(chTrantype=='atmixMC') &
-    call genReal( j,'atmixMC',icase )         !gen atomic mix geometry
+    call genReal( j,'atmixMC' )         !gen atomic mix geometry
 
       if(flfluxplotmat .and. (chTrantype=='radMC' .or. chTrantype=='radWood')) &
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
 
       if(chTrantype=='radWood' .or. chTrantype=='KLWood' .or. &
          chTrantype=='GaussKL') &
-    call MCWood_setceils( j,icase )           !for WMC, create ceilings
+    call MCWood_setceils( j )           !for WMC, create ceilings
 
-    call MCtransport( j,icase,tnumParts )     !transport over a realization
+    call MCtransport( j,tnumParts )     !transport over a realization
 
       if(mod( j,trannprt )==0 .or. chTrantype=='LPMC' .or. chTrantype=='atmixMC') &
-    call radtrans_timeupdate( j,icase,tt1 )   !print time updates
+    call radtrans_timeupdate( j,tt1 )   !print time updates
 
   enddo !loops over realizations
 
-  call stocMC_stats( icase,tnumRealz )        !calc stats in stochastic space here
+  call stocMC_stats( tnumRealz )        !calc stats in stochastic space here
                                               !later make the above two loops,
                                               !batch spatial stats in between, final out here
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) &
-    call Woodnegstats(icase)
+    call Woodnegstats
 
   end subroutine UQ_MC
 
@@ -71,11 +70,10 @@ CONTAINS
 
 
 
-  subroutine MCtransport( j,icase,tnumParts )
+  subroutine MCtransport( j,tnumParts )
   !This subroutine performs MC transport over a specified geometry and method.
   !It can be used by a UQ_MC wrapper, and likely in the future by UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
-  !'icase' denotes which predefined transport method over which the MC transport is performed.
   !'tnumParts' is the number of particles over which the MC transport is performed.
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
@@ -89,7 +87,7 @@ CONTAINS
   use KLreconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
 
-  integer :: j,icase,tnumParts !realz number/which mode of transport/num of particles
+  integer :: j,tnumParts !realz number/which mode of transport/num of particles
 
   !local variables
   integer :: i,o,curbin
@@ -101,8 +99,8 @@ CONTAINS
     if(flCorrMC) call setrngappnum(chTrantype)
     call RN_init_particle( int(rngappnum*rngstride+j*tnumParts+o,8) )
 
-    call genSourcePart( i,icase )      !gen source part pos, dir, and binnum (i), init weight
-    if(chTrantype=='LPMC') call genReal( j,'LPMC   ',icase ) !for LP, choose starting material
+    call genSourcePart( i )      !gen source part pos, dir, and binnum (i), init weight
+    if(chTrantype=='LPMC') call genReal( j,'LPMC   ' ) !for LP, choose starting material
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
@@ -366,7 +364,7 @@ CONTAINS
       call MCinc_pos( newpos )
 
       !tally flux
-      if(flfluxplot) call MCfluxtallywrapper( j,icase )
+      if(flfluxplot) call MCfluxtallywrapper( j )
 
       !Evaluate scatter
       if(flIntType=='scatter') then     !scatter
@@ -440,12 +438,12 @@ CONTAINS
 
 
 
-  subroutine genSourcePart( i,icase )
+  subroutine genSourcePart( i )
   !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
   use genRealzvars, only: s
   use MCvars, only: position, mu, rodOrplanar, sourceType, chTrantype
-  integer :: i,icase
+  integer :: i
 
   if( sourceType=='left' ) then  !generate source particles
     position = 0.0d0
@@ -472,13 +470,13 @@ CONTAINS
 
 
 
-  subroutine MCWood_setceils( j,icase )
+  subroutine MCWood_setceils( j )
   !This subroutine sets up ceiling values for Woodcock Monte Carlo.
   !These ceilings of course need to be recalculated for each new realization
   use genRealzvars, only: s, lamc, nummatSegs, sig
   use KLvars, only: numEigs
   use MCvars, only: chTrantype, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
-  integer :: j,icase
+  integer :: j
 
   integer :: i
   real(8) :: binlength
@@ -731,7 +729,7 @@ CONTAINS
 
 
 
-  subroutine MCfluxtallywrapper( j,icase )
+  subroutine MCfluxtallywrapper( j )
   !This subroutine is the outer wrapper for flux tallies.
   !First it calculates quantities related to this tally.
   !Then for most methods it passes that info the the tallier, but for 'radWood'
@@ -739,7 +737,7 @@ CONTAINS
   use genRealzvars, only: matLength, matType
   use MCvars, only: position, oldposition, flfluxplotall, flfluxplotmat, chTrantype, &
                     fluxfaces
-  integer :: j, i, ibin, icase
+  integer :: j, i, ibin
   real(8) :: minpos, maxpos, dx
 
   minpos = min(oldposition,position)
@@ -956,7 +954,7 @@ CONTAINS
 
 
 
-  subroutine stocMC_stats( icase,tnumRealz )
+  subroutine stocMC_stats( tnumRealz )
   !This subroutine:
   !1) calculates mean and standard deviation for leakage values over stochastic
   !   space for each MC transport solver.
@@ -971,7 +969,7 @@ CONTAINS
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
   use timeman, only: FOM_calculation
-  integer :: icase,ibin,tnumRealz,j
+  integer :: ibin,tnumRealz,j
   real(8) :: dx,p1,p2
 
   !leakage/absorption stats
@@ -981,13 +979,13 @@ CONTAINS
     transmit = transmit / numparts
     absorb   = absorb   / numParts
 
-    call mean_and_var_s( reflect,numRealz,stocMC_reflection(icase,1),stocMC_reflection(icase,2) )
-    call mean_and_var_s( transmit,numRealz,stocMC_transmission(icase,1),stocMC_transmission(icase,2) )
-    call mean_and_var_s( absorb,numRealz,stocMC_absorption(icase,1),stocMC_absorption(icase,2) )
+    call mean_and_var_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2) )
+    call mean_and_var_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2) )
+    call mean_and_var_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2) )
   elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
-    stocMC_reflection(icase,1)   = LPamMCsums(1) / LPamnumParts
-    stocMC_transmission(icase,1) = LPamMCsums(2) / LPamnumParts
-    stocMC_absorption(icase,1)   = LPamMCsums(3) / LPamnumParts
+    stocMC_reflection(1)   = LPamMCsums(1) / LPamnumParts
+    stocMC_transmission(1) = LPamMCsums(2) / LPamnumParts
+    stocMC_absorption(1)   = LPamMCsums(3) / LPamnumParts
   endif
 
 
@@ -1014,7 +1012,7 @@ CONTAINS
     if( flfluxplotall ) then
       do ibin=1,fluxnumcells
         call mean_and_var_s( fluxall(ibin,:),numRealz, &
-                 stocMC_fluxall(ibin,icase,1),stocMC_fluxall(ibin,icase,2) )
+                 stocMC_fluxall(ibin,1),stocMC_fluxall(ibin,2) )
       enddo
     endif
     if( flfluxplotmat ) then
@@ -1025,16 +1023,16 @@ CONTAINS
         fluxmat1(ibin,:) = fluxmat1(ibin,:) / p1
         fluxmat2(ibin,:) = fluxmat2(ibin,:) / p2
         call mean_and_var_s( fluxmat1(ibin,:),numRealz, &
-                  stocMC_fluxmat1(ibin,icase,1),stocMC_fluxmat1(ibin,icase,2) )
+                  stocMC_fluxmat1(ibin,1),stocMC_fluxmat1(ibin,2) )
         call mean_and_var_s( fluxmat2(ibin,:),numRealz, &
-                  stocMC_fluxmat2(ibin,icase,1),stocMC_fluxmat2(ibin,icase,2) )
+                  stocMC_fluxmat2(ibin,1),stocMC_fluxmat2(ibin,2) )
       enddo
     endif
 
   elseif(chTrantype=='LPMC') then
     if(flfluxplotall) then
       do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
-        stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
+        stocMC_fluxall(ibin,1) = fluxall(ibin,1)   !store mean
       enddo
     endif
     if(flfluxplotmat) then
@@ -1043,25 +1041,25 @@ CONTAINS
         p2 = 1.0d0 - p1
         fluxmat1(ibin,1) = fluxmat1(ibin,1) / p1    !normalize part 2 for mat specific
         fluxmat2(ibin,1) = fluxmat2(ibin,1) / p2    !normalize part 2 for mat specific
-        stocMC_fluxmat1(ibin,icase,1) = fluxmat1(ibin,1) !store mean 
-        stocMC_fluxmat2(ibin,icase,1) = fluxmat2(ibin,1) !store mean
+        stocMC_fluxmat1(ibin,1) = fluxmat1(ibin,1) !store mean 
+        stocMC_fluxmat2(ibin,1) = fluxmat2(ibin,1) !store mean
       enddo
     endif
 
   elseif(chTrantype=='atmixMC') then
     if(flfluxplotall) then
       do ibin=1,fluxnumcells  !mean vals, no var, no mat specific
-        stocMC_fluxall(ibin,icase,1) = fluxall(ibin,1)   !store mean
+        stocMC_fluxall(ibin,1) = fluxall(ibin,1)   !store mean
       enddo
     endif
 
   endif
 
   !leakage pdfs
-  call MCLeakage_pdfbinprint( icase )         !bin and print pdf of leakage values
+  call MCLeakage_pdfbinprint         !bin and print pdf of leakage values
 
   !calculate FOMs
-  call FOM_calculation( icase )
+  call FOM_calculation
 
   end subroutine stocMC_stats
 
@@ -1072,7 +1070,7 @@ CONTAINS
   !in order to be printed to the screen.  It also clears out previous plot files.
   use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxfaces, fluxnumcells, chTrantype, pltflux, pltmatflux, flfluxplot
-  integer :: icase, ibin
+  integer :: ibin
 
   call system("test -e plots/fluxplots/radMC_fluxall.out   && rm plots/fluxplots/radMC_fluxall.out")
   call system("test -e plots/fluxplots/radMC_fluxmat.out   && rm plots/fluxplots/radMC_fluxmat.out")
@@ -1104,7 +1102,7 @@ CONTAINS
           write(24,370)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1113,8 +1111,8 @@ CONTAINS
           write(24,372)
           do ibin=1,fluxnumcells
             write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
-                          stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+                          stocMC_fluxmat1(ibin,1),sqrt(stocMC_fluxmat1(ibin,2)),&
+                          stocMC_fluxmat2(ibin,1),sqrt(stocMC_fluxmat2(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1125,7 +1123,7 @@ CONTAINS
           write(24,370)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1134,8 +1132,8 @@ CONTAINS
           write(24,372)
           do ibin=1,fluxnumcells
             write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxmat1(ibin,icase,1),sqrt(stocMC_fluxmat1(ibin,icase,2)),&
-                          stocMC_fluxmat2(ibin,icase,1),sqrt(stocMC_fluxmat2(ibin,icase,2))
+                          stocMC_fluxmat1(ibin,1),sqrt(stocMC_fluxmat1(ibin,2)),&
+                          stocMC_fluxmat2(ibin,1),sqrt(stocMC_fluxmat2(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1146,7 +1144,7 @@ CONTAINS
           write(24,370)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1155,7 +1153,7 @@ CONTAINS
           write(24,370)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1166,7 +1164,7 @@ CONTAINS
           write(24,371)
           do ibin=1,fluxnumcells
             write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1)
+                          stocMC_fluxall(ibin,1)
           enddo
           close(unit=24)
         endif
@@ -1175,8 +1173,8 @@ CONTAINS
           write(24,376)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxmat1(ibin,icase,1),&
-                          stocMC_fluxmat2(ibin,icase,1)
+                          stocMC_fluxmat1(ibin,1),&
+                          stocMC_fluxmat2(ibin,1)
           enddo
           close(unit=24)
         endif
@@ -1187,7 +1185,7 @@ CONTAINS
           write(24,374)
           do ibin=1,fluxnumcells
             write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1)
+                          stocMC_fluxall(ibin,1)
           enddo
           close(unit=24)
         endif
@@ -1196,7 +1194,7 @@ CONTAINS
           write(24,374)
           do ibin=1,fluxnumcells
             write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1)
+                          stocMC_fluxall(ibin,1)
           enddo
           close(unit=24)
         endif
@@ -1207,7 +1205,7 @@ CONTAINS
           write(24,370)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1216,7 +1214,7 @@ CONTAINS
           write(24,370)
           do ibin=1,fluxnumcells
             write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
-                          stocMC_fluxall(ibin,icase,1),sqrt(stocMC_fluxall(ibin,icase,2))
+                          stocMC_fluxall(ibin,1),sqrt(stocMC_fluxall(ibin,2))
           enddo
           close(unit=24)
         endif
@@ -1458,7 +1456,7 @@ CONTAINS
 
 
 
-  subroutine MCallocate( icase,tnumparts,tnumRealz )
+  subroutine MCallocate( tnumparts,tnumRealz )
   !This subroutine allocates and initializes variables that will be passed
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
@@ -1473,7 +1471,7 @@ CONTAINS
                     fluxmat2, pltflux, pltmatflux, flfluxplotall, flfluxplotmat, &
                     fluxmatnorm, flfluxplot, fluxfaces
   use KLvars, only: flGaussdiffrand, flglGaussdiffrand, flglLN, flLN, chLNmode
-  integer :: icase,tnumParts,tnumRealz,i
+  integer :: tnumParts,tnumRealz,i
 
   real(8) :: tot, sqr, val
 
@@ -1604,14 +1602,13 @@ CONTAINS
 
 
 
-  subroutine MCLeakage_pdfbinprint( icase )
+  subroutine MCLeakage_pdfbinprint
   !This subroutine bins leakage data, and prints this data to files to later be plotted
   !for methods which contain realizations (radMC, radWood, KLWood).
   use genRealzvars, only: numRealz
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot, &
                           reflect, transmit, chTrantype
 
-  integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
   !this nasty if statement decides whether to proceed at all.
@@ -1653,7 +1650,7 @@ CONTAINS
     call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
 
     !bin and print data
-    call radtrans_bin( smrefl,lgrefl,smtran,lgtran,icase ) 
+    call radtrans_bin( smrefl,lgrefl,smtran,lgtran ) 
 
     !bin and print data, give printed data files appropriate name
     select case (chTrantype)
@@ -1680,12 +1677,11 @@ CONTAINS
 
 
 
-  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran,icase )
+  subroutine radtrans_bin( smrefl,lgrefl,smtran,lgtran )
   !Heart of radtrans_resultplot, for methods with realizations,
   !loads leakage values to bins (pdf), and prints to generic text file
   use genRealzvars, only: numRealz
   use MCvars, only: trprofile_binnum, reflect, transmit, chTrantype
-  integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
   !local vars
@@ -1803,11 +1799,10 @@ CONTAINS
 
 
 
-  subroutine Woodnegstats(icase)
+  subroutine Woodnegstats
   use genRealzvars, only: numRealz, numPosRealz, numNegRealz
   use MCvars, only: numpnSamp, areapnSamp, fldistneg, flnegxs, numcSamp, chTrantype
 
-  integer :: icase
   real(8) :: pos,neg
 
   open(unit=100,file="Woodnegstats.out")
@@ -1866,7 +1861,6 @@ CONTAINS
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, chTrantype, &
                     LPMC, atmixMC, GaussKL
-  integer :: icase
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
@@ -1899,17 +1893,17 @@ CONTAINS
   endif
 
   !print my solutions for radMC, radWood, KLWood, GaussKL (if Markov-based geom)
-  if(chTrantype=='radMC')   write(100,326) stocMC_reflection(icase,1),&
-  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='radMC')   write(100,326) stocMC_reflection(1),&
+  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='radWood') write(100,327) stocMC_reflection(icase,1),&
-  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='radWood') write(100,327) stocMC_reflection(1),&
+  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
-  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(1),&
+  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
-  sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+  if(chTrantype=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(1),&
+  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
 
   !print for formatting if any LP solutions printed
@@ -1923,8 +1917,8 @@ CONTAINS
   endif
 
   !print my solution for LPMC
-  if(chTrantype=='LPMC') write(100,329) stocMC_reflection(icase,1),&
-                                            stocMC_transmission(icase,1)
+  if(chTrantype=='LPMC') write(100,329) stocMC_reflection(1),&
+                                            stocMC_transmission(1)
 
   !print for formatting if any atomic mix solutions printed
   if(Adamscase/=0 .or. atmixMC=='yes') &
@@ -1936,8 +1930,8 @@ CONTAINS
   endif
 
   !print my solution for atmixMC
-  if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
-                                               stocMC_transmission(icase,1)
+  if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(1),&
+                                               stocMC_transmission(1)
 
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
@@ -1947,12 +1941,11 @@ CONTAINS
   if(flGauss) then
 
   if(GaussKL=='yes' .and. flGBgeom) then
-    icase=7
     write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
     write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
     write(100,*) "|----------|-------------------------|---------------------|"
-    write(100,332) stocMC_reflection(icase,1),sqrt(stocMC_reflection(icase,2)),&
-                   stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+    write(100,332) stocMC_reflection(1),sqrt(stocMC_reflection(2)),&
+                   stocMC_transmission(1),sqrt(stocMC_transmission(2))
     write(100,*) "|----------|-------------------------|---------------------|"
     write(100,*)
   endif
