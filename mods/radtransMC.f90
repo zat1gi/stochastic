@@ -1433,7 +1433,7 @@ CONTAINS
   !through generic MCtransport subroutine.  These values will later be
   !stored in different arrays so that the variables can be re-used in
   !MCtransport if multiple cases were selected.
-  use genRealzvars, only: numRealz, flprint, GBsigave, GBsigvar, P, sig,  &
+  use genRealzvars, only: numRealz, GBsigave, GBsigvar, P, sig,  &
                           GBscatrat, GBlamc, GBs, s, sigave, lamc, scatrat, sigvar, &
                           numPosRealz, numNegRealz, scatvar, absvar, sigscatave, sigabsave, &
                           sigave_, sigvar_
@@ -1447,14 +1447,14 @@ CONTAINS
 
   real(8) :: tot, sqr, val
 
-  flprint = .false.
-
   !number of realizations allocation
   if( chTrantype=='LPMC' .or. chTrantype=='atmixMC' ) then
     tnumRealz = 1
   else
     tnumRealz = numRealz
   endif
+
+
 
   !Gauss-based input set (or not)
   if(chTrantype=='GaussKL') then
@@ -1526,23 +1526,20 @@ CONTAINS
   flfluxplotmat = .false.
   select case(chTrantype)
     case ("radMC")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
-      if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
+      if(.not.pltflux(1)=='noplot') flfluxplotall = .true.
+      if(.not.pltmatflux=='noplot') flfluxplotmat = .true.
     case ("radWood")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
-      if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
+      if(.not.pltflux(1)=='noplot') flfluxplotall = .true.
+      if(.not.pltmatflux=='noplot') flfluxplotmat = .true.
     case ("KLWood")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
-         pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
+      if(.not.(pltflux(1)=='noplot' .or. .not.pltmatflux=='plot')) flfluxplotall = .true.
     case ("LPMC")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview') flfluxplotall = .true.
-      if(pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotmat = .true.
+      if(.not.pltflux(1)=='noplot') flfluxplotall = .true.
+      if(.not.pltmatflux=='noplot') flfluxplotmat = .true.
     case ("atmixMC")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
-         pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
+      if(.not.(pltflux(1)=='noplot' .or. pltmatflux=='noplot')) flfluxplotall = .true.
     case ("GaussKL")
-      if(pltflux(1)=='plot' .or. pltflux(1)=='preview' .or.&
-         pltmatflux=='plot' .or. pltmatflux=='preview') flfluxplotall = .true.
+      if(.not.(pltflux(1)=='noplot' .or. pltmatflux=='noplot')) flfluxplotall = .true.
   end select
   if(flfluxplotall) then
     if(allocated(fluxall)) deallocate(fluxall)

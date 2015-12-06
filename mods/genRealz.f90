@@ -14,8 +14,7 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
-                          totLength, atmixsig, scatrat, flprint, &
-                          flCorrMarkov, flCorrRealz
+                          totLength, atmixsig, scatrat, flCorrMarkov, flCorrRealz
   use MCvars, only: chTrantype
   use mcnp_random, only: RN_init_particle
 
@@ -78,7 +77,7 @@ CONTAINS
     if(i>largesti) largesti=1 !track largest i
 
 
-    if( pltgenrealz(1) .ne. 'noplot' .and. flprint ) then  !print to plot selected realizations
+    if( pltgenrealz(1) .ne. 'noplot' ) then  !print to plot selected realizations
     203 format("          ",A7,"            ",A7)
     204 format("      0.00000000     ",f16.8)
     205 format(f16.8,"     ",f16.8)

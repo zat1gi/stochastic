@@ -97,6 +97,7 @@ CONTAINS
   read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins,chLNxsplottype
   if(setflags(1)=='yes') flLNxscheck=.true.
 
+
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
 
@@ -158,13 +159,13 @@ CONTAINS
   read(2,*) fluxnumcells
 
 
-
-  if( pltallopt .NE. 'default' ) then
-    binplot   = pltallopt
+  if( pltallopt .ne. 'default' ) then
+    chLNxsplottype = pltallopt
+    binplot        = pltallopt
     pltEigf(1)     = pltallopt
     Corropts(1)    = pltallopt
     pltxiBins(1)   = pltallopt
-    pltKLrealz(1) = pltallopt
+    pltKLrealz(1)  = pltallopt
     pltgenrealz(1) = pltallopt
     pltCo(1)       = pltallopt
     pltflux(1)     = pltallopt
@@ -286,6 +287,49 @@ CONTAINS
     flsleep = .true.
   endif
 
+  !Test plotting valid options
+  if(.not.chLNxsplottype=='noplot' .and. .not.chLNxsplottype=='plot' .and. .not.chLNxsplottype=='preview') then
+    print *,"--Use given invalid option for chLNxsplottype"
+    stopstatus = .true.
+  endif
+  if(.not.binplot=='noplot' .and. .not.binplot=='plot' .and. .not.binplot=='preview') then
+    print *,"--Use given invalid option for binplot"
+    stopstatus = .true.
+  endif
+  if(.not.pltEigf(1)=='noplot' .and. .not.pltEigf(1)=='plot' .and. .not.pltEigf(1)=='preview') then
+    print *,"--Use given invalid option for pltEigf(1)"
+    stopstatus = .true.
+  endif
+  if(.not.Corropts(1)=='noplot' .and. .not.Corropts(1)=='plot' .and. .not.Corropts(1)=='preview') then
+    print *,"--Use given invalid option for Corropts(1)"
+    stopstatus = .true.
+  endif
+  if(.not.pltxiBins(1)=='noplot' .and. .not.pltxiBins(1)=='plot' .and. .not.pltxiBins(1)=='preview') then
+    print *,"--Use given invalid option for pltxiBins(1)"
+    stopstatus = .true.
+  endif
+  if(.not.pltKLrealz(1)=='noplot' .and. .not.pltKLrealz(1)=='plot' .and. .not.pltKLrealz(1)=='preview') then
+    print *,"--Use given invalid option for pltKLrealz(1)"
+    stopstatus = .true.
+  endif
+  if(.not.pltgenrealz(1)=='noplot' .and. .not.pltgenrealz(1)=='plot' .and. .not.pltgenrealz(1)=='preview') then
+    print *,"--Use given invalid option for pltgenrealz(1)"
+    stopstatus = .true.
+  endif
+  if(.not.pltCo(1)=='noplot' .and. .not.pltCo(1)=='plot' .and. .not.pltCo(1)=='preview') then
+    print *,"--Use given invalid option for pltCo(1)"
+    stopstatus = .true.
+  endif
+  if(.not.pltflux(1)=='noplot' .and. .not.pltflux(1)=='plot' .and. .not.pltflux(1)=='preview') then
+    print *,"--Use given invalid option for pltflux(1)"
+    stopstatus = .true.
+  endif
+  if(.not.pltmatflux(1)=='noplot' .and. .not.pltmatflux(1)=='plot' .and. .not.pltmatflux(1)=='preview') then
+    print *,"--Use given invalid option for pltmatflux(1)"
+    stopstatus = .true.
+  endif
+
+
   if(flstopstatus) STOP 'killed'
   if(flsleep) call sleep(4)
 
@@ -299,7 +343,7 @@ CONTAINS
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          flprint, numPosRealz, numNegRealz, numRealz, sigvar, &
+                          numPosRealz, numNegRealz, numRealz, sigvar, &
                           scatvar, absvar
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, &
@@ -317,7 +361,6 @@ CONTAINS
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
   !allocate and initialize genRealzvars
-  flprint    = .true.
   numPath    = 0  !setup Markov material tallies
   sumPath    = 0d0
   sqrPath    = 0d0
