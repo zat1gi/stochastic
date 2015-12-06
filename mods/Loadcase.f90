@@ -307,7 +307,7 @@ CONTAINS
 
   if( chTrantype=='KLWood' ) then  !Tests for KLWood
     if( KLres=='no' .or. KLrec=='no' ) then
-      !print *,"--User attempting to run KLWood w/o either KLresearch or KLreconstruct"
+      !print *,"--User attempting to run KLWood w/o either KLresearch or KLconstruct"
       !flstopstatus = .true.
       KLres='yes'
       KLrec='yes'
@@ -388,7 +388,7 @@ CONTAINS
   allocate(xi(numRealz,numEigs))
 
 
-  !allocate and initialize KLreconstruction variables
+  !allocate and initialize KLconstruction variables
   allocate(KLrxivals(numRealz,numEigs))
   if(chTrantype=='GaussKL' .and. flglGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
   flGaussdiffrand = .false.

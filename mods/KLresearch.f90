@@ -7,6 +7,15 @@ CONTAINS
 
 
 
+  function Eigenvalue( gam )
+  !Solves value of eigenvalues based on transcendental solution gamma.
+  use genRealzvars, only: lamc
+  real(8) :: gam, Eigenvalue
+  Eigenvalue = 2d0 * lamc / (gam**2 + 1d0)
+                   !^ previously had Co term here.  Cancels out in the end anyway, but may want.
+  end function Eigenvalue
+
+
 
   subroutine KL_eigenvalue
   !This subroutine: 1) calculates some initial values used here
@@ -18,7 +27,7 @@ CONTAINS
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
                           levsrefEig, pltEigf
-  use KLreconstruct, only: Eigfunc
+  use KLconstruct, only: Eigfunc
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: index,l,level,curEig,i,j
@@ -208,99 +217,6 @@ CONTAINS
 
 
 
-
-
-
-  subroutine KL_Correlation
-  !This subroutine calculates Correlation between two points in a
-  !realization based upon the expected value, and the observed 
-  !value (function of Eigenfunctions and values).
-  !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts
-  use KLreconstruct, only: Eigfunc
-
-  integer :: x,y,curEig
-  real(8) :: stepsize,curx,cury,Eigfx,Eigfy
-  real(8) :: Correxpect(Corrnumpoints,Corrnumpoints)
-  real(8) :: Corryield(Corrnumpoints,Corrnumpoints)
-  character(17) :: Corrchar = '"Correlation.txt"' 
-  character(22) :: Corre    = '"Correlation Expected"'
-  character(22) :: Corry    = '"Correlation Yielded "'
-
-  Correxpect = 0  !initialize
-  Corryield  = 0
-
-  stepsize = s/(Corrnumpoints)  !set up stepsize
-
-  do x=1,Corrnumpoints  !cycle through x and y
-    if(x==1) curx=stepsize/2 
-    do y=1,Corrnumpoints
-      if(y==1) cury=stepsize/2
-
-      !calc Correxpect
-      Correxpect(x,y) = exp( - abs(curx-cury)/lamc )
-
-      !sum Eigs to calc Corryield
-      do curEig=1,numEigs
-        Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
-        Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
-        Corryield(x,y) = Corryield(x,y) + Eig(curEig) * Eigfx * Eigfy
-      enddo
-
-      !print Correxpect and Corryield
-      210 format("#       x                y            Correxpect        Corryield")
-      211 format(" ",f12.6,"     ",f12.6,"     ",f12.6,"     ",f12.6)
-      open(unit=15,file="Correlation.txt")
-      if(x==1 .AND. y==1) write(15,210)
-      write(15,211) curx,cury,Correxpect(x,y),Corryield(x,y)
-
-      cury=cury+stepsize
-    enddo !y-cycle
-    curx=curx+stepsize
-  enddo !x-cycle
-  close(unit=15) !close file
-
-  open(unit=16,file="Correlationfirst.gnu") !make custom gnu script
-  212 format("set dgrid3d ",i10,",",i10)
-  213 format("splot ",A17," using 1:2:3 with lines title ",A22)
-  214 format("splot ",A17," using 1:2:4 with lines title ",A22)
-  215 format("splot ",A17," using 1:2:3 with lines title ",A22,", ",A17," using 1:2:4 with lines title ",A22)
-  219 format(A40)
-  write(16,212) Corrnumpoints,Corrnumpoints
-  write(16,219)'set view 60,130                         '
-  write(16,219)'                                        '
-  write(16,219)'set title "Positional Correlation Plots"'
-  write(16,219)'set ylabel "\"y\" or \"x2\" position"   '
-  write(16,219)'set xlabel "\"x\" or \"x1\" position"   '
-  write(16,219)'                                        '
-  if(Corropts(2)=='expect')  write(16,213) Corrchar,Corre
-  if(Corropts(2)=='yield')   write(16,214) Corrchar,Corry
-  if(Corropts(2)=='both')    write(16,215) Corrchar,Corre,Corrchar,Corry
-  close(unit=16)
-
-  if(Corropts(1)=='preview') then
-    call system("cat Correlationfirst.gnu plots/Correlation/Corrps_pause.txt > Correlation.gnu")
-  else
-    call system("cat Correlationfirst.gnu plots/Correlation/Corrps.txt > Correlation.gnu")
-  endif
-
-  call system("gnuplot Correlation.gnu") !plot using gnuplot
-
-  call system("ps2pdf Correlation.ps")         !convert to pdf
-
-  call system("rm Correlationfirst.gnu")                       !clean up space
-  call system("mv Correlation.txt Correlation.ps Correlation.pdf plots/Correlation")
-  call system("mv Correlation.gnu plots/Correlation")
-  end subroutine KL_Correlation
-
-
-
-
-
-
-
-
   subroutine KL_collect
   !This subroutine calculates xi values from binary Markov realizations.  It does 
   !this by integrating over a variable related only to geometry-based material
@@ -359,115 +275,7 @@ CONTAINS
 
 
 
-
-  
-  subroutine KL_Cochart
-  !This subroutine calculates the variance normalized to 1 at each point in the domain.
-  !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
-  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          pltCo
-  use KLreconstruct, only: Eigfunc
-
-  integer :: curCS,curEig,check
-  real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
-  real(8) :: CoPerDiff,totLPer(2),tottotLength
-  real(8) :: x,phi
-  real(8),allocatable :: Coplotarray(:,:)
-
-  allocate(Coplotarray(numSlice,pltConumof+1))
-  Coplotarray = 0
-
-  !This is a statistical test of the reconstructions
-  444 format("totLength(1):",f15.2,"    totLength(2):",f15.2,"    tottotLength:",f15.2)
-  445 format("expLength(1):",f15.2,"    expLength(2):",f15.2,"    exptotLength:",f15.2)
-
-  totLPer(1)=totLength(1)/(totLength(1)+totLength(2))
-  totLPer(2)=totLength(2)/(totLength(1)+totLength(2))
-  tottotLength=totLength(1)+totLength(2)
-  write(*,*)
-  write(*,444) totLength(1),totLength(2),tottotLength
-  write(*,445) P(1)*s*numRealz,P(2)*s*numRealz,s*numRealz
-
-
-  slicesize=s/numSlice     !prepare the places to slice and measure
-  sliceval(1)=slicesize/2
-  do curCS=2,numSlice
-    sliceval(curCS)=sliceval(curCS-1)+slicesize
-  enddo
-
-  do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
-    cumCo=0
-    x=sliceval(curCS)
-    do curEig=1,numEigs
-      phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
-      cumCo=cumCo+  Eig(curEig)*phi**2
-
-      CoEff(curEig,curCS)=cumCo
-    enddo
-  enddo
-
-
-  440 format("#    slicenum    sliceval ")
-  441 format("     CoEff",i5)
-  442 format("     ",i5,"     ",f10.6)
-  443 format("     ",f10.6)
-
-  open(unit=14, file="CoEff.txt")
-  write(14,440,advance="no")
-  do curEig=1,numEigs
-    write(14,441,advance="no") curEig
-  enddo
-  do curCS=1,numSlice       !print CoEff results to file
-    write(14,*)
-    write(14,442,advance="no") curCS,sliceval(curCS)
-    do curEig=1,numEigs
-      write(14,443,advance="no") CoEff(curEig,curCS)
-    enddo
-  enddo
-
-  call system("mv CoEff.txt texts/CoEffExp.txt")
-
-  do check=1,pltConumof  !load values to plot according to selected options
-    if( pltCo(1) .NE. 'noplot' ) then
-      curEig = pltCowhich(1,check)
-      do curCS=1,numSlice
-        Coplotarray(curCS,1) = sliceval(curCS)
-        Coplotarray(curCS,check+1) = CoEff(curEig,curCS)
-      enddo
-    endif
-  enddo
-
-  call generic_plotter( numSlice,pltConumof,Coplotarray,pltCo ) !plot
-
-  call system("mv genericplot.txt plots/CoEffplot/CoEffplot.txt")
-  call system("mv genericplot.ps  plots/CoEffplot/CoEffplot.ps")
-  call system("mv genericplot.pdf plots/CoEffplot/CoEffplot.pdf")
-
-  do curEig=1,numEigs  !return 'Eig' to original values
-    Eig(curEig) = Eigenvalue( gam(curEig) )
-  enddo
-
-  end subroutine KL_Cochart
-
-
-
-
-  function Eigenvalue( gam )
-  !Solves value of eigenvalues based on transcendental solution gamma.
-  use genRealzvars, only: lamc
-  real(8) :: gam, Eigenvalue
-  Eigenvalue = 2d0 * lamc / (gam**2 + 1d0)
-                   !^ previously had Co term here.  Cancels out in the end anyway, but may want.
-  end function Eigenvalue
-
-
-
-
-
-
-
-  subroutine KL_eval
+  subroutine KL_binrandvarvals
   !This subroutine puts xi values in bins.  It plots for those chosen in the 
   !input file and also makes a .txt file containing PDFs of xi values for 
   !each Eigenvalue calculated.
@@ -608,7 +416,187 @@ CONTAINS
   call system("mv xiBinsAll.txt plots/xiBinsplot")
   call system("mv xiBinsper.txt plots/xiBinsplot")
 
-  end subroutine KL_eval
+  end subroutine KL_binrandvarvals
+
+
+
+
+  subroutine KL_Correlation
+  !This subroutine calculates Correlation between two points in a
+  !realization based upon the expected value, and the observed 
+  !value (function of Eigenfunctions and values).
+  !It then plots in 3D if user has specified.
+  use genRealzvars, only: s, lamc
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts
+  use KLconstruct, only: Eigfunc
+
+  integer :: x,y,curEig
+  real(8) :: stepsize,curx,cury,Eigfx,Eigfy
+  real(8) :: Correxpect(Corrnumpoints,Corrnumpoints)
+  real(8) :: Corryield(Corrnumpoints,Corrnumpoints)
+  character(17) :: Corrchar = '"Correlation.txt"' 
+  character(22) :: Corre    = '"Correlation Expected"'
+  character(22) :: Corry    = '"Correlation Yielded "'
+
+  Correxpect = 0  !initialize
+  Corryield  = 0
+
+  stepsize = s/(Corrnumpoints)  !set up stepsize
+
+  do x=1,Corrnumpoints  !cycle through x and y
+    if(x==1) curx=stepsize/2 
+    do y=1,Corrnumpoints
+      if(y==1) cury=stepsize/2
+
+      !calc Correxpect
+      Correxpect(x,y) = exp( - abs(curx-cury)/lamc )
+
+      !sum Eigs to calc Corryield
+      do curEig=1,numEigs
+        Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
+        Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
+        Corryield(x,y) = Corryield(x,y) + Eig(curEig) * Eigfx * Eigfy
+      enddo
+
+      !print Correxpect and Corryield
+      210 format("#       x                y            Correxpect        Corryield")
+      211 format(" ",f12.6,"     ",f12.6,"     ",f12.6,"     ",f12.6)
+      open(unit=15,file="Correlation.txt")
+      if(x==1 .AND. y==1) write(15,210)
+      write(15,211) curx,cury,Correxpect(x,y),Corryield(x,y)
+
+      cury=cury+stepsize
+    enddo !y-cycle
+    curx=curx+stepsize
+  enddo !x-cycle
+  close(unit=15) !close file
+
+  open(unit=16,file="Correlationfirst.gnu") !make custom gnu script
+  212 format("set dgrid3d ",i10,",",i10)
+  213 format("splot ",A17," using 1:2:3 with lines title ",A22)
+  214 format("splot ",A17," using 1:2:4 with lines title ",A22)
+  215 format("splot ",A17," using 1:2:3 with lines title ",A22,", ",A17," using 1:2:4 with lines title ",A22)
+  219 format(A40)
+  write(16,212) Corrnumpoints,Corrnumpoints
+  write(16,219)'set view 60,130                         '
+  write(16,219)'                                        '
+  write(16,219)'set title "Positional Correlation Plots"'
+  write(16,219)'set ylabel "\"y\" or \"x2\" position"   '
+  write(16,219)'set xlabel "\"x\" or \"x1\" position"   '
+  write(16,219)'                                        '
+  if(Corropts(2)=='expect')  write(16,213) Corrchar,Corre
+  if(Corropts(2)=='yield')   write(16,214) Corrchar,Corry
+  if(Corropts(2)=='both')    write(16,215) Corrchar,Corre,Corrchar,Corry
+  close(unit=16)
+
+  if(Corropts(1)=='preview') then
+    call system("cat Correlationfirst.gnu plots/Correlation/Corrps_pause.txt > Correlation.gnu")
+  else
+    call system("cat Correlationfirst.gnu plots/Correlation/Corrps.txt > Correlation.gnu")
+  endif
+
+  call system("gnuplot Correlation.gnu") !plot using gnuplot
+
+  call system("ps2pdf Correlation.ps")         !convert to pdf
+
+  call system("rm Correlationfirst.gnu")                       !clean up space
+  call system("mv Correlation.txt Correlation.ps Correlation.pdf plots/Correlation")
+  call system("mv Correlation.gnu plots/Correlation")
+  end subroutine KL_Correlation
+
+
+
+
+  subroutine KL_Cochart
+  !This subroutine calculates the variance normalized to 1 at each point in the domain.
+  !The closer to 1 the ratio is, the more efficient that approximation is.
+  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
+  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
+                          pltCo
+  use KLconstruct, only: Eigfunc
+
+  integer :: curCS,curEig,check
+  real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
+  real(8) :: CoPerDiff,totLPer(2),tottotLength
+  real(8) :: x,phi
+  real(8),allocatable :: Coplotarray(:,:)
+
+  allocate(Coplotarray(numSlice,pltConumof+1))
+  Coplotarray = 0
+
+  !This is a statistical test of the reconstructions
+  444 format("totLength(1):",f15.2,"    totLength(2):",f15.2,"    tottotLength:",f15.2)
+  445 format("expLength(1):",f15.2,"    expLength(2):",f15.2,"    exptotLength:",f15.2)
+
+  totLPer(1)=totLength(1)/(totLength(1)+totLength(2))
+  totLPer(2)=totLength(2)/(totLength(1)+totLength(2))
+  tottotLength=totLength(1)+totLength(2)
+  write(*,*)
+  write(*,444) totLength(1),totLength(2),tottotLength
+  write(*,445) P(1)*s*numRealz,P(2)*s*numRealz,s*numRealz
+
+
+  slicesize=s/numSlice     !prepare the places to slice and measure
+  sliceval(1)=slicesize/2
+  do curCS=2,numSlice
+    sliceval(curCS)=sliceval(curCS-1)+slicesize
+  enddo
+
+  do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
+    cumCo=0
+    x=sliceval(curCS)
+    do curEig=1,numEigs
+      phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
+      cumCo=cumCo+  Eig(curEig)*phi**2
+
+      CoEff(curEig,curCS)=cumCo
+    enddo
+  enddo
+
+
+  440 format("#    slicenum    sliceval ")
+  441 format("     CoEff",i5)
+  442 format("     ",i5,"     ",f10.6)
+  443 format("     ",f10.6)
+
+  open(unit=14, file="CoEff.txt")
+  write(14,440,advance="no")
+  do curEig=1,numEigs
+    write(14,441,advance="no") curEig
+  enddo
+  do curCS=1,numSlice       !print CoEff results to file
+    write(14,*)
+    write(14,442,advance="no") curCS,sliceval(curCS)
+    do curEig=1,numEigs
+      write(14,443,advance="no") CoEff(curEig,curCS)
+    enddo
+  enddo
+
+  call system("mv CoEff.txt texts/CoEffExp.txt")
+
+  do check=1,pltConumof  !load values to plot according to selected options
+    if( pltCo(1) .NE. 'noplot' ) then
+      curEig = pltCowhich(1,check)
+      do curCS=1,numSlice
+        Coplotarray(curCS,1) = sliceval(curCS)
+        Coplotarray(curCS,check+1) = CoEff(curEig,curCS)
+      enddo
+    endif
+  enddo
+
+  call generic_plotter( numSlice,pltConumof,Coplotarray,pltCo ) !plot
+
+  call system("mv genericplot.txt plots/CoEffplot/CoEffplot.txt")
+  call system("mv genericplot.ps  plots/CoEffplot/CoEffplot.ps")
+  call system("mv genericplot.pdf plots/CoEffplot/CoEffplot.pdf")
+
+  do curEig=1,numEigs  !return 'Eig' to original values
+    Eig(curEig) = Eigenvalue( gam(curEig) )
+  enddo
+
+  end subroutine KL_Cochart
+
+
 
 
 end module KLresearch

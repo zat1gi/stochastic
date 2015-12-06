@@ -6,7 +6,7 @@ program stochastic
   use genRealz
   use radtransMC
   use KLresearch
-  use KLreconstruct
+  use KLconstruct
   use KLmeanadjust
 
   use genRealzvars
@@ -34,13 +34,13 @@ program stochastic
     call KL_collect         !collects xi values over realizations
     call genReal_stats      !performs stats on above realizations
     if(pltCo(1).ne.'noplot' .and. .not.flGBgeom)    call KL_Cochart !creates plots of var kept to tot var
-    call KL_eval            !creates xi distributions from xi values
+    call KL_binrandvarvals  !creates xi distributions from xi values
     call reset_genRealtals  !resets Markov realz stats for next round of creation
   endif
 
   !!Perform KL reconstructions if no transport to use them
   if(KLrec=='yes' .and. .not.chTrantype=='KLWood' .and. .not.chTrantype=='GaussKL') then
-    call KLreconstructions
+    call KLconstructions
   endif
 
   !!Perform UQ-MC for transport problems  

@@ -16,7 +16,7 @@ CONTAINS
   use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
-  use KLreconstruct, only: KLreconstructions
+  use KLconstruct, only: KLconstructions
   use timeman, only: radtrans_timeupdate
 
   integer :: j,tnumParts,tnumRealz !'j' is which realization
@@ -30,7 +30,7 @@ CONTAINS
     call KL_eigenvalue
 
   if(  chTrantype=='KLWood'   .or. chTrantype=='GaussKL'     ) &
-    call KLreconstructions       !create KL realz for cases that need them
+    call KLconstructions       !create KL realz for cases that need them
 
   if( chTrantype=='GaussKL' .and. flGBgeom) then
     if(Corropts(1) .ne. 'noplot') call KL_Correlation !calc & plot spacial correlation funcs
@@ -84,7 +84,7 @@ CONTAINS
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
                     flCorrMC
   use genRealz, only: genReal
-  use KLreconstruct, only: KLr_point
+  use KLconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
 
   integer :: j,tnumParts !realz number/which mode of transport/num of particles
@@ -541,7 +541,7 @@ CONTAINS
   subroutine KLWood_binmaxes( j )
   use KLvars, only: alpha, Ak, Eig, numEigs
   use MCvars, only: binmaxind, binmaxes, nceilbin
-  use KLreconstruct, only: KLr_point
+  use KLconstruct, only: KLr_point
 
   integer, intent(in) :: j
 

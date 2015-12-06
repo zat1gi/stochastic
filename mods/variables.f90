@@ -108,7 +108,7 @@ end module genRealzvars
 
 
 !--- KL ---!
-module KLvars  !"KLresearch" and "KLreconstruct"
+module KLvars  !"KLresearch" and "KLconstruct"
   implicit none
   !inputs
   character(3)         :: KLres                ! perform "KL research" operations?

@@ -1,4 +1,4 @@
-module KLreconstruct
+module KLconstruct
   use utilities
   use mcnp_random
   implicit none
@@ -7,7 +7,7 @@ CONTAINS
   ! print statemtns in this module use # 500-599
 
 
-  subroutine KLreconstructions
+  subroutine KLconstructions
   !Master subroutine for those which create and plot realizations for Markov KL or 
   !Gauss-based KL.  Placed here to declutter multiple instances in 'stochastic.f90'.
   use KLmeanadjust, only: KLadjustmean
@@ -23,7 +23,7 @@ CONTAINS
   if((.not.chTrantype=='GaussKL' .and. flLNxscheck .and. .not.flGBgeom) .or.   &
      (     chTrantype=='GaussKL' .and. flLNxscheck .and.      flGBgeom)) call LNxsvalstest
 
-  end subroutine KLreconstructions
+  end subroutine KLconstructions
 
 
 
@@ -863,7 +863,7 @@ print *,"I am here, where files should be moved"
 
 
 
-end module KLreconstruct
+end module KLconstruct
 
 
 
@@ -895,7 +895,7 @@ CONTAINS
   use genRealzvars, only: s, sigave, sigscatave, sigabsave, numRealz
   use KLvars, only: alpha, Ak, Eig, numEigs, meanadjust, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
-  use KLreconstruct, only: KLr_point, KLrxi_integral
+  use KLconstruct, only: KLr_point, KLrxi_integral
 
   character(*) :: chxstype
 
@@ -981,7 +981,7 @@ CONTAINS
   !changes signs, or 2) the end of the slab
   use genRealzvars, only: s, sigave
   use KLvars,       only: alpha, Ak, Eig, numEigs
-  use KLreconstruct, only: KLr_point
+  use KLconstruct, only: KLr_point
   integer :: j
   character(*) :: chxstype
 
@@ -1015,7 +1015,7 @@ CONTAINS
   !This function takes a range and zeroes in on transition in sign of cross section within tolerance
   use genRealzvars, only: s, sigave
   use KLvars, only: alpha, Ak, Eig, numEigs
-  use KLreconstruct, only: KLr_point
+  use KLconstruct, only: KLr_point
   integer :: j
   real(8) :: oldx,curx
   character(*) :: chxstype

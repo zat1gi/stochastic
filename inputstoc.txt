@@ -63,7 +63,7 @@
   3,
   4
   
-  !!--Plotting xiBins                        [in sub KL_eval]
+  !!--Plotting xiBins                        [in sub KL_binrandvarvals]
   noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   gauss,       "gauss" or "nogauss", plot standard gauss to plot? (overwrites last input below)
   4,             Number of Eig/realz# combos to plot xi for (up to 4)
