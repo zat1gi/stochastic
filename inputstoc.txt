@@ -25,7 +25,6 @@
 
   !--- Large MCtrans Options ---!
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL subroutines?
-  no,no,no,no,no,no,yes,  Perform radMC/radWood/KLWood/LPMC/atmixMC/WAMC/GaussKL subroutines?
   10,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?

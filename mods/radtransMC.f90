@@ -1246,8 +1246,7 @@ CONTAINS
   !which is deleted at the end.  Builds based on options like title type, plotting lines, and
   !pause or preview.  Can perform three builds, one for material irrespective flux tallying, and 
   !one for each material using material respective flux plotting.
-  use MCvars, only: pltflux, radMC, radWood, KLWood, LPMC, atmixMC, pltfluxtype, pltmatflux, &
-                    GaussKL
+  use MCvars, only: pltflux, pltfluxtype, pltmatflux
 
   !Clean from previous runs
   call system("test -e plots/fluxplots/fluxall.ps && rm plots/fluxplots/fluxall.ps")
@@ -1278,27 +1277,27 @@ CONTAINS
     call system("mv gnu/tempnew.txt gnu/tempold.txt")
 
     !Add everything that is to be plotted (options)
-    if(radMC=='yes') then
+    if(chTrantype=='radMC') then
       call system("cat gnu/tempold.txt gnu/radMCall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(radWood=='yes') then
+    if(chTrantype=='radWood') then
       call system("cat gnu/tempold.txt gnu/radWoodall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(KLWood=='yes') then
+    if(chTrantype=='KLWood') then
       call system("cat gnu/tempold.txt gnu/KLWoodall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(LPMC=='yes') then
+    if(chTrantype=='LPMC') then
       call system("cat gnu/tempold.txt gnu/LPMCall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(atmixMC=='yes') then
+    if(chTrantype=='atmixMC') then
       call system("cat gnu/tempold.txt gnu/atmixMCall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(GaussKL=='yes') then
+    if(chTrantype=='GaussKL') then
       call system("cat gnu/tempold.txt gnu/GaussKLall.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
@@ -1339,27 +1338,27 @@ CONTAINS
     call system("mv gnu/tempnew.txt gnu/tempold.txt")
 
     !Add everything that is to be plotted (options)
-    if(radMC=='yes') then
+    if(chTrantype=='radMC') then
       call system("cat gnu/tempold.txt gnu/radMCmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(radWood=='yes') then
+    if(chTrantype=='radWood') then
       call system("cat gnu/tempold.txt gnu/radWoodmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(KLWood=='yes') then
+    if(chTrantype=='KLWood') then
       call system("cat gnu/tempold.txt gnu/KLWoodmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(LPMC=='yes') then
+    if(chTrantype=='LPMC') then
       call system("cat gnu/tempold.txt gnu/LPMCmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(atmixMC=='yes') then
+    if(chTrantype=='atmixMC') then
       call system("cat gnu/tempold.txt gnu/atmixMCmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(GaussKL=='yes') then
+    if(chTrantype=='GaussKL') then
       call system("cat gnu/tempold.txt gnu/GaussKLmat1.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
@@ -1400,27 +1399,27 @@ CONTAINS
     call system("mv gnu/tempnew.txt gnu/tempold.txt")
 
     !Add everything that is to be plotted (options)
-    if(radMC=='yes') then
+    if(chTrantype=='radMC') then
       call system("cat gnu/tempold.txt gnu/radMCmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(radWood=='yes') then
+    if(chTrantype=='radWood') then
       call system("cat gnu/tempold.txt gnu/radWoodmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(KLWood=='yes') then
+    if(chTrantype=='KLWood') then
       call system("cat gnu/tempold.txt gnu/KLWoodmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(LPMC=='yes') then
+    if(chTrantype=='LPMC') then
       call system("cat gnu/tempold.txt gnu/LPMCmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(atmixMC=='yes') then
+    if(chTrantype=='atmixMC') then
       call system("cat gnu/tempold.txt gnu/atmixMCmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
-    if(GaussKL=='yes') then
+    if(chTrantype=='GaussKL') then
       call system("cat gnu/tempold.txt gnu/GaussKLmat2.txt > gnu/tempnew.txt")
       call system("mv gnu/tempnew.txt gnu/tempold.txt")
     endif
@@ -1859,8 +1858,7 @@ CONTAINS
   use genRealzvars, only: Adamscase, flGBgeom
   use KLvars, only: flMarkov, flGauss
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, stocMC_absorption, chTrantype, &
-                    LPMC, atmixMC, GaussKL
+                    stocMC_transmission, stocMC_absorption, chTrantype
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
@@ -1907,7 +1905,7 @@ CONTAINS
 
 
   !print for formatting if any LP solutions printed
-  if(Adamscase/=0 .or. LPMC=='yes') &
+  if(Adamscase/=0 .or. chTrantype=='LPMC') &
     write(100,*) "|----------|-------------------------|---------------------|"
 
   !print benchmark LP solutions
@@ -1921,7 +1919,7 @@ CONTAINS
                                             stocMC_transmission(1)
 
   !print for formatting if any atomic mix solutions printed
-  if(Adamscase/=0 .or. atmixMC=='yes') &
+  if(Adamscase/=0 .or. chTrantype=='atmixMC') &
     write(100,*) "|----------|-------------------------|---------------------|"
 
   !print benchmark atomic mix solutions
@@ -1940,7 +1938,7 @@ CONTAINS
 
   if(flGauss) then
 
-  if(GaussKL=='yes' .and. flGBgeom) then
+  if(chTrantype=='GaussKL' .and. flGBgeom) then
     write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
     write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
     write(100,*) "|----------|-------------------------|---------------------|"

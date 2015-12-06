@@ -196,13 +196,6 @@ module MCvars
   implicit none
   !inputs
   character(7)         :: chTrantype           ! type of transport to perform
-  character(3)         :: radMC                ! perform TMC on binary mixtures operations?
-  character(3)         :: radWood              ! perform WMC on binary mixtures operations?
-  character(3)         :: KLWood               ! perform WMC on KL reconstructions operations?
-  character(3)         :: LPMC                 ! perform MC in the LP sense for binary mixtures?
-  character(3)         :: atmixMC              ! perform TMC over atomic mix of binary mixtures?
-  character(3)         :: WAMC                 ! perform weight adjust MC over KL resonstructions?
-  character(3)         :: GaussKL              ! perform WMC on Gaussian-random process?
   integer              :: numParts             ! number of particles
   integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen

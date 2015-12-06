@@ -13,7 +13,7 @@ program stochastic
   use timevars, only: t1
   use KLvars, only: KLres, KLrec, KLnoise, &
                     Corropts, pltCo
-  use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL
+  use MCvars, only: pltflux
 
   implicit none
   ! pass by reference
@@ -41,8 +41,8 @@ program stochastic
   endif
 
   !!Perform KL reconstructions if no transport to use them
-  if(KLrec=='yes' .and. KLWood=='no' .and. WAMC=='no' .and. GaussKL=='no') then
-    call KLreconstructions(2)  !'2' means passes information as KLWood
+  if(KLrec=='yes' .and. .not.chTrantype=='KLWood' .and. .not.chTrantype=='GaussKL') then
+    call KLreconstructions
   endif
 
   !!Perform UQ-MC for transport problems  

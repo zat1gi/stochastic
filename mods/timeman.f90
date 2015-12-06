@@ -145,8 +145,7 @@ CONTAINS
   !This is the timereport that comes at the end of the whole code running, the final time report.
   use timevars, only: t1, runtime, time, ntime, runtime, FOM
   use KLvars, only: KLres, KLrec, KLnoise
-  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, &
-                    stocMC_transmission, stocMC_reflection, GaussKL
+  use MCvars, only: stocMC_transmission, stocMC_reflection
   use utilities, only: calc_time
 
   integer :: i
@@ -187,12 +186,12 @@ CONTAINS
                      write(100,110) time(1), pertime(1)
   if(KLrec=='yes')   write(100,115) time(6), pertime(6)
                      write(100,121)
-  if(radMC=='yes')   write(100,111) time(2), pertime(2), FOM(1,1),FOM(1,2)
-  if(radWood=='yes') write(100,112) time(3), pertime(3), FOM(2,1),FOM(2,2)
-  if(KLWood=='yes')  write(100,116) time(7), pertime(7), FOM(3,1),FOM(3,2)
-  if(LPMC=='yes')    write(100,118) time(8), pertime(8)
-  if(atmixMC=='yes') write(100,120) time(9), pertime(9)
-  if(GaussKL=='yes') write(100,122) time(10),pertime(10),FOM(7,1),FOM(7,2)
+  if(chTrantype=='radMC') write(100,111) time(2), pertime(2), FOM(1,1),FOM(1,2)
+  if(chTrantype=='radWood') write(100,112) time(3), pertime(3), FOM(2,1),FOM(2,2)
+  if(chTrantype=='KLWood')  write(100,116) time(7), pertime(7), FOM(3,1),FOM(3,2)
+  if(chTrantype=='LPMC')    write(100,118) time(8), pertime(8)
+  if(chTrantype=='atmixMC') write(100,120) time(9), pertime(9)
+  if(chTrantype=='GaussKL') write(100,122) time(10),pertime(10),FOM(7,1),FOM(7,2)
   if(KLnoise=='yes') write(100,113) time(4), pertime(4)
   if(KLres=='yes')   write(100,114) time(5), pertime(5)
                      write(100,117) othertime,otherpercent

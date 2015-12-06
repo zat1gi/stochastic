@@ -49,8 +49,7 @@ CONTAINS
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, radMCbinplot, radWoodbinplot, KLWoodbinplot, &
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
-                                  KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
+                                  pltflux, flnegxs, fldistneg, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, flCorrMC, chTrantype
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
@@ -104,7 +103,6 @@ CONTAINS
   !--- Large MCtrans Options ---!
   read(2,*) dumchar
   read(2,*) chTrantype
-  read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC,GaussKL
   read(2,*) numParts
   read(2,*) LPamnumParts
   read(2,*) setflags(1)
@@ -255,7 +253,7 @@ CONTAINS
     print *,"--User attempting KLrec w/o KLres, KLres has been set to 'yes'"
     flsleep = .true.
   endif
-  if( GaussKL=='yes' .and. KLrec=='no' ) then
+  if( chTrantype=='GaussKL' .and. KLrec=='no' ) then
     KLrec = 'yes'
     print *,"--User attempting Gauss rand geom w/o KLrec, KLrec has been set to 'yes'"
     flsleep = .true.
@@ -273,22 +271,22 @@ CONTAINS
   !Tests for Leakage pdf plotting options
   if(radMCbinplot  .ne. 'noplot'.or. radWoodbinplot .ne. 'noplot'.or. &
      KLWoodbinplot .ne. 'noplot'     ) then
-    if(radMCbinplot .ne. 'noplot' .and. radMC=='no') then
+    if(radMCbinplot .ne. 'noplot' .and. .not.chTrantype=='radMC') then
       radMCbinplot = 'noplot'
       print *,"--User attempting to plot radMC leakage values w/o radMC, set to 'noplot'"
       flsleep = .true.
     endif
-    if(radWoodbinplot .ne. 'noplot' .and. radWood=='no') then
+    if(radWoodbinplot .ne. 'noplot' .and. .not.chTrantype=='radWood') then
       radWoodbinplot = 'noplot'
       print *,"--User attempting to plot radWood leakage values w/o radWood, set to 'noplot'"
       flsleep = .true.
     endif
-    if(KLWoodbinplot .ne. 'noplot' .and. KLWood=='no') then
+    if(KLWoodbinplot .ne. 'noplot' .and. .not.chTrantype=='KLWood') then
       KLWoodbinplot = 'noplot'
       print *,"--User attempting to plot KLWood leakage values w/o KLWood, set to 'noplot'"
       flsleep = .true.
     endif
-    if(GaussKLbinplot .ne. 'noplot' .and. GaussKL=='no') then
+    if(GaussKLbinplot .ne. 'noplot' .and. .not.chTrantype=='yes') then
       GaussKLbinplot = 'noplot'
       print *,"--User attempting to plot GaussKL leakage values w/o GaussKL, set to 'noplot'"
       flsleep = .true.
@@ -296,14 +294,15 @@ CONTAINS
   endif
 
                               !Test radtransMC print frequency
-  if( (trannprt>numRealz .or. mod(numRealz,trannprt)/=0) .AND. radMC=='yes' ) then 
+  if( (trannprt>numRealz .or. mod(numRealz,trannprt)/=0) .and. chTrantype=='radMC' ) then 
     print *,"--Print to screen frequency for MCtran must be factor of number of realizations"
     flstopstatus = .true.
   endif
 
                               !Test plotting flux
-  if( pltflux(1)/='noplot' .AND. radMC=='no' .AND. radWood=='no' .AND. KLWood=='no' &
-      .and. LPMC=='no' .and. atmixMC=='no' .and. GaussKL=='no') then
+  if( pltflux(1)/='noplot' .and. .not.chTrantype=='radMC' .and. .not.chTrantype=='radWood' &
+      .and. .not.chTrantype=='KLWood' .and. .not.chTrantype=='LPMC' .and. &
+      .not.chTrantype=='atmixMC' .and. .not.chTrantype=='GaussKL') then
     print *,"--User attempting to plot flux when no transport calculations are made"
     flstopstatus = .true.
   endif
@@ -335,7 +334,7 @@ CONTAINS
     endif
   enddo
 
-  if( KLWood=='yes' ) then  !Tests for KLWood
+  if( chTrantype=='KLWood' ) then  !Tests for KLWood
     if( KLres=='no' .or. KLrec=='no' ) then
       !print *,"--User attempting to run KLWood w/o either KLresearch or KLreconstruct"
       !flstopstatus = .true.
@@ -384,9 +383,8 @@ CONTAINS
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
                     xi, KLrxivals, KLrxivalss, pltKLrealzarray, flglGaussdiffrand, &
                     flGaussdiffrand
-  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, &
-                    numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
-                    LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
+  use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
+                    stocMC_absorption, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
                     fluxnumcells, flfluxplot
   use mcnp_random, only: RN_init_problem
@@ -426,7 +424,7 @@ CONTAINS
 
   !allocate and initialize KLreconstruction variables
   allocate(KLrxivals(numRealz,numEigs))
-  if(GaussKL=='yes' .and. flglGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
+  if(chTrantype=='GaussKL' .and. flglGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
   flGaussdiffrand = .false.
   allocate(KLrxisig(KLrnumpoints))
   allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
@@ -454,8 +452,8 @@ CONTAINS
     enddo
   endif
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &!mat irrespective flux allocations
-    (flfluxplot .and. (KLWood=='yes' .or. atmixMC=='yes')) ) then !KLWood, atmixMC, respective stored
-                                                                  !here (actually irresective)
+    (flfluxplot .and. (chTrantype=='KLWood' .or. chTrantype=='atmixMC')) ) then
+                     !KLWood, atmixMC, respective stored here (actually irresective)
     allocate(stocMC_fluxall(fluxnumcells,2))
     stocMC_fluxall = 0.0d0
   endif

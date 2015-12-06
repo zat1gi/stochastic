@@ -202,7 +202,7 @@ CONTAINS
                           pltKLrealznumof, pltKLrealzwhich, KLrx, KLrxi, KLrxivals, KLrxivalss, &
                           pltKLrealzarray, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
-  use MCvars, only: chTrantype, flnegxs, KLWood, GaussKL, trannprt
+  use MCvars, only: chTrantype, flnegxs, trannprt
   use timeman, only: KL_timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,w,u
@@ -233,7 +233,7 @@ CONTAINS
     KLrxisig = 0
     do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivals
         rand = rang()
-        if((chTrantype=='KLWood' .or. chTrantype=='WAMC') .and. curEig<=numEigs) then
+        if((chTrantype=='KLWood') .and. curEig<=numEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
@@ -251,7 +251,7 @@ CONTAINS
     if(flGaussdiffrand) then
       do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivalss
         rand = rang()
-        if((chTrantype=='KLWood' .or. chTrantype=='WAMC') .and. curEig<=numEigs) then
+        if((chTrantype=='KLWood') .and. curEig<=numEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
