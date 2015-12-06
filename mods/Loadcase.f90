@@ -51,7 +51,7 @@ CONTAINS
                                   GaussKLbinplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, fldistneg, radMC, radWood, WAMC, GaussKL, &
                                   KLWood, LPMC, atmixMC, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype, flCorrMC
+                                  pltfluxtype, flCorrMC, chTrantype
   character(7) :: pltallopt                         !Plot all same opt
   character(3) :: allL1s,allcenters !all basic L1/center based functionals?
   character(6) :: chosennorm        !norm to convert from text to number
@@ -103,6 +103,7 @@ CONTAINS
 
   !--- Large MCtrans Options ---!
   read(2,*) dumchar
+  read(2,*) chTrantype
   read(2,*) radMC,radWood,KLWood,LPMC,atmixMC,WAMC,GaussKL
   read(2,*) numParts
   read(2,*) LPamnumParts
@@ -383,7 +384,7 @@ CONTAINS
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, flMarkov, flGauss, &
                     xi, KLrxivals, KLrxivalss, pltKLrealzarray, flglGaussdiffrand, &
                     flGaussdiffrand
-  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcaseson, MCcases, &
+  use MCvars, only: fluxfaces, radMC, radWood, KLWood, WAMC, GaussKL, MCcases, &
                     numParts, stocMC_reflection, stocMC_transmission, stocMC_absorption, &
                     numPosMCmeths, LPMC, atmixMC, LPamnumParts, stocMC_fluxall, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
@@ -432,17 +433,6 @@ CONTAINS
 
 
   !allocate/initialize MCvars
-  allocate(MCcaseson(numPosMCmeths))
-  MCcaseson = 0
-  if(radMC  =='yes') MCcaseson(1) = 1
-  if(radWood=='yes') MCcaseson(2) = 1
-  if(KLWood =='yes') MCcaseson(3) = 1
-  if(LPMC   =='yes') MCcaseson(4) = 1
-  if(atmixMC=='yes') MCcaseson(5) = 1
-  if(WAMC   =='yes') MCcaseson(6) = 1
-  if(GaussKL=='yes') MCcaseson(7) = 1
-
-
   allocate(MCcases(numPosMCmeths))
   MCcases(1) = 'radMC'
   MCcases(2) = 'radWood'
@@ -459,8 +449,8 @@ CONTAINS
   stocMC_transmission = 0.0d0
   stocMC_absorption   = 0.0d0
 
-  if(sum(MCcaseson(1:7))>0 .or. (.not.flGBgeom .and. MCcaseson(7)==1)) flMarkov = .true.
-  if(flGBgeom .and. MCcaseson(7)==1) flGauss = .true.
+  if(.not.flGBgeom) flMarkov = .true.
+  if(flGBgeom) flGauss = .true.
   
   flfluxplot = .false.  !flux variable allocations
   if( pltflux(1)=='plot' .or. pltflux(1)=='preview' .or. &
@@ -495,12 +485,10 @@ CONTAINS
   totparts = 0
   cumparts = 0
   do icase=1,numPosMCmeths
-    if(MCcaseson(icase)==1) then
-      if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
-        totparts(icase) = LPamnumParts
-      else
-        totparts(icase) = numRealz*numParts
-      endif
+    if(MCcases(icase)=='LPMC' .or. MCcases(icase)=='atmixMC') then
+      totparts(icase) = LPamnumParts
+    else
+      totparts(icase) = numRealz*numParts
     endif
   enddo
 

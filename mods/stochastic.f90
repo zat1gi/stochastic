@@ -13,8 +13,7 @@ program stochastic
   use timevars, only: t1
   use KLvars, only: KLres, KLrec, KLnoise, &
                     Corropts, pltCo
-  use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, &
-                    MCcaseson, MCcases
+  use MCvars, only: pltflux, radMC, radWood, KLWood, WAMC, GaussKL, MCcases
 
   implicit none
   ! pass by reference
@@ -47,20 +46,14 @@ program stochastic
   endif
 
   !!Perform UQ-MC for transport problems  
-  if( sum(MCcaseson)>0) then !perform if at least one case chosen
-    do icase=1,size(MCcaseson)       !cycle through possible cases
-      if( MCcaseson(icase)==1 ) then !run case if chosen
-        call UQ_MC( icase )          !perform transport
-      endif
-    enddo
-  endif
+  call UQ_MC( icase )          !perform transport
   call MCfluxPrint
   call MCfluxPlot
   call MCLeakage_pdfplot
 
   !!print final reports
   call Acase_print
-  if(sum(MCcaseson)/=0) call MCprintstats
+  call MCprintstats
   call timereport
   call finalreport
 

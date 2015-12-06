@@ -12,7 +12,7 @@ CONTAINS
   !in UQ space.
   use timevars, only: time
   use genRealzvars, only: numRealz, flGBgeom
-  use MCvars, only: MCcases, MCcaseson, numParts, trannprt, flfluxplotmat
+  use MCvars, only: MCcases, numParts, trannprt, flfluxplotmat
   use KLvars, only: Corropts, pltCo
   use genRealz, only: genReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
@@ -1106,7 +1106,7 @@ CONTAINS
   !This subroutine prints the results of MC transport methods to '.out' files
   !in order to be printed to the screen.  It also clears out previous plot files.
   use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, numPosMCmeths, &
-                    fluxfaces, fluxnumcells, MCcases, MCcaseson, pltflux, pltmatflux, flfluxplot
+                    fluxfaces, fluxnumcells, MCcases, pltflux, pltmatflux, flfluxplot
   integer :: icase, ibin
 
   call system("test -e plots/fluxplots/radMC_fluxall.out   && rm plots/fluxplots/radMC_fluxall.out")
@@ -1132,7 +1132,7 @@ CONTAINS
   376 format("#cell center,       ave mat1 flux,   ave mat2 flux")
 
   do icase=1,numPosMCmeths
-    if(MCcaseson(icase)==1 .and. flfluxplot) then
+    if(flfluxplot) then
       select case (MCcases(icase))
         case ("radMC")
           if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
@@ -1648,20 +1648,20 @@ CONTAINS
   !for methods which contain realizations (radMC, radWood, KLWood).
   use genRealzvars, only: numRealz
   use MCvars,       only: radMCbinplot, radWoodbinplot, KLWoodbinplot, GaussKLbinplot, &
-                          reflect, transmit, MCcases, MCcaseson
+                          reflect, transmit, MCcases
 
   integer :: icase
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
 
   !this nasty if statement decides whether to proceed at all.
   !from here only MCcases is needed.
-  if( (MCcaseson(icase) == 1      .and. MCcases(icase) =='radMC'      .and. &
+  if( (MCcases(icase) =='radMC'      .and. &
       (radMCbinplot     =='plot'  .or.  radMCbinplot   =='preview'))  .or.  &
-      (MCcaseson(icase) == 1      .and. MCcases(icase) =='radWood'    .and. &
+      (MCcases(icase) =='radWood'    .and. &
       (radWoodbinplot   =='plot'  .or.  radWoodbinplot =='preview'))  .or.  &
-      (MCcaseson(icase) == 1      .and. MCcases(icase) =='KLWood'     .and. &
+      (MCcases(icase) =='KLWood'     .and. &
       (KLWoodbinplot    =='plot'  .or.  KLWoodbinplot  =='preview'))  .or.  &
-      (MCcaseson(icase) == 1      .and. MCcases(icase) =='GaussKL'    .and. &
+      (MCcases(icase) =='GaussKL'    .and. &
       (GaussKLbinplot    =='plot' .or.  GaussKLbinplot  =='preview'))          ) then
 
     !find reflection binning/plotting bounds
@@ -1687,12 +1687,10 @@ CONTAINS
     lgtran = lgtran + 0.0000001d0
 
     !remove old data files (do only first time)
-    if(sum(MCcaseson(1:icase))==1) then
-      call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
-      call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
-      call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-      call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
-    endif
+    call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
+    call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
+    call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
+    call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
 
     !bin and print data
     call radtrans_bin( smrefl,lgrefl,smtran,lgtran,icase ) 
@@ -1907,7 +1905,7 @@ CONTAINS
   use genRealzvars, only: Adamscase, flGBgeom
   use KLvars, only: flMarkov, flGauss
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, stocMC_absorption, MCcases, MCcaseson, &
+                    stocMC_transmission, stocMC_absorption, MCcases, &
                     numPosMCmeths, LPMC, atmixMC, GaussKL
   integer :: icase
 
@@ -1944,20 +1942,18 @@ CONTAINS
 
   !print my solutions for radMC, radWood, KLWood, WAMC, GaussKL (if Markov-based geom)
   do icase = 1,numPosMCmeths
-    if(MCcaseson(icase)==1) then
-      if(MCcases(icase)=='radMC')   write(100,326) stocMC_reflection(icase,1),&
-      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+    if(MCcases(icase)=='radMC')   write(100,326) stocMC_reflection(icase,1),&
+    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-      if(MCcases(icase)=='radWood') write(100,327) stocMC_reflection(icase,1),&
-      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+    if(MCcases(icase)=='radWood') write(100,327) stocMC_reflection(icase,1),&
+    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-      if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
-      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+    if(MCcases(icase)=='KLWood')  write(100,328) stocMC_reflection(icase,1),&
+    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-      if(MCcases(icase)=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
-      sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
+    if(MCcases(icase)=='GaussKL' .and. .not.flGBgeom)  write(100,332) stocMC_reflection(icase,1),&
+    sqrt(stocMC_reflection(icase,2)),stocMC_transmission(icase,1),sqrt(stocMC_transmission(icase,2))
 
-    endif
   enddo
 
   !print for formatting if any LP solutions printed
@@ -1972,8 +1968,8 @@ CONTAINS
 
   !print my solution for LPMC
   do icase = 1,numPosMCmeths
-    if(MCcaseson(icase)==1 .and. MCcases(icase)=='LPMC') write(100,329) stocMC_reflection(icase,1),&
-                                                                      stocMC_transmission(icase,1)
+    if(MCcases(icase)=='LPMC') write(100,329) stocMC_reflection(icase,1),&
+                                              stocMC_transmission(icase,1)
   enddo
 
   !print for formatting if any atomic mix solutions printed
@@ -1987,8 +1983,8 @@ CONTAINS
 
   !print my solution for atmixMC
   do icase = 1,numPosMCmeths
-    if(MCcaseson(icase)==1 .and. MCcases(icase)=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
-                                                                      stocMC_transmission(icase,1)
+    if(MCcases(icase)=='atmixMC') write(100,330) stocMC_reflection(icase,1),&
+                                                 stocMC_transmission(icase,1)
   enddo
 
   write(100,*) "|----------------------------------------------------------|"

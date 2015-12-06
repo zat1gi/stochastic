@@ -13,7 +13,7 @@ CONTAINS
   !fly in this subroutine.
   use timevars, only: time, totparts, cumparts
   use genRealzvars, only: numRealz
-  use MCvars, only: numParts, MCcaseson, MCcases, LPamnumParts, numPosMCmeths
+  use MCvars, only: numParts, MCcases, LPamnumParts, numPosMCmeths
   integer :: j,icase
   real(8) :: tt1
 
@@ -58,28 +58,26 @@ CONTAINS
   avetime    = 0.0d0
   wgtavetime = 0.0d0
   do ticase=1,icase
-    if(MCcaseson(ticase)==1) then
-      select case (MCcases(ticase)) !load to ttime the time of each method
-        case ("radMC")
-          avetime(ticase) = time(2) / cumparts(ticase) !ave time per particle for method
-          wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-        case ("radWood")
-          avetime(ticase) = time(3) / cumparts(ticase)
-          wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-        case ("KLWood")
-          avetime(ticase) = time(7) / cumparts(ticase)
-          wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-        case ("LPMC")
-          avetime(ticase) = time(8) / cumparts(ticase)
-          wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
-        case ("atmixMC")
-          avetime(ticase) = time(9) / cumparts(ticase)
-          wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
-        case ("GaussKL")
-          avetime(ticase) = time(10)/ cumparts(ticase)
-          wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
-      end select
-    endif
+    select case (MCcases(ticase)) !load to ttime the time of each method
+      case ("radMC")
+        avetime(ticase) = time(2) / cumparts(ticase) !ave time per particle for method
+        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
+      case ("radWood")
+        avetime(ticase) = time(3) / cumparts(ticase)
+        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
+      case ("KLWood")
+        avetime(ticase) = time(7) / cumparts(ticase)
+        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
+      case ("LPMC")
+        avetime(ticase) = time(8) / cumparts(ticase)
+        wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
+      case ("atmixMC")
+        avetime(ticase) = time(9) / cumparts(ticase)
+        wgtavetime      = wgtavetime + avetime(ticase) * LPamnumparts
+      case ("GaussKL")
+        avetime(ticase) = time(10)/ cumparts(ticase)
+        wgtavetime      = wgtavetime + avetime(ticase) * numparts * numRealz
+    end select
   enddo
   wgtavetime = wgtavetime / sum(totparts) !weighted average time per particle estimate
 
@@ -92,9 +90,8 @@ CONTAINS
   timeeta             = finished_time + local_time_left + non_local_time_left
 
 
-  1100 format(A9,"   ",f7.2," min,",f6.1,"% of method ",i2," of ",i2,"      time/est:",f7.2,"/",f7.2," min")
-  write(*,1100) MCcases(icase),local_time/60.0d0,localper,sum(MCcaseson(1:icase)),sum(MCcaseson),&
-                finished_time/60.0d0,timeeta/60.0d0
+  1100 format(A9,"   ",f7.2," min,",f6.1,"% of method   time/est:",f7.2,"/",f7.2," min")
+  write(*,1100) MCcases(icase),local_time/60.0d0,localper,finished_time/60.0d0,timeeta/60.0d0
   if(localper==100) print *,
 
   end subroutine radtrans_timeupdate
@@ -152,7 +149,7 @@ CONTAINS
   !This is the timereport that comes at the end of the whole code running, the final time report.
   use timevars, only: t1, runtime, time, ntime, runtime, FOM
   use KLvars, only: KLres, KLrec, KLnoise
-  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, MCcases, MCcaseson, &
+  use MCvars, only: radMC, radWood, KLWood, LPMC, atmixMC, MCcases, &
                     stocMC_transmission, stocMC_reflection, numPosMCmeths, GaussKL
   use utilities, only: calc_time
 

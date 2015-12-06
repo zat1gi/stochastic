@@ -195,6 +195,7 @@ end module KLvars
 module MCvars
   implicit none
   !inputs
+  character(7)         :: chTrantype           ! type of transport to perform
   character(3)         :: radMC                ! perform TMC on binary mixtures operations?
   character(3)         :: radWood              ! perform WMC on binary mixtures operations?
   character(3)         :: KLWood               ! perform WMC on KL reconstructions operations?
@@ -271,7 +272,6 @@ module MCvars
   real(8)              :: position             ! 'current' position of particle
   real(8)              :: oldposition          ! most recent position of particle
   real(8)              :: mu                   ! 'current' direction of particle
-  integer, allocatable :: MCcaseson(:)         ! reference of on or not on, cases selected or not
   character(7), allocatable :: MCcases(:)      ! library of MC transport cases
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
 end module MCvars
