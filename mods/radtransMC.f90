@@ -11,11 +11,10 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
   use genRealzvars, only: numRealz
-  use MCvars, only: numParts, trannprt, flfluxplotmat
+  use MCvars, only: numParts, trannprt, flfluxplotmat, chTrantype
   use KLvars, only: Corropts, pltCo
-  use genRealz, only: genReal
+  use genRealz, only: genbinaryReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
-  use KLconstruct, only: KLconstructions
   use timeman, only: initialize_t1, timeupdate
 
   integer :: j !'j' is which realization
@@ -24,23 +23,10 @@ CONTAINS
 
   write(*,*) "Starting method: ",chTrantype  
 
-  if( chTrantype=='GaussKL') &
-    call KL_eigenvalue
-
-  if(  chTrantype=='KLWood'   .or. chTrantype=='GaussKL'     ) &
-    call KLconstructions       !create KL realz for cases that need them
-
-  if( chTrantype=='GaussKL') then
-    if(Corropts(1) .ne. 'noplot') call KL_Correlation !calc & plot spacial correlation funcs
-    if(   pltCo(1) .ne. 'noplot') call KL_Cochart !creates plots of var kept to tot var
-  endif
-
   do j=1,numRealz
 
       if(chTrantype=='radMC' .or. chTrantype=='radWood') &
     call genbinaryReal( j )         !gen binary geometry
-      if(chTrantype=='atmixMC') &
-    call genatmixMCReal( j )         !gen atomic mix geometry
 
       if(flfluxplotmat .and. (chTrantype=='radMC' .or. chTrantype=='radWood')) &
     call MCprecalc_fluxmatnorm( j )           !collect normalization for flux in cells
@@ -78,7 +64,7 @@ CONTAINS
                     nceilbin, Wood_rej, flnegxs, chTrantype, fbinmax, &
                     bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
                     flCorrMC, numParts
-  use genRealz, only: genReal
+  use genRealz, only: genLPReal
   use KLconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
 
@@ -95,7 +81,7 @@ CONTAINS
     call RN_init_particle( int(rngappnum*rngstride+j*numParts+o,8) )
 
     call genSourcePart( i )      !gen source part pos, dir, and binnum (i), init weight
-    if(chTrantype=='LPMC') call genLPReal( j ) !for LP, choose starting material
+    if(chTrantype=='LPMC') call genLPReal !for LP, choose starting material
     do ! simulate one pathlength of a particle
       fldist      = 'clean'
       flIntType   = 'clean'
@@ -942,7 +928,7 @@ CONTAINS
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    chTrantype, fluxnumcells, fluxall, &
+                    chTrantype, fluxnumcells, fluxall, binplot, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
   integer :: ibin,j
@@ -1217,7 +1203,7 @@ CONTAINS
   !which is deleted at the end.  Builds based on options like title type, plotting lines, and
   !pause or preview.  Can perform three builds, one for material irrespective flux tallying, and 
   !one for each material using material respective flux plotting.
-  use MCvars, only: pltflux, pltfluxtype, pltmatflux
+  use MCvars, only: pltflux, pltfluxtype, pltmatflux, chTrantype
 
   !Clean from previous runs
   call system("test -e plots/fluxplots/fluxall.ps && rm plots/fluxplots/fluxall.ps")

@@ -1,31 +1,31 @@
-  92823659,         Random number seed
+  641347942519,         Random number seed
   contin,          Geometry type: 'contin'uous or 'binary'
   !--- Geometry - num of realz ---!
-  10000,1000,         Number of realizations/how often to print
+  30000,1000,         Number of realizations/how often to print
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  'LogN',        GB mode: 'Gaus','LogN','ChiS'
+  'Gaus',        GB mode: 'Gaus','LogN','ChiS'
   'Glamc','diff',  'Glamc','fitlamc','numeric', Cov and lamc mode for LN/'same' rand #s for xss or 'diff'?
   2.0,0.5,    Ave total cross section, total cross section variance
   0.1,        Scattering ratio, c
-  0.5,        Correlation length, lamc
-  2.0,        Slab thickness, s
+  0.1,        Correlation length, lamc
+  1.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   1.25,3.25, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.9,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0.5,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
   2.0,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Large KL Options ---!
-  5,             Number of eigenvalues
+  7,             Number of eigenvalues
   200,            Number of bins for xi
 
   !--- Large MCtrans Options ---!
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  10,            Number of particles to simulate on each realization
+  40,            Number of particles to simulate on each realization
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
 
@@ -43,7 +43,7 @@
   left,           Choose 'left' or 'intern' (for internal)
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  yes,totaln,20,40,plot,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
+  yes,totaln,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
 
   !!--All Plotting Option
@@ -74,7 +74,7 @@
   7,100000
 
   !!--Plotting KLconstructed realizations  [in sub KLreval]
-  plot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
   1,4,           Which realz to plot/num of Eigs to contribute
   2,4
@@ -82,12 +82,12 @@
   4,4
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
-  noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of Eig/type combos to plot (up to 4)
   1,1            Which Eigenmode to plot/"1" for CoEffExp, "2" for CoEffAct
   2,1
-  4,1
   5,1
+  7,1
 
   !!--Plotting Correlation contours          [in sub KL_eigenvalue]
   noplot,both,    "preview" "plot" or "noplot","expect" "yield" or "both"

@@ -184,12 +184,12 @@ CONTAINS
   print *,"  "
 
                       !Tests for geometry vs transport type
-  if(chgeomtype=='contin' .and. .not.(chTrantype=='GaussKL' .or. chTrantype=='None') then
+  if(chgeomtype=='contin' .and. .not.(chTrantype=='GaussKL' .or. chTrantype=='None')) then
     print *,"--User attempting to use invalid transport type for continuous geometry"
     flstopstatus = .true.
   endif
   if(chgeomtype=='binary' .and. .not.(chTrantype=='radMC' .or. chTrantype=='radWood' .or.&
-     chTrantype=='KLWood'.or. chTrantype=='LPMC'  .or. chTrantype=='atmixMC' .or. chTrantype=='None') then
+     chTrantype=='KLWood'.or. chTrantype=='LPMC'  .or. chTrantype=='atmixMC' .or. chTrantype=='None')) then
     print *,"--User attempting to use invalid transport type for binary material geometry"
     flstopstatus = .true.
   endif
@@ -290,47 +290,48 @@ CONTAINS
   !Test plotting valid options
   if(.not.chLNxsplottype=='noplot' .and. .not.chLNxsplottype=='plot' .and. .not.chLNxsplottype=='preview') then
     print *,"--Use given invalid option for chLNxsplottype"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.binplot=='noplot' .and. .not.binplot=='plot' .and. .not.binplot=='preview') then
     print *,"--Use given invalid option for binplot"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.pltEigf(1)=='noplot' .and. .not.pltEigf(1)=='plot' .and. .not.pltEigf(1)=='preview') then
     print *,"--Use given invalid option for pltEigf(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.Corropts(1)=='noplot' .and. .not.Corropts(1)=='plot' .and. .not.Corropts(1)=='preview') then
     print *,"--Use given invalid option for Corropts(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.pltxiBins(1)=='noplot' .and. .not.pltxiBins(1)=='plot' .and. .not.pltxiBins(1)=='preview') then
     print *,"--Use given invalid option for pltxiBins(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.pltKLrealz(1)=='noplot' .and. .not.pltKLrealz(1)=='plot' .and. .not.pltKLrealz(1)=='preview') then
     print *,"--Use given invalid option for pltKLrealz(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.pltgenrealz(1)=='noplot' .and. .not.pltgenrealz(1)=='plot' .and. .not.pltgenrealz(1)=='preview') then
     print *,"--Use given invalid option for pltgenrealz(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.pltCo(1)=='noplot' .and. .not.pltCo(1)=='plot' .and. .not.pltCo(1)=='preview') then
     print *,"--Use given invalid option for pltCo(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
   if(.not.pltflux(1)=='noplot' .and. .not.pltflux(1)=='plot' .and. .not.pltflux(1)=='preview') then
     print *,"--Use given invalid option for pltflux(1)"
-    stopstatus = .true.
+    flstopstatus = .true.
   endif
-  if(.not.pltmatflux(1)=='noplot' .and. .not.pltmatflux(1)=='plot' .and. .not.pltmatflux(1)=='preview') then
-    print *,"--Use given invalid option for pltmatflux(1)"
-    stopstatus = .true.
+  if(.not.pltmatflux=='noplot' .and. .not.pltmatflux=='plot' .and. .not.pltmatflux=='preview') then
+    print *,"--Use given invalid option for pltmatflux"
+    flstopstatus = .true.
   endif
 
 
-  if(flstopstatus) STOP 'killed'
+
+  if(flstopstatus) stop 'killed'
   if(flsleep) call sleep(4)
 
   end subroutine read_test_inputstoc
@@ -343,17 +344,19 @@ CONTAINS
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          numPosRealz, numNegRealz, numRealz, sigvar, &
-                          scatvar, absvar
-  use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, &
-                    KLrxisig, numSlice, gam, alpha, Ak, Eig, &
-                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, flGaussdiffrand, &
-                    flGaussdiffrand
+                          numPosRealz, numNegRealz, numRealz, sigvar, atmixscatrat, &
+                          scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, GBscatrat, &
+                          GBsigvar, GBsigave
+  use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
+                    KLrxisig, numSlice, gam, alpha, Ak, Eig, chLNmode, pltCo, &
+                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
-                    stocMC_absorption, LPamnumParts, stocMC_fluxall, &
-                    stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, &
-                    fluxnumcells, flfluxplot
+                    stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
+                    stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
+                    fluxnumcells, flfluxplot, LPamMCsums, transmit, reflect, absorb, &
+                    numpnSamp, radtrans_int, Wood_rej
   use mcnp_random, only: RN_init_problem
+  use utilities, only: exponentialfit
   integer :: i
 
   !initialize rngvars
@@ -367,20 +370,19 @@ CONTAINS
   if(chgeomtype=='contin') then  !Gauss-based input
     sigave       = GBsigave
     sigvar       = GBsigvar
-    scatrat(1)   = GBscatrat
     lamc         = GBlamc
     s            = GBs
     if(chGausstype=='LogN') then
-      sigave  = log(GBsigave**2/sqrt(sigvar+sigave_**2))
+      sigave  = log(GBsigave**2/sqrt(sigvar+GBsigave**2))
       sigvar  = log(sigvar/GBsigave**2+1.0d0)
       sig(1)  = log(sig(1)**2/sqrt(sigvar+sig(1) **2))
       sig(2)  = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
       if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
     endif
-    sigscatave = sigave *      scatrat(1)
-    sigabsave  = sigave * (1d0-scatrat(1))
-    scatvar    = sigvar  *      scatrat(1)
-    absvar     = sigvar  * (1d0-scatrat(1))
+    sigscatave = sigave *      GBscatrat
+    sigabsave  = sigave * (1d0-GBscatrat)
+    scatvar    = sigvar *      GBscatrat
+    absvar     = sigvar * (1d0-GBscatrat)
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
     sumPath    = 0d0
@@ -396,6 +398,10 @@ CONTAINS
     sigvar     = P(1)*P(2) * (sig(1)                  - sig(2)                ) **2
     scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
     absvar     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
+    if(chTrantype=='atmixMC') then
+      atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
+      atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
+    endif
   endif
 
 
@@ -414,7 +420,6 @@ CONTAINS
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. pltKLrealz(1).ne.'noplot') then
     allocate(KLrxivals(numRealz,numEigs))
     if(chTrantype=='GaussKL' .and. flGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
-    flGaussdiffrand = .false.
     allocate(KLrxisig(KLrnumpoints))
     allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
   endif

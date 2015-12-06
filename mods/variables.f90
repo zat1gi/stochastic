@@ -131,7 +131,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
 
   logical              :: flGaussdiffrand=.true.! want GB meths to use different rand vars for xi samps?
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'
-  character(7)         :: chLNmode = 'Glamc'   ! Log-normal cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
+  character(7)         :: chLNmode = 'Glamc'   ! LN cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
   logical              :: flLNxscheck = .false.! perform mean, var, and pdf check of LN xs distributions?
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
   integer              :: numLNxspts           ! number of x-values to perform checks at
@@ -159,7 +159,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: KLrxi(:)             !
   real(8), allocatable :: KLrxivals(:,:)       ! psuedo-random numbers for KL media
   real(8), allocatable :: KLrxivalss(:,:)      ! same, but for scattering xs when Gauss-Based methods (diff xis)
-  logical              :: flGaussdiffrand      ! local Gauss-Based methods to use different rand vars for xi samps?
   real(8), allocatable :: pltKLrealzarray(:,:) !
   real(8), allocatable :: KLrxisig(:)          !
 

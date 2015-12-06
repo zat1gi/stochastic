@@ -24,8 +24,8 @@ CONTAINS
 
   call cpu_time(t2)
 
-  1100 format(A9,"   ",f6.1,"% of method   time/est:",f7.2,"/",f7.2," min")
-  write(*,1100) chtype,ndone/ntotal*100d0,(t2-t1)/60.0d0,(t2-t1)*ntotal/ndone/60.0d0
+  1100 format(A9,"   ",f6.1,"% of ",i7,"   time/est:",f7.2,"/",f7.2," min")
+  write(*,1100) chtype,real(ndone,8)/ntotal*100d0,ntotal,(t2-t1)/60.0d0,(t2-t1)*ntotal/ndone/60.0d0
   end subroutine
 
 

@@ -226,7 +226,7 @@ CONTAINS
                           sigave
   use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs
   use MCvars, only: trannprt
-  use genRealz, only: genReal
+  use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,j,k,curEig,lsig,ssig

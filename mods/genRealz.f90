@@ -140,22 +140,6 @@ CONTAINS
 
 
 
-  subroutine genatmixReal
-  !sets material properties for atomic mix transport
-  use genRealzvars, only: P, sig, scatrat, atmixsig
-
-  atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
-  atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
-
-  end subroutine genatmixReal
-
-
-
-
-
-
-
-
 
   subroutine genReal_stats
   !stats and plotting for binary material construction

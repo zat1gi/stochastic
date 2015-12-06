@@ -9,8 +9,8 @@ program stochastic
   use KLmeanadjust
 
   use genRealzvars
-  use KLvars, only: Corropts, pltCo
-  use MCvars, only: pltflux
+  use KLvars, only: Corropts, pltCo, flLNxscheck, flmeanadjust, pltKLrealz
+  use MCvars, only: pltflux, binplot, flfluxplot, chTrantype
   implicit none
 
   !!read parameters

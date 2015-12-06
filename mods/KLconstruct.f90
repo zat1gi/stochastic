@@ -13,15 +13,36 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: sigave, sigvar, sigave_, sigvar_, numRealz, s, &
-                          sigscatave, sigabsave, scatvar, absvar
-  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype
+  use genRealzvars, only: sigave, sigvar, sigave_, sigvar_, numRealz, s, sigscatave, &
+                          sigabsave, scatvar, absvar, GBsigave, GBsigvar, GBscatrat
+  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype, Eig
 
   integer :: j, ix, ibin
   real(8) :: step, tsigave, tsigvar
   real(8), allocatable :: LNxsvals(:,:),xvals(:),LNxsaves(:),LNxsvars(:)
   real(8), allocatable :: pdfLNxsBounds(:)
   integer, allocatable :: pdfLNxsCounts(:,:)
+
+  integer :: i
+  real(8) :: tot, sqr, val
+
+!  sigave = log(2.0d0**2/sqrt(0.5d0+4.0d0))
+!  sigvar  = log(0.5d0/4.0d0 + 1.0d0)
+  
+!  print *,"real ave:",2.0d0,"  Gave:",sigave
+!  print *,"real var:",0.5d0,"  Gvar:",sigvar
+!  tot = 0d0
+!  sqr = 0d0
+
+!  do i=1,100000
+!    val = exp(sigave + sqrt(sigvar) * OneGaussrandnum( rang(),rang() ))
+!    tot = tot + val
+!    sqr = sqr + val**2
+!  enddo
+!  print *,"real ave:",tot/100000.0d0
+!  print *,"real var:",sqr/100000.0d0-(tot/100000.0d0)**2
+
+
 
   allocate(LNxsvals(numRealz,numLNxspts))
   allocate(xvals(numLNxspts))
@@ -40,19 +61,13 @@ CONTAINS
     endif
     do j=1,numRealz
       LNxsvals(j,ix) = KLr_point(j,xvals(ix),chLNxschecktype)
+      !LNxsvals(j,ix) = exp(sigave + sqrt(sigvar) * OneGaussrandnum( rang(),rang() ))
+      !if use this, see that error not in transformation or stats, but in point sampling
     enddo
   enddo
 
   !set average and variance values for selected case
-  if(chGausstype=='LogN') then
-    if(chLNxschecktype=='totaln')  tsigave = sigave_
-    if(chLNxschecktype=='scatter') tsigave = sigscatave
-    if(chLNxschecktype=='absorb')  tsigave = sigabsave
-
-    if(chLNxschecktype=='totaln')  tsigvar = sigvar_
-    if(chLNxschecktype=='scatter') tsigvar = scatvar
-    if(chLNxschecktype=='absorb')  tsigvar = absvar
-  elseif(chGausstype=='Gaus')
+  if(chGausstype=='Gaus') then
     if(chLNxschecktype=='totaln')  tsigave = sigave
     if(chLNxschecktype=='scatter') tsigave = sigscatave
     if(chLNxschecktype=='absorb')  tsigave = sigabsave
@@ -60,6 +75,14 @@ CONTAINS
     if(chLNxschecktype=='totaln')  tsigvar = sigvar
     if(chLNxschecktype=='scatter') tsigvar = scatvar
     if(chLNxschecktype=='absorb')  tsigvar = absvar
+  elseif(chGausstype=='LogN') then
+    if(chLNxschecktype=='totaln')  tsigave = GBsigave
+    if(chLNxschecktype=='scatter') tsigave = GBsigave*     GBscatrat
+    if(chLNxschecktype=='absorb')  tsigave = GBsigave*(1d0-GBscatrat)
+
+    if(chLNxschecktype=='totaln')  tsigvar = GBsigvar
+    if(chLNxschecktype=='scatter') tsigvar = GBsigvar*     GBscatrat
+    if(chLNxschecktype=='absorb')  tsigvar = GBsigvar*(1d0-GBscatrat)
   endif
 
   !calulate and print averages and variances
@@ -80,7 +103,7 @@ CONTAINS
   if(chLNxschecktype=='absorb')  write(15,520,advance='no')
   if(chGausstype=='LogN') then
     write(15,523,advance='no')
-  elseif(chGausstype=='Gaus')
+  elseif(chGausstype=='Gaus') then
     write(15,524,advance='no')
   endif
   write(15,504)
@@ -280,7 +303,7 @@ CONTAINS
     endif
     if(flacceptrealz) realj=realj+1
 
-    call timeupdate( 'KLrtest',reaj,numRealz )
+    if(mod(realj,trannprt)==0) call timeupdate( 'KLrtest',realj,numRealz )
   enddo
 
   print *," Total num reconstructed realz w/ neg value: ",numNegRealz,"/",numNegRealz+numPosRealz
@@ -720,11 +743,10 @@ CONTAINS
   !It has options for total, scattering only, absorption only, or scattering ratio.
   !It has an option to solve for less than the available number of eigenvalues.
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
-  !It can function when in 'material'-based or 'totxs'-based mode.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, scatvar, absvar
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand, chGausstype
   use utilities, only: Heavi
 
   integer :: j
@@ -754,7 +776,7 @@ CONTAINS
     KL_sums = 0d0
     do curEig=1,tnumEigs
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-      KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
+      KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
     enddo
   endif
 
@@ -780,8 +802,10 @@ CONTAINS
     case ("scatrat")
       KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
   end select
-  if(chGausstype=='LogN') KL_point = exp(KL_point)
-  if(chGausstype=='LogN' .and. chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
+  if(chGausstype=='LogN') then
+    KL_point = exp(KL_point)
+    if(chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
+  endif
 
   end function KLr_point
 
