@@ -177,7 +177,11 @@ CONTAINS
   !begin tests of valid input
   print *,"  "
 
-                      !Tests for geometry vs transport type
+  !Tests for problem type
+  if(.not.chgeomtype=='contin' .and. .not.chgeomtype=='binary') then
+    print *,"--User specified illegal geomtype.  Options: 'contin' or 'binary'"
+    flstopstatus = .true.
+  endif
   if(chgeomtype=='contin' .and. .not.(chTrantype=='GaussKL' .or. chTrantype=='None')) then
     print *,"--User specified contin geom but not GaussKL transport, set to GaussKL"
     chTrantype = 'GaussKL'
