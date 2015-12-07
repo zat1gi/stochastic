@@ -491,7 +491,10 @@ CONTAINS
 
 
   subroutine finalreport
-  call system("cat texts/Acase.out texts/Woodnegstats.out texts/MCleakage.out > texts/finalreport.out")
+  !compile and display on screen a final report of some data
+  call system("cat texts/geominput.out > texts/finalreport.out")
+  call system("test -e texts/Woodnegstats.out && cat texts/Woodnegstats.out >> texts/finalreport.out")
+  call system("test -e texts/MCleakage.out && cat texts/MCleakage.out >> texts/finalreport.out")
   call system("cat texts/finalreport.out")
   end subroutine finalreport
 
@@ -1150,28 +1153,42 @@ CONTAINS
 
 
 
-  subroutine Acase_print
-  use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc
+  subroutine geominput_print
+  use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc,&
+                          chgeomtype, GBsigave, GBsigvar, GBscatrat
 
   100 format("  Values loaded for special Adamscase :",f5.1)
+  105 format("  Values used in problem:")
+  106 format("    sigave    :",f10.6,"   sigvar    :",f10.6)
+  107 format("    scatrat   :",f6.2)
   101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
   102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
   103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
-  104 format("    s         :",f6.2,"       lamc      :",f6.2)
+  104 format("    s         :",f6.2,"       lamc      :",f10.6)
 
-  open(unit=100,file="Acase.out")
+  open(unit=100,file="geominput.out")
   write(100,*)
-  write(100,100) Adamscase
-  write(100,101) sig(1),sig(2)
-  write(100,102) scatrat(1),scatrat(2)
-  write(100,103) lam(1),lam(2)
+  if(chgeomtype=='contin') then
+    write(100,105)
+    write(100,106) GBsigave,GBsigvar
+    write(100,107) GBscatrat
+  elseif(chgeomtype=='binary') then
+    if(Adamscase/=0) then
+      write(100,100) Adamscase
+    else
+      write(100,105)
+    endif
+    write(100,101) sig(1),sig(2)
+    write(100,102) scatrat(1),scatrat(2)
+    write(100,103) lam(1),lam(2)
+  endif
   write(100,104) s,lamc
   write(100,*)
 
   close(unit=100)
-  call system("mv Acase.out texts")
+  call system("mv geominput.out texts")
 
-  end subroutine Acase_print
+  end subroutine geominput_print
 
 
 

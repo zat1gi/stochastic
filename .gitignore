@@ -15,7 +15,7 @@ mods/klvars.mod
 mods/timevars.mod
 mods/timeman.mod
 
-texts/Acase.out
+texts/geominput.out
 texts/MCleakage.out
 
 plots/fluxplots/GaussKL_fluxall.out

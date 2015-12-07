@@ -16,7 +16,7 @@
   1.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
+  1.1,           Adamscase option, if==0, then user input for next three parameters
   1.25,3.25, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.6,0.6, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0

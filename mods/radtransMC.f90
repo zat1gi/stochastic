@@ -1649,9 +1649,10 @@ CONTAINS
   !This subroutine prints reflection, transmission, and absorption stats to a '.out' file,
   !then prints that file to the screen for user friendliness.
   !Stats are from Adams89, Brantley11, and those generated here.
-  use genRealzvars, only: Adamscase
+  use genRealzvars, only: Adamscase, chgeomtype
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, chTrantype
+  use KLvars, only: chGausstype
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
@@ -1663,25 +1664,35 @@ CONTAINS
   326 format(" |radMC  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  332 format(" |GaussKL:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
+  332 format(" |Gauss  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
+  333 format(" |LogNorm:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
   329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
   330 format(" |atmixMC:  |",f8.5,"                 |",f8.5,"             |")
 
   !print to file
   open(unit=100,file="MCleakage.out")
 
-    !print headings/benchmark solutions for full problem
+  !print heading for MC transport leakage results
   write(100,*)
-  if(Adamscase/=0) write(100,325) Adamscase
-  if(Adamscase==0) write(100,*) "|--------------- Reflection and Transmission Results ------|"
+
+  if(chgeomtype=='contin') then
+    write(100,*) "|--contin--|---- Reflection and Transmission Results ------|"
+  elseif(chgeomtype=='binary' .and. Adamscase/=0) then
+    write(100,325) Adamscase
+  elseif(chgeomtype=='binary' .and. Adamscase==0) then
+    write(100,*) "|--binary--|---- Reflection and Transmission Results ------|"
+  endif
   write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
   write(100,*) "|----------|-------------------------|---------------------|"
-  if(Adamscase/=0) then
+
+
+  !print benchmark results for Adams cases if applicable
+  if(chgeomtype=='binary' .and. Adamscase/=0) then
     write(100,320) ABreflection(1,1),ABreflection(2,1),ABtransmission(1,1),ABtransmission(2,1)
     if(rodOrplanar=='planar') write(100,321) ABreflection(1,3),ABtransmission(1,3)
   endif
 
-  !print my solutions for radMC, radWood, KLWood, GaussKL (if Markov-based geom)
+  !print my solutions for radMC, radWood, KLWood, GaussKL (Gaus), GaussKL (LogN)
   if(chTrantype=='radMC')   write(100,326) stocMC_reflection(1),&
   sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
@@ -1691,49 +1702,29 @@ CONTAINS
   if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(1),&
   sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='GaussKL')  write(100,332) stocMC_reflection(1),&
+  if(chTrantype=='GaussKL' .and. chGausstype=='Gaus')  write(100,332) stocMC_reflection(1),&
   sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
+  if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,333) stocMC_reflection(1),&
+  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  !print for formatting if any LP solutions printed
-  if(Adamscase/=0 .or. chTrantype=='LPMC') &
+  !print LP solutions printed if applicable
+  if(chgeomtype=='binary' .and. (Adamscase/=0 .or. chTrantype=='LPMC')) then
     write(100,*) "|----------|-------------------------|---------------------|"
-
-  !print benchmark LP solutions
-  if(Adamscase/=0) then
-    write(100,322) ABreflection(1,2),ABtransmission(1,2)
-    if(rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
+    if(Adamscase/=0 .and. rodOrplanar=='rod') write(100,322) ABreflection(1,2),ABtransmission(1,2)
+    if(Adamscase/=0 .and. rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
+    if(chTrantype=='LPMC') write(100,329) stocMC_reflection(1),stocMC_transmission(1)
   endif
-
-  !print my solution for LPMC
-  if(chTrantype=='LPMC') write(100,329) stocMC_reflection(1),&
-                                            stocMC_transmission(1)
 
   !print for formatting if any atomic mix solutions printed
-  if(Adamscase/=0 .or. chTrantype=='atmixMC') &
+  if(chgeomtype=='binary' .and. (Adamscase/=0 .or. chTrantype=='atmixMC')) then
     write(100,*) "|----------|-------------------------|---------------------|"
-
-  !print benchmark atomic mix solutions
-  if(Adamscase/=0) then
-    if(rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
+    if(Adamscase/=0 .and. rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
+    if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(1),stocMC_transmission(1)
   endif
-
-  !print my solution for atmixMC
-  if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(1),&
-                                               stocMC_transmission(1)
 
   write(100,*) "|----------------------------------------------------------|"
   write(100,*)
-
-  if(chTrantype=='GaussKL') then
-    write(100,*) "|--GB-geom-|---- Reflection and Transmission Results ------|"
-    write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
-    write(100,*) "|----------|-------------------------|---------------------|"
-    write(100,332) stocMC_reflection(1),sqrt(stocMC_reflection(2)),&
-                   stocMC_transmission(1),sqrt(stocMC_transmission(2))
-    write(100,*) "|----------|-------------------------|---------------------|"
-    write(100,*)
-  endif
 
   close(unit=100)
 

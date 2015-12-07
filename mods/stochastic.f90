@@ -18,8 +18,8 @@ program stochastic
 
   !!allocate/prepare global parameters
   call global_allocate
-  if(chgeomtype=='binary' .and. Adamscase/=0) call Acase_print
   call clearreports
+  call geominput_print
 
   !!Perform basic KL options
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
@@ -53,7 +53,7 @@ program stochastic
     if(.not.binplot=='noplot') call MCLeakage_pdfplot
     !!print final reports
     call MCprintstats
-    if(chTrantype=='KLWood' .or. chTrantype=='GaussKL') call finalreport
+    call finalreport
   endif
 
 end program stochastic
