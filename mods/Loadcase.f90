@@ -241,8 +241,8 @@ CONTAINS
     print *,"--User attempting to plot flux when no transport calculations are made"
     flstopstatus = .true.
   endif
-  if( sourceType/='left' .AND. sourceType/='intern' ) then
-    print *,"--User attempting to run invalid source type.  Please put either 'left' or 'intern'"
+  if( sourceType/='leftbeam' .and. sourceType/='leftiso' .and. sourceType/='intern' ) then
+    print *,"--User attempting to run invalid source type.  Options: 'leftbeam','leftiso','intern'"
     flstopstatus = .true.
   endif
   if( pltfluxtype/='track' .and. pltfluxtype/='point' ) then

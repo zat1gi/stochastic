@@ -184,7 +184,7 @@ module MCvars
   integer              :: fluxnumcells         ! number of cells for flux profile
 
   character(6)         :: rodOrplanar          ! transport geometry mode
-  character(6)         :: sourceType           ! 'intern' or 'left', distributed or beam source
+  character(8)         :: sourceType           ! 'leftbeam','leftiso', or 'intern' - souce type
   character(7)         :: pltflux(4)           ! plot material irrespective flux
   character(7)         :: pltmatflux           ! plot material respective fluxes
   character(7)         :: pltfluxtype          ! full 'track' length flux plot or 'point' flux binning? 

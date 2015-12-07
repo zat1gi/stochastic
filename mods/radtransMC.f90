@@ -408,7 +408,10 @@ CONTAINS
   use MCvars, only: position, mu, rodOrplanar, sourceType, chTrantype
   integer :: i
 
-  if( sourceType=='left' ) then  !generate source particles
+  if( sourceType=='leftbeam' ) then  !generate source particles
+    position = 0.0d0
+    mu       = 1d0
+  elseif( sourceType=='leftiso' ) then
     position = 0.0d0
     mu       = isoboundmu()
     if(rodOrplanar=='rod') mu = 1.0d0
@@ -421,7 +424,7 @@ CONTAINS
   i = 0  !why is this here?  test if I can get rid of it...
 
   if(chTrantype=='radMC') then !if bin need be set
-    if(sourceType=='left')   i = 1
+    if(sourceType=='leftbeam' .or. sourceType=='leftiso')   i = 1
     if(sourceType=='intern') i = internal_init_i(position)
   endif
 
