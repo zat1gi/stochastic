@@ -1,35 +1,30 @@
   641347942519,         Random number seed
+
+  !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
-  !--- Geometry - num of realz ---!
-  30000,1000,         Number of realizations/how often to print
+  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
+  1000,100,         Number of realizations/how often to print
+  1000,            Number of particles to simulate on each realization
+  4,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  'Gaus',        GB mode: 'Gaus','LogN','ChiS'
-  'Glamc','diff',  'Glamc','fitlamc','numeric', Cov and lamc mode for LN/'same' rand #s for xss or 'diff'?
-  2.0,0.5,    Ave total cross section, total cross section variance
-  0.1,        Scattering ratio, c
-  0.1,        Correlation length, lamc
+  'LogN',        GB mode: 'Gaus','LogN','ChiS'
+  'Glamc','same',  'Glamc','fitlamc','numeric', Cov and lamc mode for LN/'same' rand #s for xss or 'diff'?
+  1.0,0.01,    Ave total cross section, total cross section variance
+  0.5,        Scattering ratio, c
+  0.5,        Correlation length, lamc
   1.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
   1.25,3.25, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.5,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0.6,0.6, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
-  2.0,                 slab thickness           #1.0
+  1.0,                 slab thickness           #1.0
   no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
-  !--- Large KL Options ---!
-  7,             Number of eigenvalues
+  !--- Other KL Options ---!
   200,            Number of bins for xi
-
-  !--- Large MCtrans Options ---!
-  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  40,            Number of particles to simulate on each realization
-  1000000,          Number of particles for LP or atomic mix calculations
-  no,             Correlated-Random number Monte Carlo?
-
-  !--- Lesser KL Options ---!
   100,            Num of pts to plot KLr (and neg check)
   11,             Levels of refinement for eigenvalue solving
   6,              Num of iters used in extrema locating w/o change before stop, exp says use 6 or more
@@ -38,12 +33,14 @@
   200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
-  !--- Lesser MCtransport Options ---!
+  !--- Other MCtransport Options ---!
+  1000000,          Number of particles for LP or atomic mix calculations
+  no,             Correlated-Random number Monte Carlo?
   planar,         Choose 'rod' or 'planar' for geometry type
   left,           Choose 'left' or 'intern' (for internal)
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  yes,totaln,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
+  yes,totaln,20,40,plot,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
 
   !!--All Plotting Option
@@ -82,7 +79,7 @@
   4,4
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
-  preview,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of Eig/type combos to plot (up to 4)
   1,1            Which Eigenmode to plot/"1" for CoEffExp, "2" for CoEffAct
   2,1

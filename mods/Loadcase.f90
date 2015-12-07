@@ -35,11 +35,14 @@ CONTAINS
   open(unit=2,file="inputstoc.txt")
 
   read(2,*) rngseed
-  read(2,*) chgeomtype
 
-  !--- Geometry - num of realz ---!
+  !--- Biggest Problem Parameters ---!
   read(2,*) dumchar
+  read(2,*) chgeomtype
+  read(2,*) chTrantype
   read(2,*) numRealz,trannprt
+  read(2,*) numParts
+  read(2,*) numEigs
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
@@ -63,21 +66,9 @@ CONTAINS
   if(setflags(2)=='yes') flCorrKL    =.true.
   if(setflags(3)=='yes') flCorrRealz =.true.
 
-  !--- Large KL Options ---!
+  !--- Other KL Options ---!
   read(2,*) dumchar
-  read(2,*) numEigs
   read(2,*) binNumof
-
-  !--- Large MCtrans Options ---!
-  read(2,*) dumchar
-  read(2,*) chTrantype
-  read(2,*) numParts
-  read(2,*) LPamnumParts
-  read(2,*) setflags(1)
-  if(setflags(1)=='yes') flCorrMC    =.true.
-
-  !--- Lesser KL Options ---!
-  read(2,*) dumchar
   read(2,*) KLrnumpoints
   read(2,*) levsrefEig
   read(2,*) numrefinesameiter
@@ -86,8 +77,11 @@ CONTAINS
   read(2,*) numSlice
   read(2,*) Gaussrandtype
 
-  !--- Lesser MCtrans Options ---!
+  !--- Other MCtrans Options ---!
   read(2,*) dumchar 
+  read(2,*) LPamnumParts
+  read(2,*) setflags(1)
+  if(setflags(1)=='yes') flCorrMC    =.true.
   read(2,*) rodOrplanar
   read(2,*) sourceType
   read(2,*) setflags(1)
@@ -185,8 +179,9 @@ CONTAINS
 
                       !Tests for geometry vs transport type
   if(chgeomtype=='contin' .and. .not.(chTrantype=='GaussKL' .or. chTrantype=='None')) then
-    print *,"--User attempting to use invalid transport type for continuous geometry"
-    flstopstatus = .true.
+    print *,"--User specified contin geom but not GaussKL transport, set to GaussKL"
+    chTrantype = 'GaussKL'
+    flsleep = .true.
   endif
   if(chgeomtype=='binary' .and. .not.(chTrantype=='radMC' .or. chTrantype=='radWood' .or.&
      chTrantype=='KLWood'.or. chTrantype=='LPMC'  .or. chTrantype=='atmixMC' .or. chTrantype=='None')) then
@@ -287,6 +282,7 @@ CONTAINS
     flsleep = .true.
   endif
 
+
   !Test plotting valid options
   if(.not.chLNxsplottype=='noplot' .and. .not.chLNxsplottype=='plot' .and. .not.chLNxsplottype=='preview') then
     print *,"--Use given invalid option for chLNxsplottype"
@@ -349,7 +345,7 @@ CONTAINS
                           GBsigvar, GBsigave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, numSlice, gam, alpha, Ak, Eig, chLNmode, pltCo, &
-                    xi, KLrxivals, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
+                    xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -384,6 +380,7 @@ CONTAINS
     scatvar    = sigvar *      GBscatrat
     absvar     = sigvar * (1d0-GBscatrat)
   elseif(chgeomtype=='binary') then
+    flGaussdiffrand = .false.
     numPath    = 0  !setup Markov material tallies
     sumPath    = 0d0
     sqrPath    = 0d0
@@ -418,8 +415,8 @@ CONTAINS
 
   !allocate and initialize KLconstruction variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(KLrxivals(numRealz,numEigs))
-    if(chTrantype=='GaussKL' .and. flGaussdiffrand) allocate(KLrxivalss(numRealz,numEigs))
+    allocate(KLrxivalsa(numRealz,numEigs))
+    allocate(KLrxivalss(numRealz,numEigs))
     allocate(KLrxisig(KLrnumpoints))
     allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
   endif

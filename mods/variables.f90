@@ -157,8 +157,8 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8)              :: binSize              !
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !
-  real(8), allocatable :: KLrxivals(:,:)       ! psuedo-random numbers for KL media
-  real(8), allocatable :: KLrxivalss(:,:)      ! same, but for scattering xs when Gauss-Based methods (diff xis)
+  real(8), allocatable :: KLrxivalsa(:,:)      ! abs psuedo-random numbers for KL media, if same use this
+  real(8), allocatable :: KLrxivalss(:,:)      ! scat psuedo-random numbers for KL media
   real(8), allocatable :: pltKLrealzarray(:,:) !
   real(8), allocatable :: KLrxisig(:)          !
 

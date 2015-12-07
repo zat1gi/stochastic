@@ -201,8 +201,8 @@ CONTAINS
   use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz, numRealz
   use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
                           KLrnumpoints, pltKLrealz, &
-                          pltKLrealznumof, pltKLrealzwhich, KLrx, KLrxi, KLrxivals, KLrxivalss, &
-                          pltKLrealzarray, KLrxisig, flGaussdiffrand, &
+                          pltKLrealznumof, pltKLrealzwhich, KLrx, KLrxi, KLrxivalsa, &
+                          KLrxivalss, pltKLrealzarray, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use timeman, only: initialize_t1, timeupdate
@@ -233,7 +233,7 @@ CONTAINS
     call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
     KLrxisig = 0
-    do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivals
+    do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivalsa
         rand = rang()
         if((chTrantype=='KLWood') .and. curEig<=numEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
@@ -241,13 +241,13 @@ CONTAINS
           if(mod(curEig,2)==1) rand1 = rand
           if(mod(curEig,2)==0) then
             call TwoGaussrandnums(rand1,rand,xiterms)
-            KLrxivals(realj,curEig-1) = xiterms(1)
+            KLrxivalsa(realj,curEig-1) = xiterms(1)
             xiterm = xiterms(2)
           endif
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
           xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
         endif
-      if(curEig<=numEigs) KLrxivals(realj,curEig) = xiterm
+      if(curEig<=numEigs) KLrxivalsa(realj,curEig) = xiterm
     enddo
 
     if(flGaussdiffrand) then
@@ -267,8 +267,9 @@ CONTAINS
         endif
         if(curEig<=numEigs) KLrxivalss(realj,curEig) = xiterm
       enddo
+    else
+      KLrxivalss = KLrxivalsa
     endif
-
 
     !count num of realz w/ neg xs, set flag to accept or reject realz
     flrealzneg=.false.
@@ -676,7 +677,7 @@ CONTAINS
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, sigave, scatvar, absvar, scatrat, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, meanadjust, &
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, meanadjust, &
                     sigsmeanadjust, sigameanadjust, KLrxivalss, flGaussdiffrand
   use utilities, only: Heavi
   integer :: j
@@ -685,30 +686,33 @@ CONTAINS
   integer, optional :: tnumEigsin
 
   integer :: curEig, tnumEigs
-  real(8) :: Eigfintterm, KL_sum, KL_sums, sigs, siga, sigt
+  real(8) :: Eigfintterm, KL_suma, KL_sums, sigs, siga, sigt
 
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
   !solve summation of KL terms to use below
-  KL_sum = 0d0
-  do curEig=1,tnumEigs
-    Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-    KL_sum   = KL_sum + sqrt(Eig(curEig)) * Eigfintterm * KLrxivals(j,curEig)
-  enddo
-  KL_sums = KL_sum
+  if(.not.chxstype=='scatter') then
+    KL_suma = 0d0
+    do curEig=1,tnumEigs
+      Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
+      KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalsa(j,curEig)
+    enddo
+  endif
   !solve other summation if needed
-  if(flGaussdiffrand .and. chxstype/='absorb') then
+  if(flGaussdiffrand .and. .not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigs
       Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
       KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalss(j,curEig)
     enddo
+  elseif(.not.flGaussdiffrand .and. .not.chxstype=='absorb') then
+    KL_sums = KL_suma
   endif
 
 
   !cross section values
   if(chxstype .ne. 'scatter') &
-    siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(absvar)  * KL_sum
+    siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(absvar)  * KL_suma
   if(chxstype .ne. 'absorb') &
     sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(scatvar) * KL_sums
 
@@ -746,7 +750,7 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, scatvar, absvar
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivals, KLrxivalss, flGaussdiffrand, chGausstype
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, KLrxivalss, flGaussdiffrand, chGausstype
   use utilities, only: Heavi
 
   integer :: j
@@ -756,7 +760,7 @@ CONTAINS
   integer, optional :: tnumEigsin
   integer, optional :: orderin
 
-  real(8) :: sigt, siga, sigs, KL_sum, KL_sums, Eigfterm
+  real(8) :: sigt, siga, sigs, KL_suma, KL_sums, Eigfterm
   integer :: curEig,tnumEigs,order
   real(8) :: tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
 
@@ -765,20 +769,24 @@ CONTAINS
   order    = merge(orderin   ,0      ,present(orderin)   )
 
   !solve summation of KL terms to use below
-  KL_sum = 0d0
-  do curEig=1,tnumEigs
-    Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-    KL_sum   = KL_sum + sqrt(Eig(curEig)) * Eigfterm * KLrxivals(j,curEig)
-  enddo
-  KL_sums = KL_sum
+  if(.not.chxstype=='scatter') then
+    KL_suma = 0d0
+    do curEig=1,tnumEigs
+      Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
+      KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfterm * KLrxivalsa(j,curEig)
+    enddo
+  endif
   !solve other summation if needed
-  if(flGaussdiffrand .and. chxstype/='absorb') then
+  if(flGaussdiffrand .and. .not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigs
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
       KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
     enddo
+  elseif(.not.flGaussdiffrand .and. .not.chxstype=='absorb') then
+    KL_sums = KL_suma
   endif
+!print *,"chxstype:",chxstype," KL_suma/KL_sums:",KL_suma,KL_sums
 
   !set non-x-dependent values based order
   call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
@@ -786,7 +794,7 @@ CONTAINS
 
   !cross section values
   if(chxstype .ne. 'scatter') &
-    siga = tsigabsave  + tsigameanadjust + sqrt(absvar)  * KL_sum
+    siga = tsigabsave  + tsigameanadjust + sqrt(absvar)  * KL_suma
   if(chxstype .ne. 'absorb') &
     sigs = tsigscatave + tsigsmeanadjust + sqrt(scatvar) * KL_sums
   !determine point value
@@ -804,7 +812,7 @@ CONTAINS
   end select
   if(chGausstype=='LogN') then
     KL_point = exp(KL_point)
-    if(chxstype=='scatrat') KL_point = exp(sigs)/exp(sigs+siga)
+    if(chxstype=='scatrat') KL_point = exp(Heavi(sigs)*sigs)/(exp(Heavi(sigs)*sigs)+exp(Heavi(siga)*siga))
   endif
 
   end function KLr_point
