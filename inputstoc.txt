@@ -8,8 +8,8 @@
   4,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  'LogN',        GB mode: 'Gaus','LogN','ChiS'
-  'Glamc','same',  'Glamc','fitlamc','numeric', Cov and lamc mode for LN/'same' rand #s for xss or 'diff'?
+  Gaus,        GB mode: 'Gaus','LogN','ChiS'
+  Glamc,same,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
   1.0,0.01,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
   0.5,        Correlation length, lamc
