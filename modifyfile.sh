@@ -3,29 +3,25 @@
 # author: Aaron Olson, 12-10-15, aolson1@unm.edu, aaronjeffreyolson@gmail.com
 # function: bash script to easily exchange one string in a file for another
 # input format: see *** Input Error *** below
-# original intent: easily and repetatively swap strings in input file to
-#                  compare calculations with different parameters
-# object of operation: whatever you set as the value of 'file'
 #-------------------------------------------------------------------------------
 
-# file in which to exchange strings 
-file="inputstoc.txt"
-
 # test for valid number of inputs
-if [ "$#" -ne 2 ] && [ "$#" -ne 3 ]; then
+if [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; then
     echo
-    echo "|------------------- *** Input Error *** --------------------|"
-    echo "|------------------------------------------------------------|"
-    echo "|               illegal number of parameters                 |"
-    echo "| usage: ./manipinput [old string] [new string]              |"
-    echo "|                             or                             |"
-    echo "| usage: ./manipinput [linenumber] [old string] [new string] |"
-    echo "|------------------------------------------------------------|"
+    echo "|------------------------- *** Input Error *** ---------------------------|"
+    echo "|-------------------------------------------------------------------------|"
+    echo "|                     illegal number of parameters                        |"
+    echo "| usage: ./manipinput [old string] [new string] [file  path]              |"
+    echo "|                             or                                          |"
+    echo "| usage: ./manipinput [linenumber] [old string] [new string] [file  path] |"
+    echo "|-------------------------------------------------------------------------|"
     echo
     exit
 fi
 
-if [ "$#" -eq 2 ]; then  # if line number not specified, replace first occurance
+if [ "$#" -eq 3 ]; then  # if line number not specified, replace first occurance
+  file=$3
+  echo $file
   echo 
   echo "| Replace first occurance of \"$1\" with \"$2\""
   echo "| "
@@ -36,7 +32,7 @@ if [ "$#" -eq 2 ]; then  # if line number not specified, replace first occurance
   fi
   numoccurances="$(cat $file | grep $1 | wc -l)"
   if [ $numoccurances -eq 0 ]; then #test if old string exists in file, throw error if not
-    echo "|  --- String \"$1\" does not exist in \"$file\" --- "
+    echo "| --- String \"$1\" does not exist in \"$file\" --- "
     echo
     exit
   fi
@@ -48,6 +44,8 @@ if [ "$#" -eq 2 ]; then  # if line number not specified, replace first occurance
   echo "| $(sed "$line!d" $file)"
   echo
 else                     # if line number specified, replace first occurance in line
+  file=$4
+  echo $file
   echo 
   echo "| In line number \"$1\" replace \"$2\" with \"$3\""
   echo "| "
