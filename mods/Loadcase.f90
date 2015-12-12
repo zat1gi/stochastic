@@ -330,9 +330,11 @@ CONTAINS
   endif
 
 
-
   if(flstopstatus) stop 'killed'
   if(flsleep) call sleep(4)
+
+  call system("./saveinput.sh") !if pass tests, log input file for reference based on date/time
+  call system("echo 'Input tests passed and run started:' $(date); echo")
 
   end subroutine read_test_inputstoc
 
