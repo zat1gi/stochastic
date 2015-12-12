@@ -306,6 +306,8 @@ CONTAINS
 
     if(mod(realj,trannprt)==0) call timeupdate( 'KLrtest',realj,numRealz )
   enddo
+  close(11)
+  call system("mv KLrxisig.txt plots/KLsigvals/KLrxisig.txt")
 
   print *," Total num reconstructed realz w/ neg value: ",numNegRealz,"/",numNegRealz+numPosRealz
   print *,
@@ -324,8 +326,6 @@ CONTAINS
 
   integer :: i,curEig,m,KLrnumpts,tnumEigs
   real(8) :: KLsigtemp,Eigfterm,xiterm,rand
-
-  call system("mv KLrxisig.txt plots/KLsigvals/")
 
   do m=1,pltKLrealznumof
     tnumEigs=pltKLrealzwhich(2,m)
@@ -749,9 +749,8 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamc, scatrat, scatvar, absvar
+  use genRealzvars, only: lamc, scatrat, scatvar, absvar, chgeomtype
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, KLrxivalss, flGaussdiffrand, chGausstype
-  use utilities, only: Heavi
 
   integer :: j
   real(8) :: xpos
@@ -762,7 +761,7 @@ CONTAINS
 
   real(8) :: sigt, siga, sigs, KL_suma, KL_sums, Eigfterm
   integer :: curEig,tnumEigs,order
-  real(8) :: tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
+  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
 
   !load any optional values or their default
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
@@ -786,18 +785,34 @@ CONTAINS
   elseif(.not.flGaussdiffrand .and. .not.chxstype=='absorb') then
     KL_sums = KL_suma
   endif
-!print *,"chxstype:",chxstype," KL_suma/KL_sums:",KL_suma,KL_sums
 
   !set non-x-dependent values based order
-  call KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
-  !solve value at point
+  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
 
   !cross section values
   if(chxstype .ne. 'scatter') &
     siga = tsigabsave  + tsigameanadjust + sqrt(absvar)  * KL_suma
   if(chxstype .ne. 'absorb') &
     sigs = tsigscatave + tsigsmeanadjust + sqrt(scatvar) * KL_sums
-  !determine point value
+
+  if(chgeomtype=='contin' .and. chGausstype=='LogN') then
+    KL_point = KLr_LogNfinpoint(siga,sigs,chxstype)    
+  elseif(chgeomtype=='binary' .or. (chgeomtype=='contin' .and. chGausstype=='Gaus')) then
+    KL_point = KLr_basicfinpoint(siga,sigs,chxstype,order)
+  endif
+
+  end function KLr_point
+
+
+
+  function KLr_basicfinpoint(siga,sigs,chxstype,order) result(KL_point)
+  !This function finishes determination of point values for Gaussian random
+  !geometries and binary media KL reconstructions.
+  use utilities, only: Heavi
+  integer :: order
+  real(8) :: siga, sigs, KL_point
+  character(*) :: chxstype
+
   select case (chxstype)
     case ("totale") !if deriv, no Heaviside
       KL_point = merge(Heavi(sigs)*sigs + Heavi(siga)*siga, sigs+siga, order==0)
@@ -810,13 +825,29 @@ CONTAINS
     case ("scatrat")
       KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
   end select
-  if(chGausstype=='LogN') then
-    KL_point = exp(KL_point)
-    if(chxstype=='scatrat') KL_point = exp(Heavi(sigs)*sigs)/(exp(Heavi(sigs)*sigs)+exp(Heavi(siga)*siga))
-  endif
+  end function KLr_basicfinpoint
 
-  end function KLr_point
 
+
+  function KLr_LogNfinpoint(siga,sigs,chxstype) result(KL_point)
+  !This function finished determination of point values for Log-Normal random
+  !geometries.
+  real(8) :: siga, sigs, KL_point
+  character(*) :: chxstype
+
+  select case (chxstype)
+    case ("totale") !if deriv, no Heaviside
+      KL_point = exp(sigs) + exp(siga)
+    case ("totaln")
+      KL_point = exp(sigs) + exp(siga)
+    case ("scatter")
+      KL_point = exp(sigs)
+    case ("absorb")
+      KL_point = exp(siga)
+    case ("scatrat")
+      KL_point = exp(sigs) / ( exp(sigs) + exp(siga) )
+  end select
+  end function KLr_LogNfinpoint
 
 
 
@@ -843,22 +874,20 @@ CONTAINS
 
 
 
-  subroutine KLr_setmeans(order,tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
+  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
   !This subroutine sets values for non-x-dependent terms based on derivative order
   use genRealzvars, only: sigave, sigscatave, sigabsave
   use KLvars, only: meanadjust, sigsmeanadjust, sigameanadjust
 
   integer :: order
-  real(8) :: tmeanadjust,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
+  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
   if(order==0) then
-    tmeanadjust     = meanadjust
     tsigsmeanadjust = sigsmeanadjust
     tsigameanadjust = sigameanadjust
     tsigave         = sigave
     tsigscatave     = sigscatave
     tsigabsave      = sigabsave
   else
-    tmeanadjust     = 0.0d0
     tsigsmeanadjust = 0.0d0
     tsigameanadjust = 0.0d0
     tsigave         = 0.0d0

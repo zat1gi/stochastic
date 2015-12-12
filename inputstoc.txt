@@ -5,12 +5,12 @@
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   1000,100,         Number of realizations/how often to print
   1000,            Number of particles to simulate on each realization
-  4,             Number of eigenvalues
+  10,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   Gaus,        GB mode: 'Gaus','LogN','ChiS'
-  Glamc,same,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  1.0,0.01,    Ave total cross section, total cross section variance
+  Glamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
+  1.0,0.5,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
   0.5,        Correlation length, lamc
   1.0,        Slab thickness, s
@@ -40,7 +40,7 @@
   leftiso,       Choose 'leftbeam', 'leftiso',  or 'intern'
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  yes,totaln,20,40,plot,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
+  yes,scatter,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
 
   !!--All Plotting Option

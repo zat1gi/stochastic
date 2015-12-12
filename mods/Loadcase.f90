@@ -370,21 +370,31 @@ CONTAINS
   numPosRealz= 0
   numNegRealz= 0
   if(chgeomtype=='contin') then  !Gauss-based input
-    sigave       = GBsigave
-    sigvar       = GBsigvar
     lamc         = GBlamc
     s            = GBs
-    if(chGausstype=='LogN') then
-      sigave  = log(GBsigave**2/sqrt(sigvar+GBsigave**2))
-      sigvar  = log(sigvar/GBsigave**2+1.0d0)
-      sig(1)  = log(sig(1)**2/sqrt(sigvar+sig(1) **2))
-      sig(2)  = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
+    if(chGausstype=='Gaus') then
+      sigave     = GBsigave
+      sigscatave = GBsigave *      GBscatrat
+      sigabsave  = GBsigave * (1d0-GBscatrat)
+
+      sigvar     = GBsigvar
+      scatvar    = GBsigvar *      GBscatrat
+      absvar     = GBsigvar * (1d0-GBscatrat)
+    elseif(chGausstype=='LogN') then
+      sigave     = log(  GBsigave**2                 /sqrt( GBsigvar                 + GBsigave**2                 ))
+      sigscatave = log( (GBsigave*      GBscatrat)**2/sqrt((GBsigvar*      GBscatrat)+(GBsigave*      GBscatrat)**2))
+      sigabsave  = log( (GBsigave*(1d0-GBscatrat))**2/sqrt((GBsigvar*(1d0-GBscatrat))+(GBsigave*(1d0-GBscatrat))**2))
+
+      sigvar     = log(  GBsigvar                 / GBsigave**2                 +1.0d0)
+      scatvar    = log( (GBsigvar*      GBscatrat)/(GBsigave*      GBscatrat)**2+1.0d0)
+      absvar     = log( (GBsigvar*(1d0-GBscatrat))/(GBsigave*(1d0-GBscatrat))**2+1.0d0)
+      !sig(1)  = log(sig(1)**2/sqrt(sigvar+sig(1) **2)) !do I need these?  I shouldn't!
+      !sig(2)  = log(sig(2)**2/sqrt(sigvar+sig(2) **2))
+print *,"sigave,sigscatave,sigavsave:",sigave,sigscatave,sigabsave
+print *,"sigvar,scatvar,absvar:",sigvar,scatvar,absvar
+read *
       if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
     endif
-    sigscatave = sigave *      GBscatrat
-    sigabsave  = sigave * (1d0-GBscatrat)
-    scatvar    = sigvar *      GBscatrat
-    absvar     = sigvar * (1d0-GBscatrat)
   elseif(chgeomtype=='binary') then
     flGaussdiffrand = .false.
     numPath    = 0  !setup Markov material tallies
