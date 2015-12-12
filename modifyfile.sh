@@ -38,7 +38,7 @@ if [ "$#" -eq 3 ]; then  # if line number not specified, replace first occurance
   fi
   echo "| Replacement to be made here:"
   echo "| $(cat $file | grep $1 | head -n1)"
-  line="$(grep -n "$1" $file | cut -c-1)"
+  line="$(grep -n "$1" $file | cut -f -d":")"
   sed -i "s/$1/$2/" $file
   echo "| Replacement line now reads:"
   echo "| $(sed "$line!d" $file)"

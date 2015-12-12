@@ -27,7 +27,7 @@ fi
 
 if [ "$#" -eq 2 ]; then  # if line number not specified, replace first occurance
   echo 
-  echo "| Replace first occurance of \"$1\" with \"$2\""
+  echo "| Replace first occurrence of \"$1\" with \"$2\""
   echo "| "
   if [ ! -e $file ]; then  # test that file exists
     echo "| --- File \"$file\" does not exist --- "
@@ -42,7 +42,7 @@ if [ "$#" -eq 2 ]; then  # if line number not specified, replace first occurance
   fi
   echo "| Replacement to be made here:"
   echo "| $(cat $file | grep $1 | head -n1)"
-  line="$(grep -n "$1" $file | cut -c-1)"
+  line="$(grep -n "$1" $file | cut -f1 -d":")"
   sed -i "s/$1/$2/" $file
   echo "| Replacement line now reads:"
   echo "| $(sed "$line!d" $file)"
