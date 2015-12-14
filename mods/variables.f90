@@ -132,7 +132,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   logical              :: flGaussdiffrand=.true.! want GB meths to use different rand vars for xi samps?
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'
   character(7)         :: chLNmode = 'Glamc'   ! LN cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
-  logical              :: flLNxscheck = .false.! perform mean, var, and pdf check of LN xs distributions?
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
   integer              :: numLNxspts           ! number of x-values to perform checks at
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values

@@ -40,7 +40,6 @@
   leftiso,       Choose 'leftbeam', 'leftiso',  or 'intern'
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
-  yes,scatter,20,40,preview,  LN dist check?/chxstype'totaln'.../num x-vals/num bins/'noplot','plot'...
 
 
   !!--All Plotting Option
@@ -77,6 +76,11 @@
   2,4
   3,4
   4,4
+
+  !!--Plotting local KL average and variance
+  preview,scatter,   'noplot','plot'.../xs type, chxstype'totaln'...
+  20,                 num x-vals
+  40,                 num bins
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
   noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

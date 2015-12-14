@@ -9,7 +9,7 @@ program stochastic
   use KLmeanadjust
 
   use genRealzvars
-  use KLvars, only: Corropts, pltCo, flLNxscheck, flmeanadjust, pltKLrealz
+  use KLvars, only: Corropts, pltCo, chLNxsplottype, flmeanadjust, pltKLrealz
   use MCvars, only: pltflux, binplot, flfluxplot, chTrantype
   implicit none
 
@@ -42,7 +42,7 @@ program stochastic
     if(flmeanadjust) call KLadjustmean('scatter') !adjusts scat mean after lopping neg xss
     if(flmeanadjust) call KLadjustmean('absorb')  !adjusts abs mean after lopping neg xss
     if(pltKLrealz(1).ne.'noplot') call KLrplotrealz  !plots reconstructed realizations
-    if(chTrantype=='GaussKL' .and. flLNxscheck) call LNxsvalstest  !tests local reconstructin variance
+    if(chTrantype=='GaussKL' .and. .not.chLNxsplottype=='noplot') call LNxsvalstest !tests loc KL moments
   endif
 
   !!Perform UQ-MC for transport problems  

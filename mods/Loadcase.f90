@@ -16,7 +16,7 @@ CONTAINS
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, &
                                   Gaussrandtype, flCorrKL, numrefinesameiter, flGaussdiffrand, &
-                                  chGausstype, chLNmode, flLNxscheck, numLNxspts, numLNxsbins, &
+                                  chGausstype, chLNmode, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, &
@@ -88,9 +88,6 @@ CONTAINS
   if(setflags(1)=='yes') flnegxs  =.true.
   read(2,*) setflags(1),meanadjust_tol
   if(setflags(1)=='yes') flmeanadjust=.true.
-  read(2,*) setflags(1),chLNxschecktype,numLNxspts,numLNxsbins,chLNxsplottype
-  if(setflags(1)=='yes') flLNxscheck=.true.
-
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
@@ -128,6 +125,11 @@ CONTAINS
   do i=1,pltKLrealznumof
     read(2,*) pltKLrealzwhich(1,i),pltKLrealzwhich(2,i)
   enddo
+
+  read(2,*) dumchar    !Plotting local KL average and variance
+  read(2,*) chLNxsplottype,chLNxschecktype
+  read(2,*) numLNxspts
+  read(2,*) numLNxsbins
 
   read(2,*) dumchar    !Plotting Variace (Co)
   read(2,*) pltCo(1),pltCo(2),pltCo(3),pltCo(4)
