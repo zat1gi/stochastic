@@ -37,14 +37,9 @@ CONTAINS
 
     call MCtransport( j )     !transport over a realization
 
-      if(mod( j,trannprt )==0) call timeupdate( chTrantype,j,numRealz )   !print time updates
+    if(mod( j,trannprt )==0) call timeupdate( chTrantype,j,numRealz )   !print time updates
 
   enddo !loops over realizations
-
-  call stocMC_stats        !calc stats in stochastic space here
-                                              !later make the above two loops,
-                                              !batch spatial stats in between, final out here
-  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) call Woodnegstats
 
   end subroutine UQ_MC
 
@@ -926,8 +921,6 @@ CONTAINS
   !   space for each MC transport solver.
   !2) calculates ensemble averaged flux values in each cell for material
   !   irrespective and material respective flux tallies.
-  !3) calls 'MCLeakage_pdfbinprint', which bins and prints leakage values for
-  !   later plotting.
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
@@ -937,7 +930,7 @@ CONTAINS
   integer :: ibin,j
   real(8) :: dx,p1,p2
 
-  !leakage/absorption stats
+  !leakage/absorption ave and stdev stats
   if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
      chTrantype=='KLWood'.or. chTrantype=='GaussKL'      ) then
     reflect  = reflect  / numParts
@@ -1019,9 +1012,6 @@ CONTAINS
     endif
 
   endif
-
-  !leakage pdfs
-  if(.not.binplot=='noplot') call MCLeakage_pdfbinprint  !bin and print pdf of leakage values
 
   end subroutine stocMC_stats
 

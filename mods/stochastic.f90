@@ -47,10 +47,17 @@ program stochastic
 
   !!Perform UQ-MC for transport problems  
   if(.not.chTrantype=='None') then
-    call UQ_MC          !perform transport
-    if(flfluxplot) call MCfluxPrint
-    if(flfluxplot) call MCfluxPlot
-    if(.not.binplot=='noplot') call MCLeakage_pdfplot
+    call UQ_MC                      !perform transport
+    call stocMC_stats               !calc stats in stochastic space here
+    if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' ) call Woodnegstats !print negativity stats
+    if(flfluxplot) then             !print, then plot flux values
+      call MCfluxPrint
+      call MCfluxPlot
+    endif
+    if(.not.binplot=='noplot') then !bin and print, then plot pdf of leakage values
+      call MCLeakage_pdfbinprint
+      call MCLeakage_pdfplot
+    endif
     !!print final reports
     call MCprintstats
     call finalreport

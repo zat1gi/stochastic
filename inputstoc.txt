@@ -96,11 +96,11 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,    Plot Leakage profile?
+  preview,    Plot Leakage profile?
   40,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   point,           "track" "point", type of flux binning, over whole track or a point on it 
   50,           Number of cells collect and plot flux over
