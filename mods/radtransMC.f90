@@ -1653,21 +1653,30 @@ CONTAINS
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, stocMC_absorption, chTrantype
   use KLvars, only: chGausstype
+  real(8) :: eps = 0.0001d0
 
-  320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"     |",f7.4,"   +-",f8.4," |")
-  321 format(" |BrantMC:  |",f8.5,"                 |",f8.5,"             |")
-  322 format(" |AdamsLP:  |",f7.4,"                  |",f7.4,"              |")
-  323 format(" |BrantLP:  |",f8.5,"                 |",f8.5,"             |")
-  324 format(" |BrAtMix:  |",f8.5,"                 |",f8.5,"             |")
+  320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"    | ",f7.4,"   +-",f8.4," |")
+  321 format(" |BrantMC:  |",f8.5,"                | ",f8.5,"             |")
+  322 format(" |AdamsLP:  |",f7.4,"                 | ",f7.4,"              |")
+  323 format(" |BrantLP:  |",f8.5,"                | ",f8.5,"             |")
+  324 format(" |BrAtMix:  |",f8.5,"                | ",f8.5,"             |")
   325 format(" |-case:",f3.1,"-|---- Reflection and Transmission Results ------|")
 
-  326 format(" |radMC  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  327 format(" |radWood:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  332 format(" |Gauss  :  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  333 format(" |LogNorm:  |",f8.5,"  +-",f9.5,"    |",f8.5,"  +-",f9.5,"|")
-  329 format(" |LPMC   :  |",f8.5,"                 |",f8.5,"             |")
-  330 format(" |atmixMC:  |",f8.5,"                 |",f8.5,"             |")
+  326 format(" |radMC  :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  327 format(" |radWood:  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  332 format(" |Gauss  :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  333 format(" |LogNorm:  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  329 format(" |LPMC   :  |",f8.5,"                | ",f8.5,"             |")
+  330 format(" |atmixMC:  |",f8.5,"                | ",f8.5,"             |")
+
+  346 format(" |radMC  :  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
+  347 format(" |radWood:  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
+  348 format(" |KLWood :  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
+  352 format(" |Gauss  :  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
+  353 format(" |LogNorm:  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
+  349 format(" |LPMC   :  |",e10.3,"              | ",e10.3,"          |")
+  350 format(" |atmixMC:  |",e10.3,"              | ",e10.3,"          |")
 
   !print to file
   open(unit=100,file="MCleakage.out")
@@ -1682,8 +1691,8 @@ CONTAINS
   elseif(chgeomtype=='binary' .and. Adamscase==0) then
     write(100,*) "|--binary--|---- Reflection and Transmission Results ------|"
   endif
-  write(100,*) "|Method    | reflave      refldev    | tranave      trandev|"
-  write(100,*) "|----------|-------------------------|---------------------|"
+  write(100,*) "|Method    | reflave      refldev   |  tranave      trandev|"
+  write(100,*) "|----------|------------------------|----------------------|"
 
 
   !print benchmark results for Adams cases if applicable
@@ -1693,24 +1702,43 @@ CONTAINS
   endif
 
   !print my solutions for radMC, radWood, KLWood, GaussKL (Gaus), GaussKL (LogN)
-  if(chTrantype=='radMC')   write(100,326) stocMC_reflection(1),&
-  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+  if(stocMC_reflection(1) < eps .or. sqrt(stocMC_reflection(2)) < eps .or. &
+     stocMC_transmission(1)<eps .or. sqrt(stocMC_transmission(2))<eps ) then
+    if(chTrantype=='radMC')   write(100,346) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='radWood') write(100,327) stocMC_reflection(1),&
-  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+    if(chTrantype=='radWood') write(100,347) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(1),&
-  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+    if(chTrantype=='KLWood')  write(100,348) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='GaussKL' .and. chGausstype=='Gaus')  write(100,332) stocMC_reflection(1),&
-  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+    if(chTrantype=='GaussKL' .and. chGausstype=='Gaus')  write(100,352) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-  if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,333) stocMC_reflection(1),&
-  sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+    if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,353) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+  else
+    if(chTrantype=='radMC')   write(100,326) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+
+    if(chTrantype=='radWood') write(100,327) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+
+    if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+
+    if(chTrantype=='GaussKL' .and. chGausstype=='Gaus')  write(100,332) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+
+    if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,333) stocMC_reflection(1),&
+    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+  endif
+
 
   !print LP solutions printed if applicable
   if(chgeomtype=='binary' .and. (Adamscase/=0 .or. chTrantype=='LPMC')) then
-    write(100,*) "|----------|-------------------------|---------------------|"
+    write(100,*) "|----------|------------------------|----------------------|"
     if(Adamscase/=0 .and. rodOrplanar=='rod') write(100,322) ABreflection(1,2),ABtransmission(1,2)
     if(Adamscase/=0 .and. rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
     if(chTrantype=='LPMC') write(100,329) stocMC_reflection(1),stocMC_transmission(1)
@@ -1718,7 +1746,7 @@ CONTAINS
 
   !print for formatting if any atomic mix solutions printed
   if(chgeomtype=='binary' .and. (Adamscase/=0 .or. chTrantype=='atmixMC')) then
-    write(100,*) "|----------|-------------------------|---------------------|"
+    write(100,*) "|----------|------------------------|----------------------|"
     if(Adamscase/=0 .and. rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
     if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(1),stocMC_transmission(1)
   endif

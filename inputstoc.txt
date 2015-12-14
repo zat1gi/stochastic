@@ -78,7 +78,7 @@
   4,4
 
   !!--Plotting local KL average and variance
-  preview,scatter,   'noplot','plot'.../xs type, chxstype'totaln'...
+  plot,scatter,   'noplot','plot'.../xs type, chxstype'totaln'...
   20,                 num x-vals
   40,                 num bins
 
