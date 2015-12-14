@@ -678,7 +678,7 @@ CONTAINS
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, sigave, scatvar, absvar, scatrat, sigscatave, sigabsave
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, meanadjust, &
-                    sigsmeanadjust, sigameanadjust, KLrxivalss, flGaussdiffrand
+                    sigsmeanadjust, sigameanadjust, KLrxivalss
   use utilities, only: Heavi
   integer :: j
   real(8) :: xl,xr,KL_int
@@ -699,14 +699,12 @@ CONTAINS
     enddo
   endif
   !solve other summation if needed
-  if(flGaussdiffrand .and. .not.chxstype=='absorb') then
+  if(.not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigs
       Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
       KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalss(j,curEig)
     enddo
-  elseif(.not.flGaussdiffrand .and. .not.chxstype=='absorb') then
-    KL_sums = KL_suma
   endif
 
 
@@ -750,7 +748,7 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatrat, scatvar, absvar, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, KLrxivalss, flGaussdiffrand, chGausstype
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, KLrxivalss, chGausstype
 
   integer :: j
   real(8) :: xpos
@@ -776,14 +774,12 @@ CONTAINS
     enddo
   endif
   !solve other summation if needed
-  if(flGaussdiffrand .and. .not.chxstype=='absorb') then
+  if(.not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigs
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
       KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
     enddo
-  elseif(.not.flGaussdiffrand .and. .not.chxstype=='absorb') then
-    KL_sums = KL_suma
   endif
 
   !set non-x-dependent values based order
@@ -800,7 +796,6 @@ CONTAINS
   elseif(chgeomtype=='binary' .or. (chgeomtype=='contin' .and. chGausstype=='Gaus')) then
     KL_point = KLr_basicfinpoint(siga,sigs,chxstype,order)
   endif
-
   end function KLr_point
 
 
