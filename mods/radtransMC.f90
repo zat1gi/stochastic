@@ -1505,8 +1505,8 @@ CONTAINS
   call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,reflect,numRealz )
   call store_in_bins( smtran,lgtran,trprofile_binnum,trancounts,tranbounds,transmit,numRealz )
 
-  tranprob = real(trancounts,8)/numRealz/((lgtran-smtran)/(trprofile_binnum-1))
-  reflprob = real(reflcounts,8)/numRealz/((lgrefl-smrefl)/(trprofile_binnum-1))
+  tranprob = real(trancounts,8)/numRealz
+  reflprob = real(reflcounts,8)/numRealz
 
   !print to generic file
   open(unit=100,file="tranreflprofile.txt")

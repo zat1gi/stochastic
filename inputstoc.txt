@@ -3,8 +3,8 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  1000,100,         Number of realizations/how often to print
-  1000,            Number of particles to simulate on each realization
+  20,1,         Number of realizations/how often to print
+  400000,            Number of particles to simulate on each realization
   10,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
