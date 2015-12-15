@@ -361,7 +361,8 @@ CONTAINS
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
                     fluxnumcells, flfluxplot, LPamMCsums, transmit, reflect, absorb, &
-                    numpnSamp, radtrans_int, Wood_rej
+                    numpnSamp, radtrans_int, Wood_rej, flfluxplotall, flfluxplotmat, &
+                    fluxall
   use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit
   integer :: i
@@ -460,7 +461,6 @@ CONTAINS
     reflect      = 0.0d0
     absorb       = 0.0d0
 
-    flfluxplot = .false.  !flux variable allocations
     if(.not.(pltflux(1)=='noplot' .and. pltmatflux=='noplot')) flfluxplot = .true.
     if(flfluxplot) then   !alloc and init flux cells
       allocate(fluxfaces(fluxnumcells+1))
@@ -489,6 +489,13 @@ CONTAINS
       numpnSamp  =0
       areapnSamp =0.0d0
     endif
+    if(.not. pltflux(1)=='noplot') flfluxplotall = .true.
+    if(flfluxplotall) then
+      allocate(fluxall(fluxnumcells,numRealz))
+      fluxall = 0d0
+    endif
+    if(.not. pltmatflux=='noplot') flfluxplotmat = .true.
+
   endif
 
   end subroutine global_allocate

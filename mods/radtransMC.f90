@@ -964,7 +964,6 @@ CONTAINS
                       fluxmat2= fluxmat2/ dx / LPamnumParts !normalize part 1
     endif    
   endif
-
   if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
      chTrantype=='KLWood'.or. chTrantype=='GaussKL'       ) then
     if( flfluxplotall ) then

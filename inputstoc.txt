@@ -4,11 +4,11 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   20,1,         Number of realizations/how often to print
-  400000,            Number of particles to simulate on each realization
+  100000,            Number of particles to simulate on each realization
   10,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  Gaus,f1,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
+  LogN,f1,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   Glamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
   1.0,0.5,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
@@ -37,7 +37,7 @@
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
   planar,         Choose 'rod' or 'planar' for geometry type
-  leftiso,       Choose 'leftbeam', 'leftiso',  or 'intern'
+  leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
 
@@ -96,8 +96,8 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  preview,    Plot Leakage profile?
-  40,             Numb of bins Leakage profiles
+  plot,    Plot Leakage profile?
+  100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
   preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
