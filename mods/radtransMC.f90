@@ -57,7 +57,7 @@ CONTAINS
                     absorb, position, mu, areapnSamp, numpnSamp, &
                     Wood_rej, flnegxs, chTrantype, fbinmax, &
                     bbinmax, LPamMCsums, flfluxplot, &
-                    flCorrMC, numParts
+                    flCR_MCSC, numParts
   use genRealz, only: genLPReal
   use KLconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
@@ -70,8 +70,15 @@ CONTAINS
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,numParts                     !loop over particles
-    if(flCorrMC) call setrngappnum(chTrantype)
-    call RN_init_particle( int(rngappnum*rngstride+j*numParts+o,8) )
+    call setrngappnum('radtrans')
+    if(flCR_MCSC) then
+      !correlate same particle history in each realization (CR-MC/CR-SC)
+      call RN_init_particle( int(rngstride*rngappnum+           o,8) )
+    else
+      !reproducible and only correlation implicitly across method types--no correlation within one run
+      call RN_init_particle( int(rngstride*rngappnum+j*numParts+o,8) )
+    endif
+
 
     call genSourcePart( i )      !gen source part pos, dir, and binnum (i), init weight
     if(chTrantype=='LPMC') call genLPReal !for LP, choose starting material

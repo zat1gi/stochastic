@@ -10,22 +10,12 @@ contains
   !rngs used for that application
   character(*) :: rngapp
   select case (rngapp)
-    case ("radMC")         !transport           !possible correlation 1
-      rngappnum = 1
-    case ("radWood")                            !possible correlation 1
-      rngappnum = 2
-    case ("KLWood")                             !possible correlation 2
-      rngappnum = 3
-    case ("LPMC")
-      rngappnum = 4
-    case ("atmixMC")
-      rngappnum = 5
-    case ("GaussKL")                            !possible correlation 2
-      rngappnum = 6
     case ("genRealz")      !allow reproducible binary geometries
-      rngappnum = 10
+      rngappnum = 1
     case ("KLRealz")       !allow reproducible KL geometries
-      rngappnum = 13
+      rngappnum = 2
+    case ("radtrans")      !allow reproducible transport/correlated transport
+      rngappnum = 3
   end select
   end subroutine setrngappnum
 end module rngvars
@@ -180,12 +170,11 @@ module MCvars
   character(7)         :: pltfluxtype          ! full 'track' length flux plot or 'point' flux binning? 
   integer              :: trprofile_binnum     ! number of bins for tran and refl profiles
   character(7)         :: binplot              ! 'plot', 'noplot', 'preview', pdf of leakage
+  logical              :: flCR_MCSC=.false.    ! correlated random number seeds at particle histories
 
   logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
 
   !non inputs
-  logical              :: flCorrMC=.false.     ! correlated random number MC transport
-
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values
                                                ! First rank: 1 average, 2 stdev

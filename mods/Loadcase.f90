@@ -20,7 +20,8 @@ CONTAINS
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype, flCorrMC, chTrantype
+                                  pltfluxtype, flCR_MCSC, chTrantype
+  use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
   character(4)  :: setflags(3)
@@ -73,7 +74,7 @@ CONTAINS
   read(2,*) dumchar 
   read(2,*) LPamnumParts
   read(2,*) setflags(1)
-  if(setflags(1)=='yes') flCorrMC    =.true.
+  if(setflags(1)=='yes') flCR_MCSC    =.true.
   read(2,*) rodOrplanar
   read(2,*) sourceType
   read(2,*) setflags(1)
@@ -188,6 +189,10 @@ CONTAINS
   if(chgeomtype=='contin' .and. .not.(chGBcase=='none' .or. chGBcase=='f1' .or. chGBcase=='f2')) then
     print *,"--User giving non-valid option for special GB case"
     flstopstatus = .true.
+  endif
+  if(rngstride < numRealz) then
+    print *,"--User using too many realizations--reusing random numbers, may cause correlation"
+    flsleep = .true.
   endif
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs

@@ -34,7 +34,7 @@
 
   !--- Other MCtransport Options ---!
   10000,          Number of particles for LP or atomic mix calculations
-  no,             Correlated-Random number Monte Carlo?
+  no,             Correlated-Random number MC at each history across realizations?
   planar,         Choose 'rod' or 'planar' for geometry type
   leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'
   yes,            Allow neg xss?(as 0? [or ignore realz])
