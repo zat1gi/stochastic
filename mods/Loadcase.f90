@@ -22,14 +22,10 @@ CONTAINS
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, &
                                   pltfluxtype, flCorrMC, chTrantype
   character(7) :: pltallopt                         !Plot all same opt
-  character(3) :: allL1s,allcenters !all basic L1/center based functionals?
-  character(6) :: chosennorm        !norm to convert from text to number
 
-  real(8)       :: dumreal,s2
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-  integer         :: i, ones, zeros
-  real(8)         :: eps = 0.000001d0
+  integer         :: i
   logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")
@@ -355,7 +351,7 @@ CONTAINS
                           scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, GBscatrat, &
                           GBsigvar, GBsigave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
-                    KLrxisig, numSlice, gam, alpha, Ak, Eig, chLNmode, pltCo, &
+                    KLrxisig, gam, alpha, Ak, Eig, chLNmode, pltCo, &
                     xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &

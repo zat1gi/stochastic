@@ -13,9 +13,9 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: sigave, sigvar, sigave_, sigvar_, numRealz, s, sigscatave, &
+  use genRealzvars, only: sigave, sigvar, numRealz, s, sigscatave, &
                           sigabsave, scatvar, absvar, GBsigave, GBsigvar, GBscatrat
-  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype, Eig
+  use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype
 
   integer :: j, ix, ibin
   real(8) :: step, tsigave, tsigvar
@@ -23,9 +23,7 @@ CONTAINS
   real(8), allocatable :: pdfLNxsBounds(:)
   integer, allocatable :: pdfLNxsCounts(:,:)
 
-  integer :: i
-  real(8) :: tot, sqr, val
-
+!  real(8) :: tot, sqr, val
 !  sigave = log(2.0d0**2/sqrt(0.5d0+4.0d0))
 !  sigvar  = log(0.5d0/4.0d0 + 1.0d0)
   
@@ -175,7 +173,7 @@ CONTAINS
   !This subroutine creates a mesh based on selected frequency of 
   !sampling in x for plotting KL realizations.
   use genRealzvars , only: s
-  use KLvars, only: KLrnumpoints, KLrx, KLrxi
+  use KLvars, only: KLrnumpoints, KLrxi
 
   integer :: i
   real(8) :: KLrxstepsize
@@ -198,19 +196,17 @@ CONTAINS
   !It also passes an array of selected random variables xi to be plotted in KLreval.
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use utilities, only: TwoGaussrandnums, erfi
-  use genRealzvars, only: s, lamc, sigave, numPosRealz, numNegRealz, numRealz
-  use KLvars,       only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
-                          KLrnumpoints, pltKLrealz, &
-                          pltKLrealznumof, pltKLrealzwhich, KLrx, KLrxi, KLrxivalsa, &
-                          KLrxivalss, pltKLrealzarray, KLrxisig, flGaussdiffrand, &
+  use genRealzvars, only: numPosRealz, numNegRealz, numRealz
+  use KLvars,       only: binPDF, binNumof, numEigs, &
+                          KLrnumpoints, KLrxi, KLrxivalsa, &
+                          KLrxivalss, KLrxisig, flGaussdiffrand, &
                           Gaussrandtype, flCorrKL, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig,w,u
-  real(8) :: KLsigtemp,Eigfterm,xiterm,rand,rand1,tt1,tt2,xiterms(2)
+  integer :: i,tentj,realj,curEig
+  real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
-  logical :: flpurpose(3)=.false. !1)neg or not, 2)max vals, 3)zeros
 
   call initialize_t1
 
@@ -319,13 +315,10 @@ CONTAINS
   subroutine KLrplotrealz
   !This subroutine uses the stored array of pseudo-random numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
-  use genRealzvars, only: lamc, sigave, numRealz
-  use KLvars,      only: gam, alpha, Ak, Eig, binPDF, binNumof, numEigs, &
-                         KLrnumpoints, pltKLrealz, pltKLrealznumof, &
-                         pltKLrealzwhich, KLrx, KLrxi, pltKLrealzarray, KLrxisig
+  use KLvars,      only: KLrnumpoints, pltKLrealz, pltKLrealznumof, &
+                         pltKLrealzwhich, KLrxi, pltKLrealzarray, KLrxisig
 
-  integer :: i,curEig,m,KLrnumpts,tnumEigs
-  real(8) :: KLsigtemp,Eigfterm,xiterm,rand
+  integer :: i,m,KLrnumpts,tnumEigs
 
   do m=1,pltKLrealznumof
     tnumEigs=pltKLrealzwhich(2,m)
@@ -353,7 +346,7 @@ CONTAINS
   !This subroutine searches for negative values in KL realizations.
   !If negative value found, set flrealzneg=.true., otherwise remain .false..
   use genRealzvars, only: s
-  use KLvars, only: alpha, Ak, Eig, numEigs
+  use KLvars, only: numEigs
   integer :: j
   character(*) :: chxstype
   logical :: flrealzneg
@@ -414,7 +407,7 @@ CONTAINS
   !first sighting of negativity.  Otherwise it will then cycle through each set of bounds on
   !a zero and find and store the zeros.
   use genRealzvars, only: s, numRealz
-  use KLvars, only: KLzerostot, KLzerosabs, KLzerosscat, KLzerostotn, numEigs, numrefinesameiter, KLrmaxnumzeros
+  use KLvars, only: KLzerosabs, KLzerosscat, KLzerostotn, numEigs, numrefinesameiter, KLrmaxnumzeros
   use utilities, only: arithmaticsum, geometricsum
   integer :: j
   character(*) :: chxstype
@@ -434,7 +427,7 @@ CONTAINS
   KLrmaxnumzeros = 0
 
   !find bounds on zeros, if only care if negative abort when negative sampled
-  arsum = arithmaticsum(1,numEigs,1,numEigs)
+  arsum = arithmaticsum(1,numEigs,numEigs)
   arsum = merge(arsum,60,arsum>60)           !limit max # estimated pts per slab
   secpts = ceiling(real(arsum,8)/real(numslabsecs))
   secpts = merge(secpts,3,secpts<3)          !limit min # pts per segment
@@ -544,11 +537,11 @@ CONTAINS
   character(*) :: chxstype
   real(8) :: zl,zr
   real(8), allocatable :: zloc(:), zval(:)
-  real(8), allocatable :: zloc_(:),zval_(:)
+  real(8), allocatable :: zval_(:)
   integer, allocatable :: znew(:), znew_(:)
   logical :: flrealzneg,flfindzeros
 
-  integer :: i, l, numpts, numpts_, realzwochange, tallychanges, tallychanges_, itersametally
+  integer :: i, l, numpts, numpts_, tallychanges, tallychanges_, itersametally
   real(8) :: step
 
   allocate(znew(size(zloc)))
@@ -676,8 +669,8 @@ CONTAINS
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
-  use genRealzvars, only: lamc, sigave, scatvar, absvar, scatrat, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, meanadjust, &
+  use genRealzvars, only: lamc, scatvar, absvar, sigscatave, sigabsave
+  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, &
                     sigsmeanadjust, sigameanadjust, KLrxivalss
   use utilities, only: Heavi
   integer :: j
@@ -686,7 +679,7 @@ CONTAINS
   integer, optional :: tnumEigsin
 
   integer :: curEig, tnumEigs
-  real(8) :: Eigfintterm, KL_suma, KL_sums, sigs, siga, sigt
+  real(8) :: Eigfintterm, KL_suma, KL_sums, sigs, siga
 
   tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
 
@@ -747,7 +740,7 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamc, scatrat, scatvar, absvar, chgeomtype
+  use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
   use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, KLrxivalss, chGausstype
 
   integer :: j
@@ -757,7 +750,7 @@ CONTAINS
   integer, optional :: tnumEigsin
   integer, optional :: orderin
 
-  real(8) :: sigt, siga, sigs, KL_suma, KL_sums, Eigfterm
+  real(8) :: siga, sigs, KL_suma, KL_sums, Eigfterm
   integer :: curEig,tnumEigs,order
   real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
 
@@ -872,7 +865,7 @@ CONTAINS
   subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
   !This subroutine sets values for non-x-dependent terms based on derivative order
   use genRealzvars, only: sigave, sigscatave, sigabsave
-  use KLvars, only: meanadjust, sigsmeanadjust, sigameanadjust
+  use KLvars, only: sigsmeanadjust, sigameanadjust
 
   integer :: order
   real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
@@ -924,7 +917,7 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s, sigave, sigscatave, sigabsave, numRealz
-  use KLvars, only: alpha, Ak, Eig, numEigs, meanadjust, meanadjust_tol, sigsmeanadjust, &
+  use KLvars, only: numEigs, meanadjust, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLconstruct, only: KLr_point, KLrxi_integral
 
@@ -1010,8 +1003,7 @@ CONTAINS
   function findnextpoint(j,chxstype)
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
-  use genRealzvars, only: s, sigave
-  use KLvars,       only: alpha, Ak, Eig, numEigs
+  use genRealzvars, only: s
   use KLconstruct, only: KLr_point
   integer :: j
   character(*) :: chxstype
@@ -1044,8 +1036,6 @@ CONTAINS
 
   function refinenextpoint(j,oldx,curx,chxstype)
   !This function takes a range and zeroes in on transition in sign of cross section within tolerance
-  use genRealzvars, only: s, sigave
-  use KLvars, only: alpha, Ak, Eig, numEigs
   use KLconstruct, only: KLr_point
   integer :: j
   real(8) :: oldx,curx

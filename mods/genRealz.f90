@@ -14,15 +14,14 @@ CONTAINS
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, &
-                          totLength, atmixsig, scatrat, flCorrMarkov, flCorrRealz
+                          totLength, flCorrMarkov, flCorrRealz
   use MCvars, only: chTrantype
   use mcnp_random, only: RN_init_particle
 
   integer :: j
-  real(8) :: tt1,tt2
 
   integer, parameter :: numArrSz = 5000 !temp var, don't know how long to make arrays yet
-  integer :: i,firstloop,matType_temp(numArrSz)
+  integer :: i,matType_temp(numArrSz)
   real(8) :: matLength_temp(numArrSz)
 
   if(allocated(matType)) deallocate(matType)
@@ -42,10 +41,6 @@ CONTAINS
   matLength_temp=0d0
   matType_temp=0
 
-  200 format("P(1),(2)            :",f12.4,f12.4)
-  201 format("matFirstTally(1),(2):",f12.0,f12.0)
-  202 format("matLength_temp:",f10.4,"    matType:",i7)
-  
   if( rang() < P(1) ) then  !choose which material first and tally
     matType_temp(1) = 1
     matFirstTally(1) = matFirstTally(1)+1
@@ -79,7 +74,6 @@ CONTAINS
 
     if( pltgenrealz(1) .ne. 'noplot' ) then  !print to plot selected realizations
     203 format("          ",A7,"            ",A7)
-    204 format("      0.00000000     ",f16.8)
     205 format(f16.8,"     ",f16.8)
 
     if( j==pltgenrealzwhich(1) ) then

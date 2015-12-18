@@ -308,11 +308,11 @@ CONTAINS
   end function dev_p
 
 
-  function arithmaticsum(nf,nl,gap,N)
+  function arithmaticsum(nf,nl,N)
   !This function finds the sum of an arithmatic series of 'N' numbers whose
-  !first number is nf, last number is nl, and the gap between numbers is 'gap'.
-  !Function assumes all numbers (including gap) are integers.
-  integer :: nf,nl,gap,N,arithmaticsum
+  !first number is nf and last number is nl.
+  !Function assumes all numbers are integers.
+  integer :: nf,nl,N,arithmaticsum
   arithmaticsum = ( N * ( nf+nl ) ) / 2 
   end function arithmaticsum
 
@@ -698,7 +698,7 @@ CONTAINS
 !        jacobi polynomials.  the laguerre and jacobi polynomials
 !        require the gamma function.
 !
-      integer :: kind, n, i, nm1, ierr
+      integer :: kind, n, i, nm1
       double precision a(n), b(n), muzero, alpha, beta
       double precision abi, a2b2, dgamma, pi, dsqrt, ab
 !

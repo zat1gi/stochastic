@@ -269,7 +269,7 @@ CONTAINS
     integer(I8)       ::  itemp1, itemp2, itemp3, itemp4
 
     if( new_standard_gen<1 .or. new_standard_gen>n_RN_GEN ) then
-      call expire( 0, 'RN_init_problem', &
+      call expire( 'RN_init_problem', &
         & ' ***** ERROR: illegal index for built-in RN generator')
     endif
       
@@ -318,7 +318,7 @@ CONTAINS
 
     ! double-check on number of bits in a long int
     if( bit_size(RN_SEED)<64 ) then
-      call expire( 0, 'RN_init_problem', &
+      call expire( 'RN_init_problem', &
         & ' ***** ERROR: <64 bits in long-int, can-t generate RN-s')
     endif
     itemp1 = 5_I8**25
@@ -326,7 +326,7 @@ CONTAINS
     itemp3 = ishft(2_I8**62-1_I8,1) + 1_I8
     itemp4 = itemp1*itemp2
     if( iand(itemp4,itemp3)/=8443747864978395601_I8 ) then
-      call expire( 0, 'RN_init_problem', &
+      call expire( 'RN_init_problem', &
         & ' ***** ERROR: can-t do 64-bit integer ops for RN-s')
     endif
 
@@ -486,8 +486,7 @@ CONTAINS
 
   !-------------------------------------------------------------------
 
-  subroutine expire( i, c1, c2 )
-    integer,          intent(in) :: i
+  subroutine expire( c1, c2 )
     character(len=*), intent(in) :: c1, c2
     write(*,*) ' ********** error: ',c1
     write(*,*) ' ********** error: ',c2

@@ -12,7 +12,6 @@ CONTAINS
   use genRealzvars, only: lamc
   real(8) :: gam, Eigenvalue
   Eigenvalue = 2d0 * lamc / (gam**2 + 1d0)
-                   !^ previously had Co term here.  Cancels out in the end anyway, but may want.
   end function Eigenvalue
 
 
@@ -23,15 +22,15 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates variance maintained with # of eigvals if input specifies
-  use genRealzvars, only: sig, lam, s, numRealz, P, lamc, sigave
+  use genRealzvars, only: s, lamc
   use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
                           levsrefEig, pltEigf
   use KLconstruct, only: Eigfunc
 
   real(8) :: stepGam=0 !if 0 code chooses
-  integer :: index,l,level,curEig,i,j
-  real(8) :: refstepGam,TT,curGam,Co,sqrtEig(numEigs)
+  integer :: l,level,curEig,i,j
+  real(8) :: refstepGam,TT,curGam,sqrtEig(numEigs)
   real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs),sliceSize
   real(8),allocatable :: Eigfplotarray(:,:)
   integer :: prevsize,newsize
@@ -222,15 +221,14 @@ CONTAINS
   !this by integrating over a variable related only to geometry-based material
   !properties so that it can later be used for any cross section material property.
   use rngvars, only: rngappnum, rngstride
-  use genRealzvars, only: sig, lam, s, numRealz, nummatSegs, lamc, matType, matLength, P, &
-                          sigave
-  use KLvars, only: gam, alpha, Ak, Eig, xi, numEigs
+  use genRealzvars, only: sig, numRealz, nummatSegs, lamc, matType, matLength, P
+  use KLvars, only: alpha, Ak, Eig, xi, numEigs
   use MCvars, only: trannprt
   use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,j,k,curEig,lsig,ssig
-  real(8) :: xitermtot,xl,xr,sigma,xiterm,tt1,  hilowterm,aveterm
+  integer :: i,j,curEig,lsig,ssig
+  real(8) :: xitermtot,xl,xr,xiterm,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
 
   call initialize_t1
@@ -500,14 +498,14 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: sig, s, numRealz, P, lamc, totLength
+  use genRealzvars, only: s, numRealz, P, lamc, totLength
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo
   use KLconstruct, only: Eigfunc
 
   integer :: curCS,curEig,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
-  real(8) :: CoPerDiff,totLPer(2),tottotLength
+  real(8) :: totLPer(2),tottotLength
   real(8) :: x,phi
   real(8),allocatable :: Coplotarray(:,:)
 

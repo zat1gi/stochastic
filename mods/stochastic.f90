@@ -10,7 +10,7 @@ program stochastic
 
   use genRealzvars
   use KLvars, only: Corropts, pltCo, chLNxsplottype, flmeanadjust, pltKLrealz
-  use MCvars, only: pltflux, binplot, flfluxplot, chTrantype
+  use MCvars, only: binplot, flfluxplot, chTrantype
   implicit none
 
   !!read parameters

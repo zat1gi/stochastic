@@ -1,19 +1,19 @@
-  641347942519,         Random number seed
+  892382563,         Random number seed
 
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  20,1,         Number of realizations/how often to print
-  100000,            Number of particles to simulate on each realization
-  10,             Number of eigenvalues
+  50000,100,         Number of realizations/how often to print
+  50000,            Number of particles to simulate on each realization
+  8,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  LogN,f1,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
+  LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   Glamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  1.0,0.5,    Ave total cross section, total cross section variance
+  2.0,1.5,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
-  0.5,        Correlation length, lamc
-  1.0,        Slab thickness, s
+  1.0,        Correlation length, lamc
+  5.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
   1.1,           Adamscase option, if==0, then user input for next three parameters
@@ -78,8 +78,8 @@
   4,4
 
   !!--Plotting local KL average and variance
-  plot,scatter,   'noplot','plot'.../xs type, chxstype'totaln'...
-  20,                 num x-vals
+  plot,totaln,   'noplot','plot'.../xs type, chxstype'totaln'...
+  40,                 num x-vals
   40,                 num bins
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
@@ -100,10 +100,8 @@
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
-  point,           "track" "point", type of flux binning, over whole track or a point on it 
-  50,           Number of cells collect and plot flux over
-
-
+  track,           "track" "point", type of flux binning, over whole track or a point on it 
+  100,           Number of cells collect and plot flux over
 

@@ -11,8 +11,7 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
   use genRealzvars, only: numRealz
-  use MCvars, only: numParts, trannprt, flfluxplotmat, chTrantype
-  use KLvars, only: Corropts, pltCo
+  use MCvars, only: trannprt, flfluxplotmat, chTrantype
   use genRealz, only: genbinaryReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use timeman, only: initialize_t1, timeupdate
@@ -54,10 +53,10 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
                           atmixsig, atmixscatrat
-  use MCvars, only: radtrans_int, rodOrplanar, sourceType, reflect, transmit, &
-                    absorb, position, oldposition, mu, areapnSamp, numpnSamp, &
-                    nceilbin, Wood_rej, flnegxs, chTrantype, fbinmax, &
-                    bbinmax, binmaxind, binmaxes, LPamMCsums, flfluxplot, &
+  use MCvars, only: radtrans_int, rodOrplanar, reflect, transmit, &
+                    absorb, position, mu, areapnSamp, numpnSamp, &
+                    Wood_rej, flnegxs, chTrantype, fbinmax, &
+                    bbinmax, LPamMCsums, flfluxplot, &
                     flCorrMC, numParts
   use genRealz, only: genLPReal
   use KLconstruct, only: KLr_point
@@ -67,8 +66,7 @@ CONTAINS
 
   !local variables
   integer :: i,o,curbin
-  real(8) :: db,dc,di,dist,  newpos,  sigma,  ceilsig,woodrat, tempscatrat
-  real(8) :: cursigt, cursigs
+  real(8) :: db,dc,di,dist,  newpos,  ceilsig,woodrat, tempscatrat
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
   do o=1,numParts                     !loop over particles
@@ -434,7 +432,7 @@ CONTAINS
   subroutine MCWood_setceils( j )
   !This subroutine sets up ceiling values for Woodcock Monte Carlo.
   !These ceilings of course need to be recalculated for each new realization
-  use genRealzvars, only: s, lamc, nummatSegs, sig
+  use genRealzvars, only: s, lamc, nummatSegs
   use KLvars, only: numEigs
   use MCvars, only: chTrantype, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
   integer :: j
@@ -500,7 +498,6 @@ CONTAINS
 
 
   subroutine KLWood_binmaxes( j )
-  use KLvars, only: alpha, Ak, Eig, numEigs
   use MCvars, only: binmaxind, binmaxes, nceilbin
   use KLconstruct, only: KLr_point
 
@@ -584,7 +581,7 @@ CONTAINS
 
 
   function radWood_actsig(position,sig)
-  use genRealzvars, only: matType, matLength
+  use genRealzvars, only: matType
   real(8) :: position,sig(2),radWood_actsig
   integer :: i
   i = internal_init_i( position )
@@ -621,7 +618,7 @@ CONTAINS
 
 
   function radWood_actscatrat(position,scatrat)
-  use genRealzvars, only: matType, matLength
+  use genRealzvars, only: matType
   real(8) :: position,scatrat(2),radWood_actscatrat
   integer :: i
   i = internal_init_i( position )
@@ -695,10 +692,10 @@ CONTAINS
   !First it calculates quantities related to this tally.
   !Then for most methods it passes that info the the tallier, but for 'radWood'
   !it steps through the tracklength passing on segments at a time to be tallied.
-  use genRealzvars, only: matLength, matType
+  use genRealzvars, only: matLength
   use MCvars, only: position, oldposition, flfluxplotall, flfluxplotmat, chTrantype, &
                     fluxfaces
-  integer :: j, i, ibin
+  integer :: j, i
   real(8) :: minpos, maxpos, dx
 
   minpos = min(oldposition,position)
@@ -745,7 +742,7 @@ CONTAINS
   !It can keep full 'track' length tallies, or choose one bin (at a 'point' on the tracklength) in
   !which to place the entire contribution.
   !Flux can be calculated for the tracklength w/ or w/o respect to which material the tallies are in.
-  use MCvars, only: mu, fluxall, fluxmat1, fluxmat2, fluxfaces, pltfluxtype, fluxnumcells
+  use MCvars, only: mu, fluxall, fluxfaces, pltfluxtype, fluxnumcells
   integer :: j, i, ibin
   real(8) :: minpos,maxpos,absmu,dx, length,point
   character(7) :: flcontribtype
@@ -842,12 +839,10 @@ CONTAINS
   !This routine is called from 'MCfluxtallywrapper' and highly resembles 'MCfluxtally',
   !with the only notable difference being that distances are not divided by absu(mu).
   use genRealzvars, only: matType
-  use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells, position, &
-                    pltfluxtype
-  integer :: i, ibin
+  use MCvars, only: fluxmatnorm, fluxfaces, fluxnumcells, pltfluxtype
+  integer :: ibin
   real(8) :: minpos,maxpos,dx, point,length
   character(7) :: flcontribtype
-  character(8) :: flnextboundary,fllastboundary
 
   if( pltfluxtype=='point' ) then       !point selection
     point  = rang()*(maxpos-minpos) + minpos
@@ -924,10 +919,10 @@ CONTAINS
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    chTrantype, fluxnumcells, fluxall, binplot, &
+                    chTrantype, fluxnumcells, fluxall, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
-  integer :: ibin,j
+  integer :: ibin
   real(8) :: dx,p1,p2
 
   !leakage/absorption ave and stdev stats
@@ -1020,7 +1015,7 @@ CONTAINS
   !This subroutine prints the results of MC transport methods to '.out' files
   !in order to be printed to the screen.  It also clears out previous plot files.
   use MCvars, only: stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
-                    fluxfaces, fluxnumcells, chTrantype, pltflux, pltmatflux, flfluxplot
+                    fluxfaces, fluxnumcells, chTrantype, pltflux, pltmatflux
   integer :: ibin
 
   call system("test -e plots/fluxplots/radMC_fluxall.out   && rm plots/fluxplots/radMC_fluxall.out")
@@ -1407,7 +1402,6 @@ CONTAINS
   subroutine MCLeakage_pdfbinprint
   !This subroutine bins leakage data, and prints this data to files to later be plotted
   !for methods which contain realizations (radMC, radWood, KLWood).
-  use genRealzvars, only: numRealz
   use MCvars,       only: reflect, transmit, chTrantype
 
   real(8) :: smrefl,lgrefl,smtran,lgtran,boundbuff
@@ -1470,7 +1464,7 @@ CONTAINS
   !Heart of radtrans_resultplot, for methods with realizations,
   !loads leakage values to bins (pdf), and prints to generic text file
   use genRealzvars, only: numRealz
-  use MCvars, only: trprofile_binnum, reflect, transmit, chTrantype
+  use MCvars, only: trprofile_binnum, reflect, transmit
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
   !local vars
@@ -1582,7 +1576,7 @@ CONTAINS
 
 
   subroutine Woodnegstats
-  use genRealzvars, only: numRealz, numPosRealz, numNegRealz
+  use genRealzvars, only: numPosRealz, numNegRealz
   use MCvars, only: numpnSamp, areapnSamp, flnegxs, numcSamp, chTrantype
 
   real(8) :: pos,neg
@@ -1640,7 +1634,7 @@ CONTAINS
   !Stats are from Adams89, Brantley11, and those generated here.
   use genRealzvars, only: Adamscase, chgeomtype
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, stocMC_absorption, chTrantype
+                    stocMC_transmission, chTrantype
   use KLvars, only: chGausstype
   real(8) :: eps = 0.0001d0
 
@@ -1730,14 +1724,26 @@ CONTAINS
     write(100,*) "|----------|------------------------|----------------------|"
     if(Adamscase/=0 .and. rodOrplanar=='rod') write(100,322) ABreflection(1,2),ABtransmission(1,2)
     if(Adamscase/=0 .and. rodOrplanar=='planar') write(100,323) ABreflection(1,4),ABtransmission(1,4)
-    if(chTrantype=='LPMC') write(100,329) stocMC_reflection(1),stocMC_transmission(1)
+    if(chTrantype=='LPMC') then
+      if(stocMC_reflection(1) < eps .or. stocMC_transmission(1)<eps) then
+        write(100,329) stocMC_reflection(1),stocMC_transmission(1)
+      else
+        write(100,349) stocMC_reflection(1),stocMC_transmission(1)
+      endif
+    endif
   endif
 
   !print for formatting if any atomic mix solutions printed
   if(chgeomtype=='binary' .and. (Adamscase/=0 .or. chTrantype=='atmixMC')) then
     write(100,*) "|----------|------------------------|----------------------|"
     if(Adamscase/=0 .and. rodOrplanar=='planar') write(100,324) ABreflection(1,5),ABtransmission(1,5)
-    if(chTrantype=='atmixMC') write(100,330) stocMC_reflection(1),stocMC_transmission(1)
+    if(chTrantype=='atmixMC') then
+      if(stocMC_reflection(1) < eps .or. stocMC_transmission(1)<eps) then
+        write(100,330) stocMC_reflection(1),stocMC_transmission(1)
+      else
+        write(100,350) stocMC_reflection(1),stocMC_transmission(1)
+      endif
+    endif
   endif
 
   write(100,*) "|----------------------------------------------------------|"
