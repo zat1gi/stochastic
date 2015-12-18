@@ -21,11 +21,10 @@ CONTAINS
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
-  !5) Calculates variance maintained with # of eigvals if input specifies
+  !5) Calculates the percent of mean standard error maintained
   use genRealzvars, only: s, lamc
-  use KLvars,       only: KLvarkept_tol, KLvarcalc, AllEig, Allgam, varmain, gam, alpha, &
-                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice, &
-                          levsrefEig, pltEigf
+  use KLvars,       only: gam, alpha, levsrefEig, pltEigf, &
+                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice
   use KLconstruct, only: Eigfunc
 
   real(8) :: stepGam=0 !if 0 code chooses
@@ -33,9 +32,6 @@ CONTAINS
   real(8) :: refstepGam,TT,curGam,sqrtEig(numEigs)
   real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs),sliceSize
   real(8),allocatable :: Eigfplotarray(:,:)
-  integer :: prevsize,newsize
-  real(8) :: Eigval,Eigvalsum,oldsEig,newsEig
-  real(8), allocatable :: oldAllgam(:),oldAllEig(:),cumeig(:)
 
   TT = s/lamc
   if( stepGam==0 ) stepGam  =1/TT/50
@@ -44,104 +40,53 @@ CONTAINS
   !Initial guesses for Gam
   420 format(i7,"     ",f15.9," ",f19.14)
 
-  if(allocated(AllEig)) deallocate(AllEig)
-  if(allocated(Allgam)) deallocate(Allgam)
-
-  allocate(AllEig(10))
-  allocate(Allgam(10))
-  Allgam    = 0d0
-  prevsize  = 1
-  newsize   = 10
-  Eigvalsum = 0d0
   write(*,*) " Calculating Eigenvalues for computation and varaince "
   write(*,*) "          Eigindx    Gam vals       Eig vals         tol check         tol "
-  460 format("Eigcalc: "i7,"   ",f12.6,"   ",f12.9,"     ",f12.9,"    ",f12.9)
 
-  do     !until tolerance
-    !write(*,*)
-    !write(*,*) " Finding apprx Gam vals for Eigenvalue calcs"
-    !write(*,*) "  Eigindx    apprx Gam vals        absdiff"
-    curGam=Allgam(prevsize)+stepGam
-    curEig=prevsize
-    do while ( curEig<=newsize )
-
-      absdiff=abs( tan(curGam*TT)-(2d0*curGam)/(curGam**2-1d0) )
-      open(unit=11, file="absdiffGam.txt")
-      write(11,420) curEig,curGam,absdiff
-
-      if( absdiff_2>absdiff_1 .AND. absdiff>absdiff_1 ) then
-        !write(*,420) curEig,curGam,absdiff_1
-        Allgam(curEig)=curGam
-        curEig=curEig+1
-      endif
-
-      absdiff_2=absdiff_1
-      absdiff_1=absdiff
-      curGam=curGam+stepGam
-    enddo
-    close(unit=11)
-
-    !Refine guesses for gam within tolerance
-    !write(*,*)
-    !write(*,*) " Refining Gamma values for Eigenvalue calcs"
-    !write(*,*) "  Eigindx    apprx Gam vals        absdiff          refine lev     inttest=?1"
-
-    !421 format(i7,"     ",f15.9,"     ",f15.14,"      Level:",i3)
-
-    do curEig=prevsize,newsize                  !loop each Eigenvalue
-      refstepGam=stepGam
-
-      do level=1,levsrefEig                 !loop levels of refinement
-        curGam=Allgam(curEig)-11d0*refstepGam
-        refstepGam=refstepGam/10
-        absdiff_1=0
-        absdiff_2=0
-
-        do l=1,220                            !loop through range & test
-          absdiff=abs( tan(curGam*TT)-(2d0*curGam)/(curGam**2-1d0) )
-          if( absdiff_2>absdiff_1 .AND. absdiff>absdiff_1 ) then
-            !write(*,421) curEig,curGam,absdiff_1,level
-            !if(level==levsrefEig) write(*,421) curEig,curGam,absdiff_1,level
-            Allgam(curEig)=curGam
-          endif
-          absdiff_2=absdiff_1
-          absdiff_1=absdiff
-          curGam=curGam+refstepGam
-        enddo
-      enddo
-      AllEig(curEig) = Eigenvalue( Allgam(curEig) )
-      Eigvalsum      = Eigvalsum + AllEig(curEig)
-    enddo
-    Eigval = AllEig(newsize)
-
-    !end loop?
-    oldsEig = sqrt(Eigvalsum-Eigval)
-    newsEig = sqrt(Eigvalsum)
-    write(*,460) newsize,Allgam(newsize),AllEig(newsize),abs(oldsEig-newsEig)/newsEig,KLvarkept_tol
-    if(KLvarcalc=='yes' .and. abs(oldsEig-newsEig)/newsEig<KLvarkept_tol .and. newsize>numEigs) exit
-    if(KLvarcalc=='no'  .and. newsize>=numEigs) exit
-
-    !tack 10 new array values on
-    if(.not. allocated(oldAllEig)) allocate(oldAllEig(newsize))
-    if(.not. allocated(oldAllgam)) allocate(oldAllgam(newsize))
-    oldAllEig = AllEig
-    oldAllgam = Allgam
-    deallocate(AllEig)
-    deallocate(Allgam)
-    prevsize = prevsize+10
-    newsize  = newsize +10
-    allocate(AllEig(newsize))
-    allocate(Allgam(newsize))
-    AllEig(1:prevsize-1) = oldAllEig(1:prevsize-1)
-    Allgam(1:prevsize-1) = oldAllgam(1:prevsize-1)
-    Allgam(prevsize) = oldAllgam(prevsize-1) !for curGam starting position in next round
-    deallocate(oldAllEig)
-    deallocate(oldAllgam)    
+  !solve gamma approximate values
+  curGam = 0d0
+  curEig = 1
+  open(unit=11, file="absdiffGam.txt")
+  do
+    absdiff=abs( tan(curGam*TT)-(2d0*curGam)/(curGam**2-1d0) )
+    write(11,420) curEig,curGam,absdiff
+    if( absdiff_2>absdiff_1 .and. absdiff>absdiff_1 ) then
+      !write(*,420) curEig,curGam,absdiff_1
+      gam(curEig)=curGam
+      if(curEig==numEigs) exit
+      curEig=curEig+1
+    endif
+    absdiff_2=absdiff_1
+    absdiff_1=absdiff
+    curGam=curGam+stepGam
   enddo
-  call system("mv absdiffGam.txt texts")
+  close(unit=11)
 
-  Eig(1:numEigs) = AllEig(1:numEigs)
-  gam(1:numEigs) = Allgam(1:numEigs)
+  !refine gamma values and solve eigenvalues
+  do curEig=1,numEigs                  !loop each Eigenvalue
+    refstepGam=stepGam
+
+    do level=1,levsrefEig                 !loop levels of refinement
+      curGam=gam(curEig)-11d0*refstepGam
+      refstepGam=refstepGam/10
+      absdiff_1=0
+      absdiff_2=0
+
+      do l=1,220                            !loop through range & test
+        absdiff=abs( tan(curGam*TT)-(2d0*curGam)/(curGam**2-1d0) )
+        if( absdiff_2>absdiff_1 .AND. absdiff>absdiff_1 ) then
+          !write(*,421) curEig,curGam,absdiff_1,level
+          !if(level==levsrefEig) write(*,421) curEig,curGam,absdiff_1,level
+          gam(curEig)=curGam
+        endif
+        absdiff_2=absdiff_1
+        absdiff_1=absdiff
+        curGam=curGam+refstepGam
+      enddo
+    enddo
+    Eig(curEig) = Eigenvalue( gam(curEig) )
+  enddo
+
 
   write(*,*) "     Int test"
   do curEig=1,numEigs
@@ -162,25 +107,13 @@ CONTAINS
     !write(*,*)
   enddo
 
-  if(allocated(cumeig)) deallocate(cumeig)
-  if(allocated(varmain)) deallocate(varmain)
-  allocate(cumeig(newsize))
-  allocate(varmain(newsize))
-  do curEig=1,newsize
-    cumeig(curEig) = sum(AllEig(1:curEig))
-  enddo
-  varmain = sqrt(cumeig)/sqrt(cumeig(newsize))
-
 
   write(*,*)
-  if(KLvarcalc=='no')  write(*,*) "    Eigenvalues and their contributions"
-  if(KLvarcalc=='no')  write(*,*) "  Eigindx       Eig vals        sqrt(Eig)"
-  if(KLvarcalc=='yes') write(*,*) "    Eigenvalues, their contributions, and KL maintained variance"
-  if(KLvarcalc=='yes') write(*,*) "  Eigindx       Eig vals        sqrt(Eig)       var maint"
-  426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"   ",f13.9)
+  write(*,*) "    Eigenvalues, their contributions, and KL maintained variance"
+  write(*,*) "  Eigindx       Eig vals        sqrt(Eig)     [ differential / cumulative ] % mean sqr err maint"
+  426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
   do curEig=1,numEigs
-    if(KLvarcalc=='no')  write(*,426) curEig,Eig(curEig),sqrtEig(curEig)
-    if(KLvarcalc=='yes') write(*,426) curEig,Eig(curEig),sqrtEig(curEig),varmain(curEig)
+    write(*,426) curEig,Eig(curEig),sqrtEig(curEig),Eig(curEig)/s,sum(Eig(:curEig))/s
   enddo
 
   428 format("   lamc:           ",f8.3)

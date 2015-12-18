@@ -82,8 +82,6 @@ end module genRealzvars
 module KLvars  !"KLresearch" and "KLconstruct"
   implicit none
   !inputs
-  character(3)         :: KLvarcalc            ! calculate amount of variance kept in eigs? 'yes' 'no
-  real(8)              :: KLvarkept_tol        ! tolerance of rel eig size for var calcs
   integer              :: binNumof             ! number of bins (for xi?)
   integer              :: numEigs              ! number of eigenmodes to calculate
   integer              :: numSlice             ! number of points to plot eigenfunction at
@@ -131,9 +129,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: Corrnumpoints        ! Number of points used when confirming covariance func
   real(8), allocatable :: binPDF(:,:)          ! 
   real(8), allocatable :: binBounds(:)         !
-  real(8), allocatable :: AllEig(:)            ! many more Eigs than used, for variance kept calcs
-  real(8), allocatable :: Allgam(:)            ! many more gam vals than used, for variance kept calcs
-  real(8), allocatable :: varmain(:)           ! variance maintained at certain eigenmode
   real(8)              :: binSize              !
   real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !

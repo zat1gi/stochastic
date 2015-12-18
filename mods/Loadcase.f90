@@ -9,7 +9,7 @@ CONTAINS
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
                                   GBlamc, GBs, chgeomtype
-  use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
+  use KLvars,               only: pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
@@ -66,7 +66,6 @@ CONTAINS
   read(2,*) levsrefEig
   read(2,*) numrefinesameiter
   read(2,*) binSmallBound,binLargeBound
-  read(2,*) KLvarcalc,KLvarkept_tol
   read(2,*) numSlice
   read(2,*) Gaussrandtype
 
