@@ -917,7 +917,7 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s, sigave, sigscatave, sigabsave, numRealz
-  use KLvars, only: numEigs, meanadjust, meanadjust_tol, sigsmeanadjust, &
+  use KLvars, only: numEigs, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLconstruct, only: KLr_point, KLrxi_integral
 
@@ -928,8 +928,7 @@ CONTAINS
 
   !initialize meanadjust
   if(chxstype=='scatter') sigsmeanadjust = 0.0d0
-  sigameanadjust = 0.0d0
-  meanadjust = 0.0d0
+  if(chxstype=='absorb')  sigameanadjust = 0.0d0
 
   !integrate on all as check
   intsigave = 0d0
@@ -979,21 +978,15 @@ CONTAINS
     enddo !loop over realizations
 
     print *,"avenegarea: ",avenegarea,"  aveposarea: ",aveposarea
-    if(chxstype=='totaln') then
-      meanadjust     = meanadjust     + (sigave - aveposarea)
-      if(abs(aveposarea-sigave)/sigave<meanadjust_tol) exit
-    elseif(chxstype=='scatter') then
+    if(chxstype=='scatter') then
       sigsmeanadjust = sigsmeanadjust + (sigscatave - aveposarea)
-      meanadjust     = sigsmeanadjust +    sigameanadjust
       print *,"sigsmeanadjust: ",sigsmeanadjust
       if(abs(aveposarea-sigscatave)/sigave<meanadjust_tol) exit
     elseif(chxstype=='absorb') then
       sigameanadjust = sigameanadjust + (sigabsave - aveposarea)
-      meanadjust     = sigsmeanadjust +    sigameanadjust
       print *,"sigameanadjust: ",sigameanadjust
       if(abs(aveposarea-sigabsave)/sigave<meanadjust_tol) exit
     endif
-    print *,"meanadjust    : ",meanadjust
   enddo !loop over calculating adjustment
     
   end subroutine KLadjustmean
