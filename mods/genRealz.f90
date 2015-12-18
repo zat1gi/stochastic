@@ -13,9 +13,7 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
-                          pltgenrealz, matType, matLength, pltgenrealzwhich, &
-                          totLength, flCorrMarkov, flCorrRealz
-  use MCvars, only: chTrantype
+                          pltgenrealz, matType, matLength, pltgenrealzwhich, totLength
   use mcnp_random, only: RN_init_particle
 
   integer :: j
@@ -27,15 +25,8 @@ CONTAINS
   if(allocated(matType)) deallocate(matType)
   if(allocated(matLength)) deallocate(matLength)
 
-  if(flCorrRealz) then  !set cases KLres, radMC, KLWood, any correlation?
-    call setrngappnum('genRealzKLres')
-  else
-    if(chTrantype=='radMC' .or. (chTrantype=='radWood' .and. flCorrMarkov)) then
-      call setrngappnum('genRealzTMC')
-    elseif(chTrantype=='radWood' .and. .not.flCorrMarkov) then
-      call setrngappnum('genRealzWMC')
-    endif
-  endif
+  !allows reproducable realizations for same rngseed
+  call setrngappnum('genRealz')
   call RN_init_particle( int(rngappnum*rngstride+j,8) )
 
   matLength_temp=0d0

@@ -8,14 +8,14 @@ CONTAINS
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
-                                  GBlamc, GBs, flCorrMarkov, flCorrRealz, chgeomtype
+                                  GBlamc, GBs, chgeomtype
   use KLvars,               only: KLvarcalc, KLvarkept_tol, pltEigfwhich, pltxiBinswhich, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, chGBcase, &
-                                  Gaussrandtype, flCorrKL, numrefinesameiter, flGaussdiffrand, &
+                                  Gaussrandtype, numrefinesameiter, flGaussdiffrand, &
                                   chGausstype, chLNmode, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
@@ -57,10 +57,6 @@ CONTAINS
   read(2,*) scatrat(1),scatrat(2)
   read(2,*) lam(1),lam(2)
   read(2,*) s
-  read(2,*) setflags(1),setflags(2),setflags(3)
-  if(setflags(1)=='yes') flCorrMarkov=.true.
-  if(setflags(2)=='yes') flCorrKL    =.true.
-  if(setflags(3)=='yes') flCorrRealz =.true.
 
   !--- Other KL Options ---!
   read(2,*) dumchar
@@ -273,20 +269,6 @@ CONTAINS
       flstopstatus = .true.
     endif
   enddo
-
-  if( flCorrRealz .and. (.not.flCorrMarkov .or. .not.flCorrKL)) then !Test for correlation deficiency
-    print *,"--User trying to correlate KLres w/ others w/o corr Markov or KL, both set to true"
-    flCorrMarkov=.true.
-    flCorrKL    =.true.
-    flsleep = .true.
-  endif
-
-  if( Gaussrandtype=='BM' .and. flCorrKL ) then  !Test for correlated GaussKL sampling method
-    print *,"--User trying to correlate KL realz w/ Box-Muller sampling, switched to inverse sampling"
-    Gaussrandtype='inv'
-    flsleep = .true.
-  endif
-
 
   !Test plotting valid options
   if(.not.chLNxsplottype=='noplot' .and. .not.chLNxsplottype=='plot' .and. .not.chLNxsplottype=='preview') then

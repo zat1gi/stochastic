@@ -3,9 +3,9 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  50000,100,         Number of realizations/how often to print
-  50000,            Number of particles to simulate on each realization
-  8,             Number of eigenvalues
+  100,10,         Number of realizations/how often to print
+  100,            Number of particles to simulate on each realization
+  5,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
@@ -21,7 +21,6 @@
   0.6,0.6, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
-  no,no,no,    Markov,KL correlated geometries?, KLresearch/Markov/KL correlated geom?
 
   !--- Other KL Options ---!
   200,            Number of bins for xi
@@ -34,7 +33,7 @@
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Other MCtransport Options ---!
-  1000000,          Number of particles for LP or atomic mix calculations
+  10000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number Monte Carlo?
   planar,         Choose 'rod' or 'planar' for geometry type
   leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'

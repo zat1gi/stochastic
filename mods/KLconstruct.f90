@@ -200,7 +200,7 @@ CONTAINS
   use KLvars,       only: binPDF, binNumof, numEigs, &
                           KLrnumpoints, KLrxi, KLrxivalsa, &
                           KLrxivalss, KLrxisig, flGaussdiffrand, &
-                          Gaussrandtype, flCorrKL, flmeanadjust
+                          Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
@@ -219,13 +219,11 @@ CONTAINS
     tentj=tentj+1
     flacceptrealz=.true.
 
-    !set random number application
-    if(chTrantype=='KLWood' .or. (chTrantype=='GaussKL' .and. flCorrKL)) then
-      call setrngappnum('KLRealzMarkov')
-    elseif(chTrantype=='GaussKL') then
-      call setrngappnum('KLRealzGaussB')
-    endif
-    !set random number based on application
+    !set random number, makes reproducible for same rngseed
+    !if use inverse sampling (instead of Box-Muller),
+    !correlated for same rngseed between binary and contin when using same rng for abs and scat
+    !when using different, abs correlated with binary/both with same
+    call setrngappnum('KLRealz')
     call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
     KLrxisig = 0

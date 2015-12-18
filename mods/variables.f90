@@ -22,16 +22,10 @@ contains
       rngappnum = 5
     case ("GaussKL")                            !possible correlation 2
       rngappnum = 6
-    case ("genRealzKLres") !material generation !possible correlation 3
+    case ("genRealz")      !allow reproducible binary geometries
       rngappnum = 10
-    case ("genRealzTMC")                        !possible correlation 3
-      rngappnum = 11
-    case ("genRealzWMC")                        !possible correlation 3
-      rngappnum = 12
-    case ("KLRealzMarkov")                      !possible correlation 4
+    case ("KLRealz")       !allow reproducible KL geometries
       rngappnum = 13
-    case ("KLRealzGaussB")                      !possible correlation 4
-      rngappnum = 14
   end select
   end subroutine setrngappnum
 end module rngvars
@@ -76,8 +70,6 @@ module genRealzvars
   real(8)              :: sigave               ! weighted average sigma value for binary mixtures
   real(8)              :: sigscatave           ! average scattering xs
   real(8)              :: sigabsave            ! average absorption xs
-  logical              :: flCorrMarkov=.false. ! correlated sampling for Markov realizations?
-  logical              :: flCorrRealz =.false. ! correlated KLres (for KL recon) and Markov realz?
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
@@ -145,7 +137,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
   real(8)              :: sigsmeanadjust=0.0d0 ! positive translation of sigs mean xs (mat-based mode)
   real(8)              :: sigameanadjust=0.0d0 ! positive translation of siga mean xs (mat-based mode)
-  logical              :: flCorrKL=.false.     ! correlated random numbers for KL Markov and GaussB realz?
   integer              :: mostinBin            !
   integer              :: Corrnumpoints        ! Number of points used when confirming covariance func
   real(8), allocatable :: binPDF(:,:)          ! 
