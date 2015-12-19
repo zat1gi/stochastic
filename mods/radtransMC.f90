@@ -406,7 +406,7 @@ CONTAINS
   !I can only get away with SEM evaluation with single values because each particle
   !has a weight of 1.  If I add weights, I will need not only these values (sums)
   !but also squares. 
-  use MCvars, only: reflrelSEMtol,tranrelSEMtol,mindatapts,numParts,maxnumParts
+  use MCvars, only: reflrelSEMtol,tranrelSEMtol,mindatapts,maxnumParts
   real(8) :: refl, tran,   rsig, tsig,  rSEM, tSEM,  targetSEM,   eps=0.001d0
   integer :: tnumParts,  rtnumParts,ttnumParts,newtnumParts
 
@@ -1728,11 +1728,12 @@ CONTAINS
   !This subroutine prints reflection, transmission, and absorption stats to a '.out' file,
   !then prints that file to the screen for user friendliness.
   !Stats are from Adams89, Brantley11, and those generated here.
-  use genRealzvars, only: Adamscase, chgeomtype
+  use utilities, only: mean_and_var_p
+  use genRealzvars, only: Adamscase, chgeomtype, numRealz
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, chTrantype
+                    stocMC_transmission, chTrantype, numPartsperj
   use KLvars, only: chGausstype
-  real(8) :: eps = 0.001d0
+  real(8) :: meanPperj,varPperj,eps = 0.001d0
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"    | ",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                | ",f8.5,"             |")
@@ -1826,7 +1827,6 @@ CONTAINS
     write(100,361) stocMC_reflection(3),stocMC_transmission(3)
   endif
 
-
   !print LP solutions printed if applicable
   if(chgeomtype=='binary' .and. (Adamscase/=0 .or. chTrantype=='LPMC')) then
     write(100,*) "|----------|------------------------|----------------------|"
@@ -1855,6 +1855,15 @@ CONTAINS
   endif
 
   write(100,*) "|----------------------------------------------------------|"
+
+  if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') then
+    363 format(" |Part/Hist | ",e8.2," +-  ",e8.2,"  |  ",e8.2,"   ",e8.2" |")
+    call mean_and_var_p( real(numPartsperj,8),numRealz,meanPperj,varPperj )
+    write(100,*) "|          |   ave          dev     |    min        max    |"
+    write(100,363) meanPperj,sqrt(varPperj),real(minval(numPartsperj),8),real(maxval(numPartsperj),8)
+    write(100,*) "|----------------------------------------------------------|"
+  endif
+
   write(100,*)
 
   close(unit=100)
