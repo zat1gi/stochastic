@@ -154,6 +154,10 @@ module MCvars
   !inputs
   character(7)         :: chTrantype           ! type of transport to perform
   integer              :: numParts             ! number of particles
+  integer              :: maxnumParts          ! maximum number of particles to run per realization
+  real(8)              :: reflrelSEMtol        ! reflection relative SEM tolerance must converge to
+  real(8)              :: tranrelSEMtol        ! transmission relative SEM tolerance must converge to
+  integer              :: mindatapts           ! minimum number of data points to trust statistics
   integer              :: LPamnumParts         ! number of particles for LP or atomic mix
   integer              :: trannprt             ! how often to print to screen
   integer              :: fluxnumcells         ! number of cells for flux profile
@@ -170,6 +174,7 @@ module MCvars
   logical              :: flnegxs=.false.      ! allow trans on neg xs? 'yes', or throw out realz 'no'
 
   !non inputs
+  integer, allocatable :: numPartsperj(:)      ! number of particles actually ran per realization
   real(8), allocatable :: ABreflection(:,:)    ! Adams/Brantley Reflection Values
   real(8), allocatable :: ABtransmission(:,:)  ! Adams/Brantley Transmission Values
                                                ! First rank: 1 average, 2 stdev

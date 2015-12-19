@@ -19,8 +19,8 @@ CONTAINS
                                   chGausstype, chLNmode, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
-                                  pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, &
-                                  pltfluxtype, flCR_MCSC, chTrantype
+                                  pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
+                                  pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -38,7 +38,7 @@ CONTAINS
   read(2,*) chgeomtype
   read(2,*) chTrantype
   read(2,*) numRealz,trannprt
-  read(2,*) numParts
+  read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
   read(2,*) numEigs
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
@@ -193,6 +193,10 @@ CONTAINS
     print *,"--User using too many realizations--reusing random numbers, may cause correlation"
     flsleep = .true.
   endif
+  if(maxnumParts<numParts) then
+    print *,"--maxnumParts smaller than, so set equal to, numParts"
+    maxnumParts = numParts
+  endif
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigs .AND. pltEigf(1) .NE. 'noplot' ) then
@@ -344,7 +348,7 @@ CONTAINS
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
                     fluxnumcells, flfluxplot, LPamMCsums, transmit, reflect, absorb, &
                     numpnSamp, radtrans_int, Wood_rej, flfluxplotall, flfluxplotmat, &
-                    fluxall
+                    fluxall, numPartsperj
   use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit
   integer :: i
@@ -429,6 +433,10 @@ CONTAINS
       numParts = LPamnumParts
       if(.not.allocated(LPamMCsums)) allocate(LPamMCsums(3))
       LPamMCsums =0.0d0
+    endif
+    if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') then
+      allocate(numPartsperj(numRealz))
+      numPartsperj = 0
     endif
     allocate(stocMC_reflection(3))   !global MC variables for each method
     allocate(stocMC_transmission(3)) !rank 3 holds 1=average, 2=deviation, 3=SEM

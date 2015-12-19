@@ -57,10 +57,9 @@ CONTAINS
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, reflect, transmit, &
-                    absorb, position, mu, areapnSamp, numpnSamp, &
-                    Wood_rej, flnegxs, chTrantype, fbinmax, &
-                    bbinmax, LPamMCsums, flfluxplot, &
-                    flCR_MCSC, numParts
+                    absorb, position, mu, areapnSamp, numpnSamp, numPartsperj, &
+                    Wood_rej, flnegxs, chTrantype, fbinmax, flCR_MCSC, numParts, &
+                    bbinmax, LPamMCsums, flfluxplot, maxnumParts
   use genRealz, only: genLPReal
   use KLconstruct, only: KLr_point
   use mcnp_random, only: RN_init_particle
@@ -68,18 +67,22 @@ CONTAINS
   integer :: j !realz number
 
   !local variables
-  integer :: i,o,curbin
+  integer :: i,o,curbin,tnumParts
   real(8) :: db,dc,di,dist,  newpos,  ceilsig,woodrat, tempscatrat
   character(9) :: fldist, flIntType, flEscapeDir, flExit
 
-  do o=1,numParts                     !loop over particles
+  tnumParts = numParts
+  o = 0
+
+  do                               !loop over particles
+    o = o+1
     call setrngappnum('radtrans')
     if(flCR_MCSC) then
       !correlate same particle history in each realization (CR-MC/CR-SC)
-      call RN_init_particle( int(rngstride*rngappnum+           o,8) )
+      call RN_init_particle( int(rngstride*rngappnum+              o,8) )
     else
       !reproducible and only correlation implicitly across method types--no correlation within one run
-      call RN_init_particle( int(rngstride*rngappnum+j*numParts+o,8) )
+      call RN_init_particle( int(rngstride*rngappnum+j*maxnumParts+o,8) )
     endif
 
 
@@ -375,19 +378,75 @@ CONTAINS
       if(flExit=='exit') exit
 
     enddo !simulate one pathlength
+
+    if(o==tnumParts) then
+      !print *,"------ j:",j,"------"
+      tnumParts = testMCconvergence( reflect(j),transmit(j),tnumParts )
+    endif
+
+    if(o==tnumParts) exit
+
   enddo !loop over particles
+
+  !average based on number of particles actually ran on this realization
+  reflect(j) = reflect(j) / tnumParts
+  transmit(j)= transmit(j)/ tnumParts
+  absorb(j)  = absorb(j)  / tnumParts
+
+  numPartsperj(j) = tnumParts
 
   end subroutine MCtransport
 
 
 
 
+  function testMCconvergence( refl,tran,tnumParts ) result(newtnumParts)
+  !Test whether reflection and transmission have converged to specified tolerance,
+  !if not, set tnumParts larger and run more histories.
+  !I can only get away with SEM evaluation with single values because each particle
+  !has a weight of 1.  If I add weights, I will need not only these values (sums)
+  !but also squares. 
+  use MCvars, only: reflrelSEMtol,tranrelSEMtol,mindatapts,numParts,maxnumParts
+  real(8) :: refl, tran,   rsig, tsig,  rSEM, tSEM,  targetSEM,   eps=0.001d0
+  integer :: tnumParts,  rtnumParts,ttnumParts,newtnumParts
 
+  rsig = sqrt( (refl/tnumParts - (refl/tnumParts)**2) )
+  tsig = sqrt( (tran/tnumParts - (tran/tnumParts)**2) )
 
+  rSEM = rsig / sqrt(real(tnumParts,8))
+  tSEM = tsig / sqrt(real(tnumParts,8))
 
+  rtnumParts = tnumParts
+  ttnumParts = tnumParts
+!print *,"refl,tran:",refl,tran
+!print *,"rtnumParts,ttnumParts:",rtnumParts,ttnumParts
 
+  if(reflrelSEMtol>0.0d0) then   !only require data pts/convergence if positive
+    if(refl<=eps) then                                      !require some data points
+      rtnumParts = ceiling(tnumParts * 1.1d0)
+    elseif(refl<real(mindatapts,8)-eps .and. refl>eps) then !require at least min data points
+      rtnumParts = ceiling( max(real(mindatapts,8)/refl * tnumParts * 0.5d0,tnumParts*1.1d0) )
+    elseif(rSEM / (refl/tnumParts) > reflrelSEMtol) then    !require convergence to tol
+      targetSEM = reflrelSEMtol*refl/tnumParts
+      rtnumParts = ceiling( max(rsig**2/targetSEM**2 * 0.1d0,tnumParts*1.1d0) )
+    endif
+  endif
 
+  if(tranrelSEMtol>0.0d0) then
+    if(tran<=eps) then                                      !require some data points
+      ttnumParts = ceiling(tnumParts * 1.1d0)
+    elseif(tran<real(mindatapts,8)-eps .and. tran>eps) then !require at least min data points
+      ttnumParts = ceiling( max(real(mindatapts,8)/tran * tnumParts * 0.5d0,tnumParts*1.1d0) )
+    elseif(tSEM / (tran/tnumParts) > tranrelSEMtol) then    !require convergence to tol
+      targetSEM = tranrelSEMtol*tran/tnumParts
+      ttnumParts = ceiling( max(tsig**2/targetSEM**2 * 0.1d0,tnumParts*1.1d0) )
+    endif
+  endif
 
+!print *,"rtnumParts,ttnumParts:",rtnumParts,ttnumParts
+  newtnumParts = max(rtnumParts,ttnumParts)
+  newtnumParts = min(newtnumParts,maxnumParts)
+  end function testMCconvergence
 
 
 
@@ -929,19 +988,19 @@ CONTAINS
   use utilities, only: mean_var_and_SEM_s, mean_and_var_s
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
-                    stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
-                    chTrantype, fluxnumcells, fluxall, &
+                    stocMC_transmission, stocMC_absorption, LPamMCsums, &
+                    chTrantype, fluxnumcells, fluxall, numPartsperj, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
-  integer :: ibin
+  integer :: ibin, j
   real(8) :: dx,p1,p2
 
   !leakage/absorption ave and stdev stats
   if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
      chTrantype=='KLWood'.or. chTrantype=='GaussKL'      ) then
-    reflect  = reflect  / numParts
-    transmit = transmit / numparts
-    absorb   = absorb   / numParts
+    reflect  = reflect
+    transmit = transmit
+    absorb   = absorb
 
     call stats_enoughpts(reflect,'reflection',1)
     call stats_enoughpts(reflect,'transmission',1)
@@ -961,13 +1020,15 @@ CONTAINS
 
   if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
      chTrantype=='KLWood'.or. chTrantype=='GaussKL'        ) then
-    if(flfluxplotall) fluxall = fluxall / dx / numParts !normalize part 1
-    if(flfluxplotmat) then
-                      fluxmat1= fluxmat1/ dx / numParts !normalize part 1
-                      fluxmat2= fluxmat2/ dx / numParts !normalize part 1
-    endif    
+    do j =1,numRealz
+      if(flfluxplotall) fluxall(:,j) = fluxall(:,j) / dx / numPartsperj(j) !normalize part 1
+      if(flfluxplotmat) then
+                        fluxmat1(:,j)= fluxmat1(:,j)/ dx / numPartsperj(j) !normalize part 1
+                        fluxmat2(:,j)= fluxmat2(:,j)/ dx / numPartsperj(j) !normalize part 1
+      endif    
+    enddo
   elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
-    if(flfluxplotall) fluxall = fluxall / dx / LPamnumParts !normalize part 1
+    if(flfluxplotall) fluxall = fluxall / dx / LPamnumParts !normalize part 1  
     if(flfluxplotmat) then
                       fluxmat1= fluxmat1/ dx / LPamnumParts !normalize part 1
                       fluxmat2= fluxmat2/ dx / LPamnumParts !normalize part 1
