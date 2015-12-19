@@ -3,14 +3,14 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  100,10,         Number of realizations/how often to print
-  100,            Number of particles to simulate on each realization
+  10,1000,         Number of realizations/how often to print
+  10,            Number of particles to simulate on each realization
   10,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   Glamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  2.0,1.5,    Ave total cross section, total cross section variance
+  3.0,1.5,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
   1.0,        Correlation length, lamc
   5.0,        Slab thickness, s

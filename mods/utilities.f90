@@ -225,6 +225,34 @@ CONTAINS
 
 
 
+  subroutine mean_var_and_SEM_s( values,numofvalues,mean,var,SEM )
+  !This subroutine calculates mean, variance, and standard error of the mean
+  !for a sample from a population not the whole population
+  real(8) :: values(:),mean,var,SEM
+  integer :: numofvalues
+
+  integer :: i
+
+  mean=0
+  do i=1,numofvalues
+    mean=mean+values(i)
+  enddo
+  mean=mean/numofvalues
+
+  var=0
+  do i=1,numofvalues
+    var= var + (mean-values(i))**2
+  enddo
+  var=var/(numofvalues-1)
+
+  SEM = sqrt(var/numofvalues)
+
+  end subroutine mean_var_and_SEM_s
+
+
+
+
+
   function mean(values,numofvalues)
   real(8) :: values(:),mean
   integer :: numofvalues,i

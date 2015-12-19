@@ -38,6 +38,9 @@ CONTAINS
 
     if(mod( j,trannprt )==0) call timeupdate( chTrantype,j,numRealz )   !print time updates
 
+    !later add here performance of more realizations if SEM not converged to tolerance
+    if(j == numRealz) call stocMC_stats          !calc stats in stochastic space here
+
   enddo !loops over realizations
 
   end subroutine UQ_MC
@@ -923,6 +926,7 @@ CONTAINS
   !   space for each MC transport solver.
   !2) calculates ensemble averaged flux values in each cell for material
   !   irrespective and material respective flux tallies.
+  use utilities, only: mean_var_and_SEM_s, mean_and_var_s
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, numParts, LPamMCsums, &
@@ -939,9 +943,12 @@ CONTAINS
     transmit = transmit / numparts
     absorb   = absorb   / numParts
 
-    call mean_and_var_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2) )
-    call mean_and_var_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2) )
-    call mean_and_var_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2) )
+    call stats_enoughpts(reflect,'reflection',1)
+    call stats_enoughpts(reflect,'transmission',1)
+
+    call mean_var_and_SEM_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2),stocMC_reflection(3) )
+    call mean_var_and_SEM_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2),stocMC_transmission(3) )
+    call mean_var_and_SEM_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2),stocMC_absorption(3) )
   elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
     stocMC_reflection(1)   = LPamMCsums(1) / LPamnumParts
     stocMC_transmission(1) = LPamMCsums(2) / LPamnumParts
@@ -1016,6 +1023,27 @@ CONTAINS
 
   end subroutine stocMC_stats
 
+
+
+  subroutine stats_enoughpts(array,chstattype,icell)
+  !this subroutine tests whether enough realizations produced data to "trust" statistics
+  use genRealzvars, only: numRealz
+  integer :: icell, tally, j
+  real(8) :: array(:)
+  character(*) :: chstattype
+
+  tally = 0
+  do j=1,numRealz
+    if(array(j)/=0d0) tally = tally + 1
+  enddo
+  print *,"tally:",tally
+  if(tally<20) then
+    if(chstattype=='reflection')   print *,"Insufficient data for good statistics on reflection boundary"
+    if(chstattype=='transmission') print *,"Insufficient data for good statistics on transmission boundary"
+    if(chstattype=='flux')         write(*,*) "Insufficient data for good statistics on flux cell",icell
+    call sleep(5)
+  endif
+  end subroutine stats_enoughpts
 
 
   subroutine MCfluxPrint
@@ -1643,7 +1671,7 @@ CONTAINS
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, chTrantype
   use KLvars, only: chGausstype
-  real(8) :: eps = 0.0001d0
+  real(8) :: eps = 0.001d0
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"    | ",f7.4,"   +-",f8.4," |")
   321 format(" |BrantMC:  |",f8.5,"                | ",f8.5,"             |")
@@ -1668,6 +1696,9 @@ CONTAINS
   349 format(" |LPMC   :  |",e10.3,"              | ",e10.3,"          |")
   350 format(" |atmixMC:  |",e10.3,"              | ",e10.3,"          |")
 
+  361 format(" |          |",f8.5,"                | ",f8.5,"             |")
+  362 format(" |          |",e10.3,"              |",e10.3,"            |")
+
   !print to file
   open(unit=100,file="MCleakage.out")
 
@@ -1681,7 +1712,7 @@ CONTAINS
   elseif(chgeomtype=='binary' .and. Adamscase==0) then
     write(100,*) "|--binary--|---- Reflection and Transmission Results ------|"
   endif
-  write(100,*) "|Method    | reflave      refldev   |  tranave      trandev|"
+  write(100,*) "|Method    | reflave/SEM  refldev   |  tranave/SEM  trandev|"
   write(100,*) "|----------|------------------------|----------------------|"
 
 
@@ -1693,7 +1724,8 @@ CONTAINS
 
   !print my solutions for radMC, radWood, KLWood, GaussKL (Gaus), GaussKL (LogN)
   if(stocMC_reflection(1) < eps .or. sqrt(stocMC_reflection(2)) < eps .or. &
-     stocMC_transmission(1)<eps .or. sqrt(stocMC_transmission(2))<eps ) then
+     stocMC_transmission(1)<eps .or. sqrt(stocMC_transmission(2))<eps .or. &
+     stocMC_reflection(3) < eps/10d0 .or. stocMC_transmission(3) <eps/10d0      ) then
     if(chTrantype=='radMC')   write(100,346) stocMC_reflection(1),&
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
@@ -1708,6 +1740,10 @@ CONTAINS
 
     if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,353) stocMC_reflection(1),&
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+
+    !print SEM
+    if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
+    write(100,362) stocMC_reflection(3),stocMC_transmission(3)
   else
     if(chTrantype=='radMC')   write(100,326) stocMC_reflection(1),&
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
@@ -1723,6 +1759,10 @@ CONTAINS
 
     if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,333) stocMC_reflection(1),&
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+
+    !print SEM
+    if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
+    write(100,361) stocMC_reflection(3),stocMC_transmission(3)
   endif
 
 

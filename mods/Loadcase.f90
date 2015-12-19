@@ -430,9 +430,9 @@ CONTAINS
       if(.not.allocated(LPamMCsums)) allocate(LPamMCsums(3))
       LPamMCsums =0.0d0
     endif
-    allocate(stocMC_reflection(2))   !global MC variables for each method
-    allocate(stocMC_transmission(2)) !rank 2 holds 1=average, 2=deviation
-    allocate(stocMC_absorption(2))
+    allocate(stocMC_reflection(3))   !global MC variables for each method
+    allocate(stocMC_transmission(3)) !rank 3 holds 1=average, 2=deviation, 3=SEM
+    allocate(stocMC_absorption(3))
     stocMC_reflection   = 0.0d0
     stocMC_transmission = 0.0d0
     stocMC_absorption   = 0.0d0
