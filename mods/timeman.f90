@@ -27,7 +27,7 @@ CONTAINS
   call cpu_time(t2)
 
   if(chtype=='radMC' .or. chtype=='radWood' .or. chtype=='KLWood' .or. chtype=='GaussKL') then
-    1101 format(A9,"   ",f6.1,"% of ",i7,"   time/est:",f7.2,"/",f7.2," min   h/r-ave/max: ",f3.1,"E",i1,"/",f3.1,"E",i1)
+    1101 format(A9,"   ",f6.1,"% of ",i7,"   time/est:",f7.2,"/",f7.2," min     h/r-ave/max: ",f3.1,"E",i1,"/",f3.1,"E",i1)
     ave = real(sum(numPartsperj),8)/numRealz+eps
     orda= floor(log(ave)/log(10d0))
     maxv= real(maxval(numPartsperj),8)+eps 

@@ -1002,9 +1002,6 @@ CONTAINS
     transmit = transmit
     absorb   = absorb
 
-    call stats_enoughpts(reflect,'reflection',1)
-    call stats_enoughpts(reflect,'transmission',1)
-
     call mean_var_and_SEM_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2),stocMC_reflection(3) )
     call mean_var_and_SEM_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2),stocMC_transmission(3) )
     call mean_var_and_SEM_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2),stocMC_absorption(3) )
@@ -1085,26 +1082,6 @@ CONTAINS
   end subroutine stocMC_stats
 
 
-
-  subroutine stats_enoughpts(array,chstattype,icell)
-  !this subroutine tests whether enough realizations produced data to "trust" statistics
-  use genRealzvars, only: numRealz
-  integer :: icell, tally, j
-  real(8) :: array(:)
-  character(*) :: chstattype
-
-  tally = 0
-  do j=1,numRealz
-    if(array(j)/=0d0) tally = tally + 1
-  enddo
-  print *,"tally:",tally
-  if(tally<20) then
-    if(chstattype=='reflection')   print *,"Insufficient data for good statistics on reflection boundary"
-    if(chstattype=='transmission') print *,"Insufficient data for good statistics on transmission boundary"
-    if(chstattype=='flux')         write(*,*) "Insufficient data for good statistics on flux cell",icell
-    call sleep(5)
-  endif
-  end subroutine stats_enoughpts
 
 
   subroutine MCfluxPrint
@@ -1857,7 +1834,7 @@ CONTAINS
   write(100,*) "|----------------------------------------------------------|"
 
   if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') then
-    363 format(" |Part/Hist | ",e8.2," +-  ",e8.2,"  |  ",e8.2,"   ",e8.2" |")
+    363 format(" |Part/Hist:| ",e8.2," +-  ",e8.2,"  |  ",e8.2,"   ",e8.2" |")
     call mean_and_var_p( real(numPartsperj,8),numRealz,meanPperj,varPperj )
     write(100,*) "|          |   ave          dev     |    min        max    |"
     write(100,363) meanPperj,sqrt(varPperj),real(minval(numPartsperj),8),real(maxval(numPartsperj),8)
