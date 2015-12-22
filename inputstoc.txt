@@ -1,23 +1,23 @@
   892382563,         Random number seed
 
   !--- Biggest Problem Parameters ---!
-  contin,          Geometry type: 'contin'uous or 'binary'
-  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  1000,100,         Number of realizations/how often to print
+  binary,          Geometry type: 'contin'uous or 'binary'
+  radWood,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
+  10000,10,         Number of realizations/how often to print
   100, 10000,0.5,0.5,5,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
-  4,             Number of eigenvalues
+  3,             Number of eigenvalues
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   Glamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  0.4,1.5,    Ave total cross section, total cross section variance
+  1.5,4.5,    Ave total cross section, total cross section variance
   0.5,        Scattering ratio, c
-  1.0,        Correlation length, lamc
+  1.5,        Correlation length, lamc
   5.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
   1.1,           Adamscase option, if==0, then user input for next three parameters
-  1.25,3.25, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  1.25,1.25, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.6,0.6, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
   1.0,                 slab thickness           #1.0
@@ -41,7 +41,7 @@
 
 
   !!--All Plotting Option
-  noplot,       "default" "preview" "plot" or "noplot".  "default" lets each choose
+  default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
 
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
@@ -70,13 +70,13 @@
   !!--Plotting KLconstructed realizations  [in sub KLreval]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  1,4,           Which realz to plot/num of Eigs to contribute
-  2,4
-  3,4
-  4,4
+  5,5,           Which realz to plot/num of Eigs to contribute
+  6,5
+  7,5
+  8,5
 
   !!--Plotting local KL average and variance
-  plot,totaln,   'noplot','plot'.../xs type, chxstype'totaln'...
+  preview,totaln,   'noplot','plot'.../xs type, chxstype'totaln'...
   40,                 num x-vals
   40,                 num bins
 
@@ -98,7 +98,7 @@
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   100,           Number of cells collect and plot flux over

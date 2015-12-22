@@ -380,7 +380,7 @@ CONTAINS
       sigvar     = log(  GBsigvar                 / GBsigave**2                 +1.0d0)
       scatvar    = log( (GBsigvar*      GBscatrat)/(GBsigave*      GBscatrat)**2+1.0d0)
       absvar     = log( (GBsigvar*(1d0-GBscatrat))/(GBsigave*(1d0-GBscatrat))**2+1.0d0)
-      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+sigvar/sigave,lamc)
+      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBsigvar/GBsigave**2,lamc)
     endif
   elseif(chgeomtype=='binary') then
     flGaussdiffrand = .false.
