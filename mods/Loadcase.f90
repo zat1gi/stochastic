@@ -352,6 +352,7 @@ CONTAINS
   use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit
   integer :: i
+  real(8) :: eps = 0.0000000000001d0
 
   !initialize rngvars
   rngappnum  = 0
@@ -374,12 +375,22 @@ CONTAINS
       absvar     = GBsigvar * (1d0-GBscatrat)
     elseif(chGausstype=='LogN') then
       sigave     = log(  GBsigave**2                 /sqrt( GBsigvar                 + GBsigave**2                 ))
-      sigscatave = log( (GBsigave*      GBscatrat)**2/sqrt((GBsigvar*      GBscatrat)+(GBsigave*      GBscatrat)**2))
-      sigabsave  = log( (GBsigave*(1d0-GBscatrat))**2/sqrt((GBsigvar*(1d0-GBscatrat))+(GBsigave*(1d0-GBscatrat))**2))
-
       sigvar     = log(  GBsigvar                 / GBsigave**2                 +1.0d0)
-      scatvar    = log( (GBsigvar*      GBscatrat)/(GBsigave*      GBscatrat)**2+1.0d0)
-      absvar     = log( (GBsigvar*(1d0-GBscatrat))/(GBsigave*(1d0-GBscatrat))**2+1.0d0)
+
+      if(GBscatrat>eps) then
+        sigscatave = log( (GBsigave*      GBscatrat)**2/sqrt((GBsigvar*      GBscatrat)+(GBsigave*      GBscatrat)**2))
+        scatvar    = log( (GBsigvar*      GBscatrat)/(GBsigave*      GBscatrat)**2+1.0d0)
+      else
+        sigscatave = -10000000000d0
+        scatvar    = 0d0
+      endif
+      if(GBscatrat<1d0-eps) then
+        sigabsave  = log( (GBsigave*(1d0-GBscatrat))**2/sqrt((GBsigvar*(1d0-GBscatrat))+(GBsigave*(1d0-GBscatrat))**2))
+        absvar     = log( (GBsigvar*(1d0-GBscatrat))/(GBsigave*(1d0-GBscatrat))**2+1.0d0)
+      else
+        sigabsave  = -10000000000d0
+        absvar     = 0d0
+      endif
       if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBsigvar/GBsigave**2,lamc)
     endif
   elseif(chgeomtype=='binary') then
