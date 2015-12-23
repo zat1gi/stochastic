@@ -1541,7 +1541,7 @@ CONTAINS
   real(8) :: smrefl,lgrefl,smtran,lgtran
 
   !local vars
-  integer :: ibin
+  integer :: ibin,j
   integer,allocatable,dimension(:) :: reflcounts,trancounts  
   real(8),allocatable,dimension(:) :: reflprob,  tranprob
   real(8),allocatable,dimension(:) :: reflbounds,tranbounds
@@ -1566,6 +1566,15 @@ CONTAINS
   tranprob   = 0d0
   reflbounds = 0d0
   tranbounds = 0d0
+
+  !print data in case desire to create pdf using outside code
+  open(unit=101,file="refltran_leakagevals.txt")
+  312 format(e20.14,"    ",e20.14)
+  do j=1,size(reflect)
+    write(101,312) reflect(j),transmit(j)
+  enddo
+  close(unit=101)
+  call system("mv refltran_leakagevals.txt auxiliary/leakagepdfs")  
 
   !actually store in binned fashion
   call store_in_bins( smrefl,lgrefl,trprofile_binnum,reflcounts,reflbounds,reflect,numRealz )
