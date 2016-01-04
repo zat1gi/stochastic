@@ -436,8 +436,8 @@ CONTAINS
 
   !allocate and initialize KLconstruction variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(KLrxivalsa(numRealz,numEigs))
-    allocate(KLrxivalss(numRealz,numEigs))
+    allocate(KLrxivalsa(numRealz,anumEigs))
+    allocate(KLrxivalss(numRealz,snumEigs))
     allocate(KLrxisig(KLrnumpoints))
     allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
   endif
@@ -531,7 +531,7 @@ CONTAINS
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
   use genRealzvars, only: GBsigave, GBsigvar, GBscatrat, GBlamc, GBs
-  use KLvars, only: chGBcase, numEigs, flGaussdiffrand
+  use KLvars, only: chGBcase, numEigs, flGaussdiffrand, snumEigs, anumEigs
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
@@ -546,6 +546,8 @@ CONTAINS
     GBs         = 5.0d0
 
     numEigs     = 5
+    snumEigs    = 5
+    anumEigs    = 5
 
     flGaussdiffrand = .false.
     sourceType  = 'leftbeam'

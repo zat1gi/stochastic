@@ -197,10 +197,8 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
-  use KLvars,       only: binPDF, binNumof, numEigs, &
-                          KLrnumpoints, KLrxi, KLrxivalsa, &
-                          KLrxivalss, KLrxisig, flGaussdiffrand, &
-                          Gaussrandtype, flmeanadjust
+  use KLvars,       only: binPDF, binNumof, anumEigs, snumEigs, KLrnumpoints, KLrxi, KLrxivalsa, &
+                          KLrxivalss, KLrxisig, flGaussdiffrand, Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
@@ -227,9 +225,9 @@ CONTAINS
     call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
     KLrxisig = 0
-    do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivalsa
+    do curEig=1,anumEigs + mod(anumEigs,2)  !select xi values for KLrxivalsa
         rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=numEigs) then
+        if((chTrantype=='KLWood') .and. curEig<=anumEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
@@ -241,13 +239,13 @@ CONTAINS
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
           xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
         endif
-      if(curEig<=numEigs) KLrxivalsa(realj,curEig) = xiterm
+      if(curEig<=anumEigs) KLrxivalsa(realj,curEig) = xiterm
     enddo
 
     if(flGaussdiffrand) then
-      do curEig=1,numEigs + mod(numEigs,2)  !select xi values for KLrxivalss
+      do curEig=1,snumEigs + mod(snumEigs,2)  !select xi values for KLrxivalss
         rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=numEigs) then
+        if((chTrantype=='KLWood') .and. curEig<=snumEigs) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
@@ -259,7 +257,7 @@ CONTAINS
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
           xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
         endif
-        if(curEig<=numEigs) KLrxivalss(realj,curEig) = xiterm
+        if(curEig<=snumEigs) KLrxivalss(realj,curEig) = xiterm
       enddo
     else
       KLrxivalss = KLrxivalsa
@@ -324,7 +322,7 @@ CONTAINS
     KLrnumpts=KLrnumpoints
     KLrxisig = 0
     do i=1,KLrnumpoints
-      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',tnumEigsin=tnumEigs)
+      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',tsnumEigsin=tnumEigs,tanumEigsin=tnumEigs)
       pltKLrealzarray(i,1)   = KLrxi(i)     !record x values
       pltKLrealzarray(i,m+1) = KLrxisig(i)  !record that realization
     enddo
@@ -663,28 +661,29 @@ CONTAINS
 
 
 
-  function KLrxi_integral(j,xl,xr,chxstype,tnumEigsin) result(KL_int)
+  function KLrxi_integral(j,xl,xr,chxstype,tsnumEigsin,tanumEigsin) result(KL_int)
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, scatvar, absvar, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, &
+  use KLvars, only: alpha, Ak, Eig, snumEigs, anumEigs, KLrxivalsa, &
                     sigsmeanadjust, sigameanadjust, KLrxivalss
   use utilities, only: Heavi
   integer :: j
   real(8) :: xl,xr,KL_int
   character(*) :: chxstype
-  integer, optional :: tnumEigsin
+  integer, optional :: tsnumEigsin, tanumEigsin
 
-  integer :: curEig, tnumEigs
+  integer :: curEig, tsnumEigs, tanumEigs
   real(8) :: Eigfintterm, KL_suma, KL_sums, sigs, siga
 
-  tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
+  tsnumEigs = merge(tsnumEigsin,snumEigs,present(tsnumEigsin))
+  tanumEigs = merge(tanumEigsin,anumEigs,present(tanumEigsin))
 
   !solve summation of KL terms to use below
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
-    do curEig=1,tnumEigs
+    do curEig=1,tanumEigs
       Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
       KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalsa(j,curEig)
     enddo
@@ -692,7 +691,7 @@ CONTAINS
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
-    do curEig=1,tnumEigs
+    do curEig=1,tsnumEigs
       Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
       KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalss(j,curEig)
     enddo
@@ -731,7 +730,7 @@ CONTAINS
 
 
 
-  function KLr_point(j,xpos,chxstype,tnumEigsin,orderin) result(KL_point)
+  function KLr_point(j,xpos,chxstype,tsnumEigsin,tanumEigsin,orderin) result(KL_point)
   !Evaluates KL reconstructed realizations at a given point.
   !It has options for total, scattering only, absorption only, or scattering ratio.
   !It has an option to solve for less than the available number of eigenvalues.
@@ -739,35 +738,36 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, numEigs, KLrxivalsa, KLrxivalss, chGausstype
+  use KLvars, only: alpha, Ak, Eig, snumEigs, anumEigs, KLrxivalsa, KLrxivalss, chGausstype
 
   integer :: j
   real(8) :: xpos
   real(8) :: KL_point
   character(*) :: chxstype
-  integer, optional :: tnumEigsin
+  integer, optional :: tsnumEigsin, tanumEigsin
   integer, optional :: orderin
 
   real(8) :: siga, sigs, KL_suma, KL_sums, Eigfterm
-  integer :: curEig,tnumEigs,order
+  integer :: curEig,tsnumEigs,tanumEigs,order
   real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
 
   !load any optional values or their default
-  tnumEigs = merge(tnumEigsin,numEigs,present(tnumEigsin))
-  order    = merge(orderin   ,0      ,present(orderin)   )
+  tsnumEigs = merge(tsnumEigsin,snumEigs,present(tsnumEigsin))
+  tanumEigs = merge(tanumEigsin,anumEigs,present(tanumEigsin))
+  order     = merge(orderin   ,0      ,present(orderin)   )
 
   !solve summation of KL terms to use below
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
-    do curEig=1,tnumEigs
+    do curEig=1,tanumEigs
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-      KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfterm * KLrxivalsa(j,curEig)
+      KL_suma  = KL_suma + sqrt(Eig(curEig)) * Eigfterm * KLrxivalsa(j,curEig)
     enddo
   endif
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
-    do curEig=1,tnumEigs
+    do curEig=1,tsnumEigs
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
       KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
     enddo

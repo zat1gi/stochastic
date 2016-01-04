@@ -29,7 +29,7 @@ CONTAINS
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: l,level,curEig,i,j
-  real(8) :: refstepGam,TT,curGam,sqrtEig(numEigs)
+  real(8) :: refstepGam,TT,curGam
   real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs),sliceSize
   real(8),allocatable :: Eigfplotarray(:,:)
 
@@ -93,7 +93,6 @@ CONTAINS
     !Calc other values like alpha, norm const (Ak), eigenvalue, etc.
     alpha(curEig)   =gam(curEig)/lamc
     Ak(curEig)      =sqrt(1d0/(  s/2d0*(gam(curEig)**2+1d0)+lamc  ))
-    sqrtEig(curEig) =sqrt(Eig(curEig))
     !integrate to 1 tests
     427 format("  ",f13.7,"   Ak:",f13.7)
     testval(curEig)=Ak(curEig)**2*0.5d0*( s*(1+gam(curEig)**2)+&
@@ -113,7 +112,7 @@ CONTAINS
   write(*,*) "  Eigindx       Eig vals        sqrt(Eig)     [ differential / cumulative ] % mean sqr err maint"
   426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
   do curEig=1,numEigs
-    write(*,426) curEig,Eig(curEig),sqrtEig(curEig),Eig(curEig)/s,sum(Eig(:curEig))/s
+    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),Eig(curEig)/s,sum(Eig(:curEig))/s
   enddo
 
   428 format("   lamc:           ",f8.3)
