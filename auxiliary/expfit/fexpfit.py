@@ -22,5 +22,3 @@ lamcw,pcov = curve_fit(fittingfunc,x,yn)  #fit curve
 
 #print output
 np.savetxt('auxiliary/expfit/lamcw.txt',lamcw)
-print 'testing, testing, four, five, six'
-

@@ -87,6 +87,8 @@ auxiliary/profiletools/gmon.out
 auxiliary/profiletools/gmon.txt
 auxiliary/expfit/lamcw.txt
 auxiliary/expfit/s.a.lamcsig.txt
+auxiliary/cubature/Gen_Ord_Cubature.inp.txt
+auxiliary/cubature/Gen_Ord_Cubature.w.x.txt
 genericplot.pdf
 genericplot.ps
 genericplot.txt
