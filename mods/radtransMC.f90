@@ -426,6 +426,7 @@ CONTAINS
       rtnumParts = ceiling(tnumParts * 1.1d0)
     elseif(refl<real(mindatapts,8)-eps .and. refl>eps) then !require at least min data points
       rtnumParts = ceiling( max(real(mindatapts,8)/refl * tnumParts * 0.5d0,tnumParts*1.1d0) )
+      if(tnumParts == maxnumParts .and. refl<real(mindatapts,8)) print *,"insufficient refl:",refl," of mindatapts:",mindatapts
     elseif(rSEM / (refl/tnumParts) > reflrelSEMtol) then    !require convergence to tol
       targetSEM = reflrelSEMtol*refl/tnumParts
       rtnumParts = ceiling( max(rsig**2/targetSEM**2 * 0.1d0,tnumParts*1.1d0) )
@@ -437,6 +438,7 @@ CONTAINS
       ttnumParts = ceiling(tnumParts * 1.1d0)
     elseif(tran<real(mindatapts,8)-eps .and. tran>eps) then !require at least min data points
       ttnumParts = ceiling( max(real(mindatapts,8)/tran * tnumParts * 0.5d0,tnumParts*1.1d0) )
+      if(tnumParts == maxnumParts .and. tran<real(mindatapts,8)) print *,"insufficient tran:",tran," of mindatapts:",mindatapts
     elseif(tSEM / (tran/tnumParts) > tranrelSEMtol) then    !require convergence to tol
       targetSEM = tranrelSEMtol*tran/tnumParts
       ttnumParts = ceiling( max(tsig**2/targetSEM**2 * 0.1d0,tnumParts*1.1d0) )
