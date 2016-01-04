@@ -103,7 +103,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   character(7)         :: Corropts(2)          !
   integer, allocatable :: pltEigfwhich(:)      ! 
   integer, allocatable :: pltxiBinswhich(:,:)  ! 
-  integer, allocatable :: pltCowhich(:,:)      ! 
+  integer, allocatable :: pltCowhich(:)        ! number of eigenmodes to plot with
   integer              :: pltxiBinsnumof       ! 
   integer              :: pltEigfnumof         !
   integer              :: pltConumof           !

@@ -439,15 +439,16 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: s, numRealz, P, lamc, totLength
+  use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigave, &
+                          GBscatrat
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          pltCo
+                          pltCo, snumEigs, anumEigs
   use KLconstruct, only: Eigfunc
 
   integer :: curCS,curEig,check
   real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
   real(8) :: totLPer(2),tottotLength
-  real(8) :: x,phi
+  real(8) :: x,phi,tc
   real(8),allocatable :: Coplotarray(:,:)
 
   allocate(Coplotarray(numSlice,pltConumof+1))
@@ -471,13 +472,19 @@ CONTAINS
     sliceval(curCS)=sliceval(curCS-1)+slicesize
   enddo
 
+  if(chgeomtype=='binary') then
+    tc = sigscatave/sigave
+  elseif(chgeomtype=='contin') then
+    tc = GBscatrat
+  endif
+
   do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
     cumCo=0
     x=sliceval(curCS)
     do curEig=1,numEigs
       phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
-      cumCo=cumCo+  Eig(curEig)*phi**2
-
+      cumCo=cumCo+ merge(   tc   *Eig(curEig)*phi**2,0d0,curEig<=anumEigs) &
+                 + merge((1d0-tc)*Eig(curEig)*phi**2,0d0,curEig<=snumEigs)
       CoEff(curEig,curCS)=cumCo
     enddo
   enddo
@@ -505,7 +512,7 @@ CONTAINS
 
   do check=1,pltConumof  !load values to plot according to selected options
     if( pltCo(1) .NE. 'noplot' ) then
-      curEig = pltCowhich(1,check)
+      curEig = pltCowhich(check)
       do curCS=1,numSlice
         Coplotarray(curCS,1) = sliceval(curCS)
         Coplotarray(curCS,check+1) = CoEff(curEig,curCS)

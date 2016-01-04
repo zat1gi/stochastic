@@ -26,4 +26,4 @@ set terminal postscript portrait enhanced color dashed lw 2 "Times-Roman" 11
 set output './genericplot.ps'
 #Screen output
 replot
-#pause -1
+pause 1

@@ -126,9 +126,9 @@ CONTAINS
   read(2,*) dumchar    !Plotting Variace (Co)
   read(2,*) pltCo(1),pltCo(2),pltCo(3),pltCo(4)
   read(2,*) pltConumof
-  allocate(pltCowhich(2,pltConumof))
+  allocate(pltCowhich(pltConumof))
   do i=1,pltConumof
-    read(2,*) pltCowhich(1,i),pltCowhich(2,i)
+    read(2,*) pltCowhich(i)
   enddo
 
   read(2,*) dumchar    !Plotting Correlation contours
@@ -276,12 +276,8 @@ CONTAINS
   enddo
 
   do i=1,pltConumof          !Test plotCo for Eig choice and CoEffExp or CoEffAct option
-    if( pltCowhich(1,i)>numEigs .AND. pltCo(1) .NE. 'noplot' ) then
+    if( pltCowhich(i)>numEigs .and. pltCo(1) .ne. 'noplot' ) then
       print *,"--User attempting to plot CoEff values for eigenvalues not calculated"
-      flstopstatus = .true.
-    endif
-    if( pltCowhich(2,i)/=1 .AND. pltCowhich(2,i)/=2 .AND. pltCo(1) .NE. 'noplot' ) then
-      print *,"--User input for 'CoEffExp vs CoEffAct' not valid.  Enter a '1' or a '2'"
       flstopstatus = .true.
     endif
   enddo
