@@ -9,7 +9,7 @@ CONTAINS
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
                                   GBlamc, GBs, chgeomtype
-  use KLvars,               only: pltEigfwhich, pltxiBinswhich, &
+  use KLvars,               only: pltEigfwhich, pltxiBinswhich, snumEigs, anumEigs, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
@@ -39,7 +39,7 @@ CONTAINS
   read(2,*) chTrantype
   read(2,*) numRealz,trannprt
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
-  read(2,*) numEigs
+  read(2,*) numEigs,snumEigs,anumEigs
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
@@ -165,6 +165,14 @@ CONTAINS
   if(chgeomtype=='binary' .and. Adamscase/=0) call Acase_load !need to load these to test
   if(chgeomtype=='contin' .and. .not.chGBcase=='none') call GBcase_load
 
+
+  !set number of KL eigenmodes (used in tests)
+  if(numEigs==0) then
+    numEigs = max(snumEigs,anumEigs)
+  else
+    snumEigs = numEigs
+    anumEigs = numEigs
+  endif
 
 
   !begin tests of valid input
@@ -341,7 +349,7 @@ CONTAINS
                           scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, GBscatrat, &
                           GBsigvar, GBsigave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
-                    KLrxisig, gam, alpha, Ak, Eig, chLNmode, pltCo, &
+                    KLrxisig, gam, alpha, Ak, Eig, chLNmode, pltCo, snumEigs, anumEigs, &
                     xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
@@ -357,7 +365,6 @@ CONTAINS
   !initialize rngvars
   rngappnum  = 0
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
-
 
   !allocate and initialize genRealzvars
   numPosRealz= 0

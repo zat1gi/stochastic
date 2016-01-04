@@ -83,7 +83,9 @@ module KLvars  !"KLresearch" and "KLconstruct"
   implicit none
   !inputs
   integer              :: binNumof             ! number of bins (for xi?)
-  integer              :: numEigs              ! number of eigenmodes to calculate
+  integer              :: numEigs              ! number of KL eigenmodes, if==0, defer to next two
+  integer              :: snumEigs             ! number of KL eigenmodes for scattering xs
+  integer              :: anumEigs             ! number of KL eigenmodes for absorption xs
   integer              :: numSlice             ! number of points to plot eigenfunction at
   integer              :: levsrefEig           !
   real(8)              :: binSmallBound        ! smallest xi value for xi bins
