@@ -61,6 +61,7 @@ CONTAINS
     curGam=curGam+stepGam
   enddo
   close(unit=11)
+  call system("mv absdiffGam.txt texts/")
 
   !refine gamma values and solve eigenvalues
   do curEig=1,numEigs                  !loop each Eigenvalue
@@ -355,12 +356,12 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamc
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts
+  use genRealzvars, only: s, lamc, sigscatave, sigave, GBscatrat, chgeomtype
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts, snumEigs, anumEigs
   use KLconstruct, only: Eigfunc
 
   integer :: x,y,curEig
-  real(8) :: stepsize,curx,cury,Eigfx,Eigfy
+  real(8) :: stepsize,curx,cury,Eigfx,Eigfy,tc
   real(8) :: Correxpect(Corrnumpoints,Corrnumpoints)
   real(8) :: Corryield(Corrnumpoints,Corrnumpoints)
   character(17) :: Corrchar = '"Correlation.txt"' 
@@ -371,6 +372,12 @@ CONTAINS
   Corryield  = 0
 
   stepsize = s/(Corrnumpoints)  !set up stepsize
+
+  if(chgeomtype=='binary') then
+    tc = sigscatave/sigave
+  elseif(chgeomtype=='contin') then
+    tc = GBscatrat
+  endif
 
   do x=1,Corrnumpoints  !cycle through x and y
     if(x==1) curx=stepsize/2 
@@ -384,7 +391,9 @@ CONTAINS
       do curEig=1,numEigs
         Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
         Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
-        Corryield(x,y) = Corryield(x,y) + Eig(curEig) * Eigfx * Eigfy
+        Corryield(x,y) = Corryield(x,y) + &
+                         merge(    tc   *(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=snumEigs ) + &
+                         merge( (1d0-tc)*(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=anumEigs )
       enddo
 
       !print Correxpect and Corryield

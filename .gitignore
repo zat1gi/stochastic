@@ -103,6 +103,10 @@ plots/Correlation/Correlation.ps
 plots/Correlation/Correlation.txt
 plots/Correlation/Correlation.gnu
 
+plots/CoEffplot/CoEffplot.pdf
+plots/CoEffplot/CoEffplot.ps
+plots/CoEffplot/CoEffplot.txt
+
 texts/inputlog/dummy.txt
 
 auxiliary/leakagepdfs/refltran_leakagevals.txt

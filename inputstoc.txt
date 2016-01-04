@@ -5,7 +5,7 @@
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   1000,100,         Number of realizations/how often to print
   10, 10,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
-  0,  3,10,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
+  0,  1,3,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
@@ -81,7 +81,7 @@
   40,                 num bins
 
   !!--Plotting Variance (Co)  [in sub KL_Cochart]
-  preview,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,Variace,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of Eig/type combos to plot (up to 4)
   1,            Number of eigenvalues to plot at
   3
@@ -89,7 +89,7 @@
   10
 
   !!--Plotting Correlation contours          [in sub KL_eigenvalue]
-  noplot,both,    "preview" "plot" or "noplot","expect" "yield" or "both"
+  preview,both,    "preview" "plot" or "noplot","expect" "yield" or "both"
   40,             Number of points in each dir to create grid at
 
 
