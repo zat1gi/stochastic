@@ -4,14 +4,14 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   1000,100,         Number of realizations/how often to print
-  1000, 1000,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
-  0,  4,3,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
+  10, 10,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  0,  10,10,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   fitlamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
   1.0,0.25,    Ave total cross section, total cross section variance
-  0.0,        Scattering ratio, c
+  0.3,        Scattering ratio, c
   1.5,        Correlation length, lamc
   2.0,        Slab thickness, s
 
@@ -68,15 +68,15 @@
   7,100000
 
   !!--Plotting KLconstructed realizations  [in sub KLreval]
-  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  5,5,           Which realz to plot/num of Eigs to contribute
-  6,5
-  7,5
-  8,5
+  1,10,1,           Which realz to plot/num of scattering Eigs to contribute/num of abs Eigs
+  1,10,4
+  1,10,7
+  1,10,10
 
   !!--Plotting local KL average and variance
-  plot,totaln,   'noplot','plot'.../xs type, chxstype'totaln'...
+  noplot,totaln,   'noplot','plot'.../xs type, chxstype'totaln'...
   40,                 num x-vals
   40,                 num bins
 
@@ -94,11 +94,11 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  plot,      Plot Leakage profile?
+  noplot,      Plot Leakage profile?
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   100,           Number of cells collect and plot flux over

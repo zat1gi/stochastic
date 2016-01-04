@@ -113,9 +113,9 @@ CONTAINS
   read(2,*) dumchar    !Plotting KLrealz
   read(2,*) pltKLrealz(1),pltKLrealz(2),pltKLrealz(3),pltKLrealz(4)
   read(2,*) pltKLrealznumof
-  allocate(pltKLrealzwhich(2,pltKLrealznumof))
+  allocate(pltKLrealzwhich(3,pltKLrealznumof))
   do i=1,pltKLrealznumof
-    read(2,*) pltKLrealzwhich(1,i),pltKLrealzwhich(2,i)
+    read(2,*) pltKLrealzwhich(1,i),pltKLrealzwhich(2,i),pltKLrealzwhich(3,i)
   enddo
 
   read(2,*) dumchar    !Plotting local KL average and variance
@@ -229,7 +229,7 @@ CONTAINS
       print *,"--User attempting to plot more reconstructed realz than reconstructed"
       flstopstatus = .true.
     endif
-    if( pltKLrealzwhich(2,i)>numEigs .AND. pltKLrealz(1) .NE. 'noplot' ) then
+    if( (pltKLrealzwhich(2,i)>snumEigs .or. pltKLrealzwhich(3,i)>anumEigs) .and. pltKLrealz(1) .ne. 'noplot' ) then
       print *,"--User attempting to plot reconstructed realz using more than calced num of Eigs"
       flstopstatus = .true.
     endif

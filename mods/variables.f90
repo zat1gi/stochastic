@@ -109,8 +109,8 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: pltConumof           !
   integer              :: KLrnumpoints         ! Number of points to plot in KL reconstructions
   character(7)         :: pltKLrealz(4)        !
-  integer              :: pltKLrealznumof      !
-  integer, allocatable :: pltKLrealzwhich(:,:) !
+  integer              :: pltKLrealznumof      ! number or realizations to plot
+  integer, allocatable :: pltKLrealzwhich(:,:) ! realization number and num of eigenmodes to plot
 
   logical              :: flGaussdiffrand=.true.! want GB meths to use different rand vars for xi samps?
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'

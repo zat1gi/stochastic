@@ -314,15 +314,17 @@ CONTAINS
   use KLvars,      only: KLrnumpoints, pltKLrealz, pltKLrealznumof, &
                          pltKLrealzwhich, KLrxi, pltKLrealzarray, KLrxisig
 
-  integer :: i,m,KLrnumpts,tnumEigs
+  integer :: i,m,KLrnumpts,tsnumEigs,tanumEigs
 
   do m=1,pltKLrealznumof
-    tnumEigs=pltKLrealzwhich(2,m)
+    tsnumEigs=pltKLrealzwhich(2,m)
+    tanumEigs=pltKLrealzwhich(3,m)
 
     KLrnumpts=KLrnumpoints
     KLrxisig = 0
     do i=1,KLrnumpoints
-      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',tsnumEigsin=tnumEigs,tanumEigsin=tnumEigs)
+      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',&
+                              tsnumEigsin=tsnumEigs,tanumEigsin=tanumEigs)
       pltKLrealzarray(i,1)   = KLrxi(i)     !record x values
       pltKLrealzarray(i,m+1) = KLrxisig(i)  !record that realization
     enddo
