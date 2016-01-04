@@ -5,7 +5,7 @@
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   1000,100,         Number of realizations/how often to print
   10, 10,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
-  0,  10,10,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
+  0,  10,4,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
@@ -68,7 +68,7 @@
   7,100000
 
   !!--Plotting KLconstructed realizations  [in sub KLreval]
-  preview,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
   1,10,1,           Which realz to plot/num of scattering Eigs to contribute/num of abs Eigs
   1,10,4

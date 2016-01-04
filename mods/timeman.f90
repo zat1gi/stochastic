@@ -17,7 +17,6 @@ CONTAINS
 
   subroutine timeupdate( chtype,ndone,ntotal )
   !uses t1 and new t2 to give update on time for new repetative operation
-  use genRealzvars, only: numRealz
   use MCvars, only: numPartsperj
   use timevars, only: t1
   integer :: ndone,ntotal,      orda,ordm

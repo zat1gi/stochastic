@@ -22,14 +22,14 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, lamc
-  use KLvars,       only: gam, alpha, levsrefEig, pltEigf, &
+  use genRealzvars, only: s, lamc, sigave, sigscatave, GBscatrat, chgeomtype
+  use KLvars,       only: gam, alpha, levsrefEig, pltEigf, snumEigs, anumEigs, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice
   use KLconstruct, only: Eigfunc
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: l,level,curEig,i,j
-  real(8) :: refstepGam,TT,curGam
+  real(8) :: refstepGam,TT,curGam,tc
   real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs),sliceSize
   real(8),allocatable :: Eigfplotarray(:,:)
 
@@ -111,8 +111,17 @@ CONTAINS
   write(*,*) "    Eigenvalues, their contributions, and KL maintained variance"
   write(*,*) "  Eigindx       Eig vals        sqrt(Eig)     [ differential / cumulative ] % mean sqr err maint"
   426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
+  if(chgeomtype=='binary') then
+    tc = sigscatave/sigave
+  elseif(chgeomtype=='contin') then
+    tc = GBscatrat
+  endif
   do curEig=1,numEigs
-    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),Eig(curEig)/s,sum(Eig(:curEig))/s
+    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
+                (   tc   *merge(Eig(curEig),0d0,curEig<=snumEigs) + &
+                 (1d0-tc)*merge(Eig(curEig),0d0,curEig<=anumEigs)) / s,&
+                (   tc   *sum( Eig(:min(curEig,snumEigs)) ) + &
+                 (1d0-tc)*sum( Eig(:min(curEig,anumEigs)) )) /s
   enddo
 
   428 format("   lamc:           ",f8.3)
