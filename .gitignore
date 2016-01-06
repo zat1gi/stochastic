@@ -112,3 +112,5 @@ plots/CoEffplot/CoEffplot.txt
 texts/inputlog/dummy.txt
 
 auxiliary/leakagepdfs/refltran_leakagevals.txt
+mods/uqvars.mod
+mods/klvonstruct.mod
