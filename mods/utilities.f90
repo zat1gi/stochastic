@@ -483,8 +483,6 @@ CONTAINS
   enddo
   close(101)
 
-stop
-
   end subroutine create_cubature
 
 

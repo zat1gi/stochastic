@@ -13,9 +13,6 @@ program stochastic
   use MCvars, only: binplot, flfluxplot, chTrantype
   implicit none
 
-  call create_cubature
-stop
-
   !!read parameters
   call read_test_inputstoc
 

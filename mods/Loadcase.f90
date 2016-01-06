@@ -169,11 +169,14 @@ CONTAINS
   !set number of KL eigenmodes (used in tests)
   if(numEigs==0) then
     numEigs = max(snumEigs,anumEigs)
+    if(.not.flGaussdiffrand) then
+      snumEigs = max(snumEigs,anumEigs)
+      anumEigs = max(snumEigs,anumEigs)
+    endif
   else
     snumEigs = numEigs
     anumEigs = numEigs
   endif
-
 
   !begin tests of valid input
   print *,"  "
