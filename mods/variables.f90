@@ -225,3 +225,15 @@ module MCvars
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
 end module MCvars
 
+
+
+!--- UQ space (MC, SC) ---!
+module UQvars
+  implicit none
+  !inputs
+  character(5)         :: chUQtype             ! 'MC', 'LagSC', 'PCESC', UQ approach
+  integer, allocatable :: Qs(:)                ! for SC, order in each dimension
+  !non inputs
+
+end module UQvars 
+

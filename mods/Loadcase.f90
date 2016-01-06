@@ -21,12 +21,13 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
+  use UQvars,               only: Qs
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-  integer         :: i
+  integer         :: i, Qtemp
   logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")
@@ -40,6 +41,7 @@ CONTAINS
   read(2,*) numRealz,trannprt
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
   read(2,*) numEigs,snumEigs,anumEigs
+  read(2,*) Qtemp
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
@@ -80,6 +82,13 @@ CONTAINS
   if(setflags(1)=='yes') flnegxs  =.true.
   read(2,*) setflags(1),meanadjust_tol
   if(setflags(1)=='yes') flmeanadjust=.true.
+
+  !--- Other UQ Options ---!
+  read(2,*) dumchar
+  allocate(Qs(snumEigs+anumEigs))
+  do i=1,size(Qs)  !number of inputs here must be equal to snumEigs+anumEigs, even if not using them
+    read(2,*) Qs(i)
+  enddo
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
@@ -165,8 +174,7 @@ CONTAINS
   if(chgeomtype=='binary' .and. Adamscase/=0) call Acase_load !need to load these to test
   if(chgeomtype=='contin' .and. .not.chGBcase=='none') call GBcase_load
 
-
-  !set number of KL eigenmodes (used in tests)
+  !set number of KL eigenmodes and allocate Qs
   if(numEigs==0) then
     numEigs = max(snumEigs,anumEigs)
     if(.not.flGaussdiffrand) then
@@ -177,6 +185,12 @@ CONTAINS
     snumEigs = numEigs
     anumEigs = numEigs
   endif
+  if(.not.Qtemp==0) then
+    Qs = Qtemp
+  endif
+print *,"Qs:",Qs
+stop
+
 
   !begin tests of valid input
   print *,"  "
