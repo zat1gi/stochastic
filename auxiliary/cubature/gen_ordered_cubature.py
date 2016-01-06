@@ -85,20 +85,29 @@ text_file1 = open("auxiliary/cubature/Gen_Ord_Cubature.inp.txt")
 quadtype = text_file1.readline()
 quadtype = str(quadtype).strip('\n')
 quadtype = str(quadtype).strip('\r')
+quadtype = str(quadtype).strip(' ')
+print quadtype=='GH'
 
 numD = text_file1.readline()
 numD = str(numD).strip('\n')
 numD = int(numD)
+print 'numD:',numD
 
 abms = []
 for k in range(0,numD):
     text = text_file1.readline()
-    text = text.split(' ')
+    text = str(text).strip('\r')
+    text = str(text).strip('\n')
+    text = str(text).strip(' ')
+    text = text.split('-')
     abms.append([float(i) for i in text])
+print 'abms:',abms
 
 Q = text_file1.readline()
-Q    = Q.split(' ')
+Q    = Q.strip(' ')
+Q    = Q.split('-')
 Q    = [int(i) for i in Q]
+print 'Q:',Q
 
 text_file1.close()
 
@@ -112,6 +121,6 @@ for w in cwgts:
 text_file.write("\n")
 for pt in cnodes:
     for d in pt:
-        text_file.write("%15.13f  "%d)
+        text_file.write("%15.13f\n"%d)
     text_file.write("\n")
 text_file.close()

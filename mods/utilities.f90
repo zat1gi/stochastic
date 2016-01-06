@@ -414,6 +414,82 @@ CONTAINS
  
 
 
+  subroutine create_cubature
+  !This subroutine accesses a python script which calculates (and arranges in decreasing
+  !order of weights) cubature weights and abscissas.
+  integer :: i, q, iQ
+  real(8), allocatable :: abms(:,:)
+  integer :: numpts
+  character(2) :: cubetype = 'GH' !setting to GH now (python code works with GL also)
+
+
+  !input params
+  integer :: numdims = 3
+  integer, allocatable :: Qs(:)
+  !output params
+  real(8), allocatable :: wgts(:)
+  real(8), allocatable :: nodes(:,:)
+
+  allocate(abms(numdims,2))
+  allocate(Qs(numdims))
+
+  !hardcode for basic Gaussian, can change later (say offset Gaussian--SCM on Markov-Based)
+  do q=1,size(Qs)
+    abms(q,1) = 0d0
+    abms(q,2) = 1d0
+  enddo
+
+  Qs(1) = 3
+  Qs(2) = 2
+  Qs(3) = 2
+
+  !create input for cubature generation
+  open(unit = 101, file = "auxiliary/cubature/Gen_Ord_Cubature.inp.txt")
+  write(101,*) cubetype
+  write(101,*) numdims
+  do i=1,numdims
+    write(101,*) abms(i,1),"-",abms(i,2)
+  enddo
+  1020 format(i5," - ")
+  1021 format(i5)
+  do i=1,numdims
+    if(i<numdims) then
+      write(101,1020,advance="no") Qs(i)
+    else
+      write(101,1021) Qs(i)
+    endif
+  enddo
+  close(101)
+
+  !generate cubature
+  call system("./auxiliary/cubature/gen_ordered_cubature.py")
+
+  !read it
+  numpts = product(Qs)
+  allocate(wgts(numpts))
+  allocate(nodes(numpts,size(Qs)))
+  wgts = 0d0
+  nodes= 0d0
+  open(unit = 101, file = "auxiliary/cubature/Gen_Ord_Cubature.w.x.txt")
+  do i=1,numpts
+    read(101, *) wgts(i)
+  enddo
+  print *,"wgts:",wgts
+  do i=1,numpts
+    do q=1,size(Qs)
+      read(101,*) nodes(i,q)
+    enddo
+    print *,"nodes(i,:):",nodes(i,:)
+  enddo
+  close(101)
+
+stop
+
+  end subroutine create_cubature
+
+
+
+
   function erfi(z)
   !Solves value for inverse error function to certain tolerance using
   !Maclaurin series.  Alerts user if not solved to tolerance due to 
