@@ -357,7 +357,7 @@ CONTAINS
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          numPosRealz, numNegRealz, numRealz, sigvar, atmixscatrat, &
+                          numPosRealz, numNegRealz, sigvar, atmixscatrat, &
                           scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, GBscatrat, &
                           GBsigvar, GBsigave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
@@ -369,6 +369,7 @@ CONTAINS
                     fluxnumcells, flfluxplot, LPamMCsums, transmit, reflect, absorb, &
                     numpnSamp, radtrans_int, Wood_rej, flfluxplotall, flfluxplotmat, &
                     fluxall, numPartsperj
+  use UQvars, only: UQwgts, Qs, chUQtype
   use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit
   integer :: i
@@ -379,6 +380,9 @@ CONTAINS
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
   !allocate and initialize genRealzvars
+  if(chUQtype=='LagSC') then
+    numRealz = product(Qs)
+  endif
   numPosRealz= 0
   numNegRealz= 0
   if(chgeomtype=='contin') then  !Gauss-based input
@@ -433,6 +437,11 @@ CONTAINS
       atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
     endif
   endif
+
+
+  !allocate UQ variables
+  allocate(UQwgts(numRealz))
+  UQwgts = 0d0
 
 
   !allocate  KLresearch variables

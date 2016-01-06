@@ -6,7 +6,7 @@
   LagSC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
   1000,100,         Number of realizations/how often to print
   10, 10,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
-  0,  2,4,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
+  0,  2,2,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
   0,                SC dimensionality, if==0, revert to orders under 'Other UQ Options'
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
@@ -42,10 +42,8 @@
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
 
   !--- Other UQ Options ---! so far just anisotropic orders
-  4
   3
   2
-  4
   3
   2
 

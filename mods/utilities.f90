@@ -414,34 +414,26 @@ CONTAINS
  
 
 
-  subroutine create_cubature
+  subroutine create_cubature(Qs,wgts,nodes)
   !This subroutine accesses a python script which calculates (and arranges in decreasing
   !order of weights) cubature weights and abscissas.
+  integer, allocatable :: Qs(:)      !inp
+  real(8), allocatable :: wgts(:)    !out
+  real(8), allocatable :: nodes(:,:) !out
+
   integer :: i, q, iQ
   real(8), allocatable :: abms(:,:)
-  integer :: numpts
+  integer :: numpts, numdims
   character(2) :: cubetype = 'GH' !setting to GH now (python code works with GL also)
 
-
-  !input params
-  integer :: numdims = 3
-  integer, allocatable :: Qs(:)
-  !output params
-  real(8), allocatable :: wgts(:)
-  real(8), allocatable :: nodes(:,:)
-
+  numdims = size(Qs)
   allocate(abms(numdims,2))
-  allocate(Qs(numdims))
 
   !hardcode for basic Gaussian, can change later (say offset Gaussian--SCM on Markov-Based)
-  do q=1,size(Qs)
+  do q=1,numdims
     abms(q,1) = 0d0
     abms(q,2) = 1d0
   enddo
-
-  Qs(1) = 3
-  Qs(2) = 2
-  Qs(3) = 2
 
   !create input for cubature generation
   open(unit = 101, file = "auxiliary/cubature/Gen_Ord_Cubature.inp.txt")
@@ -466,8 +458,6 @@ CONTAINS
 
   !read it
   numpts = product(Qs)
-  allocate(wgts(numpts))
-  allocate(nodes(numpts,size(Qs)))
   wgts = 0d0
   nodes= 0d0
   open(unit = 101, file = "auxiliary/cubature/Gen_Ord_Cubature.w.x.txt")
@@ -476,7 +466,7 @@ CONTAINS
   enddo
   print *,"wgts:",wgts
   do i=1,numpts
-    do q=1,size(Qs)
+    do q=1,numdims
       read(101,*) nodes(i,q)
     enddo
     print *,"nodes(i,:):",nodes(i,:)

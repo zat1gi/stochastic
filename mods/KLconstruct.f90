@@ -200,11 +200,21 @@ CONTAINS
   use KLvars,       only: binPDF, binNumof, anumEigs, snumEigs, KLrnumpoints, KLrxi, KLrxivalsa, &
                           KLrxivalss, KLrxisig, flGaussdiffrand, Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
+  use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
+  real(8), allocatable :: nodes(:,:)
+
+  !setup UQ weights and if SC, nodes
+  if(chUQtype=='MC') then
+    UQwgts = 1d0/numRealz
+  elseif(chUQtype=='LagSC') then
+    allocate(nodes(numRealz,anumEigs+snumEigs))
+    call create_cubature(Qs,UQwgts,nodes)
+  endif
 
   call initialize_t1
 
@@ -217,50 +227,60 @@ CONTAINS
     tentj=tentj+1
     flacceptrealz=.true.
 
-    !set random number, makes reproducible for same rngseed
-    !if use inverse sampling (instead of Box-Muller),
-    !correlated for same rngseed between binary and contin when using same rng for abs and scat
-    !when using different, abs correlated with binary/both with same
-    call setrngappnum('KLRealz')
-    call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
+    if(chUQtype=='MC') then
+      !set random number, makes reproducible for same rngseed
+      !if use inverse sampling (instead of Box-Muller),
+      !correlated for same rngseed between binary and contin when using same rng for abs and scat
+      !when using different, abs correlated with binary/both with same
+      call setrngappnum('KLRealz')
+      call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
-    KLrxisig = 0
-    do curEig=1,anumEigs + mod(anumEigs,2)  !select xi values for KLrxivalsa
-        rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=anumEigs) then
-          call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
-          if(mod(curEig,2)==1) rand1 = rand
-          if(mod(curEig,2)==0) then
-            call TwoGaussrandnums(rand1,rand,xiterms)
-            KLrxivalsa(realj,curEig-1) = xiterms(1)
-            xiterm = xiterms(2)
+      KLrxisig = 0
+      do curEig=1,anumEigs + mod(anumEigs,2)  !select xi values for KLrxivalsa
+          rand = rang()
+          if((chTrantype=='KLWood') .and. curEig<=anumEigs) then
+            call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+            if(mod(curEig,2)==1) rand1 = rand
+            if(mod(curEig,2)==0) then
+              call TwoGaussrandnums(rand1,rand,xiterms)
+              KLrxivalsa(realj,curEig-1) = xiterms(1)
+              xiterm = xiterms(2)
+            endif
+          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+            xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
           endif
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
-          xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
-        endif
-      if(curEig<=anumEigs) KLrxivalsa(realj,curEig) = xiterm
-    enddo
-
-    if(flGaussdiffrand) then
-      do curEig=1,snumEigs + mod(snumEigs,2)  !select xi values for KLrxivalss
-        rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=snumEigs) then
-          call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
-          if(mod(curEig,2)==1) rand1 = rand
-          if(mod(curEig,2)==0) then
-            call TwoGaussrandnums(rand1,rand,xiterms)
-            KLrxivalss(realj,curEig-1) = xiterms(1)
-            xiterm = xiterms(2)
-          endif
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
-          xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
-        endif
-        if(curEig<=snumEigs) KLrxivalss(realj,curEig) = xiterm
+        if(curEig<=anumEigs) KLrxivalsa(realj,curEig) = xiterm
       enddo
-    else
-      KLrxivalss = KLrxivalsa
+
+      if(flGaussdiffrand) then
+        do curEig=1,snumEigs + mod(snumEigs,2)  !select xi values for KLrxivalss
+          rand = rang()
+          if((chTrantype=='KLWood') .and. curEig<=snumEigs) then
+            call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+            if(mod(curEig,2)==1) rand1 = rand
+            if(mod(curEig,2)==0) then
+              call TwoGaussrandnums(rand1,rand,xiterms)
+              KLrxivalss(realj,curEig-1) = xiterms(1)
+              xiterm = xiterms(2)
+            endif
+          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+            xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+          endif
+          if(curEig<=snumEigs) KLrxivalss(realj,curEig) = xiterm
+        enddo
+      else
+        KLrxivalss = KLrxivalsa
+      endif
+    elseif(chUQtype=='LagSC') then
+      do curEig=1,anumEigs
+        KLrxivalsa(realj,curEig) = nodes(realj,curEig)
+      enddo
+      do curEig=1,snumEigs
+        KLrxivalss(realj,curEig) = nodes(realj,anumEigs+curEig)
+      enddo
+print *,"a/s:",KLrxivalsa(realj,:),KLrxivalss(realj,:)
     endif
 
     !count num of realz w/ neg xs, set flag to accept or reject realz
