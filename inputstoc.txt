@@ -3,6 +3,7 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
+  LagSC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
   1000,100,         Number of realizations/how often to print
   10, 10,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
   0,  2,4,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs

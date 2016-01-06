@@ -21,7 +21,7 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
-  use UQvars,               only: Qs
+  use UQvars,               only: Qs, chUQtype
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -38,6 +38,7 @@ CONTAINS
   read(2,*) dumchar
   read(2,*) chgeomtype
   read(2,*) chTrantype
+  read(2,*) chUQtype
   read(2,*) numRealz,trannprt
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
   read(2,*) numEigs,snumEigs,anumEigs
@@ -188,8 +189,6 @@ CONTAINS
   if(.not.Qtemp==0) then
     Qs = Qtemp
   endif
-print *,"Qs:",Qs
-stop
 
 
   !begin tests of valid input
