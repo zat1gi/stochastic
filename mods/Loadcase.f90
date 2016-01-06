@@ -40,9 +40,9 @@ CONTAINS
   read(2,*) chTrantype
   read(2,*) chUQtype
   read(2,*) numRealz,trannprt
-  read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
   read(2,*) numEigs,snumEigs,anumEigs
   read(2,*) Qtemp
+  read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
