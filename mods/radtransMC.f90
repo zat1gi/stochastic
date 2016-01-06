@@ -987,26 +987,29 @@ CONTAINS
   !   space for each MC transport solver.
   !2) calculates ensemble averaged flux values in each cell for material
   !   irrespective and material respective flux tallies.
-  use utilities, only: mean_var_and_SEM_s, mean_and_var_s
+  use utilities, only: mean_var_and_SEM_s, mean_and_var_s, mean_and_var_wgt
   use genRealzvars, only: numRealz
   use MCvars, only: reflect, transmit, absorb, stocMC_reflection, LPamnumParts, &
                     stocMC_transmission, stocMC_absorption, LPamMCsums, &
                     chTrantype, fluxnumcells, fluxall, numPartsperj, &
                     fluxmat1, fluxmat2, stocMC_fluxall, stocMC_fluxmat1, stocMC_fluxmat2, &
                     fluxmatnorm, fluxfaces, flfluxplot, flfluxplotall, flfluxplotmat
+  use UQvars, only: chUQtype, UQwgts
   integer :: ibin, j
   real(8) :: dx,p1,p2
 
   !leakage/absorption ave and stdev stats
   if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. &
      chTrantype=='KLWood'.or. chTrantype=='GaussKL'      ) then
-    reflect  = reflect
-    transmit = transmit
-    absorb   = absorb
-
-    call mean_var_and_SEM_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2),stocMC_reflection(3) )
-    call mean_var_and_SEM_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2),stocMC_transmission(3) )
-    call mean_var_and_SEM_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2),stocMC_absorption(3) )
+    if(chUQtype=='MC') then
+      call mean_var_and_SEM_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2),stocMC_reflection(3) )
+      call mean_var_and_SEM_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2),stocMC_transmission(3) )
+      call mean_var_and_SEM_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2),stocMC_absorption(3) )
+    elseif(chUQtype=='LagSC') then
+      call mean_and_var_wgt( UQwgts,reflect,stocMC_reflection(1),stocMC_reflection(2) )
+      call mean_and_var_wgt( UQwgts,transmit,stocMC_transmission(1),stocMC_transmission(2) )
+      call mean_and_var_wgt( UQwgts,absorb,stocMC_absorption(1),stocMC_absorption(2) )
+    endif
   elseif(chTrantype=='LPMC' .or. chTrantype=='atmixMC') then
     stocMC_reflection(1)   = LPamMCsums(1) / LPamnumParts
     stocMC_transmission(1) = LPamMCsums(2) / LPamnumParts
@@ -1037,8 +1040,11 @@ CONTAINS
      chTrantype=='KLWood'.or. chTrantype=='GaussKL'       ) then
     if( flfluxplotall ) then
       do ibin=1,fluxnumcells
-        call mean_and_var_s( fluxall(ibin,:),numRealz, &
-                 stocMC_fluxall(ibin,1),stocMC_fluxall(ibin,2) )
+        if(chUQtype=='MC') then
+          call mean_and_var_s( fluxall(ibin,:),numRealz,stocMC_fluxall(ibin,1),stocMC_fluxall(ibin,2) )
+        elseif(chUQtype=='LagSC') then
+          call mean_and_var_wgt( UQwgts,fluxall(ibin,:),stocMC_fluxall(ibin,1),stocMC_fluxall(ibin,2) )
+        endif
       enddo
     endif
     if( flfluxplotmat ) then
@@ -1721,6 +1727,7 @@ CONTAINS
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
                     stocMC_transmission, chTrantype, numPartsperj
   use KLvars, only: chGausstype
+  use UQvars, only: chUQtype
   real(8) :: meanPperj,varPperj,eps = 0.001d0
 
   320 format(" |AdamsMC:  |",f7.4,"   +-",f8.4,"    | ",f7.4,"   +-",f8.4," |")
@@ -1762,7 +1769,11 @@ CONTAINS
   elseif(chgeomtype=='binary' .and. Adamscase==0) then
     write(100,*) "|--binary--|---- Reflection and Transmission Results ------|"
   endif
-  write(100,*) "|Method    | reflave/SEM  refldev   |  tranave/SEM  trandev|"
+  if(chUQtype=='MC') then
+    write(100,*) "|Method    | reflave/SEM  refldev   |  tranave/SEM  trandev|"
+  elseif(chUQtype=='LagSC') then
+    write(100,*) "|Method    |  reflave     refldev   |  tranave/SEM  trandev|"
+  endif
   write(100,*) "|----------|------------------------|----------------------|"
 
 
@@ -1792,8 +1803,8 @@ CONTAINS
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
     !print SEM
-    if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
-    write(100,362) stocMC_reflection(3),stocMC_transmission(3)
+    if( (chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
+    .and. chUQtype=='MC')     write(100,362) stocMC_reflection(3),stocMC_transmission(3)
   else
     if(chTrantype=='radMC')   write(100,326) stocMC_reflection(1),&
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
@@ -1811,8 +1822,8 @@ CONTAINS
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
     !print SEM
-    if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
-    write(100,361) stocMC_reflection(3),stocMC_transmission(3)
+    if( (chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
+    .and. chUQtype=='MC')     write(100,361) stocMC_reflection(3),stocMC_transmission(3)
   endif
 
   !print LP solutions printed if applicable

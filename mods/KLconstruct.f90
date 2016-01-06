@@ -208,10 +208,8 @@ CONTAINS
   logical :: flrealzneg, flacceptrealz, flfindzeros
   real(8), allocatable :: nodes(:,:)
 
-  !setup UQ weights and if SC, nodes
-  if(chUQtype=='MC') then
-    UQwgts = 1d0/numRealz
-  elseif(chUQtype=='LagSC') then
+  !If using SC, solve weights and nodes to utilize later and sooner respectively
+  if(chUQtype=='LagSC') then
     allocate(nodes(numRealz,anumEigs+snumEigs))
     call create_cubature(Qs,UQwgts,nodes)
   endif
@@ -280,7 +278,6 @@ CONTAINS
       do curEig=1,snumEigs
         KLrxivalss(realj,curEig) = nodes(realj,anumEigs+curEig)
       enddo
-print *,"a/s:",KLrxivalsa(realj,:),KLrxivalss(realj,:)
     endif
 
     !count num of realz w/ neg xs, set flag to accept or reject realz

@@ -175,6 +175,26 @@ CONTAINS
 
 
 
+  subroutine mean_and_var_wgt( wgts,values,mean,var )
+  !This subroutine calculates the mean and variance for a data set with corresponding
+  !weights.  The original purpose for this is use in stochastic collocation 
+  !quantity of interest evaluation.
+  real(8),intent(in) :: wgts(:),values(:)
+  real(8),intent(out):: mean,var
+  integer :: i
+
+  if(size(wgts)/=size(values)) stop 'wgts and values not same size'
+  mean = 0d0
+  do i=1,size(wgts)
+    mean = mean + wgts(i) *  values(i)
+  enddo
+
+  var  = 0d0
+  do i=1,size(wgts)
+    var  = var  + wgts(i) * (values(i)-mean)**2
+  enddo
+  end subroutine
+
 
 
   subroutine mean_and_var_p( values,numofvalues,mean,var )
@@ -464,12 +484,10 @@ CONTAINS
   do i=1,numpts
     read(101, *) wgts(i)
   enddo
-  print *,"wgts:",wgts
   do i=1,numpts
     do q=1,numdims
       read(101,*) nodes(i,q)
     enddo
-    print *,"nodes(i,:):",nodes(i,:)
   enddo
   close(101)
 
