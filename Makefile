@@ -1,8 +1,8 @@
 #Makefile
-FC = gfortran
+FC = mpif90
 
-OBJ = mods/stochastic.f90
-MODS = mods/mcnp_random.f90 mods/variables.f90 mods/utilities.f90 mods/timeman.f90 mods/genRealz.f90 mods/Loadcase.f90 mods/KLconstruct.f90 mods/KLresearch.f90 mods/radtransMC.f90
+OBJ = mods/stochastic.F90
+MODS = mods/mcnp_random.f90 mods/variables.f90 mods/utilities.F90 mods/timeman.f90 mods/genRealz.f90 mods/Loadcase.f90 mods/KLconstruct.f90 mods/KLresearch.f90 mods/radtransMC.F90
 
 #Builds Targets
 mods: $(MODS)
@@ -12,6 +12,11 @@ mods: $(MODS)
 exec: $(OBJ)
 	make mods
 	$(FC) -fbounds-check -o astochastic  $(OBJ) $(MODS)
+	mv *.mod mods/
+
+mpiexec: $(OBJ)
+	make mods
+	$(FC) -fbounds-check -DUSE_MPI -o astochastic  $(OBJ) $(MODS)
 	mv *.mod mods/
 
 profile: $(OBJ)
