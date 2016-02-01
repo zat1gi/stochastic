@@ -3,19 +3,19 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  MC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
-  1000,100,         Number of realizations/how often to print
-  0,  2,2,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
-  0,                SC dimensionality, if==0, revert to orders under 'Other UQ Options'
-  1000, 1000,0.01,0.01,0,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  LagSC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
+  1000,1,         Number of realizations/how often to print
+  4,  4,4,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
+  3,                SC dimensionality, if==0, revert to orders under 'Other UQ Options'
+  10, 10,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   fitlamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  1.0,0.25,    Ave total cross section, total cross section variance
-  0.3,        Scattering ratio, c
+  1.5,4.5,    Ave total cross section, total cross section variance
+  0.5,        Scattering ratio, c
   1.5,        Correlation length, lamc
-  2.0,        Slab thickness, s
+  5.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
@@ -43,9 +43,13 @@
 
   !--- Other UQ Options ---! so far just anisotropic orders
   3
-  2
   3
-  2
+  3
+  3
+  3
+  3
+  3
+  3
 
   !!--All Plotting Option
   default,       "default" "preview" "plot" or "noplot".  "default" lets each choose
@@ -105,7 +109,7 @@
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   100,           Number of cells collect and plot flux over

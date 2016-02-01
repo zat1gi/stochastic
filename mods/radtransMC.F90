@@ -24,13 +24,6 @@ CONTAINS
 
   integer :: j !'j' is which realization
 
-#ifdef USE_MPI 
-  call initialize_mpi()
-  print *,"Jobid:",jobid," of ",nodes," nodes."
-  call sleep(5)
-  call MPI_FINALIZE(ierr)
-#endif
-
   call initialize_t1
 
   write(*,*) "Starting method: ",chTrantype  
@@ -55,6 +48,12 @@ CONTAINS
     if(j == numRealz) call stocMC_stats          !calc stats in stochastic space here
 
   enddo !loops over realizations
+
+#ifdef USE_MPI 
+  call MPI_FINALIZE(ierr)
+  if(jobid/=0) stop
+  print *,"jobid:",jobid
+#endif
 
   end subroutine UQ_MC
 

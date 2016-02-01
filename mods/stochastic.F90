@@ -7,6 +7,7 @@ program stochastic
   use KLresearch
   use KLconstruct
   use KLmeanadjust
+  use mpiaccess
 
   use genRealzvars
   use KLvars, only: Corropts, pltCo, chLNxsplottype, flmeanadjust, pltKLrealz
@@ -15,6 +16,11 @@ program stochastic
   use mpi
 #endif
   implicit none
+
+#ifdef USE_MPI 
+  call initialize_mpi()
+  print *,"Jobid:",jobid," of ",njobs," njobs."
+#endif
 
   !!read parameters
   call read_test_inputstoc

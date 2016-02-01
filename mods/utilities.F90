@@ -1033,11 +1033,12 @@ end module utilities
 
 
 module mpiaccess 
-#ifdef USE_MPI 
   implicit none 
-  real(8), dimension(3) :: BATCHINFO 
-  integer :: nodes 
   integer :: jobid
+
+#ifdef USE_MPI 
+  real(8), dimension(3) :: BATCHINFO 
+  integer :: njobs 
   integer :: comm 
   integer, allocatable, dimension(:) :: dutychart
  
@@ -1047,24 +1048,24 @@ module mpiaccess
     implicit none 
     integer :: ierr
     call MPI_INIT(ierr) 
-    call MPI_Comm_size(MPI_COMM_WORLD, nodes, ierr)  !determine the number of processes
+    call MPI_Comm_size(MPI_COMM_WORLD, njobs, ierr)  !determine the number of processes
     call MPI_Comm_rank(MPI_COMM_WORLD, jobid, ierr)  !determine rank of this process
   end subroutine initialize_mpi 
 
   subroutine assigndutychart_mpi(numpts)
     integer :: i,number,remainder,numpts
-    allocate(dutychart(0:nodes))
-    dutychart = numpts/nodes
+    allocate(dutychart(0:njobs))
+    dutychart = numpts/njobs
     dutychart(0) = 0
-    remainder = mod(numpts,nodes)
-    do i=1,nodes 
+    remainder = mod(numpts,njobs)
+    do i=1,njobs
       if(remainder>0) then 
         dutychart(i) = dutychart(i) + 1 
         remainder = remainder - 1 
       endif 
       if(i>1) dutychart(i) = dutychart(i) + dutychart(i-1)
     enddo 
-    if(jobid==nodes-1) print *,"dutychart:",dutychart
+    if(jobid==njobs-1) print *,"dutychart:",dutychart
   end subroutine assigndutychart_mpi 
 #endif 
 end module mpiaccess
