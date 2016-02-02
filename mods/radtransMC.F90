@@ -51,7 +51,7 @@ CONTAINS
 
     call MCtransport( j )     !transport over a realization
 
-    if(mod( j,trannprt )==0) call timeupdate( chTrantype,j,numRealz )   !print time updates
+    if(mod( j-jstart+1,trannprt )==0) call timeupdate( chTrantype,j-jstart+1,jend-jstart+1 )   !print time updates
 
   enddo !loops over realizations
 
