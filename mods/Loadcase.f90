@@ -86,7 +86,12 @@ CONTAINS
 
   !--- Other UQ Options ---!
   read(2,*) dumchar
-  allocate(Qs(snumEigs+anumEigs))
+  if(flGaussdiffrand) then
+    allocate(Qs(snumEigs+anumEigs))
+  else
+    allocate(Qs(snumEigs))
+  endif
+print *,"size(Qs):",size(Qs)
   do i=1,size(Qs)  !number of inputs here must be equal to snumEigs+anumEigs, even if not using them
     read(2,*) Qs(i)
   enddo

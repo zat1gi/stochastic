@@ -445,7 +445,7 @@ CONTAINS
   real(8), allocatable :: abms(:,:)
   integer :: numpts, numdims
   character(2) :: cubetype = 'GH' !setting to GH now (python code works with GL also)
-
+print *,"size(nodes(:,1)),size(nodes(1,:)):",size(nodes(:,1)),size(nodes(1,:))
   numdims = size(Qs)
   allocate(abms(numdims,2))
 
@@ -484,6 +484,7 @@ CONTAINS
   do i=1,numpts
     read(101, *) wgts(i)
   enddo
+print *,"numdims:",numdims
   do i=1,numpts
     do q=1,numdims
       read(101,*) nodes(i,q)

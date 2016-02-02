@@ -30,6 +30,10 @@ debug: $(OBJ)
 	$(FC) -g -fbounds-check -Wall -fbacktrace -finit-real=nan -o astochastic  $(OBJ) $(MODS)
 	mv *.mod mods/
 
+mpidebug: $(OBJ)
+	make mods
+	$(FC) -g -DUSE_MPI -fbounds-check -Wall -fbacktrace -finit-real=nan -o astochastic  $(OBJ) $(MODS)
+	mv *.mod mods/
 
 clean:
 	rm -f test mods/*.mod mods/*~
