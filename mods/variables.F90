@@ -223,6 +223,62 @@ module MCvars
   real(8)              :: oldposition          ! most recent position of particle
   real(8)              :: mu                   ! 'current' direction of particle
   integer              :: nceilbin             ! number of bins in ceiling calcs for WMC
+  contains
+
+#ifdef USE_MPI
+subroutine reduceMCresults
+  use mpi
+  use mpiaccess
+  implicit none
+  integer :: ierr
+
+  if(jobid==0) then
+    if(allocated(fluxall)) &
+    call MPI_Reduce(MPI_IN_PLACE, fluxall, size(fluxall), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(fluxmat1)) &
+    call MPI_Reduce(MPI_IN_PLACE, fluxmat1, size(fluxmat1), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(fluxmat2)) &
+    call MPI_Reduce(MPI_IN_PLACE, fluxmat2, size(fluxmat2), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(fluxmatnorm)) &
+    call MPI_Reduce(MPI_IN_PLACE, fluxmatnorm, size(fluxmatnorm), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(reflect)) &
+    call MPI_Reduce(MPI_IN_PLACE, reflect, size(reflect), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(transmit)) &
+    call MPI_Reduce(MPI_IN_PLACE, transmit, size(transmit), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(absorb)) &
+    call MPI_Reduce(MPI_IN_PLACE, absorb, size(absorb), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(LPamMCsums)) &
+    call MPI_Reduce(MPI_IN_PLACE, LPamMCsums, size(LPamMCsums), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(MPI_IN_PLACE, Wood_rej, size(Wood_rej), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(MPI_IN_PLACE, numpnSamp, size(numpnSamp), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(MPI_IN_PLACE, areapnSamp, size(areapnSamp), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(MPI_IN_PLACE, numcSamp, size(numcSamp), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+  else
+    if(allocated(fluxall)) &
+    call MPI_Reduce(fluxall, fluxall, size(fluxall), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(fluxmat1)) &
+    call MPI_Reduce(fluxmat1, fluxmat1, size(fluxmat1), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(fluxmat2)) &
+    call MPI_Reduce(fluxmat2, fluxmat2, size(fluxmat2), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(fluxmatnorm)) &
+    call MPI_Reduce(fluxmatnorm, fluxmatnorm, size(fluxmatnorm), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(reflect)) &
+    call MPI_Reduce(reflect, reflect, size(reflect), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(transmit)) &
+    call MPI_Reduce(transmit, transmit, size(transmit), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(absorb)) &
+    call MPI_Reduce(absorb, absorb, size(absorb), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(LPamMCsums)) &
+    call MPI_Reduce(LPamMCsums, LPamMCsums, size(LPamMCsums), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(Wood_rej, Wood_rej, size(Wood_rej), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(numpnSamp, numpnSamp, size(numpnSamp), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(areapnSamp, areapnSamp, size(areapnSamp), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Reduce(numcSamp, numcSamp, size(numcSamp), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+  endif
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+end subroutine reduceMCresults
+#endif
+
 end module MCvars
 
 

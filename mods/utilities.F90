@@ -1054,7 +1054,7 @@ module mpiaccess
   end subroutine initialize_mpi 
 
   subroutine assigndutychart_mpi(numpts)
-    integer :: i,number,remainder,numpts
+    integer :: i,remainder,numpts
     allocate(dutychart(0:njobs))
     dutychart = numpts/njobs
     dutychart(0) = 0

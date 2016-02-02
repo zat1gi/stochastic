@@ -2,7 +2,7 @@
 FC = mpif90
 
 OBJ = mods/stochastic.F90
-MODS = mods/mcnp_random.f90 mods/variables.f90 mods/utilities.F90 mods/timeman.f90 mods/genRealz.f90 mods/Loadcase.f90 mods/KLconstruct.f90 mods/KLresearch.f90 mods/radtransMC.F90
+MODS = mods/mcnp_random.f90 mods/utilities.F90 mods/variables.F90 mods/timeman.f90 mods/genRealz.f90 mods/Loadcase.f90 mods/KLconstruct.f90 mods/KLresearch.f90 mods/radtransMC.F90
 
 #Builds Targets
 mods: $(MODS)
