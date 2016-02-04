@@ -625,14 +625,92 @@ subroutine bcast_MCvars_vars
 end subroutine bcast_MCvars_vars
 
 
-subroutine bcast_MCvars_alloc_de(flalloc)
+subroutine bcast_MCvars_alloc()
   use mpi
+  use genRealzvars, only: numRealz
   implicit none
-  logical :: flalloc
   integer :: ierr
 
+  if(.not.allocated(numPartsperj)) then
+    allocate(numPartsperj(numRealz))
+    numPartsperj = 0
+  endif
+  if(.not.allocated(ABreflection)) then
+    allocate(ABreflection(2,5))
+    ABreflection = 0d0
+  endif
+  if(.not.allocated(ABtransmission)) then
+    allocate(ABtransmission(2,5))
+    ABtransmission = 0d0
+  endif
+
+  if(.not.allocated(fluxfaces)) then
+    allocate(fluxfaces(fluxnumcells+1))
+    fluxfaces = 0d0
+  endif
+  if(.not.allocated(fluxall)) then
+    allocate(fluxall(fluxnumcells,numRealz))
+    fluxall = 0d0
+  endif
+!  if(.not.allocated(fluxmat1)) then
+!    allocate(fluxmat1(,))
+!    fluxmat1 = 0d0
+!  endif
+!  if(.not.allocated(fluxmat2)) then
+!    allocate(fluxmat2(,))
+!    fluxmat2 = 0d0
+!  endif
+!  if(.not.allocated(fluxmatnorm)) then
+!    allocate(fluxmatnorm(,,))
+!    fluxmatnorm = 0d0
+!  endif
+
+  if(.not.allocated(reflect)) then
+    allocate(reflect(numRealz))
+    reflect = 0d0
+  endif
+  if(.not.allocated(transmit)) then
+    allocate(transmit(numRealz))
+    transmit = 0d0
+  endif
+  if(.not.allocated(absorb)) then
+    allocate(absorb(numRealz))
+    absorb = 0d0
+  endif
+  if(.not.allocated(LPamMCsums)) then
+    allocate(LPamMCsums(3))
+    LPamMCsums = 0d0
+  endif
   return
-end subroutine bcast_MCvars_alloc_de
+end subroutine bcast_MCvars_alloc
+
+
+subroutine bcast_MCvars_dealloc()
+  use mpi
+  implicit none
+  integer :: ierr
+
+  if(allocated(numPartsperj)) deallocate(numPartsperj)
+  if(allocated(ABreflection)) deallocate(ABreflection)
+  if(allocated(ABtransmission)) deallocate(ABtransmission)
+
+  if(allocated(fluxfaces)) deallocate(fluxfaces)
+  if(allocated(fluxall)) deallocate(fluxall)
+  if(allocated(fluxmat1)) deallocate(fluxmat1)
+  if(allocated(fluxmat2)) deallocate(fluxmat2)
+  if(allocated(fluxmatnorm)) deallocate(fluxmatnorm)
+
+  if(allocated(reflect)) deallocate(reflect)
+  if(allocated(transmit)) deallocate(transmit)
+  if(allocated(absorb)) deallocate(absorb)
+  if(allocated(LPamMCsums)) deallocate(LPamMCsums)
+
+  if(allocated(binmaxind)) deallocate(binmaxind)
+  if(allocated(binmaxes)) deallocate(binmaxes)
+  if(allocated(fbinmax)) deallocate(fbinmax)
+  if(allocated(bbinmax)) deallocate(bbinmax)
+  return
+end subroutine bcast_MCvars_dealloc
 
 
 subroutine bcast_MCvars_arrays
@@ -640,6 +718,25 @@ subroutine bcast_MCvars_arrays
   implicit none
   integer :: ierr
 
+  if(allocated(numPartsperj)) call MPI_Bcast(numPartsperj, size(numPartsperj), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(ABreflection)) call MPI_Bcast(ABreflection, size(ABreflection), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(ABtransmission)) call MPI_Bcast(ABtransmission, size(ABtransmission), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
+  if(allocated(fluxfaces)) call MPI_Bcast(fluxfaces, size(fluxfaces), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(fluxall)) call MPI_Bcast(fluxall, size(fluxall), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(fluxmat1)) call MPI_Bcast(fluxmat1, size(fluxmat1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(fluxmat2)) call MPI_Bcast(fluxmat2, size(fluxmat2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(fluxmatnorm)) call MPI_Bcast(fluxmatnorm, size(fluxmatnorm), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
+  if(allocated(reflect)) call MPI_Bcast(reflect, size(reflect), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(transmit)) call MPI_Bcast(transmit, size(transmit), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(absorb)) call MPI_Bcast(absorb, size(absorb), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(LPamMCsums)) call MPI_Bcast(LPamMCsums, size(LPamMCsums), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
+  if(allocated(binmaxind)) call MPI_Bcast(binmaxind, size(binmaxind), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(binmaxes)) call MPI_Bcast(binmaxes, size(binmaxes), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(fbinmax)) call MPI_Bcast(fbinmax, size(fbinmax), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(bbinmax)) call MPI_Bcast(bbinmax, size(bbinmax), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_MCvars_arrays

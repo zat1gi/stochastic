@@ -26,7 +26,7 @@ CONTAINS
 
 #ifdef USE_MPI 
   call bcast_vars
-  call bcast_alloc(flalloc=.true.)
+  call bcast_alloc
   call bcast_arrays
   call assigndutychart_mpi(numRealz)
   jstart = dutychart(jobid  )+1
@@ -60,7 +60,7 @@ CONTAINS
 
 #ifdef USE_MPI 
   call reduceMCresults
-  if(jobid/=0) call bcast_dealloc(flalloc=.false.)
+  if(jobid/=0) call bcast_dealloc
   call MPI_FINALIZE(ierr)
   if(jobid/=0) stop
 #endif
@@ -93,37 +93,35 @@ CONTAINS
   end subroutine bcast_vars
 
 
-  subroutine bcast_alloc(flalloc)
+  subroutine bcast_alloc()
   use rngvars
   use genRealzvars
   use KLvars
   use MCvars
   use UQvars
   implicit none
-  logical :: flalloc
   integer :: ierr
 
   call bcast_genRealzvars_alloc()
   call bcast_KLvars_alloc()
-  call bcast_MCvars_alloc_de(flalloc)
+  call bcast_MCvars_alloc()
   call bcast_UQvars_alloc()
   return
   end subroutine bcast_alloc
 
 
-  subroutine bcast_dealloc(flalloc)
+  subroutine bcast_dealloc()
   use rngvars
   use genRealzvars
   use KLvars
   use MCvars
   use UQvars
   implicit none
-  logical :: flalloc
   integer :: ierr
 
   call bcast_genRealzvars_dealloc()
   call bcast_KLvars_dealloc()
-  call bcast_MCvars_alloc_de(flalloc)
+  call bcast_MCvars_dealloc()
   call bcast_UQvars_dealloc()
   return
   end subroutine bcast_dealloc
