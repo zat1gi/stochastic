@@ -498,14 +498,38 @@ subroutine bcast_UQvars_vars
 end subroutine bcast_UQvars_vars
 
 
-subroutine bcast_UQvars_alloc_de(flalloc)
+subroutine bcast_UQvars_alloc()
   use mpi
+  use genRealzvars, only: numRealz
+  use KLvars, only: snumEigs,anumEigs,flGaussdiffrand
   implicit none
-  logical :: flalloc
   integer :: ierr
 
+  if(.not.allocated(Qs)) then
+    if(flGaussdiffrand) then
+      allocate(Qs(snumEigs+anumEigs))
+    else
+      allocate(Qs(snumEigs))
+    endif
+    Qs = 0
+  endif
+  if(.not.allocated(UQwgts)) then
+    allocate(UQwgts(numRealz))
+    UQwgts = 0d0
+  endif
   return
-end subroutine bcast_UQvars_alloc_de
+end subroutine bcast_UQvars_alloc
+
+
+subroutine bcast_UQvars_dealloc()
+  use mpi
+  implicit none
+  integer :: ierr
+
+  if(allocated(Qs)) deallocate(Qs)
+  if(allocated(UQwgts)) deallocate(UQwgts)
+  return
+end subroutine bcast_UQvars_dealloc
 
 
 subroutine bcast_UQvars_arrays
@@ -513,6 +537,8 @@ subroutine bcast_UQvars_arrays
   implicit none
   integer :: ierr
 
+  if(allocated(Qs)) call MPI_Bcast(Qs, size(Qs), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(UQwgts)) call MPI_Bcast(UQwgts, size(UQwgts), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_UQvars_arrays
