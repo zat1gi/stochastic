@@ -165,6 +165,7 @@ subroutine bcast_genRealzvars_arrays
   implicit none
   integer :: ierr
 
+  if(allocated(pltgenrealzwhich)) call MPI_Bcast(pltgenrealzwhich, size(pltgenrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_genRealzvars_arrays
@@ -228,7 +229,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: binPDF(:,:)          ! 
   real(8), allocatable :: binBounds(:)         !
   real(8)              :: binSize              !
-  real(8), allocatable :: KLrx(:)              !
   real(8), allocatable :: KLrxi(:)             !
   real(8), allocatable :: KLrxivalsa(:,:)      ! abs psuedo-random numbers for KL media, if same use this
   real(8), allocatable :: KLrxivalss(:,:)      ! scat psuedo-random numbers for KL media
@@ -236,8 +236,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: KLrxisig(:)          !
 
   integer              :: KLrmaxnumzeros       ! number of zeros in realization with most, for allocating
-  real(8), allocatable :: KLr_maxima(:,:)      ! location of local maxima in KL reconstructions
-  real(8), allocatable :: KLzerostot(:,:)      ! location of zeros in tot xs KL reconstructions
   real(8), allocatable :: KLzerosabs(:,:)      ! location of zeros in abs xs KL reconstructions
   real(8), allocatable :: KLzerosscat(:,:)     ! location of zeros in scat xs KL reconstructions
   real(8), allocatable :: KLzerostotn(:,:)     ! location of zeros in native total xs KL reconstructions
@@ -295,14 +293,127 @@ subroutine bcast_KLvars_vars
 end subroutine bcast_KLvars_vars
 
 
-subroutine bcast_KLvars_alloc_de(flalloc)
+
+subroutine bcast_KLvars_alloc()
   use mpi
+  use genRealzvars, only: numRealz
   implicit none
-  logical :: flalloc
   integer :: ierr
 
+  if(.not.allocated(pltEigfwhich)) then
+    allocate(pltEigfwhich(pltEigfnumof))
+    pltEigfwhich = 0
+  endif
+  if(.not.allocated(pltxiBinswhich)) then
+    allocate(pltxiBinswhich(2,pltxiBinsnumof))
+    pltxiBinswhich = 0
+  endif
+  if(.not.allocated(pltCowhich)) then
+    allocate(pltCowhich(pltConumof))
+    pltCowhich = 0
+  endif
+  if(.not.allocated(pltKLrealzwhich)) then
+    allocate(pltKLrealzwhich(3,pltKLrealznumof))
+    pltKLrealzwhich = 0
+  endif
+
+  if(.not.allocated(gam)) then
+    allocate(gam(numEigs))
+    gam = 0d0
+  endif
+  if(.not.allocated(alpha)) then
+    allocate(alpha(numEigs))
+    alpha = 0d0
+  endif
+  if(.not.allocated(Ak)) then
+    allocate(Ak(numEigs))
+    Ak = 0d0
+  endif
+  if(.not.allocated(Eig)) then
+    allocate(Eig(numEigs))
+    Eig = 0d0
+  endif
+  if(.not.allocated(xi)) then
+    allocate(xi(numRealz,numEigs))
+    xi = 0d0
+  endif
+
+  if(.not.allocated(binPDF)) then
+    allocate(binPDF(binNumof,numEigs+1))
+    binPDF = 0d0
+  endif
+  if(.not.allocated(binBounds)) then
+    allocate(binBounds(binNumof+1))
+    binBounds = 0d0
+  endif
+  if(.not.allocated(KLrxi)) then
+    allocate(KLrxi(KLrnumpoints))
+    KLrxi = 0d0
+  endif
+  if(.not.allocated(KLrxivalsa)) then
+    allocate(KLrxivalsa(numRealz,anumEigs))
+    KLrxivalsa = 0d0
+  endif
+  if(.not.allocated(KLrxivalss)) then
+    allocate(KLrxivalss(numRealz,snumEigs))
+    KLrxivalss = 0d0
+  endif
+  if(.not.allocated(pltKLrealzarray)) then
+    allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
+    pltKLrealzarray = 0d0
+  endif
+  if(.not.allocated(KLrxisig)) then
+    allocate(KLrxisig(KLrnumpoints))
+    KLrxisig = 0d0
+  endif
+
+  if(.not.allocated(KLzerosabs)) then
+    allocate(KLzerosabs(KLrmaxnumzeros,numRealz))
+    KLzerosabs = 0d0
+  endif
+  if(.not.allocated(KLzerosscat)) then
+    allocate(KLzerosscat(KLrmaxnumzeros,numRealz))
+    KLzerosscat = 0d0
+  endif
+  if(.not.allocated(KLzerostotn)) then
+    allocate(KLzerostotn(KLrmaxnumzeros,numRealz))
+    KLzerostotn = 0d0
+  endif
+
   return
-end subroutine bcast_KLvars_alloc_de
+end subroutine bcast_KLvars_alloc
+
+
+subroutine bcast_KLvars_dealloc()
+  use mpi
+  implicit none
+  integer :: ierr
+
+  if(allocated(pltEigfwhich)) deallocate(pltEigfwhich)
+  if(allocated(pltxiBinswhich)) deallocate(pltxiBinswhich)
+  if(allocated(pltCowhich)) deallocate(pltCowhich)
+  if(allocated(pltKLrealzwhich)) deallocate(pltKLrealzwhich)
+
+  if(allocated(gam)) deallocate(gam)
+  if(allocated(alpha)) deallocate(alpha)
+  if(allocated(Ak)) deallocate(Ak)
+  if(allocated(Eig)) deallocate(Eig)
+  if(allocated(xi)) deallocate(xi)
+
+  if(allocated(binPDF)) deallocate(binPDF)
+  if(allocated(binBounds)) deallocate(binBounds)
+  if(allocated(KLrxi)) deallocate(KLrxi)
+  if(allocated(KLrxivalsa)) deallocate(KLrxivalsa)
+  if(allocated(KLrxivalss)) deallocate(KLrxivalss)
+  if(allocated(pltKLrealzarray)) deallocate(pltKLrealzarray)
+  if(allocated(KLrxisig)) deallocate(KLrxisig)
+
+  if(allocated(KLzerosabs)) deallocate(KLzerosabs)
+  if(allocated(KLzerosscat)) deallocate(KLzerosscat)
+  if(allocated(KLzerostotn)) deallocate(KLzerostotn)
+  return
+end subroutine bcast_KLvars_dealloc
+
 
 
 subroutine bcast_KLvars_arrays
@@ -310,6 +421,29 @@ subroutine bcast_KLvars_arrays
   implicit none
   integer :: ierr
 
+  if(allocated(pltEigfwhich)) call MPI_Bcast(pltEigfwhich, size(pltEigfwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(pltxiBinswhich)) call MPI_Bcast(pltxiBinswhich, size(pltxiBinswhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(pltCowhich)) call MPI_Bcast(pltCowhich, size(pltCowhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(pltKLrealzwhich)) call MPI_Bcast(pltKLrealzwhich, size(pltKLrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+  if(allocated(gam)) call MPI_Bcast(gam, size(gam), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(alpha)) call MPI_Bcast(alpha, size(alpha), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Ak)) call MPI_Bcast(Ak, size(Ak), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Eig)) call MPI_Bcast(Eig, size(Eig), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(xi)) call MPI_Bcast(xi, size(xi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
+  if(allocated(binPDF)) call MPI_Bcast(binPDF, size(binPDF), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(binBounds)) call MPI_Bcast(binBounds, size(binBounds), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLrxi)) call MPI_Bcast(KLrxi, size(KLrxi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLrxivalsa)) call MPI_Bcast(KLrxivalsa, size(KLrxivalsa), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLrxivalss)) call MPI_Bcast(KLrxivalss, size(KLrxivalss), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(pltKLrealzarray)) &
+                      call MPI_Bcast(pltKLrealzarray, size(pltKLrealzarray), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLrxisig)) call MPI_Bcast(KLrxisig, size(KLrxisig), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
+  if(allocated(KLzerosabs)) call MPI_Bcast(KLzerosabs, size(KLzerosabs), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLzerosscat)) call MPI_Bcast(KLzerosscat, size(KLzerosscat), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLzerostotn)) call MPI_Bcast(KLzerostotn, size(KLzerostotn), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_KLvars_arrays

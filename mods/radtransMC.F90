@@ -104,7 +104,7 @@ CONTAINS
   integer :: ierr
 
   call bcast_genRealzvars_alloc()
-  call bcast_KLvars_alloc_de(flalloc)
+  call bcast_KLvars_alloc()
   call bcast_MCvars_alloc_de(flalloc)
   call bcast_UQvars_alloc()
   return
@@ -122,7 +122,7 @@ CONTAINS
   integer :: ierr
 
   call bcast_genRealzvars_dealloc()
-  call bcast_KLvars_alloc_de(flalloc)
+  call bcast_KLvars_dealloc()
   call bcast_MCvars_alloc_de(flalloc)
   call bcast_UQvars_dealloc()
   return
