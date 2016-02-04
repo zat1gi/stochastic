@@ -82,7 +82,6 @@ module genRealzvars
   real(8)              :: matFirstTally(2)=0   ! tally of first material as mat1 or 2, bin mix
   real(8)              :: sumPath(2)           ! (consider making these guys local)
   real(8)              :: sqrPath(2)           !
-  real(8), allocatable :: matdxs(:,:,:)        ! delta x of different materials for flux tallying
   integer              :: numPosRealz          ! tally of num of realz that are always positive
   integer              :: numNegRealz          ! tally of num of realz that are at some point neg
 contains
@@ -92,10 +91,24 @@ subroutine bcast_genRealzvars_vars
   implicit none
   integer :: ierr
 
+  call MPI_Bcast(sig, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(scatrat, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lam, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltgenrealz, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(P, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numPath, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(totLength, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(perFirstTally, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(devFirstTally, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(matFirstTally, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sumPath, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sqrPath, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
   call MPI_Bcast(Adamscase, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(s, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBsigave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBsigvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBlamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBs, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -108,7 +121,7 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(sigave_, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigvar_, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(scatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(scatvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(absvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigscatave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -119,20 +132,32 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(numPosRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numNegRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_genRealzvars_vars
 
 
-subroutine bcast_genRealzvars_alloc_de(flalloc)
+subroutine bcast_genRealzvars_alloc()
   use mpi
   implicit none
-  logical :: flalloc
   integer :: ierr
 
+  if(.not.allocated(pltgenrealzwhich)) then
+    allocate(pltgenrealzwhich(pltgenrealznumof))
+    pltgenrealzwhich = 0
+  endif
   return
-end subroutine bcast_genRealzvars_alloc_de
+end subroutine bcast_genRealzvars_alloc
+
+
+subroutine bcast_genRealzvars_dealloc()
+  use mpi
+  implicit none
+  integer :: ierr
+
+  if(allocated(pltgenrealzwhich)) deallocate(pltgenrealzwhich)
+  return
+end subroutine bcast_genRealzvars_dealloc
 
 
 subroutine bcast_genRealzvars_arrays
@@ -222,6 +247,12 @@ subroutine bcast_KLvars_vars
   use mpi
   implicit none
   integer :: ierr
+
+  call MPI_Bcast(pltxiBins, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltEigf, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltCo, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(Corropts, 2, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltKLrealz, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(binNumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -420,6 +451,13 @@ subroutine bcast_MCvars_vars
   use mpi
   implicit none
   integer :: ierr
+
+  call MPI_Bcast(pltflux, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(Wood_rej, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numpnSamp, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(areapnSamp, 4, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numcSamp, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
   call MPI_Bcast(chTrantype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(maxnumParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)

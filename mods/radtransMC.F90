@@ -103,7 +103,7 @@ CONTAINS
   logical :: flalloc
   integer :: ierr
 
-  call bcast_genRealzvars_alloc_de(flalloc)
+  call bcast_genRealzvars_alloc()
   call bcast_KLvars_alloc_de(flalloc)
   call bcast_MCvars_alloc_de(flalloc)
   call bcast_UQvars_alloc()
@@ -121,7 +121,7 @@ CONTAINS
   logical :: flalloc
   integer :: ierr
 
-  call bcast_genRealzvars_alloc_de(flalloc)
+  call bcast_genRealzvars_dealloc()
   call bcast_KLvars_alloc_de(flalloc)
   call bcast_MCvars_alloc_de(flalloc)
   call bcast_UQvars_dealloc()
