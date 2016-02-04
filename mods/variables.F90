@@ -5,7 +5,7 @@ module rngvars
   integer              :: rngappnum            ! application number
   integer(8)           :: rngstride=1668163541 ! num of 'part histories' to skip between apps
 contains
-  subroutine setrngappnum( rngapp )
+subroutine setrngappnum( rngapp )
   !this subroutine sets rngappnum according to what application, to standardize
   !rngs used for that application
   character(*) :: rngapp
@@ -17,7 +17,19 @@ contains
     case ("radtrans")      !allow reproducible transport/correlated transport
       rngappnum = 3
   end select
-  end subroutine setrngappnum
+end subroutine setrngappnum
+#ifdef USE_MPI
+subroutine bcast_rngvars_vars
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Bcast(rngseed, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(rngstride, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_rngvars_vars
+#endif
 end module rngvars
 
 
@@ -73,6 +85,65 @@ module genRealzvars
   real(8), allocatable :: matdxs(:,:,:)        ! delta x of different materials for flux tallying
   integer              :: numPosRealz          ! tally of num of realz that are always positive
   integer              :: numNegRealz          ! tally of num of realz that are at some point neg
+contains
+#ifdef USE_MPI
+subroutine bcast_genRealzvars_vars
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Bcast(Adamscase, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(s, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBsigave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBlamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBs, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chgeomtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(pltgenrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(atmixsig, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(atmixscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigave_, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigvar_, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(scatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(absvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigscatave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigabsave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(largesti, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(nummatSegs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numPosRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numNegRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_genRealzvars_vars
+
+
+subroutine bcast_genRealzvars_alloc_de(flalloc)
+  use mpi
+  implicit none
+  logical :: flalloc
+  integer :: ierr
+
+  return
+end subroutine bcast_genRealzvars_alloc_de
+
+
+subroutine bcast_genRealzvars_arrays
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_genRealzvars_arrays
+#endif
 
 end module genRealzvars
 
@@ -145,6 +216,73 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: KLzerosabs(:,:)      ! location of zeros in abs xs KL reconstructions
   real(8), allocatable :: KLzerosscat(:,:)     ! location of zeros in scat xs KL reconstructions
   real(8), allocatable :: KLzerostotn(:,:)     ! location of zeros in native total xs KL reconstructions
+contains
+#ifdef USE_MPI
+subroutine bcast_KLvars_vars
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Bcast(binNumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(snumEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(anumEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numSlice, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(levsrefEig, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(binSmallBound, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(binLargeBound, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flmeanadjust, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(meanadjust_tol, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numrefinesameiter, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(Gaussrandtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chGBcase, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(pltxiBinsgauss, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltxiBinsnumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltEigfnumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltConumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(KLrnumpoints, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltKLrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(flGaussdiffrand, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chGausstype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chLNmode, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chLNxschecktype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numLNxspts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numLNxsbins, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chLNxsplottype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(sigsmeanadjust, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sigameanadjust, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(mostinBin, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(Corrnumpoints, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(binSize, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(KLrmaxnumzeros, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_KLvars_vars
+
+
+subroutine bcast_KLvars_alloc_de(flalloc)
+  use mpi
+  implicit none
+  logical :: flalloc
+  integer :: ierr
+
+  return
+end subroutine bcast_KLvars_alloc_de
+
+
+subroutine bcast_KLvars_arrays
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_KLvars_arrays
+#endif
 
 end module KLvars
 
@@ -277,6 +415,62 @@ subroutine reduceMCresults
   endif
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
 end subroutine reduceMCresults
+
+subroutine bcast_MCvars_vars
+  use mpi
+  implicit none
+  integer :: ierr
+  call MPI_Bcast(chTrantype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(maxnumParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(reflrelSEMtol, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(tranrelSEMtol, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(mindatapts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(LPamnumParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(trannprt, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fluxnumcells, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(rodOrplanar, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sourceType, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltmatflux, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltfluxtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(trprofile_binnum, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(binplot, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flCR_MCSC, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flnegxs, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Bcast(radtrans_int, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flfluxplot, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flfluxplotall, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flfluxplotmat, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(position, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(oldposition, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(mu, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(nceilbin, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_MCvars_vars
+
+
+subroutine bcast_MCvars_alloc_de(flalloc)
+  use mpi
+  implicit none
+  logical :: flalloc
+  integer :: ierr
+
+  return
+end subroutine bcast_MCvars_alloc_de
+
+
+subroutine bcast_MCvars_arrays
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_MCvars_arrays
 #endif
 
 end module MCvars
@@ -291,6 +485,38 @@ module UQvars
   integer, allocatable :: Qs(:)                ! for SC, order in each dimension
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts
+contains
+#ifdef USE_MPI
+subroutine bcast_UQvars_vars
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Bcast(chUQtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_UQvars_vars
+
+
+subroutine bcast_UQvars_alloc_de(flalloc)
+  use mpi
+  implicit none
+  logical :: flalloc
+  integer :: ierr
+
+  return
+end subroutine bcast_UQvars_alloc_de
+
+
+subroutine bcast_UQvars_arrays
+  use mpi
+  implicit none
+  integer :: ierr
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+end subroutine bcast_UQvars_arrays
+#endif
 
 end module UQvars 
 

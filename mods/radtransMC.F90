@@ -25,6 +25,9 @@ CONTAINS
   integer :: j, jstart, jend !'j' is which realization
 
 #ifdef USE_MPI 
+  call bcast_vars
+  call bcast_alloc_de(flalloc=.true.)
+  call bcast_arrays
   call assigndutychart_mpi(numRealz)
   jstart = dutychart(jobid  )+1
   jend   = dutychart(jobid+1)
@@ -64,6 +67,68 @@ CONTAINS
   call stocMC_stats
 
   end subroutine UQ_MC
+
+
+
+
+#ifdef USE_MPI
+  subroutine bcast_vars
+  use mpi
+  use rngvars
+  use genRealzvars
+  use KLvars
+  use MCvars
+  use UQvars
+  implicit none
+  integer :: ierr
+
+  call bcast_rngvars_vars
+  call bcast_genRealzvars_vars
+  call bcast_KLvars_vars
+  call bcast_MCvars_vars
+  call bcast_UQvars_vars
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+  end subroutine bcast_vars
+
+
+  subroutine bcast_alloc_de(flalloc)
+  use rngvars
+  use genRealzvars
+  use KLvars
+  use MCvars
+  use UQvars
+  implicit none
+  logical :: flalloc
+  integer :: ierr
+
+  call bcast_genRealzvars_alloc_de(flalloc)
+  call bcast_KLvars_alloc_de(flalloc)
+  call bcast_MCvars_alloc_de(flalloc)
+  call bcast_UQvars_alloc_de(flalloc)
+  return
+  end subroutine bcast_alloc_de
+
+
+  subroutine bcast_arrays
+  use mpi
+  use rngvars
+  use genRealzvars
+  use KLvars
+  use MCvars
+  use UQvars
+  implicit none
+  integer :: ierr
+
+  call bcast_genRealzvars_arrays
+  call bcast_KLvars_arrays
+  call bcast_MCvars_arrays
+  call bcast_UQvars_arrays
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  return
+  end subroutine bcast_arrays
+#endif
+
 
 
 
