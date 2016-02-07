@@ -20,6 +20,7 @@ program stochastic
 #ifdef USE_MPI 
   call initialize_mpi()
   print *,"Jobid:",jobid," of ",njobs," njobs."
+  if(jobid==0) then
 #endif
 
   !!read parameters
@@ -54,6 +55,10 @@ program stochastic
     if(chTrantype=='GaussKL' .and. .not.chLNxsplottype=='noplot') call LNxsvalstest !tests loc KL moments
   endif
 
+#ifdef USE_MPI
+  endif
+#endif
+  print *,"Jobid:",jobid,"  ----------------  "
   !!Perform UQ-MC for transport problems  
   if(.not.chTrantype=='None') then
     call UQ_MC                      !perform transport

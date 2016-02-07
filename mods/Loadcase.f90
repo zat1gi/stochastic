@@ -27,7 +27,8 @@ CONTAINS
 
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-  integer         :: i, Qtemp
+  integer         :: i
+  integer, allocatable :: Qtemp(:)
   logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")
@@ -41,7 +42,15 @@ CONTAINS
   read(2,*) chUQtype
   read(2,*) numRealz,trannprt
   read(2,*) numEigs,snumEigs,anumEigs
-  read(2,*) Qtemp
+  if(numEigs==0) then !set number of KL eigenmodes and allocate Qtemp
+    numEigs = max(snumEigs,anumEigs)
+    allocate(Qtemp(snumEigs+anumEigs+1))
+  else
+    snumEigs = numEigs
+    anumEigs = numEigs
+    allocate(Qtemp(numEigs+1))
+  endif
+  read(2,*) (Qtemp(i),i=1,size(Qtemp))
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
@@ -84,17 +93,6 @@ CONTAINS
   read(2,*) setflags(1),meanadjust_tol
   if(setflags(1)=='yes') flmeanadjust=.true.
 
-  !--- Other UQ Options ---!
-  read(2,*) dumchar
-  if(flGaussdiffrand) then
-    allocate(Qs(snumEigs+anumEigs))
-  else
-    allocate(Qs(snumEigs))
-  endif
-print *,"size(Qs):",size(Qs)
-  do i=1,size(Qs)  !number of inputs here must be equal to snumEigs+anumEigs, even if not using them
-    read(2,*) Qs(i)
-  enddo
 
   read(2,*) dumchar    !All Plot Same Way Option
   read(2,*) pltallopt
@@ -180,24 +178,36 @@ print *,"size(Qs):",size(Qs)
   if(chgeomtype=='binary' .and. Adamscase/=0) call Acase_load !need to load these to test
   if(chgeomtype=='contin' .and. .not.chGBcase=='none') call GBcase_load
 
-  !set number of KL eigenmodes and allocate Qs
-  if(numEigs==0) then
-    numEigs = max(snumEigs,anumEigs)
-    if(.not.flGaussdiffrand) then
-      snumEigs = max(snumEigs,anumEigs)
-      anumEigs = max(snumEigs,anumEigs)
-    endif
-  else
-    snumEigs = numEigs
-    anumEigs = numEigs
-  endif
-  if(.not.Qtemp==0) then
-    Qs = Qtemp
-  endif
-
 
   !begin tests of valid input
   print *,"  "
+
+
+  !Test for SC params, finish values of numEigs, and finish allocation of Qs
+  if((flGaussdiffrand .and. Qtemp(1)/=0) .or. (.not.flGaussdiffrand .and. Qtemp(1)==0)) then
+    print *,"--User SC order(s) inconsistent with KL 'same' vs 'diff' choice, flGaussdiffrand changed"
+    if(flGaussdiffrand) then
+      flGaussdiffrand = .false.
+    else
+      flGaussdiffrand = .true.
+    endif
+    flsleep = .true.
+  endif
+  if(.not.flGaussdiffrand) then
+    snumEigs = max(snumEigs,anumEigs)
+    anumEigs = max(snumEigs,anumEigs)
+  endif
+  if(flGaussdiffrand) then
+    allocate(Qs(snumEigs+anumEigs))
+  else
+    allocate(Qs(snumEigs))
+  endif
+  if(Qtemp(1)/=0) then
+    Qs = Qtemp(1)
+  else
+    Qs = Qtemp(2:)
+  endif
+  deallocate(Qtemp)
 
   !Tests for problem type
   if(.not.chgeomtype=='contin' .and. .not.chgeomtype=='binary') then

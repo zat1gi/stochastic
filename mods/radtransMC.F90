@@ -11,12 +11,13 @@ CONTAINS
   !'MCtransport' handles the spatial MC, but this subroutine collects data and performs stats
   !in UQ space.
   use genRealzvars, only: numRealz
-  use MCvars, only: trannprt, flfluxplotmat, chTrantype, reduceMCresults
+  use MCvars, only: trannprt, flfluxplotmat, chTrantype
   use genRealz, only: genbinaryReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use timeman, only: initialize_t1, timeupdate
 #ifdef USE_MPI
   use mpiaccess
+  use MCvars, only: reduceMCresults
   use mpi
 
   integer :: ierr
@@ -100,7 +101,6 @@ CONTAINS
   use MCvars
   use UQvars
   implicit none
-  integer :: ierr
 
   call bcast_genRealzvars_alloc()
   call bcast_KLvars_alloc()
@@ -117,7 +117,6 @@ CONTAINS
   use MCvars
   use UQvars
   implicit none
-  integer :: ierr
 
   call bcast_genRealzvars_dealloc()
   call bcast_KLvars_dealloc()
@@ -134,6 +133,8 @@ CONTAINS
   use KLvars
   use MCvars
   use UQvars
+
+  use mpiaccess
   implicit none
   integer :: ierr
 

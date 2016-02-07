@@ -5,8 +5,8 @@
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   LagSC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
   1000,1,         Number of realizations/how often to print
-  2,  3,3,          Number of eigenvalues, if==0, next two valid/snumEigs/anumEigs
-  3,                SC dimensionality, if==0, revert to orders under 'Other UQ Options'
+  0,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
+  0,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
   100000, 100000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
@@ -41,10 +41,6 @@
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
 
-  !--- Other UQ Options ---! so far just anisotropic orders
-  3
-  3
-  3
 
   !!--All Plotting Option
   default,       "default" "preview" "plot" or "noplot".  "default" lets each choose

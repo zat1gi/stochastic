@@ -140,7 +140,6 @@ end subroutine bcast_genRealzvars_vars
 subroutine bcast_genRealzvars_alloc()
   use mpi
   implicit none
-  integer :: ierr
 
   if(.not.allocated(pltgenrealzwhich)) then
     allocate(pltgenrealzwhich(pltgenrealznumof))
@@ -153,7 +152,6 @@ end subroutine bcast_genRealzvars_alloc
 subroutine bcast_genRealzvars_dealloc()
   use mpi
   implicit none
-  integer :: ierr
 
   if(allocated(pltgenrealzwhich)) deallocate(pltgenrealzwhich)
   return
@@ -298,7 +296,6 @@ subroutine bcast_KLvars_alloc()
   use mpi
   use genRealzvars, only: numRealz
   implicit none
-  integer :: ierr
 
   if(.not.allocated(pltEigfwhich)) then
     allocate(pltEigfwhich(pltEigfnumof))
@@ -387,7 +384,6 @@ end subroutine bcast_KLvars_alloc
 subroutine bcast_KLvars_dealloc()
   use mpi
   implicit none
-  integer :: ierr
 
   if(allocated(pltEigfwhich)) deallocate(pltEigfwhich)
   if(allocated(pltxiBinswhich)) deallocate(pltxiBinswhich)
@@ -592,7 +588,7 @@ subroutine bcast_MCvars_vars
   call MPI_Bcast(areapnSamp, 4, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numcSamp, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  call MPI_Bcast(chTrantype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chTrantype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(maxnumParts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(reflrelSEMtol, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -629,7 +625,6 @@ subroutine bcast_MCvars_alloc()
   use mpi
   use genRealzvars, only: numRealz
   implicit none
-  integer :: ierr
 
   if(.not.allocated(numPartsperj)) then
     allocate(numPartsperj(numRealz))
@@ -688,7 +683,6 @@ end subroutine bcast_MCvars_alloc
 subroutine bcast_MCvars_dealloc()
   use mpi
   implicit none
-  integer :: ierr
 
   if(allocated(numPartsperj)) deallocate(numPartsperj)
   if(allocated(ABreflection)) deallocate(ABreflection)
@@ -715,9 +709,9 @@ end subroutine bcast_MCvars_dealloc
 
 subroutine bcast_MCvars_arrays
   use mpi
+  use mpiaccess
   implicit none
   integer :: ierr
-
   if(allocated(numPartsperj)) call MPI_Bcast(numPartsperj, size(numPartsperj), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(ABreflection)) call MPI_Bcast(ABreflection, size(ABreflection), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(ABtransmission)) call MPI_Bcast(ABtransmission, size(ABtransmission), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -772,8 +766,8 @@ subroutine bcast_UQvars_alloc()
   use genRealzvars, only: numRealz
   use KLvars, only: snumEigs,anumEigs,flGaussdiffrand
   implicit none
-  integer :: ierr
 
+print *,"flGaussdiffrand:",flGaussdiffrand,"s/anumEigs",snumEigs,anumEigs
   if(.not.allocated(Qs)) then
     if(flGaussdiffrand) then
       allocate(Qs(snumEigs+anumEigs))
@@ -793,7 +787,6 @@ end subroutine bcast_UQvars_alloc
 subroutine bcast_UQvars_dealloc()
   use mpi
   implicit none
-  integer :: ierr
 
   if(allocated(Qs)) deallocate(Qs)
   if(allocated(UQwgts)) deallocate(UQwgts)
@@ -803,11 +796,15 @@ end subroutine bcast_UQvars_dealloc
 
 subroutine bcast_UQvars_arrays
   use mpi
+
+  use mpiaccess
   implicit none
   integer :: ierr
-
+print *,"inn jobid-1:",jobid,"  size(Qs):",size(Qs)
   if(allocated(Qs)) call MPI_Bcast(Qs, size(Qs), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+print *,"inn jobid-2:",jobid
   if(allocated(UQwgts)) call MPI_Bcast(UQwgts, size(UQwgts), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+print *,"inn jobid-3:",jobid
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_UQvars_arrays
