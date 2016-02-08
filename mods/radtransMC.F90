@@ -15,6 +15,7 @@ CONTAINS
   use genRealz, only: genbinaryReal
   use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use timeman, only: initialize_t1, timeupdate
+  use rngvars, only: rngseed, rngappnum
 #ifdef USE_MPI
   use mpiaccess
   use MCvars, only: reduceMCresults
@@ -37,6 +38,8 @@ CONTAINS
   jend   = numRealz
 #endif
 
+  rngappnum  = 0
+  call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
   call initialize_t1
 
   write(*,*) "Starting method: ",chTrantype  
@@ -185,7 +188,9 @@ CONTAINS
       call RN_init_particle( int(rngstride*rngappnum+              o,8) )
     else
       !reproducible and only correlation implicitly across method types--no correlation within one run
+if(j==3 .and. o==3) print *,"rngstride,rngappnum,j,maxnumParts,o:",rngstride,rngappnum,j,maxnumParts,o
       call RN_init_particle( int(rngstride*rngappnum+j*maxnumParts+o,8) )
+if(j==3 .and. o==3) print *,"rang():",rang()
     endif
 
 
@@ -240,8 +245,9 @@ CONTAINS
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
           dc = -log(rang())/ceilsig                   !calc dc
+if(j==3 .and. o==3) print *,"curbin,ceilsig,dc,rang():",curbin,ceilsig,dc,rang()
       end select
-
+if(j==3 .and. o==3) print *,"dc:",dc
       !calculate distance to interface
       if(chTrantype=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
 

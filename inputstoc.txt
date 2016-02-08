@@ -5,8 +5,8 @@
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   LagSC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
   1000,1,         Number of realizations/how often to print
-  0,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
-  0,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
+  2,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
+  5,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
   100000, 100000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
@@ -100,7 +100,7 @@
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   100,           Number of cells collect and plot flux over

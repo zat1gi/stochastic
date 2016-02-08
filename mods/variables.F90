@@ -94,7 +94,7 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(sig, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(scatrat, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(lam, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(pltgenrealz, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltgenrealz, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(P, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numPath, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(totLength, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -112,7 +112,7 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(GBscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBlamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBs, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chgeomtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chgeomtype, 6, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(pltgenrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(lamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -244,11 +244,11 @@ subroutine bcast_KLvars_vars
   implicit none
   integer :: ierr
 
-  call MPI_Bcast(pltxiBins, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(pltEigf, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(pltCo, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(Corropts, 2, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(pltKLrealz, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltxiBins, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltEigf, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltCo, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(Corropts, 14, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltKLrealz, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(binNumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -261,10 +261,10 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(flmeanadjust, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(meanadjust_tol, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numrefinesameiter, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(Gaussrandtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chGBcase, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(Gaussrandtype, 3, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chGBcase, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
-  call MPI_Bcast(pltxiBinsgauss, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltxiBinsgauss, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltxiBinsnumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltEigfnumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltConumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -272,12 +272,12 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(pltKLrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(flGaussdiffrand, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chGausstype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chLNmode, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chLNxschecktype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chGausstype, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chLNmode, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chLNxschecktype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numLNxspts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numLNxsbins, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chLNxsplottype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chLNxsplottype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(sigsmeanadjust, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigameanadjust, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -582,7 +582,7 @@ subroutine bcast_MCvars_vars
   implicit none
   integer :: ierr
 
-  call MPI_Bcast(pltflux, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltflux, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(Wood_rej, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numpnSamp, 2, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(areapnSamp, 4, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -598,12 +598,12 @@ subroutine bcast_MCvars_vars
   call MPI_Bcast(trannprt, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(fluxnumcells, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  call MPI_Bcast(rodOrplanar, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sourceType, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(pltmatflux, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(pltfluxtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(rodOrplanar, 6, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(sourceType, 8, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltmatflux, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(pltfluxtype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(trprofile_binnum, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(binplot, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(binplot, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(flCR_MCSC, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(flnegxs, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
 
@@ -755,7 +755,7 @@ subroutine bcast_UQvars_vars
   implicit none
   integer :: ierr
 
-  call MPI_Bcast(chUQtype, 1, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chUQtype, 5, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_UQvars_vars
