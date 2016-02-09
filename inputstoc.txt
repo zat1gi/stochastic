@@ -1,24 +1,24 @@
   923937587,         Random number seed
 
   !--- Biggest Problem Parameters ---!
-  binary,          Geometry type: 'contin'uous or 'binary'
-  radMC,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
+  contin,          Geometry type: 'contin'uous or 'binary'
+  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   MC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
-  1000,100,         Number of realizations/how often to print
+  100,10,         Number of realizations/how often to print
   2,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
   5,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
-  10000, 10000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  1000, 1000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
   fitlamc,same,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  1.5,4.5,    Ave total cross section, total cross section variance
-  0.5,        Scattering ratio, c
-  1.5,        Correlation length, lamc
-  5.0,        Slab thickness, s
+  1.0,40.3274155698,    Ave total cross section, total cross section variance
+  0.9,        Scattering ratio, c
+  10.101010101,        Correlation length, lamc
+  1.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
-  3.3,           Adamscase option, if==0, then user input for next three parameters
+  3.2,           Adamscase option, if==0, then user input for next three parameters
   1.5,1.5, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.5,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
@@ -34,10 +34,10 @@
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Other MCtransport Options ---!
-  100000,          Number of particles for LP or atomic mix calculations
+  1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number MC at each history across realizations?
   planar,         Choose 'rod' or 'planar' for geometry type
-  leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'
+  leftiso,       Choose 'leftbeam', 'leftiso',  or 'intern'
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
 
@@ -96,11 +96,11 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  noplot,      Plot Leakage profile?
+  plot,      Plot Leakage profile?
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  noplot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   100,           Number of cells collect and plot flux over

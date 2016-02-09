@@ -548,6 +548,8 @@ subroutine reduceMCresults
     call MPI_Reduce(MPI_IN_PLACE, absorb, size(absorb), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     if(allocated(LPamMCsums)) &
     call MPI_Reduce(MPI_IN_PLACE, LPamMCsums, size(LPamMCsums), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(numPartsperj)) &
+    call MPI_Reduce(MPI_IN_PLACE, numPartsperj, size(numPartsperj), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     call MPI_Reduce(MPI_IN_PLACE, Wood_rej, size(Wood_rej), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     call MPI_Reduce(MPI_IN_PLACE, numpnSamp, size(numpnSamp), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     call MPI_Reduce(MPI_IN_PLACE, areapnSamp, size(areapnSamp), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
@@ -569,6 +571,8 @@ subroutine reduceMCresults
     call MPI_Reduce(absorb, absorb, size(absorb), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     if(allocated(LPamMCsums)) &
     call MPI_Reduce(LPamMCsums, LPamMCsums, size(LPamMCsums), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+    if(allocated(numPartsperj)) &
+    call MPI_Reduce(numPartsperj, numPartsperj, size(numPartsperj), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     call MPI_Reduce(Wood_rej, Wood_rej, size(Wood_rej), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     call MPI_Reduce(numpnSamp, numpnSamp, size(numpnSamp), MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
     call MPI_Reduce(areapnSamp, areapnSamp, size(areapnSamp), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
