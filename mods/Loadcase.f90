@@ -228,14 +228,24 @@ CONTAINS
     print *,"--User giving non-valid option for special GB case"
     flstopstatus = .true.
   endif
+  if(chgeomtype=='binary' .and. .not.chUQtype=='MC') then
+    print *,"--User attempting to use non-MC UQ method with binary geometry"
+    flstopstatus = .true.
+  endif
   if(rngstride < numRealz) then
     print *,"--User using too many realizations--reusing random numbers, may cause correlation"
     flsleep = .true.
   endif
-  if(maxnumParts<numParts) then
+  if((chTrantype=='radMC'  .or. chTrantype=='radWood' .or. &
+      chTrantype=='KLWood' .or.  chTrantype=='GaussKL') .and. maxnumParts<numParts) then
     print *,"--maxnumParts smaller than, so set equal to, numParts"
     maxnumParts = numParts
   endif
+  if((chTrantype=='LPMC' .or. chTrantype=='atmixMC') .and. maxnumParts<LPamnumParts) then
+    print *,"--maxnumParts smaller than, so set equal to, LPamnumParts"
+    maxnumParts = LPamnumParts
+  endif
+
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigs .AND. pltEigf(1) .NE. 'noplot' ) then
@@ -594,9 +604,10 @@ CONTAINS
 
   subroutine Acase_load
   use genRealzvars, only:   Adamscase, sig, lam, scatrat, s  
-  use MCvars, only: rodOrplanar, ABreflection, ABtransmission
+  use MCvars, only: rodOrplanar, ABreflection, ABtransmission, sourceType
   real(8) :: eps = 0.0001d0 !local var
     ! Loading specials cases from Adams and Pomraning Paper, 27 total cases
+    sourceType = 'leftiso'
     if( Adamscase /= 0 ) then
       ! load sig and lam
       if( int(Adamscase)==1 .OR. int(Adamscase)==2 .OR. int(Adamscase)==3 ) then

@@ -1,13 +1,13 @@
   923937587,         Random number seed
 
   !--- Biggest Problem Parameters ---!
-  contin,          Geometry type: 'contin'uous or 'binary'
-  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  LagSC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
-  1000,1,         Number of realizations/how often to print
+  binary,          Geometry type: 'contin'uous or 'binary'
+  radMC,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
+  MC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
+  1000,100,         Number of realizations/how often to print
   2,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
   5,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
-  100000, 100000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  10000, 10000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
@@ -18,7 +18,7 @@
   5.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
-  0,           Adamscase option, if==0, then user input for next three parameters
+  3.3,           Adamscase option, if==0, then user input for next three parameters
   1.5,1.5, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.5,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
@@ -34,7 +34,7 @@
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Other MCtransport Options ---!
-  10000,          Number of particles for LP or atomic mix calculations
+  100000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number MC at each history across realizations?
   planar,         Choose 'rod' or 'planar' for geometry type
   leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'

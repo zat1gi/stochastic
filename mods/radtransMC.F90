@@ -188,9 +188,7 @@ CONTAINS
       call RN_init_particle( int(rngstride*rngappnum+              o,8) )
     else
       !reproducible and only correlation implicitly across method types--no correlation within one run
-if(j==3 .and. o==3) print *,"rngstride,rngappnum,j,maxnumParts,o:",rngstride,rngappnum,j,maxnumParts,o
       call RN_init_particle( int(rngstride*rngappnum+j*maxnumParts+o,8) )
-if(j==3 .and. o==3) print *,"rang():",rang()
     endif
 
 
@@ -245,9 +243,7 @@ if(j==3 .and. o==3) print *,"rang():",rang()
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
           dc = -log(rang())/ceilsig                   !calc dc
-if(j==3 .and. o==3) print *,"curbin,ceilsig,dc,rang():",curbin,ceilsig,dc,rang()
       end select
-if(j==3 .and. o==3) print *,"dc:",dc
       !calculate distance to interface
       if(chTrantype=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
 
@@ -437,6 +433,11 @@ if(j==3 .and. o==3) print *,"dc:",dc
 
       endif !endif fldist=='collision'
 
+      !If 'interface' interaction, set new position (LP)
+      if(fldist=='interface') then
+        newpos = position + di*mu
+      endif
+
       !increment position
       if(newpos==101010.0d0) stop 'newpos was not set in MCtransport'
       call MCinc_pos( newpos )
@@ -502,7 +503,8 @@ if(j==3 .and. o==3) print *,"dc:",dc
   transmit(j)= transmit(j)/ tnumParts
   absorb(j)  = absorb(j)  / tnumParts
 
-  numPartsperj(j) = tnumParts
+  if(chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
+    numPartsperj(j) = tnumParts
 
   end subroutine MCtransport
 
@@ -554,7 +556,6 @@ if(j==3 .and. o==3) print *,"dc:",dc
     endif
   endif
 
-!print *,"rtnumParts,ttnumParts:",rtnumParts,ttnumParts
   newtnumParts = max(rtnumParts,ttnumParts)
   newtnumParts = min(newtnumParts,maxnumParts)
   end function testMCconvergence
@@ -1859,8 +1860,8 @@ if(j==3 .and. o==3) print *,"dc:",dc
   348 format(" |KLWood :  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
   352 format(" |Gauss  :  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
   353 format(" |LogNorm:  |",e10.3,"+-",e10.3,"  |",e10.3,"+-",e10.3,"|")
-  349 format(" |LPMC   :  |",e10.3,"              | ",e10.3,"          |")
-  350 format(" |atmixMC:  |",e10.3,"              | ",e10.3,"          |")
+  349 format(" |LPMC   :  |",e10.3,"              | ",e10.3,"           |")
+  350 format(" |atmixMC:  |",e10.3,"              | ",e10.3,"           |")
 
   361 format(" |          |",f8.5,"                | ",f8.5,"             |")
   362 format(" |          |",e10.3,"              |",e10.3,"            |")

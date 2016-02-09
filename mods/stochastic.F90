@@ -58,7 +58,6 @@ program stochastic
 #ifdef USE_MPI
   endif
 #endif
-  print *,"Jobid:",jobid,"  ----------------  "
   !!Perform UQ-MC for transport problems  
   if(.not.chTrantype=='None') then
     call UQ_MC                      !perform transport
