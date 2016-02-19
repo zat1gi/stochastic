@@ -167,12 +167,12 @@ CONTAINS
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
   use KLvars,       only: binPDF, binNumof, anumEigs, snumEigs, KLrnumpoints, KLrxi, KLrxivalsa, &
-                          KLrxivalss, KLrxisig, flGaussdiffrand, Gaussrandtype, flmeanadjust
+                          KLrxivalss, KLrxisig, chxsvartype, Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig
+  integer :: i,tentj,realj,curEig,j
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   real(8), allocatable :: nodes(:,:)
@@ -220,27 +220,33 @@ CONTAINS
         if(curEig<=anumEigs) KLrxivalsa(realj,curEig) = xiterm
       enddo
 
-      if(flGaussdiffrand) then
-        do curEig=1,snumEigs + mod(snumEigs,2)  !select xi values for KLrxivalss
-          rand = rang()
-          if((chTrantype=='KLWood') .and. curEig<=snumEigs) then
-            call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
-            if(mod(curEig,2)==1) rand1 = rand
-            if(mod(curEig,2)==0) then
-              call TwoGaussrandnums(rand1,rand,xiterms)
-              KLrxivalss(realj,curEig-1) = xiterms(1)
-              xiterm = xiterms(2)
-            endif
-          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
-            xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+      do curEig=1,snumEigs + mod(snumEigs,2)  !select xi values for KLrxivalss
+        rand = rang()
+        if((chTrantype=='KLWood') .and. curEig<=snumEigs) then
+          call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+          if(mod(curEig,2)==1) rand1 = rand
+          if(mod(curEig,2)==0) then
+            call TwoGaussrandnums(rand1,rand,xiterms)
+            KLrxivalss(realj,curEig-1) = xiterms(1)
+            xiterm = xiterms(2)
           endif
-          if(curEig<=snumEigs) KLrxivalss(realj,curEig) = xiterm
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+          xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+        endif
+        if(curEig<=snumEigs) KLrxivalss(realj,curEig) = xiterm
+      enddo
+      if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+        do j=1,numRealz
+          do i=1,min(anumeigs,snumeigs)
+            KLrxivalss(j,i) = KLrxivalsa(j,i)
+          enddo
         enddo
-      else
-        KLrxivalss = KLrxivalsa
       endif
-    elseif(chUQtype=='LagSC') then
+      if(chxsvartype=='anticorrelated') then
+        KLrxivalss = - KLrxivalss
+      endif
+    elseif(chUQtype=='LagSC') then !need to deal with correlated vs anticorrelated vs independent here
       do curEig=1,anumEigs
         KLrxivalsa(realj,curEig) = nodes(realj,curEig)
       enddo

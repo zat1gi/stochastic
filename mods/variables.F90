@@ -200,7 +200,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: pltKLrealznumof      ! number or realizations to plot
   integer, allocatable :: pltKLrealzwhich(:,:) ! realization number and num of eigenmodes to plot
 
-  logical              :: flGaussdiffrand=.true.! want GB meths to use different rand vars for xi samps?
+  character(14)        :: chxsvartype          ! 'correlated' 'anticorrelated' or 'independent'
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'
   character(7)         :: chLNmode = 'Glamc'   ! LN cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
@@ -264,7 +264,7 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(KLrnumpoints, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltKLrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  call MPI_Bcast(flGaussdiffrand, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chxsvartype, 14, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chGausstype, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chLNmode, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chLNxschecktype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
@@ -761,12 +761,12 @@ end subroutine bcast_UQvars_vars
 subroutine bcast_UQvars_alloc()
   use mpi
   use genRealzvars, only: numRealz
-  use KLvars, only: snumEigs,anumEigs,flGaussdiffrand
+  use KLvars, only: snumEigs,anumEigs,chxsvartype
   implicit none
 
-print *,"flGaussdiffrand:",flGaussdiffrand,"s/anumEigs",snumEigs,anumEigs
+print *,"chxsvartype:",chxsvartype,"s/anumEigs",snumEigs,anumEigs
   if(.not.allocated(Qs)) then
-    if(flGaussdiffrand) then
+    if(chxsvartype=='independent') then
       allocate(Qs(snumEigs+anumEigs))
     else
       allocate(Qs(snumEigs))

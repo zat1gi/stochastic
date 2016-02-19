@@ -15,7 +15,7 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, chGBcase, &
-                                  Gaussrandtype, numrefinesameiter, flGaussdiffrand, &
+                                  Gaussrandtype, numrefinesameiter, chxsvartype, &
                                   chGausstype, chLNmode, numLNxspts, numLNxsbins, &
                                   chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
@@ -56,8 +56,7 @@ CONTAINS
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
   read(2,*) chGausstype,chGBcase
-  read(2,*) chLNmode,setflags(1)
-  if(setflags(1)=='same') flGaussdiffrand = .false.
+  read(2,*) chLNmode,chxsvartype
   read(2,*) GBsigsave,GBsigaave
   read(2,*) GBsigsvar,GBsigavar
   read(2,*) GBlamc
@@ -184,20 +183,11 @@ CONTAINS
 
 
   !Test for SC params, finish values of numEigs, and finish allocation of Qs
-  if((flGaussdiffrand .and. Qtemp(1)/=0) .or. (.not.flGaussdiffrand .and. Qtemp(1)==0)) then
-    print *,"--User SC order(s) inconsistent with KL 'same' vs 'diff' choice, flGaussdiffrand changed"
-    if(flGaussdiffrand) then
-      flGaussdiffrand = .false.
-    else
-      flGaussdiffrand = .true.
-    endif
-    flsleep = .true.
+  if((chxsvartype=='independent' .and. Qtemp(1)/=0) .or. (.not.chxsvartype=='independent' .and. Qtemp(1)==0)) then
+    print *,"--User SC order(s) inconsistent with KL xs var type choice"
+    stop
   endif
-  if(.not.flGaussdiffrand) then
-    snumEigs = max(snumEigs,anumEigs)
-    anumEigs = max(snumEigs,anumEigs)
-  endif
-  if(flGaussdiffrand) then
+  if(chxsvartype=='independent') then
     allocate(Qs(snumEigs+anumEigs))
   else
     allocate(Qs(snumEigs))
@@ -230,6 +220,10 @@ CONTAINS
   endif
   if(chgeomtype=='binary' .and. .not.chUQtype=='MC') then
     print *,"--User attempting to use non-MC UQ method with binary geometry"
+    flstopstatus = .true.
+  endif
+  if(.not.(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated' .or. chxsvartype=='independent') ) then
+    print *,"--User giving invalid cross section variance type: 'correlated', 'anticorrelated', or 'independent'"
     flstopstatus = .true.
   endif
   if(rngstride < numRealz) then
@@ -381,7 +375,7 @@ CONTAINS
                           GBsigavar, GBsigaave, GBsigsvar, GBsigsave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, gam, alpha, Ak, Eig, chLNmode, pltCo, snumEigs, anumEigs, &
-                    xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
+                    xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, chxsvartype, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -423,7 +417,6 @@ CONTAINS
       if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBsigsvar/GBsigsave**2,lamc) !!!!need to do this for each process
     endif
   elseif(chgeomtype=='binary') then
-    flGaussdiffrand = .false.
     numPath    = 0  !setup Markov material tallies
     sumPath    = 0d0
     sqrPath    = 0d0
@@ -436,6 +429,14 @@ CONTAINS
     sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
     scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
     absvar     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
+    if(chTrantype=='KLWood') then
+      if( (sig(1)*scatrat(1)-sig(2)*scatrat(2)>0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))>0d0) .or. &
+          (sig(1)*scatrat(1)-sig(2)*scatrat(2)<0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))<0d0) ) then
+        chxsvartype = 'correlated'
+      else
+        chxsvartype = 'anticorrelated'
+      endif
+    endif
     if(chTrantype=='atmixMC') then
       atmixsig     =   P(1)*sig(1)            + P(2)*sig(2)
       atmixscatrat = ( P(1)*sig(1)*scatrat(1) + P(2)*sig(2)*scatrat(2) ) / atmixsig
@@ -556,12 +557,21 @@ CONTAINS
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
   use genRealzvars, only: GBsigaave, GBsigavar, GBsigsave, GBsigsvar, GBlamc, GBs
-  use KLvars, only: chGBcase, numEigs, flGaussdiffrand, snumEigs, anumEigs
+  use KLvars, only: chGBcase, numEigs, chxsvartype, snumEigs, anumEigs
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
-    GBsigaave    = 5.0d0
-    GBsigavar    = 2.0d0
+    if(chGBcase=='f1') then
+      GBsigaave    = 2.5d0  
+      GBsigavar    = 0.5d0
+      GBsigsave    = 2.5d0
+      GBsigsvar    = 0.5d0
+    elseif(chGBcase=='f2') then
+      GBsigaave    = 0.5d0  
+      GBsigavar    = 0.02d0
+      GBsigsave    = 4.5d0
+      GBsigsvar    = 1.62d0
+    endif
 
     GBlamc      = 1.0d0
     GBs         = 5.0d0
@@ -570,7 +580,7 @@ CONTAINS
     snumEigs    = 5
     anumEigs    = 5
 
-    flGaussdiffrand = .false.
+    chxsvartype = 'correlated'
     sourceType  = 'leftbeam'
   endif
   end subroutine GBcase_load
