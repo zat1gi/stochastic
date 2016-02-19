@@ -48,8 +48,8 @@ module genRealzvars
   real(8),dimension(2) :: lam                  ! ave path lengths
   real(8)              :: s                    ! slab thickness
   integer              :: numRealz             ! number of realz to create
-  real(8)              :: GBsigave, GBsigvar   ! Gauss-based sig average and variance
-  real(8)              :: GBscatrat            ! Gauss-based scattering ratio
+  real(8)              :: GBsigaave,GBsigsave  ! Gauss-based abs and scat xs ave
+  real(8)              :: GBsigavar,GBsigsvar  ! Gauss-based abs and scat xs var
   real(8)              :: GBlamc               ! Gauss-based correlation length
   real(8)              :: GBs                  ! Gauss-based slab thickness
   character(6)         :: chgeomtype           ! 'contin'uous or 'binary'
@@ -64,12 +64,8 @@ module genRealzvars
   real(8), allocatable :: matLength(:)         ! material boundaries
   real(8)              :: atmixsig             ! atomically mixed cross section value
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
-  real(8)              :: sigave_              ! maintains input sigave when sigave is translated to LN
-  real(8)              :: sigvar               ! variance of total xs in KL expansion
-  real(8)              :: sigvar_              ! maintains input sigvar when sigvar is translated to LN
   real(8)              :: scatvar              ! variance of scat xs in KL expansion, 'material' mode
   real(8)              :: absvar               ! variance of abs  xs in KL expansion, 'material' mode
-  real(8)              :: sigave               ! weighted average sigma value for binary mixtures
   real(8)              :: sigscatave           ! average scattering xs
   real(8)              :: sigabsave            ! average absorption xs
 
@@ -107,9 +103,10 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(Adamscase, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(s, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBsigave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBsigvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBsigaave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBsigavar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBsigsave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(GBsigsvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBlamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBs, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chgeomtype, 6, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
@@ -118,12 +115,8 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(lamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixsig, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sigave_, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sigvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sigvar_, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(scatvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(absvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sigave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigscatave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(sigabsave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 

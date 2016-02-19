@@ -22,7 +22,7 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, lamc, sigave, sigscatave, GBscatrat, chgeomtype
+  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
   use KLvars,       only: gam, alpha, levsrefEig, pltEigf, snumEigs, anumEigs, &
                           Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice
   use KLconstruct, only: Eigfunc
@@ -113,9 +113,9 @@ CONTAINS
   write(*,*) "  Eigindx       Eig vals        sqrt(Eig)     [ differential / cumulative ] % mean sqr err maint"
   426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
   if(chgeomtype=='binary') then
-    tc = sigscatave/sigave
+    tc = sigscatave/(sigscatave+sigabsave)
   elseif(chgeomtype=='contin') then
-    tc = GBscatrat
+    tc = GBsigsave/(GBsigsave+GBsigaave)
   endif
   do curEig=1,numEigs
     write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
@@ -356,7 +356,7 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamc, sigscatave, sigave, GBscatrat, chgeomtype
+  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
   use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts, snumEigs, anumEigs
   use KLconstruct, only: Eigfunc
 
@@ -374,9 +374,9 @@ CONTAINS
   stepsize = s/(Corrnumpoints)  !set up stepsize
 
   if(chgeomtype=='binary') then
-    tc = sigscatave/sigave
+    tc = sigscatave/(sigscatave+sigabsave)
   elseif(chgeomtype=='contin') then
-    tc = GBscatrat
+    tc = GBsigsave/(GBsigsave+GBsigaave)
   endif
 
   do x=1,Corrnumpoints  !cycle through x and y
@@ -448,8 +448,8 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigave, &
-                          GBscatrat
+  use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
+                          GBsigsave, GBsigaave
   use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo, snumEigs, anumEigs
   use KLconstruct, only: Eigfunc
@@ -482,9 +482,9 @@ CONTAINS
   enddo
 
   if(chgeomtype=='binary') then
-    tc = sigscatave/sigave
+    tc = sigscatave/(sigscatave+sigabsave)
   elseif(chgeomtype=='contin') then
-    tc = GBscatrat
+    tc = GBsigsave/(GBsigsave+GBsigaave)
   endif
 
   do curCS=1,numSlice      !calculate Co(ours)/Co; for slices

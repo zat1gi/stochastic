@@ -7,7 +7,7 @@ CONTAINS
   subroutine read_test_inputstoc
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
-                                  pltgenrealz, pltgenrealzwhich, GBsigave, GBsigvar, GBscatrat, &
+                                  pltgenrealz, pltgenrealzwhich, GBsigaave, GBsigavar, GBsigsave, GBsigsvar, &
                                   GBlamc, GBs, chgeomtype
   use KLvars,               only: pltEigfwhich, pltxiBinswhich, snumEigs, anumEigs, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
@@ -58,8 +58,8 @@ CONTAINS
   read(2,*) chGausstype,chGBcase
   read(2,*) chLNmode,setflags(1)
   if(setflags(1)=='same') flGaussdiffrand = .false.
-  read(2,*) GBsigave,GBsigvar
-  read(2,*) GBscatrat
+  read(2,*) GBsigsave,GBsigaave
+  read(2,*) GBsigsvar,GBsigavar
   read(2,*) GBlamc
   read(2,*) GBs
 
@@ -375,10 +375,10 @@ CONTAINS
   !This subroutine allocates and initializes all global variables
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength, lamc, sig, sigave, sigscatave, sigabsave, scatrat, &
-                          numPosRealz, numNegRealz, sigvar, atmixscatrat, &
-                          scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, GBscatrat, &
-                          GBsigvar, GBsigave
+                          totLength, lamc, sig, sigscatave, sigabsave, scatrat, &
+                          numPosRealz, numNegRealz, atmixscatrat, &
+                          scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, &
+                          GBsigavar, GBsigaave, GBsigsvar, GBsigsave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, gam, alpha, Ak, Eig, chLNmode, pltCo, snumEigs, anumEigs, &
                     xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, flGaussdiffrand, pltKLrealz
@@ -408,32 +408,19 @@ CONTAINS
     lamc         = GBlamc
     s            = GBs
     if(chGausstype=='Gaus') then
-      sigave     = GBsigave
-      sigscatave = GBsigave *      GBscatrat
-      sigabsave  = GBsigave * (1d0-GBscatrat)
+      sigscatave = GBsigsave
+      sigabsave  = GBsigaave
 
-      sigvar     = GBsigvar
-      scatvar    = GBsigvar *      GBscatrat
-      absvar     = GBsigvar * (1d0-GBscatrat)
+      scatvar    = GBsigsvar
+      absvar     = GBsigavar
     elseif(chGausstype=='LogN') then
-      sigave     = log(  GBsigave**2                 /sqrt( GBsigvar                 + GBsigave**2                 ))
-      sigvar     = log(  GBsigvar                 / GBsigave**2                 +1.0d0)
+      sigscatave = log( GBsigsave**2 / sqrt( GBsigsvar + GBsigsave**2 ) )
+      sigabsave  = log( GBsigaave**2 / sqrt( GBsigavar + GBsigaave**2 ) )
 
-      if(GBscatrat>eps) then
-        sigscatave = log( (GBsigave*      GBscatrat)**2/sqrt((GBsigvar*      GBscatrat)+(GBsigave*      GBscatrat)**2))
-        scatvar    = log( (GBsigvar*      GBscatrat)/(GBsigave*      GBscatrat)**2+1.0d0)
-      else
-        sigscatave = -10000000000d0
-        scatvar    = 0d0
-      endif
-      if(GBscatrat<1d0-eps) then
-        sigabsave  = log( (GBsigave*(1d0-GBscatrat))**2/sqrt((GBsigvar*(1d0-GBscatrat))+(GBsigave*(1d0-GBscatrat))**2))
-        absvar     = log( (GBsigvar*(1d0-GBscatrat))/(GBsigave*(1d0-GBscatrat))**2+1.0d0)
-      else
-        sigabsave  = -10000000000d0
-        absvar     = 0d0
-      endif
-      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBsigvar/GBsigave**2,lamc)
+      scatvar    = log( GBsigsvar    / GBsigsave**2 + 1d0 )
+      absvar     = log( GBsigavar    / GBsigaave**2 + 1d0 )
+
+      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBsigsvar/GBsigsave**2,lamc) !!!!need to do this for each process
     endif
   elseif(chgeomtype=='binary') then
     flGaussdiffrand = .false.
@@ -445,10 +432,8 @@ CONTAINS
     P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
     P(2)       = lam(2)/(lam(1)+lam(2))
     lamc       = (lam(1)*lam(2))/(lam(1)+lam(2))
-    sigave     = P(1)*                 sig(1) + P(2)*                 sig(2)
     sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
     sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
-    sigvar     = P(1)*P(2) * (sig(1)                  - sig(2)                ) **2
     scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
     absvar     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
     if(chTrantype=='atmixMC') then
@@ -570,18 +555,14 @@ CONTAINS
   subroutine GBcase_load
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
-  use genRealzvars, only: GBsigave, GBsigvar, GBscatrat, GBlamc, GBs
+  use genRealzvars, only: GBsigaave, GBsigavar, GBsigsave, GBsigsvar, GBlamc, GBs
   use KLvars, only: chGBcase, numEigs, flGaussdiffrand, snumEigs, anumEigs
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
-    GBsigave    = 5.0d0
-    GBsigvar    = 2.0d0
-    if(chGBcase=='f1') then
-      GBscatrat = 0.5d0
-    elseif(chGBcase=='f2') then
-      GBscatrat = 0.9d0
-    endif
+    GBsigaave    = 5.0d0
+    GBsigavar    = 2.0d0
+
     GBlamc      = 1.0d0
     GBs         = 5.0d0
 
@@ -1252,12 +1233,12 @@ CONTAINS
 
   subroutine geominput_print
   use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc,&
-                          chgeomtype, GBsigave, GBsigvar, GBscatrat
+                          chgeomtype, GBsigaave, GBsigavar, GBsigsave, GBsigsvar
 
   100 format("  Values loaded for special Adamscase :",f5.1)
   105 format("  Values used in problem:")
-  106 format("    sigave    :",f10.6,"   sigvar    :",f10.6)
-  107 format("    scatrat   :",f6.2)
+  106 format("    sigaave   :",f10.6,"   sigaave   :",f10.6)
+  107 format("    sigavar   :",f10.6,"   sigsvar   :",f10.6)
   101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
   102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
   103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
@@ -1267,8 +1248,9 @@ CONTAINS
   write(100,*)
   if(chgeomtype=='contin') then
     write(100,105)
-    write(100,106) GBsigave,GBsigvar
-    write(100,107) GBscatrat
+    write(100,106) GBsigaave,GBsigsave
+    write(100,107) GBsigavar,GBsigsvar
+
   elseif(chgeomtype=='binary') then
     if(Adamscase/=0) then
       write(100,100) Adamscase

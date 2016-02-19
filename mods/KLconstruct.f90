@@ -13,8 +13,8 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: sigave, sigvar, numRealz, s, sigscatave, &
-                          sigabsave, scatvar, absvar, GBsigave, GBsigvar, GBscatrat
+  use genRealzvars, only: numRealz, s, sigscatave, sigabsave, scatvar, absvar, &
+                          GBsigaave, GBsigavar, GBsigsave, GBsigsvar
   use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype
 
   integer :: j, ix, ibin
@@ -22,25 +22,6 @@ CONTAINS
   real(8), allocatable :: LNxsvals(:,:),xvals(:),LNxsaves(:),LNxsvars(:)
   real(8), allocatable :: pdfLNxsBounds(:)
   integer, allocatable :: pdfLNxsCounts(:,:)
-
-!  real(8) :: tot, sqr, val
-!  sigave = log(2.0d0**2/sqrt(0.5d0+4.0d0))
-!  sigvar  = log(0.5d0/4.0d0 + 1.0d0)
-  
-!  print *,"real ave:",2.0d0,"  Gave:",sigave
-!  print *,"real var:",0.5d0,"  Gvar:",sigvar
-!  tot = 0d0
-!  sqr = 0d0
-
-!  do i=1,100000
-!    val = exp(sigave + sqrt(sigvar) * OneGaussrandnum( rang(),rang() ))
-!    tot = tot + val
-!    sqr = sqr + val**2
-!  enddo
-!  print *,"real ave:",tot/100000.0d0
-!  print *,"real var:",sqr/100000.0d0-(tot/100000.0d0)**2
-
-
 
   allocate(LNxsvals(numRealz,numLNxspts))
   allocate(xvals(numLNxspts))
@@ -59,29 +40,17 @@ CONTAINS
     endif
     do j=1,numRealz
       LNxsvals(j,ix) = KLr_point(j,xvals(ix),chLNxschecktype)
-      !LNxsvals(j,ix) = exp(sigave + sqrt(sigvar) * OneGaussrandnum( rang(),rang() ))
-      !if use this, see that error not in transformation or stats, but in point sampling
     enddo
   enddo
 
   !set average and variance values for selected case
-  if(chGausstype=='Gaus') then
-    if(chLNxschecktype=='totaln')  tsigave = sigave
-    if(chLNxschecktype=='scatter') tsigave = sigscatave
-    if(chLNxschecktype=='absorb')  tsigave = sigabsave
+  if(chLNxschecktype=='totaln')  tsigave = GBsigaave + GBsigsave
+  if(chLNxschecktype=='scatter') tsigave = GBsigsave
+  if(chLNxschecktype=='absorb')  tsigave = GBsigaave
 
-    if(chLNxschecktype=='totaln')  tsigvar = sigvar
-    if(chLNxschecktype=='scatter') tsigvar = scatvar
-    if(chLNxschecktype=='absorb')  tsigvar = absvar
-  elseif(chGausstype=='LogN') then
-    if(chLNxschecktype=='totaln')  tsigave = GBsigave
-    if(chLNxschecktype=='scatter') tsigave = GBsigave*     GBscatrat
-    if(chLNxschecktype=='absorb')  tsigave = GBsigave*(1d0-GBscatrat)
-
-    if(chLNxschecktype=='totaln')  tsigvar = GBsigvar
-    if(chLNxschecktype=='scatter') tsigvar = GBsigvar*     GBscatrat
-    if(chLNxschecktype=='absorb')  tsigvar = GBsigvar*(1d0-GBscatrat)
-  endif
+  if(chLNxschecktype=='totaln')  tsigvar = (sqrt(GBsigavar)+sqrt(GBsigsvar))**2
+  if(chLNxschecktype=='scatter') tsigvar = GBsigsvar
+  if(chLNxschecktype=='absorb')  tsigvar = GBsigavar
 
   !calulate and print averages and variances
   open(unit=15,file="plots/LNxsstats/aveandvar.txt")
@@ -768,7 +737,7 @@ CONTAINS
 
   real(8) :: siga, sigs, KL_suma, KL_sums, Eigfterm
   integer :: curEig,tsnumEigs,tanumEigs,order
-  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
+  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave
 
   !load any optional values or their default
   tsnumEigs = merge(tsnumEigsin,snumEigs,present(tsnumEigsin))
@@ -793,7 +762,7 @@ CONTAINS
   endif
 
   !set non-x-dependent values based order
-  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
+  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave)
 
   !cross section values
   if(chxstype .ne. 'scatter') &
@@ -879,23 +848,21 @@ CONTAINS
 
 
 
-  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave)
+  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave)
   !This subroutine sets values for non-x-dependent terms based on derivative order
-  use genRealzvars, only: sigave, sigscatave, sigabsave
+  use genRealzvars, only: sigscatave, sigabsave
   use KLvars, only: sigsmeanadjust, sigameanadjust
 
   integer :: order
-  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigave,tsigscatave,tsigabsave
+  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave
   if(order==0) then
     tsigsmeanadjust = sigsmeanadjust
     tsigameanadjust = sigameanadjust
-    tsigave         = sigave
     tsigscatave     = sigscatave
     tsigabsave      = sigabsave
   else
     tsigsmeanadjust = 0.0d0
     tsigameanadjust = 0.0d0
-    tsigave         = 0.0d0
     tsigscatave     = 0.0d0
     tsigabsave      = 0.0d0
   endif
@@ -933,7 +900,7 @@ CONTAINS
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
-  use genRealzvars, only: s, sigave, sigscatave, sigabsave, numRealz
+  use genRealzvars, only: s, sigscatave, sigabsave, numRealz
   use KLvars, only: numEigs, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLconstruct, only: KLr_point, KLrxi_integral
@@ -942,6 +909,7 @@ CONTAINS
 
   integer :: j,adjustiter
   real(8) :: intsigave,areacont,xmid
+  real(8) :: tsigave
 
   !initialize meanadjust
   if(chxstype=='scatter') sigsmeanadjust = 0.0d0
@@ -955,7 +923,8 @@ CONTAINS
   enddo
   write(*,*)
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
-  write(*,500) sigave,intsigave,abs(sigave-intsigave)/sigave
+  tsigave = sigscatave + sigabsave
+  write(*,500) tsigave,intsigave,abs(tsigave-intsigave)/tsigave
 
 
   !meanadjust solver
@@ -998,11 +967,11 @@ CONTAINS
     if(chxstype=='scatter') then
       sigsmeanadjust = sigsmeanadjust + (sigscatave - aveposarea)
       print *,"sigsmeanadjust: ",sigsmeanadjust
-      if(abs(aveposarea-sigscatave)/sigave<meanadjust_tol) exit
+      if(abs(aveposarea-sigscatave)/tsigave<meanadjust_tol) exit
     elseif(chxstype=='absorb') then
       sigameanadjust = sigameanadjust + (sigabsave - aveposarea)
       print *,"sigameanadjust: ",sigameanadjust
-      if(abs(aveposarea-sigabsave)/sigave<meanadjust_tol) exit
+      if(abs(aveposarea-sigabsave)/tsigave<meanadjust_tol) exit
     endif
   enddo !loop over calculating adjustment
     
