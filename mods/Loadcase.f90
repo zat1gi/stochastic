@@ -214,7 +214,16 @@ CONTAINS
     print *,"--User attempting to use invalid transport type for binary material geometry"
     flstopstatus = .true.
   endif
-  if(chgeomtype=='contin' .and. .not.(chGBcase=='none' .or. chGBcase=='f1' .or. chGBcase=='f2')) then
+  if(chgeomtype=='contin' .and. .not.(chGBcase=='none' .or. chGBcase=='f1' .or. chGBcase=='f2' .or. &
+                                      chGBcase=='A1.1' .or.chGBcase=='A1.2'.or.chGBcase=='A1.3'.or. &
+                                      chGBcase=='A2.1' .or.chGBcase=='A2.2'.or.chGBcase=='A2.3'.or. &
+                                      chGBcase=='A3.1' .or.chGBcase=='A3.2'.or.chGBcase=='A3.3'.or. &
+                                      chGBcase=='A4.1' .or.chGBcase=='A4.2'.or.chGBcase=='A4.3'.or. &
+                                      chGBcase=='A5.1' .or.chGBcase=='A5.2'.or.chGBcase=='A5.3'.or. &
+                                      chGBcase=='A6.1' .or.chGBcase=='A6.2'.or.chGBcase=='A6.3'.or. &
+                                      chGBcase=='A7.1' .or.chGBcase=='A7.2'.or.chGBcase=='A7.3'.or. &
+                                      chGBcase=='A8.1' .or.chGBcase=='A8.2'.or.chGBcase=='A8.3'.or. &
+                                      chGBcase=='A9.1' .or.chGBcase=='A9.2'.or.chGBcase=='A9.3'     ) ) then
     print *,"--User giving non-valid option for special GB case"
     flstopstatus = .true.
   endif
@@ -583,6 +592,225 @@ CONTAINS
     chxsvartype = 'correlated'
     sourceType  = 'leftbeam'
   endif
+
+  if(chGBcase=='A1.1') then
+    GBsigaave   = 0.0909090909091d0
+    GBsigsave   = 0.909090909091d0
+    GBsigavar   = 0.000918273645546d0
+    GBsigsvar   = 7.43801652893d0
+    GBlamc      = 0.099d0
+    GBs         = 0.1d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A1.2') then
+    GBsigaave   = 0.0909090909091d0
+    GBsigsave   = 0.909090909091d0
+    GBsigavar   = 0.000918273645546d0
+    GBsigsvar   = 7.43801652893d0
+    GBlamc      = 0.099d0
+    GBs         = 1.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A1.3') then
+    GBsigaave   = 0.0909090909091d0
+    GBsigsave   = 0.909090909091d0
+    GBsigavar   = 0.000918273645546d0
+    GBsigsvar   = 7.43801652893d0
+    GBlamc      = 0.099d0
+    GBs         = 10.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A2.1') then
+    GBsigaave   = 0.909090909091d0
+    GBsigsave   = 0.0909090909091d0
+    GBsigavar   = 7.43801652893d0
+    GBsigsvar   = 0.000918273645546d0
+    GBlamc      = 0.099d0
+    GBs         = 0.1d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A2.2') then
+    GBsigaave   = 0.909090909091d0
+    GBsigsave   = 0.0909090909091d0
+    GBsigavar   = 7.43801652893d0
+    GBsigsvar   = 0.000918273645546d0
+    GBlamc      = 0.099d0
+    GBs         = 1.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A2.3') then
+    GBsigaave   = 0.909090909091d0
+    GBsigsave   = 0.0909090909091d0
+    GBsigavar   = 7.43801652893d0
+    GBsigsvar   = 0.000918273645546d0
+    GBlamc      = 0.099d0
+    GBs         = 10.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A3.1') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.0727364554637d0
+    GBsigsvar   = 5.89165289256d0
+    GBlamc      = 0.099d0
+    GBs         = 0.1d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A3.2') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.0727364554637d0
+    GBsigsvar   = 5.89165289256d0
+    GBlamc      = 0.099d0
+    GBs         = 1.0d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A3.3') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.0727364554637d0
+    GBsigsvar   = 5.89165289256d0
+    GBlamc      = 0.099d0
+    GBs         = 10.0d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A4.1') then
+    GBsigaave   = 0.0909090909091d0
+    GBsigsave   = 0.909090909091d0
+    GBsigavar   = 0.000918273645546d0
+    GBsigsvar   = 7.43801652893d0
+    GBlamc      = 0.99d0
+    GBs         = 0.1d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A4.2') then
+    GBsigaave   = 0.0909090909091d0
+    GBsigsave   = 0.909090909091d0
+    GBsigavar   = 0.000918273645546d0
+    GBsigsvar   = 7.43801652893d0
+    GBlamc      = 0.99d0
+    GBs         = 1.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A4.3') then
+    GBsigaave   = 0.0909090909091d0
+    GBsigsave   = 0.909090909091d0
+    GBsigavar   = 0.000918273645546d0
+    GBsigsvar   = 7.43801652893d0
+    GBlamc      = 0.99d0
+    GBs         = 10.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A5.1') then
+    GBsigaave   = 0.909090909091d0
+    GBsigsave   = 0.0909090909091d0
+    GBsigavar   = 7.43801652893d0
+    GBsigsvar   = 0.000918273645546d0
+    GBlamc      = 0.99d0
+    GBs         = 0.1d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A5.2') then
+    GBsigaave   = 0.909090909091d0
+    GBsigsave   = 0.0909090909091d0
+    GBsigavar   = 7.43801652893d0
+    GBsigsvar   = 0.000918273645546d0
+    GBlamc      = 0.99d0
+    GBs         = 1.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A5.3') then
+    GBsigaave   = 0.909090909091d0
+    GBsigsave   = 0.0909090909091d0
+    GBsigavar   = 7.43801652893d0
+    GBsigsvar   = 0.000918273645546d0
+    GBlamc      = 0.99d0
+    GBs         = 10.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A6.1') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.0727364554637d0
+    GBsigsvar   = 5.89165289256d0
+    GBlamc      = 0.99d0
+    GBs         = 0.1d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A6.2') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.0727364554637d0
+    GBsigsvar   = 5.89165289256d0
+    GBlamc      = 0.99d0
+    GBs         = 1.0d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A6.3') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.0727364554637d0
+    GBsigsvar   = 5.89165289256d0
+    GBlamc      = 0.99d0
+    GBs         = 10.0d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A7.1') then
+    GBsigaave   = 0.00990099009901d0
+    GBsigsave   = 0.990099009901d0
+    GBsigavar   = 0.0000980296049407d0
+    GBsigsvar   = 0.980296049407d0
+    GBlamc      = 2.525d0
+    GBs         = 0.1d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A7.2') then
+    GBsigaave   = 0.00990099009901d0
+    GBsigsave   = 0.990099009901d0
+    GBsigavar   = 0.0000980296049407d0
+    GBsigsvar   = 0.980296049407d0
+    GBlamc      = 2.525d0
+    GBs         = 1.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A7.3') then
+    GBsigaave   = 0.00990099009901d0
+    GBsigsave   = 0.990099009901d0
+    GBsigavar   = 0.0000980296049407d0
+    GBsigsvar   = 0.980296049407d0
+    GBlamc      = 2.525d0
+    GBs         = 10.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A8.1') then
+    GBsigaave   = 0.990099009901d0
+    GBsigsave   = 0.00990099009901d0
+    GBsigavar   = 0.980296049407d0
+    GBsigsvar   = 0.0000980296049407d0
+    GBlamc      = 2.525d0
+    GBs         = 0.1d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A8.2') then
+    GBsigaave   = 0.990099009901d0
+    GBsigsave   = 0.00990099009901d0
+    GBsigavar   = 0.980296049407d0
+    GBsigsvar   = 0.0000980296049407d0
+    GBlamc      = 2.525d0
+    GBs         = 1.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A8.3') then
+    GBsigaave   = 0.990099009901d0
+    GBsigsave   = 0.00990099009901d0
+    GBsigavar   = 0.980296049407d0
+    GBsigsvar   = 0.0000980296049407d0
+    GBlamc      = 2.525d0
+    GBs         = 10.0d0
+    chxsvartype = 'anticorrelated'
+  elseif(chGBcase=='A9.1') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.00960788158024d0
+    GBsigsvar   = 0.778238407999d0
+    GBlamc      = 2.525d0
+    GBs         = 0.1d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A9.2') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.00960788158024d0
+    GBsigsvar   = 0.778238407999d0
+    GBlamc      = 2.525d0
+    GBs         = 1.0d0
+    chxsvartype = 'correlated'
+  elseif(chGBcase=='A9.3') then
+    GBsigaave   = 0.1d0
+    GBsigsave   = 0.9d0
+    GBsigavar   = 0.00960788158024d0
+    GBsigsvar   = 0.778238407999d0
+    GBlamc      = 2.525d0
+    GBs         = 10.0d0
+    chxsvartype = 'correlated'
+  endif
+
   end subroutine GBcase_load
 
 

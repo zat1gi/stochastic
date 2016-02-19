@@ -182,7 +182,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
   integer              :: numrefinesameiter    ! num of iters for extrema determ w/ no change to stop
   character(3)         :: Gaussrandtype        ! 'BM'-Box-Muller sampling or 'inv' inverse sampling
-  character(4)         :: chGBcase             ! special GB cases, 'none', 'f1', 'f2' (Fichtl 1, 2)
+  character(4)         :: chGBcase             ! special GB cases, 'none', 'f1', 'f2' (Fichtl 1, 2), 'AX.X' (Adamscases)
 
   character(7)         :: pltxiBins(4)         !
   character(7)         :: pltxiBinsgauss       !
