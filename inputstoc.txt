@@ -4,21 +4,21 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   MC,        Which UQ approach?: 'MC', 'LagSC', 'PCESC'
-  100,10,         Number of realizations/how often to print
-  2,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
-  5,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
-  1000, 1000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  2000,100,         Number of realizations/how often to print
+  5,  3,3,          Number of 'same' eigenvalues, if==0, next two 'diff' snumEigs/anumEigs
+  0,  3,3,2,3,3,2,      SC order, if==0, revert to orders after first number
+  10000, 10000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none' for input here, 'f1','f2' for Ficthl 1,2 cases
-  fitlamc,same,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
-  1.0,40.3274155698,    Ave total cross section, total cross section variance
+  fitlamc,diff,  'Glamc','fitlamc','numeric'/'same' rand #s for xss or 'diff'?
+  1.0,0.960788158024,    Ave total cross section, total cross section variance
   0.9,        Scattering ratio, c
-  10.101010101,        Correlation length, lamc
-  1.0,        Slab thickness, s
+  2.525,        Correlation length, lamc
+  10.0,        Slab thickness, s
 
   !--- Geometry - 'Markov' type problem ---!
-  3.2,           Adamscase option, if==0, then user input for next three parameters
+  3.1,           Adamscase option, if==0, then user input for next three parameters
   1.5,1.5, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.5,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0

@@ -286,12 +286,6 @@ CONTAINS
     flsleep = .true.
   endif
 
-                              !Test radtransMC print frequency
-  if( (trannprt>numRealz .or. mod(numRealz,trannprt)/=0) .and. chTrantype=='radMC' ) then 
-    print *,"--Print to screen frequency for MCtran must be factor of number of realizations"
-    flstopstatus = .true.
-  endif
-
                               !Test plotting flux
   if( pltflux(1)/='noplot' .and. .not.chTrantype=='radMC' .and. .not.chTrantype=='radWood' &
       .and. .not.chTrantype=='KLWood' .and. .not.chTrantype=='LPMC' .and. &

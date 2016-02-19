@@ -1209,16 +1209,8 @@ CONTAINS
                     fluxfaces, fluxnumcells, chTrantype, pltflux, pltmatflux
   integer :: ibin
 
-  call system("test -e plots/fluxplots/radMC_fluxall.out   && rm plots/fluxplots/radMC_fluxall.out")
-  call system("test -e plots/fluxplots/radMC_fluxmat.out   && rm plots/fluxplots/radMC_fluxmat.out")
-  call system("test -e plots/fluxplots/radWood_fluxall.out && rm plots/fluxplots/radWood_fluxall.out")
-  call system("test -e plots/fluxplots/radWood_fluxmat.out && rm plots/fluxplots/radWood_fluxmat.out")
-  call system("test -e plots/fluxplots/KLWood_fluxall.out  && rm plots/fluxplots/KLWood_fluxall.out")
-  call system("test -e plots/fluxplots/KLWood_fluxmat.out  && rm plots/fluxplots/KLWood_fluxmat.out")
-  call system("test -e plots/fluxplots/LPMC_fluxall.out    && rm plots/fluxplots/LPMC_fluxall.out")
-  call system("test -e plots/fluxplots/LPMC_fluxmat.out    && rm plots/fluxplots/LPMC_fluxmat.out")
-  call system("test -e plots/fluxplots/atmixMC_fluxall.out && rm plots/fluxplots/atmixMC_fluxall.out")
-  call system("test -e plots/fluxplots/atmixMC_fluxmat.out && rm plots/fluxplots/atmixMC_fluxmat.out")
+  call system("test -e plots/fluxplots/fluxall.out   && rm plots/fluxplots/fluxall.out")
+  call system("test -e plots/fluxplots/fluxmat.out   && rm plots/fluxplots/fluxmat.out")
 
   370 format("#cell center,       ave flux,        flux dev")
   371 format(f15.7,f15.7,f15.7)
@@ -1234,7 +1226,7 @@ CONTAINS
   select case (chTrantype)
     case ("radMC")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-        open(unit=24, file="radMC_fluxall.out")
+        open(unit=24, file="fluxall.out")
         write(24,370)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1243,7 +1235,7 @@ CONTAINS
         close(unit=24)
       endif
       if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-        open(unit=24, file="radMC_fluxmat.out")
+        open(unit=24, file="fluxmat.out")
         write(24,372)
         do ibin=1,fluxnumcells
           write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1255,7 +1247,7 @@ CONTAINS
 
     case ("radWood")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-        open(unit=24, file="radWood_fluxall.out")
+        open(unit=24, file="fluxall.out")
         write(24,370)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1264,7 +1256,7 @@ CONTAINS
         close(unit=24)
       endif
       if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-        open(unit=24, file="radWood_fluxmat.out")
+        open(unit=24, file="fluxmat.out")
         write(24,372)
         do ibin=1,fluxnumcells
           write(24,373) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1276,7 +1268,7 @@ CONTAINS
 
     case ("KLWood")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-        open(unit=24, file="KLWood_fluxall.out")
+        open(unit=24, file="fluxall.out")
         write(24,370)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1285,7 +1277,7 @@ CONTAINS
         close(unit=24)
       endif
       if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-        open(unit=24, file="KLWood_fluxmat.out")
+        open(unit=24, file="fluxmat.out")
         write(24,370)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1296,8 +1288,8 @@ CONTAINS
 
     case ("LPMC")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-        open(unit=24, file="LPMC_fluxall.out")
-        write(24,371)
+        open(unit=24, file="fluxall.out")
+        write(24,374)
         do ibin=1,fluxnumcells
           write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
                         stocMC_fluxall(ibin,1)
@@ -1305,7 +1297,7 @@ CONTAINS
         close(unit=24)
       endif
       if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-        open(unit=24, file="LPMC_fluxmat.out")
+        open(unit=24, file="fluxmat.out")
         write(24,376)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1317,7 +1309,7 @@ CONTAINS
 
     case ("atmixMC")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-        open(unit=24, file="atmixMC_fluxall.out")
+        open(unit=24, file="fluxall.out")
         write(24,374)
         do ibin=1,fluxnumcells
           write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1326,7 +1318,7 @@ CONTAINS
         close(unit=24)
       endif
       if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-        open(unit=24, file="atmixMC_fluxmat.out")
+        open(unit=24, file="fluxmat.out")
         write(24,374)
         do ibin=1,fluxnumcells
           write(24,375) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1337,7 +1329,7 @@ CONTAINS
 
     case ("GaussKL")
       if(pltflux(1)=='plot' .or. pltflux(1)=='preview') then
-        open(unit=24, file="GaussKL_fluxall.out")
+        open(unit=24, file="fluxall.out")
         write(24,370)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1346,7 +1338,7 @@ CONTAINS
         close(unit=24)
       endif
       if(pltmatflux=='plot' .or. pltmatflux=='preview') then
-        open(unit=24, file="GaussKL_fluxmat.out")
+        open(unit=24, file="fluxmat.out")
         write(24,370)
         do ibin=1,fluxnumcells
           write(24,371) (fluxfaces(ibin+1)+fluxfaces(ibin))/2.0d0,&
@@ -1357,18 +1349,8 @@ CONTAINS
 
   end select
 
-  call system("test -e radMC_fluxall.out   && mv radMC_fluxall.out plots/fluxplots")
-  call system("test -e radMC_fluxmat.out   && mv radMC_fluxmat.out plots/fluxplots")
-  call system("test -e radWood_fluxall.out && mv radWood_fluxall.out plots/fluxplots")
-  call system("test -e radWood_fluxmat.out && mv radWood_fluxmat.out plots/fluxplots")
-  call system("test -e KLWood_fluxall.out  && mv KLWood_fluxall.out plots/fluxplots")
-  call system("test -e KLWood_fluxmat.out  && mv KLWood_fluxmat.out plots/fluxplots")
-  call system("test -e LPMC_fluxall.out    && mv LPMC_fluxall.out plots/fluxplots")
-  call system("test -e LPMC_fluxmat.out    && mv LPMC_fluxmat.out plots/fluxplots")
-  call system("test -e atmixMC_fluxall.out && mv atmixMC_fluxall.out plots/fluxplots")
-  call system("test -e atmixMC_fluxmat.out && mv atmixMC_fluxmat.out plots/fluxplots")
-  call system("test -e GaussKL_fluxall.out  && mv GaussKL_fluxall.out plots/fluxplots")
-  call system("test -e GaussKL_fluxmat.out  && mv GaussKL_fluxmat.out plots/fluxplots")
+  call system("test -e fluxall.out   && mv fluxall.out plots/fluxplots")
+  call system("test -e fluxmat.out   && mv fluxmat.out plots/fluxplots")
 
 
   end subroutine MCfluxPrint
@@ -1620,10 +1602,7 @@ CONTAINS
   lgtran = lgtran + 0.0000001d0
 
   !remove old data files (do only first time)
-  call system("test -e plots/tranreflprofile/radMCtranreflprofile.txt && rm plots/tranreflprofile/radMCtranreflprofile.txt")
-  call system("test -e plots/tranreflprofile/radWoodtranreflprofile.txt && rm plots/tranreflprofile/radWoodtranreflprofile.txt")
-  call system("test -e plots/tranreflprofile/KLWoodtranreflprofile.txt && rm plots/tranreflprofile/KLWoodtranreflprofile.txt")
-  call system("test -e plots/tranreflprofile/GaussKLtranreflprofile.txt && rm plots/tranreflprofile/GaussKLtranreflprofile.txt")
+  call system("test -e plots/tranreflprofile/tranreflprofile.txt && rm plots/tranreflprofile/tranreflprofile.txt")
 
   !bin and print data
   call radtrans_bin( smrefl,lgrefl,smtran,lgtran ) 
@@ -1631,19 +1610,15 @@ CONTAINS
   !bin and print data, give printed data files appropriate name
   select case (chTrantype)
     case("radMC")
-      call system("mv tranreflprofile.txt radMCtranreflprofile.txt")
-      call system("mv radMCtranreflprofile.txt plots/tranreflprofile")
+      call system("mv tranreflprofile.txt plots/tranreflprofile")
     case("radWood")
-      call system("mv tranreflprofile.txt radWoodtranreflprofile.txt")
-      call system("mv radWoodtranreflprofile.txt plots/tranreflprofile")
+      call system("mv tranreflprofile.txt plots/tranreflprofile")
     case("KLWood")
-      call system("mv tranreflprofile.txt KLWoodtranreflprofile.txt")
-      call system("mv KLWoodtranreflprofile.txt plots/tranreflprofile")
+      call system("mv tranreflprofile.txt plots/tranreflprofile")
     case("LPMC")
     case("atmixMC")
     case("GaussKL")
-      call system("mv tranreflprofile.txt GaussKLtranreflprofile.txt")
-      call system("mv GaussKLtranreflprofile.txt plots/tranreflprofile")
+      call system("mv tranreflprofile.txt plots/tranreflprofile")
   end select
 
   end subroutine MCLeakage_pdfbinprint
