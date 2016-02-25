@@ -178,7 +178,7 @@ CONTAINS
   real(8), allocatable :: nodes(:,:)
 
   !If using SC, solve weights and nodes to utilize later and sooner respectively
-  if(chUQtype=='LagSC') then
+  if(chUQtype=='SC') then
     allocate(nodes(numRealz,anumEigs+snumEigs))
     call create_cubature(Qs,UQwgts,nodes)
   endif
@@ -246,7 +246,7 @@ CONTAINS
       if(chxsvartype=='anticorrelated') then
         KLrxivalss = - KLrxivalss
       endif
-    elseif(chUQtype=='LagSC') then !need to deal with correlated vs anticorrelated vs independent here
+    elseif(chUQtype=='SC') then !need to deal with correlated vs anticorrelated vs independent here
       do curEig=1,anumEigs
         KLrxivalsa(realj,curEig) = nodes(realj,curEig)
       enddo

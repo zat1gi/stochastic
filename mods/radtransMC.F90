@@ -1115,7 +1115,7 @@ CONTAINS
       call mean_var_and_SEM_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2),stocMC_reflection(3) )
       call mean_var_and_SEM_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2),stocMC_transmission(3) )
       call mean_var_and_SEM_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2),stocMC_absorption(3) )
-    elseif(chUQtype=='LagSC') then
+    elseif(chUQtype=='SC') then
       call mean_and_var_wgt( UQwgts,reflect,stocMC_reflection(1),stocMC_reflection(2) )
       call mean_and_var_wgt( UQwgts,transmit,stocMC_transmission(1),stocMC_transmission(2) )
       call mean_and_var_wgt( UQwgts,absorb,stocMC_absorption(1),stocMC_absorption(2) )
@@ -1152,7 +1152,7 @@ CONTAINS
       do ibin=1,fluxnumcells
         if(chUQtype=='MC') then
           call mean_and_var_s( fluxall(ibin,:),numRealz,stocMC_fluxall(ibin,1),stocMC_fluxall(ibin,2) )
-        elseif(chUQtype=='LagSC') then
+        elseif(chUQtype=='SC') then
           call mean_and_var_wgt( UQwgts,fluxall(ibin,:),stocMC_fluxall(ibin,1),stocMC_fluxall(ibin,2) )
         endif
       enddo
@@ -1856,7 +1856,7 @@ CONTAINS
   endif
   if(chUQtype=='MC') then
     write(100,*) "|Method    | reflave/SEM  refldev   |  tranave/SEM  trandev|"
-  elseif(chUQtype=='LagSC') then
+  elseif(chUQtype=='SC') then
     write(100,*) "|Method    |  reflave     refldev   |  tranave/SEM  trandev|"
   endif
   write(100,*) "|----------|------------------------|----------------------|"

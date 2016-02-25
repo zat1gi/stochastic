@@ -741,7 +741,7 @@ end module MCvars
 module UQvars
   implicit none
   !inputs
-  character(5)         :: chUQtype             ! 'MC', 'LagSC', 'PCESC', UQ approach
+  character(5)         :: chUQtype             ! 'MC', 'SC', 'PCESC', UQ approach
   integer, allocatable :: Qs(:)                ! for SC, order in each dimension
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts

@@ -402,7 +402,7 @@ CONTAINS
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
   !allocate and initialize genRealzvars
-  if(chUQtype=='LagSC') then
+  if(chUQtype=='SC') then
     numRealz = product(Qs)
   endif
   numPosRealz= 0
