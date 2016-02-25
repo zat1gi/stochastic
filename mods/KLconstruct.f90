@@ -179,7 +179,11 @@ CONTAINS
 
   !If using SC, solve weights and nodes to utilize later and sooner respectively
   if(chUQtype=='SC') then
-    allocate(nodes(numRealz,anumEigs+snumEigs))
+    if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+      allocate(nodes(numRealz,snumEigs))
+    elseif(chxsvartype=='independent') then
+      allocate(nodes(numRealz,anumEigs+snumEigs))
+    endif
     call create_cubature(Qs,UQwgts,nodes)
   endif
 
@@ -248,7 +252,11 @@ CONTAINS
         KLrxivalsa(realj,curEig) = nodes(realj,curEig)
       enddo
       do curEig=1,snumEigs
-        KLrxivalss(realj,curEig) = nodes(realj,anumEigs+curEig)
+        if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+          KLrxivalss(realj,curEig) = nodes(realj,curEig)
+        elseif(chxsvartype=='independent') then
+          KLrxivalss(realj,curEig) = nodes(realj,anumEigs+curEig)
+        endif
       enddo
     endif
 

@@ -48,7 +48,7 @@ CONTAINS
   else
     snumEigs = numEigs
     anumEigs = numEigs
-    allocate(Qtemp(numEigs+1))
+    allocate(Qtemp(numEigs*2+1))
   endif
   read(2,*) (Qtemp(i),i=1,size(Qtemp))
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
@@ -183,7 +183,7 @@ CONTAINS
 
 
   !Test for SC params, finish values of numEigs, and finish allocation of Qs
-  if((chxsvartype=='independent' .and. Qtemp(1)/=0) .or. (.not.chxsvartype=='independent' .and. Qtemp(1)==0)) then
+  if(.not.chxsvartype=='independent' .and. snumeigs/=anumEigs) then !anisotropic quadrature
     print *,"--User SC order(s) inconsistent with KL xs var type choice"
     stop
   endif
@@ -195,9 +195,15 @@ CONTAINS
   if(Qtemp(1)/=0) then
     Qs = Qtemp(1)
   else
-    Qs = Qtemp(2:)
+    if(chxsvartype=='independent') then
+      Qs(1:anumEigs) = Qtemp(2:anumEigs+1)
+      Qs(anumEigs+1:anumEigs+snumEigs) = Qtemp(anumEigs+2:anumEigs+snumEigs+1)
+    elseif(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+      Qs = Qtemp(2:numEigs+1)
+    endif
   endif
   deallocate(Qtemp)
+
 
   !Tests for problem type
   if(.not.chgeomtype=='contin' .and. .not.chgeomtype=='binary') then
