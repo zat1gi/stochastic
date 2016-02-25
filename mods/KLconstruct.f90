@@ -243,10 +243,7 @@ CONTAINS
           enddo
         enddo
       endif
-      if(chxsvartype=='anticorrelated') then
-        KLrxivalss = - KLrxivalss
-      endif
-    elseif(chUQtype=='SC') then !need to deal with correlated vs anticorrelated vs independent here
+    elseif(chUQtype=='SC') then
       do curEig=1,anumEigs
         KLrxivalsa(realj,curEig) = nodes(realj,curEig)
       enddo
@@ -732,7 +729,8 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, snumEigs, anumEigs, KLrxivalsa, KLrxivalss, chGausstype
+  use KLvars, only: alpha, Ak, Eig, snumEigs, anumEigs, KLrxivalsa, KLrxivalss, chGausstype, &
+                    chxsvartype
 
   integer :: j
   real(8) :: xpos
@@ -765,6 +763,7 @@ CONTAINS
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
       KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
     enddo
+    if(chxsvartype=='anticorrelated') KL_sums = -KL_sums
   endif
 
   !set non-x-dependent values based order
