@@ -9,7 +9,7 @@ CONTAINS
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigaave, GBsigavar, GBsigsave, GBsigsvar, &
                                   GBlamc, GBs, chgeomtype
-  use KLvars,               only: pltEigfwhich, pltxiBinswhich, snumEigs, anumEigs, &
+  use KLvars,               only: pltEigfwhich, pltxiBinswhich, numEigss1, numEigsa1, &
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
@@ -41,13 +41,13 @@ CONTAINS
   read(2,*) chTrantype
   read(2,*) chUQtype
   read(2,*) numRealz,trannprt
-  read(2,*) numEigs,snumEigs,anumEigs
+  read(2,*) numEigs,numEigss1,numEigsa1
   if(numEigs==0) then !set number of KL eigenmodes and allocate Qtemp
-    numEigs = max(snumEigs,anumEigs)
-    allocate(Qtemp(snumEigs+anumEigs+1))
+    numEigs = max(numEigss1,numEigsa1)
+    allocate(Qtemp(numEigss1+numEigsa1+1))
   else
-    snumEigs = numEigs
-    anumEigs = numEigs
+    numEigss1 = numEigs
+    numEigsa1 = numEigs
     allocate(Qtemp(numEigs*2+1))
   endif
   read(2,*) (Qtemp(i),i=1,size(Qtemp))
@@ -183,21 +183,21 @@ CONTAINS
 
 
   !Test for SC params, finish values of numEigs, and finish allocation of Qs
-  if(.not.chxsvartype=='independent' .and. snumeigs/=anumEigs) then !anisotropic quadrature
+  if(.not.chxsvartype=='independent' .and. numEigss1/=numEigsa1) then !anisotropic quadrature
     print *,"--User SC order(s) inconsistent with KL xs var type choice"
     stop
   endif
   if(chxsvartype=='independent') then
-    allocate(Qs(snumEigs+anumEigs))
+    allocate(Qs(numEigss1+numEigsa1))
   else
-    allocate(Qs(snumEigs))
+    allocate(Qs(numEigss1))
   endif
   if(Qtemp(1)/=0) then
     Qs = Qtemp(1)
   else
     if(chxsvartype=='independent') then
-      Qs(1:anumEigs) = Qtemp(2:anumEigs+1)
-      Qs(anumEigs+1:anumEigs+snumEigs) = Qtemp(anumEigs+2:anumEigs+snumEigs+1)
+      Qs(1:numEigsa1) = Qtemp(2:numEigsa1+1)
+      Qs(numEigsa1+1:numEigsa1+numEigss1) = Qtemp(numEigsa1+2:numEigsa1+numEigss1+1)
     elseif(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
       Qs = Qtemp(2:numEigs+1)
     endif
@@ -279,7 +279,7 @@ CONTAINS
       print *,"--User attempting to plot more reconstructed realz than reconstructed"
       flstopstatus = .true.
     endif
-    if( (pltKLrealzwhich(2,i)>snumEigs .or. pltKLrealzwhich(3,i)>anumEigs) .and. pltKLrealz(1) .ne. 'noplot' ) then
+    if( (pltKLrealzwhich(2,i)>numEigss1 .or. pltKLrealzwhich(3,i)>numEigsa1) .and. pltKLrealz(1) .ne. 'noplot' ) then
       print *,"--User attempting to plot reconstructed realz using more than calced num of Eigs"
       flstopstatus = .true.
     endif
@@ -389,8 +389,8 @@ CONTAINS
                           scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, &
                           GBsigavar, GBsigaave, GBsigsvar, GBsigsave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
-                    KLrxisig, alpha, Ak, Eig, chLNmode, pltCo, snumEigs, anumEigs, &
-                    xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, chxsvartype, pltKLrealz
+                    KLrxisig, alpha, Ak, Eig, chLNmode, pltCo, numEigss1, numEigsa1, &
+                    xi, xia1, xis1, pltKLrealzarray, chxsvartype, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -476,8 +476,8 @@ CONTAINS
 
   !allocate and initialize KLconstruction variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(KLrxivalsa(numRealz,anumEigs))
-    allocate(KLrxivalss(numRealz,snumEigs))
+    allocate(xia1(numRealz,numEigsa1))
+    allocate(xis1(numRealz,numEigss1))
     allocate(KLrxisig(KLrnumpoints))
     allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
   endif
@@ -571,7 +571,7 @@ CONTAINS
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
   use genRealzvars, only: GBsigaave, GBsigavar, GBsigsave, GBsigsvar, GBlamc, GBs
-  use KLvars, only: chGBcase, numEigs, chxsvartype, snumEigs, anumEigs
+  use KLvars, only: chGBcase, numEigs, chxsvartype, numEigss1, numEigsa1
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
@@ -591,8 +591,8 @@ CONTAINS
     GBs         = 5.0d0
 
     numEigs     = 5
-    snumEigs    = 5
-    anumEigs    = 5
+    numEigss1    = 5
+    numEigsa1    = 5
 
     chxsvartype = 'correlated'
     sourceType  = 'leftbeam'

@@ -142,17 +142,17 @@ CONTAINS
   !This subroutine creates a mesh based on selected frequency of 
   !sampling in x for plotting KL realizations.
   use genRealzvars , only: s
-  use KLvars, only: KLrnumpoints, KLrxi
+  use KLvars, only: KLrnumpoints, KLrxmesh
 
   integer :: i
   real(8) :: KLrxstepsize
 
-  if(allocated(KLrxi)) deallocate(KLrxi)
-  allocate(KLrxi(KLrnumpoints))
-  KLrxi = 0
+  if(allocated(KLrxmesh)) deallocate(KLrxmesh)
+  allocate(KLrxmesh(KLrnumpoints))
+  KLrxmesh = 0
   KLrxstepsize = s / KLrnumpoints
   do i=1,KLrnumpoints
-    KLrxi(i) = KLrxstepsize*i - KLrxstepsize/2
+    KLrxmesh(i) = KLrxstepsize*i - KLrxstepsize/2
   enddo
 
   end subroutine KLrmeshgen
@@ -166,8 +166,8 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
-  use KLvars,       only: binPDF, binNumof, anumEigs, snumEigs, KLrnumpoints, KLrxi, KLrxivalsa, &
-                          KLrxivalss, KLrxisig, chxsvartype, Gaussrandtype, flmeanadjust
+  use KLvars,       only: binPDF, binNumof, numEigsa1, numEigss1, KLrnumpoints, KLrxi, xia1, &
+                          xis1, KLrxisig, chxsvartype, Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
@@ -180,9 +180,9 @@ CONTAINS
   !If using SC, solve weights and nodes to utilize later and sooner respectively
   if(chUQtype=='SC') then
     if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
-      allocate(nodes(numRealz,snumEigs))
+      allocate(nodes(numRealz,numEigss1))
     elseif(chxsvartype=='independent') then
-      allocate(nodes(numRealz,anumEigs+snumEigs))
+      allocate(nodes(numRealz,numEigsa1+numEigss1))
     endif
     call create_cubature(Qs,UQwgts,nodes)
   endif
@@ -207,55 +207,55 @@ CONTAINS
       call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
       KLrxisig = 0
-      do curEig=1,anumEigs + mod(anumEigs,2)  !select xi values for KLrxivalsa
+      do curEig=1,numEigsa1 + mod(numEigsa1,2)  !select xi values for xia1
           rand = rang()
-          if((chTrantype=='KLWood') .and. curEig<=anumEigs) then
+          if((chTrantype=='KLWood') .and. curEig<=numEigsa1) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
             if(mod(curEig,2)==1) rand1 = rand
             if(mod(curEig,2)==0) then
               call TwoGaussrandnums(rand1,rand,xiterms)
-              KLrxivalsa(realj,curEig-1) = xiterms(1)
+              xia1(realj,curEig-1) = xiterms(1)
               xiterm = xiterms(2)
             endif
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
             xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
           endif
-        if(curEig<=anumEigs) KLrxivalsa(realj,curEig) = xiterm
+        if(curEig<=numEigsa1) xia1(realj,curEig) = xiterm
       enddo
 
-      do curEig=1,snumEigs + mod(snumEigs,2)  !select xi values for KLrxivalss
+      do curEig=1,numEigss1 + mod(numEigss1,2)  !select xi values for xis1
         rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=snumEigs) then
+        if((chTrantype=='KLWood') .and. curEig<=numEigss1) then
           call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
           if(mod(curEig,2)==1) rand1 = rand
           if(mod(curEig,2)==0) then
             call TwoGaussrandnums(rand1,rand,xiterms)
-            KLrxivalss(realj,curEig-1) = xiterms(1)
+            xis1(realj,curEig-1) = xiterms(1)
             xiterm = xiterms(2)
           endif
         elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
           xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
         endif
-        if(curEig<=snumEigs) KLrxivalss(realj,curEig) = xiterm
+        if(curEig<=numEigss1) xis1(realj,curEig) = xiterm
       enddo
       if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
         do j=1,numRealz
-          do i=1,min(anumeigs,snumeigs)
-            KLrxivalss(j,i) = KLrxivalsa(j,i)
+          do i=1,min(numEigsa1,numEigss1)
+            xis1(j,i) = xia1(j,i)
           enddo
         enddo
       endif
     elseif(chUQtype=='SC') then
-      do curEig=1,anumEigs
-        KLrxivalsa(realj,curEig) = nodes(realj,curEig)
+      do curEig=1,numEigsa1
+        xia1(realj,curEig) = nodes(realj,curEig)
       enddo
-      do curEig=1,snumEigs
+      do curEig=1,numEigss1
         if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
-          KLrxivalss(realj,curEig) = nodes(realj,curEig)
+          xis1(realj,curEig) = nodes(realj,curEig)
         elseif(chxsvartype=='independent') then
-          KLrxivalss(realj,curEig) = nodes(realj,anumEigs+curEig)
+          xis1(realj,curEig) = nodes(realj,numEigsa1+curEig)
         endif
       enddo
     endif
@@ -309,20 +309,20 @@ CONTAINS
   !This subroutine uses the stored array of pseudo-random numbers used in KLrgenrealz
   !to plot the selected reconstructed realizations.
   use KLvars,      only: KLrnumpoints, pltKLrealz, pltKLrealznumof, &
-                         pltKLrealzwhich, KLrxi, pltKLrealzarray, KLrxisig
+                         pltKLrealzwhich, KLrxmesh, pltKLrealzarray, KLrxisig
 
-  integer :: i,m,KLrnumpts,tsnumEigs,tanumEigs
+  integer :: i,m,KLrnumpts,tnumEigss1,tnumEigsa1
 
   do m=1,pltKLrealznumof
-    tsnumEigs=pltKLrealzwhich(2,m)
-    tanumEigs=pltKLrealzwhich(3,m)
+    tnumEigss1=pltKLrealzwhich(2,m)
+    tnumEigsa1=pltKLrealzwhich(3,m)
 
     KLrnumpts=KLrnumpoints
     KLrxisig = 0
     do i=1,KLrnumpoints
-      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxi(i),'totale',&
-                              tsnumEigsin=tsnumEigs,tanumEigsin=tanumEigs)
-      pltKLrealzarray(i,1)   = KLrxi(i)     !record x values
+      KLrxisig(i) = KLr_point(pltKLrealzwhich(1,m),KLrxmesh(i),'totale',&
+                              tnumEigss1in=tnumEigss1,tnumEigsa1in=tnumEigsa1)
+      pltKLrealzarray(i,1)   = KLrxmesh(i)     !record x values
       pltKLrealzarray(i,m+1) = KLrxisig(i)  !record that realization
     enddo
   enddo
@@ -660,39 +660,39 @@ CONTAINS
 
 
 
-  function KLrxi_integral(j,xl,xr,chxstype,tsnumEigsin,tanumEigsin) result(KL_int)
+  function KLrxi_integral(j,xl,xr,chxstype,tnumEigss1in,tnumEigsa1in) result(KL_int)
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, scatvar, absvar, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, snumEigs, anumEigs, KLrxivalsa, &
-                    sigsmeanadjust, sigameanadjust, KLrxivalss
+  use KLvars, only: alpha, Ak, Eig, numEigss1, numEigsa1, xia1, &
+                    sigsmeanadjust, sigameanadjust, xis1
   use utilities, only: Heavi
   integer :: j
   real(8) :: xl,xr,KL_int
   character(*) :: chxstype
-  integer, optional :: tsnumEigsin, tanumEigsin
+  integer, optional :: tnumEigss1in, tnumEigsa1in
 
-  integer :: curEig, tsnumEigs, tanumEigs
+  integer :: curEig, tnumEigss1, tnumEigsa1
   real(8) :: Eigfintterm, KL_suma, KL_sums, sigs, siga
 
-  tsnumEigs = merge(tsnumEigsin,snumEigs,present(tsnumEigsin))
-  tanumEigs = merge(tanumEigsin,anumEigs,present(tanumEigsin))
+  tnumEigss1 = merge(tnumEigss1in,numEigss1,present(tnumEigss1in))
+  tnumEigsa1 = merge(tnumEigsa1in,numEigsa1,present(tnumEigsa1in))
 
   !solve summation of KL terms to use below
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
-    do curEig=1,tanumEigs
+    do curEig=1,tnumEigsa1
       Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-      KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalsa(j,curEig)
+      KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfintterm * xia1(j,curEig)
     enddo
   endif
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
-    do curEig=1,tsnumEigs
+    do curEig=1,tnumEigss1
       Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-      KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * KLrxivalss(j,curEig)
+      KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * xis1(j,curEig)
     enddo
   endif
 
@@ -729,7 +729,7 @@ CONTAINS
 
 
 
-  function KLr_point(j,xpos,chxstype,tsnumEigsin,tanumEigsin,orderin) result(KL_point)
+  function KLr_point(j,xpos,chxstype,tnumEigss1in,tnumEigsa1in,orderin) result(KL_point)
   !Evaluates KL reconstructed realizations at a given point.
   !It has options for total, scattering only, absorption only, or scattering ratio.
   !It has an option to solve for less than the available number of eigenvalues.
@@ -737,39 +737,39 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, snumEigs, anumEigs, KLrxivalsa, KLrxivalss, chGausstype, &
+  use KLvars, only: alpha, Ak, Eig, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
                     chxsvartype
 
   integer :: j
   real(8) :: xpos
   real(8) :: KL_point
   character(*) :: chxstype
-  integer, optional :: tsnumEigsin, tanumEigsin
+  integer, optional :: tnumEigss1in, tnumEigsa1in
   integer, optional :: orderin
 
   real(8) :: siga, sigs, KL_suma, KL_sums, Eigfterm
-  integer :: curEig,tsnumEigs,tanumEigs,order
+  integer :: curEig,tnumEigss1,tnumEigsa1,order
   real(8) :: tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave
 
   !load any optional values or their default
-  tsnumEigs = merge(tsnumEigsin,snumEigs,present(tsnumEigsin))
-  tanumEigs = merge(tanumEigsin,anumEigs,present(tanumEigsin))
+  tnumEigss1 = merge(tnumEigss1in,numEigss1,present(tnumEigss1in))
+  tnumEigsa1 = merge(tnumEigsa1in,numEigsa1,present(tnumEigsa1in))
   order     = merge(orderin   ,0      ,present(orderin)   )
 
   !solve summation of KL terms to use below
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
-    do curEig=1,tanumEigs
+    do curEig=1,tnumEigsa1
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-      KL_suma  = KL_suma + sqrt(Eig(curEig)) * Eigfterm * KLrxivalsa(j,curEig)
+      KL_suma  = KL_suma + sqrt(Eig(curEig)) * Eigfterm * xia1(j,curEig)
     enddo
   endif
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
-    do curEig=1,tsnumEigs
+    do curEig=1,tnumEigss1
       Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-      KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * KLrxivalss(j,curEig)
+      KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * xis1(j,curEig)
     enddo
     if(chxsvartype=='anticorrelated') KL_sums = -KL_sums
   endif

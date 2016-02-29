@@ -132,10 +132,10 @@ CONTAINS
   endif
 !  do curEig=1,numEigs
 !    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
-!                (   tc   *merge(Eig(curEig),0d0,curEig<=snumEigs) + &
-!                 (1d0-tc)*merge(Eig(curEig),0d0,curEig<=anumEigs)) / s,&
-!                (   tc   *sum( Eig(:min(curEig,snumEigs)) ) + &
-!                 (1d0-tc)*sum( Eig(:min(curEig,anumEigs)) )) /s
+!                (   tc   *merge(Eig(curEig),0d0,curEig<=numEigss1) + &
+!                 (1d0-tc)*merge(Eig(curEig),0d0,curEig<=numEigsa1)) / s,&
+!                (   tc   *sum( Eig(:min(curEig,numEigss1)) ) + &
+!                 (1d0-tc)*sum( Eig(:min(curEig,numEigsa1)) )) /s
 !  enddo
 
   428 format("   lamc:           ",f8.3)
@@ -368,7 +368,7 @@ CONTAINS
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts, snumEigs, anumEigs
+  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
   integer :: x,y,curEig
@@ -403,8 +403,8 @@ CONTAINS
         Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
         Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
         Corryield(x,y) = Corryield(x,y) + &
-                         merge(    tc   *(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=snumEigs ) + &
-                         merge( (1d0-tc)*(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=anumEigs )
+                         merge(    tc   *(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigss1 ) + &
+                         merge( (1d0-tc)*(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigsa1 )
       enddo
 
       !print Correxpect and Corryield
@@ -462,7 +462,7 @@ CONTAINS
   use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
                           GBsigsave, GBsigaave
   use KLvars,       only: alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
-                          pltCo, snumEigs, anumEigs
+                          pltCo, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
   integer :: curCS,curEig,check
@@ -503,8 +503,8 @@ CONTAINS
     x=sliceval(curCS)
     do curEig=1,numEigs
       phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
-      cumCo=cumCo+ merge(   tc   *Eig(curEig)*phi**2,0d0,curEig<=anumEigs) &
-                 + merge((1d0-tc)*Eig(curEig)*phi**2,0d0,curEig<=snumEigs)
+      cumCo=cumCo+ merge(   tc   *Eig(curEig)*phi**2,0d0,curEig<=numEigsa1) &
+                 + merge((1d0-tc)*Eig(curEig)*phi**2,0d0,curEig<=numEigss1)
       CoEff(curEig,curCS)=cumCo
     enddo
   enddo

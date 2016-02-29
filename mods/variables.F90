@@ -170,10 +170,13 @@ end module genRealzvars
 module KLvars  !"KLresearch" and "KLconstruct"
   implicit none
   !inputs
-  integer              :: binNumof             ! number of bins (for xi?)
+  integer              :: numEigss1            ! number of KL eigenmodes for scattering xs, mat 1
+  integer              :: numEigsa1            ! number of KL eigenmodes for absorption xs, mat 1
+  integer              :: numEigss2            ! number of KL eigenmodes for scattering xs, mat 2
+  integer              :: numEigsa2            ! number of KL eigenmodes for absorption xs, mat 2
+
   integer              :: numEigs              ! number of KL eigenmodes, if==0, defer to next two
-  integer              :: snumEigs             ! number of KL eigenmodes for scattering xs
-  integer              :: anumEigs             ! number of KL eigenmodes for absorption xs
+  integer              :: binNumof             ! number of bins (for xi?)
   integer              :: numSlice             ! number of points to plot eigenfunction at
   integer              :: levsrefEig           !
   real(8)              :: binSmallBound        ! smallest xi value for xi bins
@@ -208,10 +211,24 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
   character(7)         :: chLNxsplottype       ! 'noplot','preview', or 'plot'
   !non-inputs
-  real(8), allocatable :: alpha(:)             ! eigenvalue roots divided by lamc
-  real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
-  real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
-  real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
+  real(8), allocatable :: alphas1(:)           ! eigenvalue roots divided by lamc, scat mat 1
+  real(8), allocatable :: alphaa1(:)           ! eigenvalue roots divided by lamc, abs mat 1
+  real(8), allocatable :: alphas2(:)           ! eigenvalue roots divided by lamc, scat mat 2
+  real(8), allocatable :: alphaa2(:)           ! eigenvalue roots divided by lamc, abs mat 2
+  real(8), allocatable :: Aks1(:)              ! normalization coefficients in KL expansion, scat mat 1
+  real(8), allocatable :: Aka1(:)              ! normalization coefficients in KL expansion, abs mat 1
+  real(8), allocatable :: Aks2(:)              ! normalization coefficients in KL expansion, scat mat 2
+  real(8), allocatable :: Aka2(:)              ! normalization coefficients in KL expansion, abs mat 2
+  real(8), allocatable :: Eigs1(:)             ! eigenvalues ok KL expansion, scat mat 1
+  real(8), allocatable :: Eiga1(:)             ! eigenvalues ok KL expansion, abs mat 1
+  real(8), allocatable :: Eigs2(:)             ! eigenvalues ok KL expansion, scat mat 2
+  real(8), allocatable :: Eiga2(:)             ! eigenvalues ok KL expansion, abs mat 2
+  real(8), allocatable :: xis1(:,:)            ! scat psuedo-random numbers for KL media, mat 1
+  real(8), allocatable :: xia1(:,:)            ! abs psuedo-random numbers for KL media, mat 1
+  real(8), allocatable :: xis2(:,:)            ! scat psuedo-random numbers for KL media, mat 2
+  real(8), allocatable :: xia2(:,:)            ! abs psuedo-random numbers for KL media, mat 2
+  real(8), allocatable :: xi(:,:)              ! xi values collected from binary materials
+
   real(8)              :: sigsmeanadjust=0.0d0 ! positive translation of sigs mean xs (mat-based mode)
   real(8)              :: sigameanadjust=0.0d0 ! positive translation of siga mean xs (mat-based mode)
   integer              :: mostinBin            !
@@ -219,9 +236,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: binPDF(:,:)          ! 
   real(8), allocatable :: binBounds(:)         !
   real(8)              :: binSize              !
-  real(8), allocatable :: KLrxi(:)             !
-  real(8), allocatable :: KLrxivalsa(:,:)      ! abs psuedo-random numbers for KL media, if same use this
-  real(8), allocatable :: KLrxivalss(:,:)      ! scat psuedo-random numbers for KL media
+  real(8), allocatable :: KLrxmesh(:)          ! x values for plotting KL realizations
   real(8), allocatable :: pltKLrealzarray(:,:) !
   real(8), allocatable :: KLrxisig(:)          !
 
@@ -244,8 +259,10 @@ subroutine bcast_KLvars_vars
 
   call MPI_Bcast(binNumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(snumEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(anumEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numEigss1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numEigsa1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numEigss2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numEigsa2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numSlice, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(levsrefEig, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(binSmallBound, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -306,17 +323,53 @@ subroutine bcast_KLvars_alloc()
     pltKLrealzwhich = 0
   endif
 
-  if(.not.allocated(alpha)) then
-    allocate(alpha(numEigs))
-    alpha = 0d0
+  if(.not.allocated(alphas1)) then
+    allocate(alphas1(numEigs))
+    alphas1 = 0d0
   endif
-  if(.not.allocated(Ak)) then
-    allocate(Ak(numEigs))
-    Ak = 0d0
+  if(.not.allocated(alphaa1)) then
+    allocate(alphaa1(numEigs))
+    alphaa1 = 0d0
   endif
-  if(.not.allocated(Eig)) then
-    allocate(Eig(numEigs))
-    Eig = 0d0
+  if(.not.allocated(alphas2)) then
+    allocate(alphas2(numEigs))
+    alphas2 = 0d0
+  endif
+  if(.not.allocated(alphaa2)) then
+    allocate(alphaa2(numEigs))
+    alphaa2 = 0d0
+  endif
+  if(.not.allocated(Aks1)) then
+    allocate(Aks1(numEigs))
+    Aks1 = 0d0
+  endif
+  if(.not.allocated(Aka1)) then
+    allocate(Aka1(numEigs))
+    Aka1 = 0d0
+  endif
+  if(.not.allocated(Aks2)) then
+    allocate(Aks2(numEigs))
+    Aks2 = 0d0
+  endif
+  if(.not.allocated(Aka2)) then
+    allocate(Aka2(numEigs))
+    Aka2 = 0d0
+  endif
+  if(.not.allocated(Eigs1)) then
+    allocate(Eigs1(numEigs))
+    Eigs1 = 0d0
+  endif
+  if(.not.allocated(Eiga1)) then
+    allocate(Eiga1(numEigs))
+    Eiga1 = 0d0
+  endif
+  if(.not.allocated(Eigs2)) then
+    allocate(Eigs2(numEigs))
+    Eigs2 = 0d0
+  endif
+  if(.not.allocated(Eiga2)) then
+    allocate(Eiga2(numEigs))
+    Eiga2 = 0d0
   endif
   if(.not.allocated(xi)) then
     allocate(xi(numRealz,numEigs))
@@ -331,17 +384,25 @@ subroutine bcast_KLvars_alloc()
     allocate(binBounds(binNumof+1))
     binBounds = 0d0
   endif
-  if(.not.allocated(KLrxi)) then
-    allocate(KLrxi(KLrnumpoints))
-    KLrxi = 0d0
+  if(.not.allocated(KLrxmesh)) then
+    allocate(KLrxmesh(KLrnumpoints))
+    KLrxmesh = 0d0
   endif
-  if(.not.allocated(KLrxivalsa)) then
-    allocate(KLrxivalsa(numRealz,anumEigs))
-    KLrxivalsa = 0d0
+  if(.not.allocated(xis1)) then
+    allocate(xis1(numRealz,numEigss1))
+    xis1 = 0d0
   endif
-  if(.not.allocated(KLrxivalss)) then
-    allocate(KLrxivalss(numRealz,snumEigs))
-    KLrxivalss = 0d0
+  if(.not.allocated(xia1)) then
+    allocate(xia1(numRealz,numEigsa1))
+    xia1 = 0d0
+  endif
+  if(.not.allocated(xis2)) then
+    allocate(xis2(numRealz,numEigss2))
+    xis2 = 0d0
+  endif
+  if(.not.allocated(xia2)) then
+    allocate(xia2(numRealz,numEigsa2))
+    xia2 = 0d0
   endif
   if(.not.allocated(pltKLrealzarray)) then
     allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
@@ -378,16 +439,28 @@ subroutine bcast_KLvars_dealloc()
   if(allocated(pltCowhich)) deallocate(pltCowhich)
   if(allocated(pltKLrealzwhich)) deallocate(pltKLrealzwhich)
 
-  if(allocated(alpha)) deallocate(alpha)
-  if(allocated(Ak)) deallocate(Ak)
-  if(allocated(Eig)) deallocate(Eig)
+  if(allocated(alphas1)) deallocate(alphas1)
+  if(allocated(alphaa1)) deallocate(alphaa1)
+  if(allocated(alphas2)) deallocate(alphas2)
+  if(allocated(alphaa2)) deallocate(alphaa2)
+  if(allocated(Aks1)) deallocate(Aks1)
+  if(allocated(Aka1)) deallocate(Aka1)
+  if(allocated(Aks2)) deallocate(Aks2)
+  if(allocated(Aka2)) deallocate(Aka2)
+  if(allocated(Eigs1)) deallocate(Eigs1)
+  if(allocated(Eiga1)) deallocate(Eiga1)
+  if(allocated(Eigs2)) deallocate(Eigs2)
+  if(allocated(Eiga2)) deallocate(Eiga2)
   if(allocated(xi)) deallocate(xi)
 
   if(allocated(binPDF)) deallocate(binPDF)
   if(allocated(binBounds)) deallocate(binBounds)
-  if(allocated(KLrxi)) deallocate(KLrxi)
-  if(allocated(KLrxivalsa)) deallocate(KLrxivalsa)
-  if(allocated(KLrxivalss)) deallocate(KLrxivalss)
+  if(allocated(KLrxmesh)) deallocate(KLrxmesh)
+  if(allocated(xis1)) deallocate(xis1)
+  if(allocated(xia1)) deallocate(xia1)
+  if(allocated(xis2)) deallocate(xis2)
+  if(allocated(xia2)) deallocate(xia2)
+
   if(allocated(pltKLrealzarray)) deallocate(pltKLrealzarray)
   if(allocated(KLrxisig)) deallocate(KLrxisig)
 
@@ -409,16 +482,28 @@ subroutine bcast_KLvars_arrays
   if(allocated(pltCowhich)) call MPI_Bcast(pltCowhich, size(pltCowhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltKLrealzwhich)) call MPI_Bcast(pltKLrealzwhich, size(pltKLrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  if(allocated(alpha)) call MPI_Bcast(alpha, size(alpha), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Ak)) call MPI_Bcast(Ak, size(Ak), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Eig)) call MPI_Bcast(Eig, size(Eig), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(alphas1)) call MPI_Bcast(alphas1, size(alphas1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(alphaa1)) call MPI_Bcast(alphaa1, size(alphaa1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(alphas2)) call MPI_Bcast(alphas2, size(alphas2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(alphaa2)) call MPI_Bcast(alphaa2, size(alphaa2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Aks1)) call MPI_Bcast(Aks1, size(Aks1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Aka1)) call MPI_Bcast(Aka1, size(Aka1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Aks2)) call MPI_Bcast(Aks2, size(Aks2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Aka2)) call MPI_Bcast(Aka2, size(Aka2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Eigs1)) call MPI_Bcast(Eigs1, size(Eigs1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Eiga1)) call MPI_Bcast(Eiga1, size(Eiga1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Eigs2)) call MPI_Bcast(Eigs2, size(Eigs2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(Eiga2)) call MPI_Bcast(Eiga2, size(Eiga2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(xi)) call MPI_Bcast(xi, size(xi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
   if(allocated(binPDF)) call MPI_Bcast(binPDF, size(binPDF), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(binBounds)) call MPI_Bcast(binBounds, size(binBounds), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(KLrxi)) call MPI_Bcast(KLrxi, size(KLrxi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(KLrxivalsa)) call MPI_Bcast(KLrxivalsa, size(KLrxivalsa), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(KLrxivalss)) call MPI_Bcast(KLrxivalss, size(KLrxivalss), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(KLrxmesh)) call MPI_Bcast(KLrxmesh, size(KLrxmesh), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(xis1)) call MPI_Bcast(xis1, size(xis1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(xia1)) call MPI_Bcast(xia1, size(xia1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(xis2)) call MPI_Bcast(xis2, size(xis2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(xia2)) call MPI_Bcast(xia2, size(xia2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+
   if(allocated(pltKLrealzarray)) &
                       call MPI_Bcast(pltKLrealzarray, size(pltKLrealzarray), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(KLrxisig)) call MPI_Bcast(KLrxisig, size(KLrxisig), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -754,15 +839,15 @@ end subroutine bcast_UQvars_vars
 subroutine bcast_UQvars_alloc()
   use mpi
   use genRealzvars, only: numRealz
-  use KLvars, only: snumEigs,anumEigs,chxsvartype
+  use KLvars, only: numEigss1,numEigsa1,chxsvartype
   implicit none
 
-print *,"chxsvartype:",chxsvartype,"s/anumEigs",snumEigs,anumEigs
+print *,"chxsvartype:",chxsvartype,"s/numEigsa1",numEigss1,numEigsa1
   if(.not.allocated(Qs)) then
     if(chxsvartype=='independent') then
-      allocate(Qs(snumEigs+anumEigs))
+      allocate(Qs(numEigss1+numEigsa1))
     else
-      allocate(Qs(snumEigs))
+      allocate(Qs(numEigss1))
     endif
     Qs = 0
   endif
