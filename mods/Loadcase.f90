@@ -9,7 +9,7 @@ CONTAINS
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBsigaave, GBsigavar, GBsigsave, GBsigsvar, &
                                   GBlamc, GBs, chgeomtype
-  use KLvars,               only: pltEigfwhich, pltxiBinswhich, numEigss1, numEigsa1, &
+  use KLvars,               only: pltEigfwhich, pltxiBinswhich, numEigss1, numEigsa1, numEigss2, numEigsa2,&
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
@@ -41,7 +41,7 @@ CONTAINS
   read(2,*) chTrantype
   read(2,*) chUQtype
   read(2,*) numRealz,trannprt
-  read(2,*) numEigs,numEigss1,numEigsa1
+  read(2,*) numEigs,numEigss1,numEigsa1,numEigss2,numEigsa2
   if(numEigs==0) then !set number of KL eigenmodes and allocate Qtemp
     numEigs = max(numEigss1,numEigsa1)
     allocate(Qtemp(numEigss1+numEigsa1+1))

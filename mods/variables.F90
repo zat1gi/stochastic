@@ -481,7 +481,6 @@ subroutine bcast_KLvars_arrays
   if(allocated(pltxiBinswhich)) call MPI_Bcast(pltxiBinswhich, size(pltxiBinswhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltCowhich)) call MPI_Bcast(pltCowhich, size(pltCowhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltKLrealzwhich)) call MPI_Bcast(pltKLrealzwhich, size(pltKLrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-
   if(allocated(alphas1)) call MPI_Bcast(alphas1, size(alphas1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(alphaa1)) call MPI_Bcast(alphaa1, size(alphaa1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(alphas2)) call MPI_Bcast(alphas2, size(alphas2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -501,8 +500,14 @@ subroutine bcast_KLvars_arrays
   if(allocated(KLrxmesh)) call MPI_Bcast(KLrxmesh, size(KLrxmesh), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(xis1)) call MPI_Bcast(xis1, size(xis1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(xia1)) call MPI_Bcast(xia1, size(xia1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+print *,"2"
+print *,"size(xis1):",size(xis1)
+print *,"size(xis2):",size(xis2)
   if(allocated(xis2)) call MPI_Bcast(xis2, size(xis2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+print *,"3"
   if(allocated(xia2)) call MPI_Bcast(xia2, size(xia2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+print *,"all"
+
 
   if(allocated(pltKLrealzarray)) &
                       call MPI_Bcast(pltKLrealzarray, size(pltKLrealzarray), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
