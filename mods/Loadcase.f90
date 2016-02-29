@@ -389,8 +389,10 @@ CONTAINS
                           scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, &
                           GBsigavar, GBsigaave, GBsigsvar, GBsigsave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
-                    KLrxisig, alpha, Ak, Eig, chLNmode, pltCo, numEigss1, numEigsa1, &
-                    xi, xia1, xis1, pltKLrealzarray, chxsvartype, pltKLrealz
+                    KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
+                    Eigs1, Eiga1, Eigs2, Eiga2, chLNmode, &
+                    pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, &
+                    xi, xis1, xia1, xis2, xia2, pltKLrealzarray, chxsvartype, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -467,17 +469,28 @@ CONTAINS
   !allocate  KLresearch variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
      Corropts(1).ne.'noplot' .or. pltCo(1).ne.'noplot' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(alpha(numEigs))
-    allocate(Ak(numEigs))
-    allocate(Eig(numEigs))
+    allocate(alphas1(numEigss1))
+    allocate(alphaa1(numEigsa1))
+    allocate(alphas2(numEigss2))
+    allocate(alphaa2(numEigsa2))
+    allocate(Aks1(numEigss1))
+    allocate(Aka1(numEigsa1))
+    allocate(Aks2(numEigss2))
+    allocate(Aka2(numEigsa2))
+    allocate(Eigs1(numEigss1))
+    allocate(Eiga1(numEigsa1))
+    allocate(Eigs2(numEigss2))
+    allocate(Eiga2(numEigsa2))
     allocate(xi(numRealz,numEigs))
   endif
 
 
   !allocate and initialize KLconstruction variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(xia1(numRealz,numEigsa1))
-    allocate(xis1(numRealz,numEigss1))
+    allocate(xis1(numRealz,numEigsa1))
+    allocate(xia1(numRealz,numEigss1))
+    allocate(xis2(numRealz,numEigss1))
+    allocate(xia2(numRealz,numEigss1))
     allocate(KLrxisig(KLrnumpoints))
     allocate(pltKLrealzarray(KLrnumpoints,pltKLrealznumof+1))
   endif

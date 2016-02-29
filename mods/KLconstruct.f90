@@ -166,8 +166,8 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
-  use KLvars,       only: binPDF, binNumof, numEigsa1, numEigss1, KLrnumpoints, KLrxi, xia1, &
-                          xis1, KLrxisig, chxsvartype, Gaussrandtype, flmeanadjust
+  use KLvars,       only: binPDF, binNumof, numEigsa1, numEigss1, KLrnumpoints, KLrxmesh, xis1, &
+                          xia1, xis2, xia2, KLrxisig, chxsvartype, Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
@@ -259,6 +259,9 @@ CONTAINS
         endif
       enddo
     endif
+    xis1 = xia1
+    xis2 = xia1
+    xia2 = xia1
 
     !count num of realz w/ neg xs, set flag to accept or reject realz
     flrealzneg=.false.
@@ -277,7 +280,7 @@ CONTAINS
     endif
 
     do i=1,KLrnumpoints  !create realization
-      KLrxisig(i) = KLr_point(realj,KLrxi(i),'totale')
+      KLrxisig(i) = KLr_point(realj,KLrxmesh(i),'totale')
     enddo
     612 format("  ",f14.8)
     open(unit=11,file="KLrxisig.txt") !print sigma values to text file
@@ -665,7 +668,7 @@ CONTAINS
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
   use genRealzvars, only: lamc, scatvar, absvar, sigscatave, sigabsave
-  use KLvars, only: alpha, Ak, Eig, numEigss1, numEigsa1, xia1, &
+  use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, &
                     sigsmeanadjust, sigameanadjust, xis1
   use utilities, only: Heavi
   integer :: j
@@ -683,16 +686,16 @@ CONTAINS
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
     do curEig=1,tnumEigsa1
-      Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-      KL_suma   = KL_suma + sqrt(Eig(curEig)) * Eigfintterm * xia1(j,curEig)
+      Eigfintterm = Eigfuncint(Aks1(curEig),alphas1(curEig),lamc,xl,xr)
+      KL_suma   = KL_suma + sqrt(Eigs1(curEig)) * Eigfintterm * xia1(j,curEig)
     enddo
   endif
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigss1
-      Eigfintterm = Eigfuncint(Ak(curEig),alpha(curEig),lamc,xl,xr)
-      KL_sums   = KL_sums + sqrt(Eig(curEig)) * Eigfintterm * xis1(j,curEig)
+      Eigfintterm = Eigfuncint(Aks1(curEig),alphas1(curEig),lamc,xl,xr)
+      KL_sums   = KL_sums + sqrt(Eigs1(curEig)) * Eigfintterm * xis1(j,curEig)
     enddo
   endif
 
@@ -737,7 +740,7 @@ CONTAINS
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
+  use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
                     chxsvartype
 
   integer :: j
@@ -760,16 +763,16 @@ CONTAINS
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
     do curEig=1,tnumEigsa1
-      Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-      KL_suma  = KL_suma + sqrt(Eig(curEig)) * Eigfterm * xia1(j,curEig)
+      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,xpos,order)
+      KL_suma  = KL_suma + sqrt(Eigs1(curEig)) * Eigfterm * xia1(j,curEig)
     enddo
   endif
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigss1
-      Eigfterm = Eigfunc(Ak(curEig),alpha(curEig),lamc,xpos,order)
-      KL_sums  = KL_sums + sqrt(Eig(curEig)) * Eigfterm * xis1(j,curEig)
+      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,xpos,order)
+      KL_sums  = KL_sums + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
     enddo
     if(chxsvartype=='anticorrelated') KL_sums = -KL_sums
   endif

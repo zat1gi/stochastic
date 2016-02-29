@@ -9,9 +9,13 @@ CONTAINS
   subroutine KL_eigenvaluemain()
   !This subroutine is the interface for 'KL_eigenvalue' so that values can be passed to
   !it by reference.
-  use KLvars, only: alpha,Ak,Eig,numEigs
+  use KLvars, only: alphas1,Aks1,Eigs1,numEigss1, alphaa1,Aka1,Eiga1,numEigsa1,&
+                    alphas2,Aks2,Eigs2,numEigss2, alphaa2,Aka2,Eiga2,numEigsa2
 
-  call KL_eigenvalue(alpha,Ak,Eig,numEigs)
+  call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1)
+  call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1)
+  call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2)
+  call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2)
 
   end subroutine KL_eigenvaluemain
 
@@ -175,7 +179,7 @@ CONTAINS
   !properties so that it can later be used for any cross section material property.
   use rngvars, only: rngappnum, rngstride
   use genRealzvars, only: sig, numRealz, nummatSegs, lamc, matType, matLength, P
-  use KLvars, only: alpha, Ak, Eig, xi, numEigs
+  use KLvars, only: alphas1, Aks1, Eigs1, xi, numEigs
   use MCvars, only: trannprt
   use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
@@ -207,12 +211,12 @@ CONTAINS
         aveterm   = 0d0
 
         xiterm= (hilowterm-aveterm)*&                                  !actual calculation
-                (lamc*sin(alpha(curEig)*xr)-cos(alpha(curEig)*xr)/alpha(curEig) &
-                -lamc*sin(alpha(curEig)*xl)+cos(alpha(curEig)*xl)/alpha(curEig))
+                (lamc*sin(alphas1(curEig)*xr)-cos(alphas1(curEig)*xr)/alphas1(curEig) &
+                -lamc*sin(alphas1(curEig)*xl)+cos(alphas1(curEig)*xl)/alphas1(curEig))
 
         xitermtot = xitermtot + xiterm
       enddo
-      xi(j,curEig) = (Ak(curEig)/sqrt(Eig(curEig)))*xitermtot     !find resulting xi
+      xi(j,curEig) = (Aks1(curEig)/sqrt(Eigs1(curEig)))*xitermtot     !find resulting xi
     enddo
 
     if(mod(j,trannprt)==0) call timeupdate( 'KL_collect',j,numRealz )
@@ -368,7 +372,7 @@ CONTAINS
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
-  use KLvars, only: alpha, Ak, Eig, numEigs, Corrnumpoints, Corropts, numEigss1, numEigsa1
+  use KLvars, only: alphas1, Aks1, Eigs1, numEigs, Corrnumpoints, Corropts, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
   integer :: x,y,curEig
@@ -400,11 +404,11 @@ CONTAINS
 
       !sum Eigs to calc Corryield
       do curEig=1,numEigs
-        Eigfx = Eigfunc(Ak(curEig),alpha(curEig),lamc,curx)
-        Eigfy = Eigfunc(Ak(curEig),alpha(curEig),lamc,cury)
+        Eigfx = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,curx)
+        Eigfy = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,cury)
         Corryield(x,y) = Corryield(x,y) + &
-                         merge(    tc   *(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigss1 ) + &
-                         merge( (1d0-tc)*(Eig(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigsa1 )
+                         merge(    tc   *(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigss1 ) + &
+                         merge( (1d0-tc)*(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigsa1 )
       enddo
 
       !print Correxpect and Corryield
@@ -461,7 +465,7 @@ CONTAINS
   !The closer to 1 the ratio is, the more efficient that approximation is.
   use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
                           GBsigsave, GBsigaave
-  use KLvars,       only: alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
+  use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
@@ -502,9 +506,9 @@ CONTAINS
     cumCo=0
     x=sliceval(curCS)
     do curEig=1,numEigs
-      phi=Eigfunc(Ak(curEig),alpha(curEig),lamc,x)
-      cumCo=cumCo+ merge(   tc   *Eig(curEig)*phi**2,0d0,curEig<=numEigsa1) &
-                 + merge((1d0-tc)*Eig(curEig)*phi**2,0d0,curEig<=numEigss1)
+      phi=Eigfunc(Aks1(curEig),alphas1(curEig),lamc,x)
+      cumCo=cumCo+ merge(   tc   *Eigs1(curEig)*phi**2,0d0,curEig<=numEigsa1) &
+                 + merge((1d0-tc)*Eigs1(curEig)*phi**2,0d0,curEig<=numEigss1)
       CoEff(curEig,curCS)=cumCo
     enddo
   enddo
