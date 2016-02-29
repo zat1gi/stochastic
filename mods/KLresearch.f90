@@ -6,6 +6,15 @@ CONTAINS
   ! print statements in this module use # 400-499
 
 
+  subroutine KL_eigenvaluemain()
+  !This subroutine is the interface for 'KL_eigenvalue' so that values can be passed to
+  !it by reference.
+  use KLvars, only: alpha,Ak,Eig,numEigs
+
+  call KL_eigenvalue(alpha,Ak,Eig,numEigs)
+
+  end subroutine KL_eigenvaluemain
+
 
   function Eigenvalue( gam )
   !Solves value of eigenvalues based on transcendental solution gamma.
@@ -16,25 +25,29 @@ CONTAINS
 
 
 
-  subroutine KL_eigenvalue
+  subroutine KL_eigenvalue(alpha,Ak,Eig,numEigs)
   !This subroutine: 1) calculates some initial values used here
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
   use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
-  use KLvars,       only: gam, alpha, levsrefEig, pltEigf, snumEigs, anumEigs, &
-                          Ak, Eig, xi, pltEigfwhich, pltEigfnumof, numEigs, numSlice
+  use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice
   use KLconstruct, only: Eigfunc
+
+  real(8) :: alpha(:),Ak(:),Eig(:)
+  integer :: numEigs
 
   real(8) :: stepGam=0 !if 0 code chooses
   integer :: l,level,curEig,i,j
   real(8) :: refstepGam,TT,curGam,tc
   real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs),sliceSize
-  real(8),allocatable :: Eigfplotarray(:,:)
+  real(8),allocatable :: Eigfplotarray(:,:),gam(:)
 
   TT = s/lamc
   if( stepGam==0 ) stepGam  =1/TT/50
+  allocate(gam(numEigs))
+  gam = 0.0d0
   allocate(Eigfplotarray(numSlice,numSlice+1))
 
   !Initial guesses for Gam
@@ -117,13 +130,13 @@ CONTAINS
   elseif(chgeomtype=='contin') then
     tc = GBsigsave/(GBsigsave+GBsigaave)
   endif
-  do curEig=1,numEigs
-    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
-                (   tc   *merge(Eig(curEig),0d0,curEig<=snumEigs) + &
-                 (1d0-tc)*merge(Eig(curEig),0d0,curEig<=anumEigs)) / s,&
-                (   tc   *sum( Eig(:min(curEig,snumEigs)) ) + &
-                 (1d0-tc)*sum( Eig(:min(curEig,anumEigs)) )) /s
-  enddo
+!  do curEig=1,numEigs
+!    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
+!                (   tc   *merge(Eig(curEig),0d0,curEig<=snumEigs) + &
+!                 (1d0-tc)*merge(Eig(curEig),0d0,curEig<=anumEigs)) / s,&
+!                (   tc   *sum( Eig(:min(curEig,snumEigs)) ) + &
+!                 (1d0-tc)*sum( Eig(:min(curEig,anumEigs)) )) /s
+!  enddo
 
   428 format("   lamc:           ",f8.3)
   429 format("   TT  :           ",f13.8)
@@ -150,8 +163,6 @@ CONTAINS
     call system("mv genericplot.pdf plots/Eigfplot/Eigfplot.pdf")
   endif
 
-
-  xi = 0d0  !initializing xi=0 for all values
 
   end subroutine KL_eigenvalue
 
@@ -450,7 +461,7 @@ CONTAINS
   !The closer to 1 the ratio is, the more efficient that approximation is.
   use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
                           GBsigsave, GBsigaave
-  use KLvars,       only: gam, alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
+  use KLvars,       only: alpha, Ak, Eig, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo, snumEigs, anumEigs
   use KLconstruct, only: Eigfunc
 
@@ -534,10 +545,6 @@ CONTAINS
   call system("mv genericplot.txt plots/CoEffplot/CoEffplot.txt")
   call system("mv genericplot.ps  plots/CoEffplot/CoEffplot.ps")
   call system("mv genericplot.pdf plots/CoEffplot/CoEffplot.pdf")
-
-  do curEig=1,numEigs  !return 'Eig' to original values
-    Eig(curEig) = Eigenvalue( gam(curEig) )
-  enddo
 
   end subroutine KL_Cochart
 

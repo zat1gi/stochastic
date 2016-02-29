@@ -13,7 +13,6 @@ CONTAINS
   use genRealzvars, only: numRealz
   use MCvars, only: trannprt, flfluxplotmat, chTrantype
   use genRealz, only: genbinaryReal
-  use KLresearch, only: KL_eigenvalue, KL_Correlation, KL_Cochart
   use timeman, only: initialize_t1, timeupdate
   use rngvars, only: rngseed, rngappnum
 #ifdef USE_MPI

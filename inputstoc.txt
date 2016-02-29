@@ -4,10 +4,10 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   MC,        Which UQ approach?: 'MC', 'SC', 'PCESC'
-  4000,100,         Number of realizations/how often to print
+  100,10,         Number of realizations/how often to print
   5,  3,3,          Number of '[anti]correlated' eigenvalues, if==0, next two 'independent' snumEigs/anumEigs
   0,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,      SC order, if==0, revert to orders after first number
-  3000, 3000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  1000, 1000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN','ChiS'/'none','f1','f2','A1.1','A1.2',etc. for Ficthl/Adams cases

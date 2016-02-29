@@ -208,8 +208,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
   character(7)         :: chLNxsplottype       ! 'noplot','preview', or 'plot'
   !non-inputs
-  real(8), allocatable :: gam(:)               ! solutions to eigenvalue transcendental
-  real(8), allocatable :: alpha(:)             ! other form of gam
+  real(8), allocatable :: alpha(:)             ! eigenvalue roots divided by lamc
   real(8), allocatable :: Ak(:)                ! normalization coefficients in KL expansion
   real(8), allocatable :: Eig(:)               ! eigenvalues ok KL expansion
   real(8), allocatable :: xi(:,:)              ! array of chosen xi values for reusing reconstructions
@@ -307,10 +306,6 @@ subroutine bcast_KLvars_alloc()
     pltKLrealzwhich = 0
   endif
 
-  if(.not.allocated(gam)) then
-    allocate(gam(numEigs))
-    gam = 0d0
-  endif
   if(.not.allocated(alpha)) then
     allocate(alpha(numEigs))
     alpha = 0d0
@@ -383,7 +378,6 @@ subroutine bcast_KLvars_dealloc()
   if(allocated(pltCowhich)) deallocate(pltCowhich)
   if(allocated(pltKLrealzwhich)) deallocate(pltKLrealzwhich)
 
-  if(allocated(gam)) deallocate(gam)
   if(allocated(alpha)) deallocate(alpha)
   if(allocated(Ak)) deallocate(Ak)
   if(allocated(Eig)) deallocate(Eig)
@@ -415,7 +409,6 @@ subroutine bcast_KLvars_arrays
   if(allocated(pltCowhich)) call MPI_Bcast(pltCowhich, size(pltCowhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltKLrealzwhich)) call MPI_Bcast(pltKLrealzwhich, size(pltKLrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  if(allocated(gam)) call MPI_Bcast(gam, size(gam), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(alpha)) call MPI_Bcast(alpha, size(alpha), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(Ak)) call MPI_Bcast(Ak, size(Ak), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(Eig)) call MPI_Bcast(Eig, size(Eig), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)

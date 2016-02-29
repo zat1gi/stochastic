@@ -34,7 +34,7 @@ program stochastic
   !!Perform basic KL options
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
      Corropts(1).ne.'noplot' .or. pltCo(1).ne.'noplot' .or. pltKLrealz(1).ne.'noplot') then
-    call KL_eigenvalue                                 !solves for eigenmode vars
+    call KL_eigenvaluemain                             !solves for eigenmode vars
     if(Corropts(1).ne.'noplot'    ) call KL_Correlation!calc & plot spacial correlation funcs
     if(chgeomtype=='binary') call KL_collect           !collects xi values over realizations
     if(pltCo(1).ne.'noplot'       ) call KL_Cochart    !creates plots of var kept to tot var

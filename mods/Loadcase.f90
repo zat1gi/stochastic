@@ -389,7 +389,7 @@ CONTAINS
                           scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, &
                           GBsigavar, GBsigaave, GBsigsvar, GBsigsave
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
-                    KLrxisig, gam, alpha, Ak, Eig, chLNmode, pltCo, snumEigs, anumEigs, &
+                    KLrxisig, alpha, Ak, Eig, chLNmode, pltCo, snumEigs, anumEigs, &
                     xi, KLrxivalsa, KLrxivalss, pltKLrealzarray, chxsvartype, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
@@ -467,7 +467,6 @@ CONTAINS
   !allocate  KLresearch variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
      Corropts(1).ne.'noplot' .or. pltCo(1).ne.'noplot' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(gam(numEigs))
     allocate(alpha(numEigs))
     allocate(Ak(numEigs))
     allocate(Eig(numEigs))
