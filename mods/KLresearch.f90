@@ -35,7 +35,7 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
+  use genRealzvars, only: s, aves1, avea1, GBaves1, GBavea1, chgeomtype
   use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice
   use KLconstruct, only: Eigfunc
 
@@ -129,11 +129,11 @@ CONTAINS
   write(*,*) "    Eigenvalues, their contributions, and KL maintained variance"
   write(*,*) "  Eigindx       Eig vals        sqrt(Eig)     [ differential / cumulative ] % mean sqr err maint"
   426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
-  if(chgeomtype=='binary') then
-    tc = sigscatave/(sigscatave+sigabsave)
-  elseif(chgeomtype=='contin') then
-    tc = GBaves1/(GBaves1+GBavea1)
-  endif
+!  if(chgeomtype=='binary') then
+!    tc = aves1/(aves1+avea1)
+!  elseif(chgeomtype=='contin') then
+!    tc = GBaves1/(GBaves1+GBavea1)
+!  endif
 !  do curEig=1,numEigs
 !    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
 !                (   tc   *merge(Eig(curEig),0d0,curEig<=numEigss1) + &
@@ -371,7 +371,7 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamcs1, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
+  use genRealzvars, only: s, lamcs1, aves1, avea1, GBaves1, GBavea1, chgeomtype
   use KLvars, only: alphas1, Aks1, Eigs1, Corrnumpoints, Corropts, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
@@ -389,7 +389,7 @@ CONTAINS
   stepsize = s/(Corrnumpoints)  !set up stepsize
 
   if(chgeomtype=='binary') then
-    tc = sigscatave/(sigscatave+sigabsave)
+    tc = aves1/(aves1+avea1)
   elseif(chgeomtype=='contin') then
     tc = GBaves1/(GBaves1+GBavea1)
   endif
@@ -463,7 +463,7 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: s, numRealz, P, lamcs1, totLength, chgeomtype, sigscatave, sigabsave, &
+  use genRealzvars, only: s, numRealz, P, lamcs1, totLength, chgeomtype, aves1, avea1, &
                           GBaves1, GBavea1
   use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numSlice, &
                           pltCo, numEigss1, numEigsa1
@@ -497,7 +497,7 @@ CONTAINS
   enddo
 
   if(chgeomtype=='binary') then
-    tc = sigscatave/(sigscatave+sigabsave)
+    tc = aves1/(aves1+avea1)
   elseif(chgeomtype=='contin') then
     tc = GBaves1/(GBaves1+GBavea1)
   endif

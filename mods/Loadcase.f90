@@ -379,9 +379,9 @@ CONTAINS
   !This subroutine allocates and initializes all global variables
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength, lamcs1, lamca1, lamcs2, lamca2, sig, sigscatave, &
-                          sigabsave, scatrat, numPosRealz, numNegRealz, atmixscatrat, &
-                          scatvar, absvar, atmixsig, chgeomtype, GBs, &
+                          totLength, lamcs1, lamca1, lamcs2, lamca2, sig, aves1, &
+                          avea1, aves2, avea2, scatrat, numPosRealz, numNegRealz, atmixscatrat, &
+                          vars1, vara1, vars2, vara2, atmixsig, chgeomtype, GBs, &
                           GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, &
                           GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2
   use KLvars, only: KLrnumpoints, pltKLrealznumof, chGausstype, Corropts, &
@@ -413,23 +413,35 @@ CONTAINS
   numPosRealz= 0
   numNegRealz= 0
   if(chgeomtype=='contin') then  !Gauss-based input
-    lamcs1         = GBlamcs1
-    lamca1         = GBlamca1
-    lamcs2         = GBlamcs2
-    lamca2         = GBlamca2
+    lamcs1       = GBlamcs1
+    lamca1       = GBlamca1
+    lamcs2       = GBlamcs2
+    lamca2       = GBlamca2
     s            = GBs
     if(chGausstype=='Gaus') then
-      sigscatave = GBaves1
-      sigabsave  = GBavea1
+      aves1 = GBaves1
+      vars1 = GBvars1
 
-      scatvar    = GBvars1
-      absvar     = GBvara1
+      avea1 = GBavea1
+      vara1 = GBvara1
+
+      aves2 = GBaves2
+      vars2 = GBvars2
+
+      avea2 = GBavea2
+      vara2 = GBvara2
     elseif(chGausstype=='LogN') then
-      sigscatave = log( GBaves1**2 / sqrt( GBvars1 + GBaves1**2 ) )
-      sigabsave  = log( GBavea1**2 / sqrt( GBvara1 + GBavea1**2 ) )
+      aves1 = log( GBaves1**2 / sqrt( GBvars1 + GBaves1**2 ) )
+      vars1 = log( GBvars1    / GBaves1**2 + 1d0 )
 
-      scatvar    = log( GBvars1    / GBaves1**2 + 1d0 )
-      absvar     = log( GBvara1    / GBavea1**2 + 1d0 )
+      avea1 = log( GBavea1**2 / sqrt( GBvara1 + GBavea1**2 ) )
+      vara1 = log( GBvara1    / GBavea1**2 + 1d0 )
+
+      aves2 = log( GBaves2**2 / sqrt( GBvars2 + GBaves2**2 ) )
+      vars2 = log( GBvars2    / GBaves2**2 + 1d0 )
+
+      avea2 = log( GBavea2**2 / sqrt( GBvara2 + GBavea2**2 ) )
+      vara2 = log( GBvara2    / GBavea2**2 + 1d0 )
 
       if(lamctypes1=='fitlamc') lamcs1 = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamcs1)
       if(lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
@@ -445,10 +457,10 @@ CONTAINS
     P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
     P(2)       = lam(2)/(lam(1)+lam(2))
     lamcs1     = (lam(1)*lam(2))/(lam(1)+lam(2))
-    sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
-    sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
-    scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
-    absvar     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
+    aves1 = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
+    avea1  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+    vars1    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
+    vara1     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
     if(chTrantype=='KLWood') then
       if( (sig(1)*scatrat(1)-sig(2)*scatrat(2)>0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))>0d0) .or. &
           (sig(1)*scatrat(1)-sig(2)*scatrat(2)<0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))<0d0) ) then

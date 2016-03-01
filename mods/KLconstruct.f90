@@ -13,7 +13,7 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: numRealz, s, sigscatave, sigabsave, scatvar, absvar
+  use genRealzvars, only: numRealz, s
   use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype
 
   integer :: j, ix, ibin
@@ -663,7 +663,7 @@ CONTAINS
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
-  use genRealzvars, only: lamcs1, scatvar, absvar, sigscatave, sigabsave
+  use genRealzvars, only: lamcs1, vars1, vara1, aves1, avea1
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, &
                     sigsmeanadjust, sigameanadjust, xis1
   use utilities, only: Heavi
@@ -698,9 +698,9 @@ CONTAINS
 
   !cross section values
   if(chxstype .ne. 'scatter') &
-    siga = (sigabsave  + sigameanadjust)*(xr - xl) + sqrt(absvar)  * KL_suma
+    siga = (avea1  + sigameanadjust)*(xr - xl) + sqrt(vara1)  * KL_suma
   if(chxstype .ne. 'absorb') &
-    sigs = (sigscatave + sigsmeanadjust)*(xr - xl) + sqrt(scatvar) * KL_sums
+    sigs = (aves1 + sigsmeanadjust)*(xr - xl) + sqrt(vars1) * KL_sums
 
   !determine point value
   select case (chxstype)
@@ -735,7 +735,7 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamcs1, scatvar, absvar, chgeomtype
+  use genRealzvars, only: lamcs1, vars1, vara1, chgeomtype
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
                     corrinds1, corrinda1, corrinds2, corrinda2
 
@@ -748,7 +748,7 @@ CONTAINS
 
   real(8) :: siga, sigs, KL_suma, KL_sums, Eigfterm
   integer :: curEig,tnumEigss1,tnumEigsa1,order
-  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave
+  real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1
 
   !load any optional values or their default
   tnumEigss1 = merge(tnumEigss1in,numEigss1,present(tnumEigss1in))
@@ -774,13 +774,13 @@ CONTAINS
   endif
 
   !set non-x-dependent values based order
-  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave)
+  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,taves1,tavea1)
 
   !cross section values
   if(chxstype .ne. 'scatter') &
-    siga = tsigabsave  + tsigameanadjust + sqrt(absvar)  * KL_suma
+    siga = tavea1  + tsigameanadjust + sqrt(vara1)  * KL_suma
   if(chxstype .ne. 'absorb') &
-    sigs = tsigscatave + tsigsmeanadjust + sqrt(scatvar) * KL_sums
+    sigs = taves1 + tsigsmeanadjust + sqrt(vars1) * KL_sums
 
   if(chgeomtype=='contin' .and. chGausstype=='LogN') then
     KL_point = KLr_LogNfinpoint(siga,sigs,chxstype)    
@@ -860,23 +860,23 @@ CONTAINS
 
 
 
-  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave)
+  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,taves1,tavea1)
   !This subroutine sets values for non-x-dependent terms based on derivative order
-  use genRealzvars, only: sigscatave, sigabsave
+  use genRealzvars, only: aves1, avea1
   use KLvars, only: sigsmeanadjust, sigameanadjust
 
   integer :: order
-  real(8) :: tsigsmeanadjust,tsigameanadjust,tsigscatave,tsigabsave
+  real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1
   if(order==0) then
     tsigsmeanadjust = sigsmeanadjust
     tsigameanadjust = sigameanadjust
-    tsigscatave     = sigscatave
-    tsigabsave      = sigabsave
+    taves1     = aves1
+    tavea1      = avea1
   else
     tsigsmeanadjust = 0.0d0
     tsigameanadjust = 0.0d0
-    tsigscatave     = 0.0d0
-    tsigabsave      = 0.0d0
+    taves1     = 0.0d0
+    tavea1      = 0.0d0
   endif
 
   end subroutine KLr_setmeans
@@ -912,7 +912,7 @@ CONTAINS
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
-  use genRealzvars, only: s, sigscatave, sigabsave, numRealz
+  use genRealzvars, only: s, aves1, avea1, numRealz
   use KLvars, only: numEigss1, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLconstruct, only: KLr_point, KLrxi_integral
@@ -935,7 +935,7 @@ CONTAINS
   enddo
   write(*,*)
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
-  tsigave = sigscatave + sigabsave
+  tsigave = aves1 + avea1
   write(*,500) tsigave,intsigave,abs(tsigave-intsigave)/tsigave
 
 
@@ -977,13 +977,13 @@ CONTAINS
 
     print *,"avenegarea: ",avenegarea,"  aveposarea: ",aveposarea
     if(chxstype=='scatter') then
-      sigsmeanadjust = sigsmeanadjust + (sigscatave - aveposarea)
+      sigsmeanadjust = sigsmeanadjust + (aves1 - aveposarea)
       print *,"sigsmeanadjust: ",sigsmeanadjust
-      if(abs(aveposarea-sigscatave)/tsigave<meanadjust_tol) exit
+      if(abs(aveposarea-aves1)/tsigave<meanadjust_tol) exit
     elseif(chxstype=='absorb') then
-      sigameanadjust = sigameanadjust + (sigabsave - aveposarea)
+      sigameanadjust = sigameanadjust + (avea1 - aveposarea)
       print *,"sigameanadjust: ",sigameanadjust
-      if(abs(aveposarea-sigabsave)/tsigave<meanadjust_tol) exit
+      if(abs(aveposarea-avea1)/tsigave<meanadjust_tol) exit
     endif
   enddo !loop over calculating adjustment
     

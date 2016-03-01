@@ -64,10 +64,8 @@ module genRealzvars
   real(8), allocatable :: matLength(:)         ! material boundaries
   real(8)              :: atmixsig             ! atomically mixed cross section value
   real(8)              :: atmixscatrat         ! atomically mixed scattering ratio
-  real(8)              :: scatvar              ! variance of scat xs in KL expansion, 'material' mode
-  real(8)              :: absvar               ! variance of abs  xs in KL expansion, 'material' mode
-  real(8)              :: sigscatave           ! average scattering xs
-  real(8)              :: sigabsave            ! average absorption xs
+  real(8)              :: aves1,avea1,aves2,avea2 ! average xss
+  real(8)              :: vars1,vara1,vars2,vara2 ! variance xss
 
   integer              :: largesti             !
   integer              :: numPath(2)           !
@@ -125,10 +123,14 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(lamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixsig, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(scatvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(absvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sigscatave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(sigabsave, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(aves1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(avea1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(aves2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(avea2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(vars1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(vara1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(vars2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(vara2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(largesti, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(nummatSegs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
