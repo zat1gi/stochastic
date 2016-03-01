@@ -209,7 +209,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: pltKLrealznumof      ! number or realizations to plot
   integer, allocatable :: pltKLrealzwhich(:,:) ! realization number and num of eigenmodes to plot
 
-  character(14)        :: chxsvartype          ! 'correlated' 'anticorrelated' or 'independent'
+  integer              :: corrinds1,corrinda1,corrinds2,corrinda2 ! corrind code for mat xss
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN'
   character(7)         :: lamctypes1,lamctypea1,lamctypes2,lamctypea2 ! 'Glamc''fitlamc'-expfit,'numeric'
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
@@ -285,7 +285,10 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(KLrnumpoints, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltKLrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  call MPI_Bcast(chxsvartype, 14, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(corrinds1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(corrinda1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(corrinds2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(corrinda2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chGausstype, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(lamctypes1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(lamctypea1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
@@ -852,12 +855,11 @@ end subroutine bcast_UQvars_vars
 subroutine bcast_UQvars_alloc()
   use mpi
   use genRealzvars, only: numRealz
-  use KLvars, only: numEigss1,numEigsa1,chxsvartype
+  use KLvars, only: numEigss1,numEigsa1,corrinds1,corrinda1,corrinds2,corrinda2
   implicit none
 
-print *,"chxsvartype:",chxsvartype,"s/numEigsa1",numEigss1,numEigsa1
   if(.not.allocated(Qs)) then
-    if(chxsvartype=='independent') then
+    if(corrinds1/=abs(corrinda1)) then
       allocate(Qs(numEigss1+numEigsa1))
     else
       allocate(Qs(numEigss1))

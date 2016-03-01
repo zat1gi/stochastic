@@ -9,13 +9,12 @@
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.2',etc. for Ficthl/Adams cases
-  anticorrelated,  'correlated''anticorrelated''independent'
-  1.0, 0.5, 2.525,3,Glamc,        aves1,vars1,lamcs1,KLords1,lamctype ,
-  2.0, 0.7, 2.525,3,Glamc,        avea1,vara1,lamca1,KLorda1,'Glamc'  ,
-  1.0, 0.5, 2.525,3,Glamc,        aves2,vars2,lamcs2,KLords2,'fitlamc',
-  2.0, 0.7, 2.525,3,Glamc,        avea2,vara2,lamca2,KLorda2,'numeric',
+  1.0, 0.5, 2.525,3,Glamc,1,         aves1,vars1,lamcs1,KLords1,lamctype ,corrind,
+  2.0, 0.7, 2.525,3,Glamc,-1,         avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,
+  1.0, 0.5, 2.525,3,Glamc,-1,        aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,
+  2.0, 0.7, 2.525,3,Glamc,-1,        avea2,vara2,lamca2,KLorda2,'numeric',corrind,
   10.0,        Slab thickness, s
-  0,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,      SC order, if==0, revert to orders after first number
+  4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,      SC order, if==0, revert to orders after first number
 
 
   !--- Geometry - 'Markov' type problem ---!

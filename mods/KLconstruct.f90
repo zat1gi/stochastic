@@ -162,7 +162,8 @@ CONTAINS
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
   use KLvars,       only: binPDF, binNumof, numEigsa1, numEigss1, KLrnumpoints, KLrxmesh, xis1, &
-                          xia1, xis2, xia2, KLrxisig, chxsvartype, Gaussrandtype, flmeanadjust
+                          xia1, xis2, xia2, KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, &
+                          Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
@@ -174,9 +175,9 @@ CONTAINS
 
   !If using SC, solve weights and nodes to utilize later and sooner respectively
   if(chUQtype=='SC') then
-    if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+    if(corrinds1==abs(corrinda1)) then
       allocate(nodes(numRealz,numEigss1))
-    elseif(chxsvartype=='independent') then
+    elseif(corrinds1/=abs(corrinda1)) then
       allocate(nodes(numRealz,numEigsa1+numEigss1))
     endif
     call create_cubature(Qs,UQwgts,nodes)
@@ -235,7 +236,7 @@ CONTAINS
         endif
         if(curEig<=numEigss1) xis1(realj,curEig) = xiterm
       enddo
-      if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+      if(corrinds1==abs(corrinda1)) then
         do j=1,numRealz
           do i=1,min(numEigsa1,numEigss1)
             xis1(j,i) = xia1(j,i)
@@ -247,9 +248,9 @@ CONTAINS
         xia1(realj,curEig) = nodes(realj,curEig)
       enddo
       do curEig=1,numEigss1
-        if(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
+        if(corrinds1==abs(corrinda1)) then
           xis1(realj,curEig) = nodes(realj,curEig)
-        elseif(chxsvartype=='independent') then
+        elseif(corrinds1/=abs(corrinda1)) then
           xis1(realj,curEig) = nodes(realj,numEigsa1+curEig)
         endif
       enddo
@@ -736,7 +737,7 @@ CONTAINS
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
   use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
-                    chxsvartype
+                    corrinds1, corrinda1, corrinds2, corrinda2
 
   integer :: j
   real(8) :: xpos
@@ -769,7 +770,7 @@ CONTAINS
       Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,xpos,order)
       KL_sums  = KL_sums + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
     enddo
-    if(chxsvartype=='anticorrelated') KL_sums = -KL_sums
+    if(corrinds1/=corrinda1) KL_sums = -KL_sums
   endif
 
   !set non-x-dependent values based order

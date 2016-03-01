@@ -16,9 +16,9 @@ CONTAINS
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, chGBcase, &
-                                  Gaussrandtype, numrefinesameiter, chxsvartype, &
-                                  chGausstype, lamctypes1, lamctypea1, lamctypes2, lamctypea2,numLNxspts, &
-                                  numLNxsbins, chLNxschecktype, chLNxsplottype
+                                  Gaussrandtype, numrefinesameiter, corrinds1, corrinda1, corrinds2, &
+                                  corrinda2, chGausstype, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
+                                  numLNxspts, numLNxsbins, chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
@@ -47,11 +47,10 @@ CONTAINS
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
   read(2,*) chGausstype,chGBcase
-  read(2,*) chxsvartype
-  read(2,*) GBaves1,GBvars1,GBlamcs1,numEigss1,lamctypes1
-  read(2,*) GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1
-  read(2,*) GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2
-  read(2,*) GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2
+  read(2,*) GBaves1,GBvars1,GBlamcs1,numEigss1,lamctypes1,corrinds1
+  read(2,*) GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1,corrinda1
+  read(2,*) GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2,corrinds2
+  read(2,*) GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2,corrinda2
   read(2,*) GBs
   if(.not. (numEigss1==numEigsa1 .and. numEigsa1==numEigss2 .and. numEigss2==numEigsa2)) then
     print *,"for now, need all KLords to be the same"
@@ -181,24 +180,20 @@ CONTAINS
 
 
   !Test for SC params, finish values of numEigs, and finish allocation of Qs
-  if(.not.chxsvartype=='independent' .and. numEigss1/=numEigsa1) then !anisotropic quadrature
-    print *,"--User SC order(s) inconsistent with KL xs var type choice"
-    stop
-  endif
-  if(chxsvartype=='independent') then
+  if(corrinds1/=corrinds1) then
     allocate(Qs(numEigss1+numEigsa1))
   else
     allocate(Qs(numEigss1))
   endif
   if(Qtemp(1)/=0) then
     Qs = Qtemp(1)
-  else
-    if(chxsvartype=='independent') then
-      Qs(1:numEigsa1) = Qtemp(2:numEigsa1+1)
-      Qs(numEigsa1+1:numEigsa1+numEigss1) = Qtemp(numEigsa1+2:numEigsa1+numEigss1+1)
-    elseif(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
-      Qs = Qtemp(2:numEigss1+1)
-    endif
+!  else
+!    if(corrinds1=='independent') then
+!      Qs(1:numEigsa1) = Qtemp(2:numEigsa1+1)
+!      Qs(numEigsa1+1:numEigsa1+numEigss1) = Qtemp(numEigsa1+2:numEigsa1+numEigss1+1)
+!    elseif(corrinds1=='correlated' .or. corrinds1=='anticorrelated') then
+!      Qs = Qtemp(2:numEigss1+1)
+!    endif
   endif
   deallocate(Qtemp)
 
@@ -235,8 +230,8 @@ CONTAINS
     print *,"--User attempting to use non-MC UQ method with binary geometry"
     flstopstatus = .true.
   endif
-  if(.not.(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated' .or. chxsvartype=='independent') ) then
-    print *,"--User giving invalid cross section variance type: 'correlated', 'anticorrelated', or 'independent'"
+  if(.not.(corrinds1==1) ) then
+    print *,"--User giving invalid cross section variance type: first must be '1'"
     flstopstatus = .true.
   endif
   if(rngstride < numRealz) then
@@ -391,7 +386,8 @@ CONTAINS
                     KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
                     Eigs1, Eiga1, Eigs2, Eiga2, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
                     pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, &
-                    xi, xis1, xia1, xis2, xia2, pltKLrealzarray, chxsvartype, pltKLrealz
+                    xi, xis1, xia1, xis2, xia2, pltKLrealzarray, corrinds1, corrinda1, corrinds2, &
+                    corrinda2, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -448,9 +444,11 @@ CONTAINS
     if(chTrantype=='KLWood') then
       if( (sig(1)*scatrat(1)-sig(2)*scatrat(2)>0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))>0d0) .or. &
           (sig(1)*scatrat(1)-sig(2)*scatrat(2)<0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))<0d0) ) then
-        chxsvartype = 'correlated'
+        corrinds1 = 1
+        corrinda1 = 1
       else
-        chxsvartype = 'anticorrelated'
+        corrinds1 = 1
+        corrinda1 = -1
       endif
     endif
     if(chTrantype=='atmixMC') then
@@ -583,7 +581,7 @@ CONTAINS
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
   use genRealzvars, only: GBavea1, GBvara1, GBaves1, GBvars1, GBlamcs1, GBlamca1, GBlamcs2, GBlamca2, GBs
-  use KLvars, only: chGBcase, chxsvartype, numEigss1, numEigsa1
+  use KLvars, only: chGBcase, corrinds1, corrinda1, corrinds2, corrinda2, numEigss1, numEigsa1
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
@@ -605,7 +603,10 @@ CONTAINS
     numEigss1    = 5
     numEigsa1    = 5
 
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
     sourceType  = 'leftbeam'
   endif
 
@@ -616,7 +617,10 @@ CONTAINS
     GBvars1   = 7.43801652893d0
     GBlamcs1      = 0.099d0
     GBs         = 0.1d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A1.2') then
     GBavea1   = 0.0909090909091d0
     GBaves1   = 0.909090909091d0
@@ -624,7 +628,10 @@ CONTAINS
     GBvars1   = 7.43801652893d0
     GBlamcs1      = 0.099d0
     GBs         = 1.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A1.3') then
     GBavea1   = 0.0909090909091d0
     GBaves1   = 0.909090909091d0
@@ -632,7 +639,10 @@ CONTAINS
     GBvars1   = 7.43801652893d0
     GBlamcs1      = 0.099d0
     GBs         = 10.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A2.1') then
     GBavea1   = 0.909090909091d0
     GBaves1   = 0.0909090909091d0
@@ -640,7 +650,10 @@ CONTAINS
     GBvars1   = 0.000918273645546d0
     GBlamcs1      = 0.099d0
     GBs         = 0.1d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A2.2') then
     GBavea1   = 0.909090909091d0
     GBaves1   = 0.0909090909091d0
@@ -648,7 +661,10 @@ CONTAINS
     GBvars1   = 0.000918273645546d0
     GBlamcs1      = 0.099d0
     GBs         = 1.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A2.3') then
     GBavea1   = 0.909090909091d0
     GBaves1   = 0.0909090909091d0
@@ -656,7 +672,10 @@ CONTAINS
     GBvars1   = 0.000918273645546d0
     GBlamcs1      = 0.099d0
     GBs         = 10.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A3.1') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -664,7 +683,10 @@ CONTAINS
     GBvars1   = 5.89165289256d0
     GBlamcs1      = 0.099d0
     GBs         = 0.1d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A3.2') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -672,7 +694,10 @@ CONTAINS
     GBvars1   = 5.89165289256d0
     GBlamcs1      = 0.099d0
     GBs         = 1.0d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A3.3') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -680,7 +705,10 @@ CONTAINS
     GBvars1   = 5.89165289256d0
     GBlamcs1      = 0.099d0
     GBs         = 10.0d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A4.1') then
     GBavea1   = 0.0909090909091d0
     GBaves1   = 0.909090909091d0
@@ -688,7 +716,10 @@ CONTAINS
     GBvars1   = 7.43801652893d0
     GBlamcs1      = 0.99d0
     GBs         = 0.1d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A4.2') then
     GBavea1   = 0.0909090909091d0
     GBaves1   = 0.909090909091d0
@@ -696,7 +727,10 @@ CONTAINS
     GBvars1   = 7.43801652893d0
     GBlamcs1      = 0.99d0
     GBs         = 1.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A4.3') then
     GBavea1   = 0.0909090909091d0
     GBaves1   = 0.909090909091d0
@@ -704,7 +738,10 @@ CONTAINS
     GBvars1   = 7.43801652893d0
     GBlamcs1      = 0.99d0
     GBs         = 10.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A5.1') then
     GBavea1   = 0.909090909091d0
     GBaves1   = 0.0909090909091d0
@@ -712,7 +749,10 @@ CONTAINS
     GBvars1   = 0.000918273645546d0
     GBlamcs1      = 0.99d0
     GBs         = 0.1d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A5.2') then
     GBavea1   = 0.909090909091d0
     GBaves1   = 0.0909090909091d0
@@ -720,7 +760,10 @@ CONTAINS
     GBvars1   = 0.000918273645546d0
     GBlamcs1      = 0.99d0
     GBs         = 1.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A5.3') then
     GBavea1   = 0.909090909091d0
     GBaves1   = 0.0909090909091d0
@@ -728,7 +771,10 @@ CONTAINS
     GBvars1   = 0.000918273645546d0
     GBlamcs1      = 0.99d0
     GBs         = 10.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A6.1') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -736,7 +782,10 @@ CONTAINS
     GBvars1   = 5.89165289256d0
     GBlamcs1      = 0.99d0
     GBs         = 0.1d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A6.2') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -744,7 +793,10 @@ CONTAINS
     GBvars1   = 5.89165289256d0
     GBlamcs1      = 0.99d0
     GBs         = 1.0d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A6.3') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -752,7 +804,10 @@ CONTAINS
     GBvars1   = 5.89165289256d0
     GBlamcs1      = 0.99d0
     GBs         = 10.0d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A7.1') then
     GBavea1   = 0.00990099009901d0
     GBaves1   = 0.990099009901d0
@@ -760,7 +815,10 @@ CONTAINS
     GBvars1   = 0.980296049407d0
     GBlamcs1      = 2.525d0
     GBs         = 0.1d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A7.2') then
     GBavea1   = 0.00990099009901d0
     GBaves1   = 0.990099009901d0
@@ -768,7 +826,10 @@ CONTAINS
     GBvars1   = 0.980296049407d0
     GBlamcs1      = 2.525d0
     GBs         = 1.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A7.3') then
     GBavea1   = 0.00990099009901d0
     GBaves1   = 0.990099009901d0
@@ -776,7 +837,10 @@ CONTAINS
     GBvars1   = 0.980296049407d0
     GBlamcs1      = 2.525d0
     GBs         = 10.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A8.1') then
     GBavea1   = 0.990099009901d0
     GBaves1   = 0.00990099009901d0
@@ -784,7 +848,10 @@ CONTAINS
     GBvars1   = 0.0000980296049407d0
     GBlamcs1      = 2.525d0
     GBs         = 0.1d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A8.2') then
     GBavea1   = 0.990099009901d0
     GBaves1   = 0.00990099009901d0
@@ -792,7 +859,10 @@ CONTAINS
     GBvars1   = 0.0000980296049407d0
     GBlamcs1      = 2.525d0
     GBs         = 1.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A8.3') then
     GBavea1   = 0.990099009901d0
     GBaves1   = 0.00990099009901d0
@@ -800,7 +870,10 @@ CONTAINS
     GBvars1   = 0.0000980296049407d0
     GBlamcs1      = 2.525d0
     GBs         = 10.0d0
-    chxsvartype = 'anticorrelated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = -1
+    corrinda2 = -1
   elseif(chGBcase=='A9.1') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -808,7 +881,10 @@ CONTAINS
     GBvars1   = 0.778238407999d0
     GBlamcs1      = 2.525d0
     GBs         = 0.1d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A9.2') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -816,7 +892,10 @@ CONTAINS
     GBvars1   = 0.778238407999d0
     GBlamcs1      = 2.525d0
     GBs         = 1.0d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   elseif(chGBcase=='A9.3') then
     GBavea1   = 0.1d0
     GBaves1   = 0.9d0
@@ -824,7 +903,10 @@ CONTAINS
     GBvars1   = 0.778238407999d0
     GBlamcs1      = 2.525d0
     GBs         = 10.0d0
-    chxsvartype = 'correlated'
+    corrinds1 = 1
+    corrinda1 = 1
+    corrinds2 = 1
+    corrinda2 = 1
   endif
 
   end subroutine GBcase_load
