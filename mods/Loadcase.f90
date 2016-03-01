@@ -17,8 +17,8 @@ CONTAINS
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, chGBcase, &
                                   Gaussrandtype, numrefinesameiter, chxsvartype, &
-                                  chGausstype, chLNmode, numLNxspts, numLNxsbins, &
-                                  chLNxschecktype, chLNxsplottype
+                                  chGausstype, lamctypes1, lamctypea1, lamctypes2, lamctypea2,numLNxspts, &
+                                  numLNxsbins, chLNxschecktype, chLNxsplottype
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
@@ -47,11 +47,11 @@ CONTAINS
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
   read(2,*) chGausstype,chGBcase
-  read(2,*) chLNmode,chxsvartype
-  read(2,*) GBaves1,GBvars1,GBlamcs1,numEigss1
-  read(2,*) GBavea1,GBvara1,GBlamca1,numEigsa1
-  read(2,*) GBaves2,GBvars2,GBlamcs2,numEigss2
-  read(2,*) GBavea2,GBvara2,GBlamca2,numEigsa2
+  read(2,*) chxsvartype
+  read(2,*) GBaves1,GBvars1,GBlamcs1,numEigss1,lamctypes1
+  read(2,*) GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1
+  read(2,*) GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2
+  read(2,*) GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2
   read(2,*) GBs
   if(.not. (numEigss1==numEigsa1 .and. numEigsa1==numEigss2 .and. numEigss2==numEigsa2)) then
     print *,"for now, need all KLords to be the same"
@@ -389,7 +389,7 @@ CONTAINS
                           GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2
   use KLvars, only: KLrnumpoints, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
-                    Eigs1, Eiga1, Eigs2, Eiga2, chLNmode, &
+                    Eigs1, Eiga1, Eigs2, Eiga2, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
                     pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, &
                     xi, xis1, xia1, xis2, xia2, pltKLrealzarray, chxsvartype, pltKLrealz
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
@@ -430,7 +430,7 @@ CONTAINS
       scatvar    = log( GBvars1    / GBaves1**2 + 1d0 )
       absvar     = log( GBvara1    / GBavea1**2 + 1d0 )
 
-      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamc) !!!!need to do this for each process
+      if(lamctypes1=='fitlamc') lamc = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamc) !!!!need to do this for each process
     endif
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies

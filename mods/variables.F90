@@ -210,8 +210,8 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer, allocatable :: pltKLrealzwhich(:,:) ! realization number and num of eigenmodes to plot
 
   character(14)        :: chxsvartype          ! 'correlated' 'anticorrelated' or 'independent'
-  character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN','ChiS'
-  character(7)         :: chLNmode = 'Glamc'   ! LN cov and lamc:'Glamc'-Gausslamc,'fitlamc'-expfit,'numeric'
+  character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN'
+  character(7)         :: lamctypes1,lamctypea1,lamctypes2,lamctypea2 ! 'Glamc''fitlamc'-expfit,'numeric'
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
   integer              :: numLNxspts           ! number of x-values to perform checks at
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
@@ -287,7 +287,10 @@ subroutine bcast_KLvars_vars
 
   call MPI_Bcast(chxsvartype, 14, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chGausstype, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chLNmode, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamctypes1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamctypea1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamctypes2, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamctypea2, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chLNxschecktype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numLNxspts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numLNxsbins, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
