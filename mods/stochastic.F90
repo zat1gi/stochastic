@@ -29,7 +29,6 @@ program stochastic
   !!allocate/prepare global parameters
   call global_allocate
   call clearreports
-  call geominput_print
 
   !!Perform basic KL options
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &

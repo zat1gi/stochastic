@@ -13,8 +13,7 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: numRealz, s, sigscatave, sigabsave, scatvar, absvar, &
-                          GBsigaave, GBsigavar, GBsigsave, GBsigsvar
+  use genRealzvars, only: numRealz, s, sigscatave, sigabsave, scatvar, absvar
   use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype
 
   integer :: j, ix, ibin
@@ -44,13 +43,9 @@ CONTAINS
   enddo
 
   !set average and variance values for selected case
-  if(chLNxschecktype=='totaln')  tsigave = GBsigaave + GBsigsave
-  if(chLNxschecktype=='scatter') tsigave = GBsigsave
-  if(chLNxschecktype=='absorb')  tsigave = GBsigaave
-
-  if(chLNxschecktype=='totaln')  tsigvar = (sqrt(GBsigavar)+sqrt(GBsigsvar))**2
-  if(chLNxschecktype=='scatter') tsigvar = GBsigsvar
-  if(chLNxschecktype=='absorb')  tsigvar = GBsigavar
+  !now nonsensical, use python to do these types of checks
+  tsigave = 0.0d0
+  tsigvar = 0.0d0
 
   !calulate and print averages and variances
   open(unit=15,file="plots/LNxsstats/aveandvar.txt")

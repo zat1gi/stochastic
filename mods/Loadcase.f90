@@ -7,8 +7,9 @@ CONTAINS
   subroutine read_test_inputstoc
   use rngvars, only: rngseed
   use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
-                                  pltgenrealz, pltgenrealzwhich, GBsigaave, GBsigavar, GBsigsave, GBsigsvar, &
-                                  GBlamc, GBs, chgeomtype
+                                  pltgenrealz, pltgenrealzwhich, GBaves1, GBavea1, GBaves2, GBavea2, &
+                                  GBvars1, GBvara1, GBvars2, GBvara2, &
+                                  GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, GBs, chgeomtype
   use KLvars,               only: pltEigfwhich, pltxiBinswhich, numEigss1, numEigsa1, numEigss2, numEigsa2,&
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -57,9 +58,10 @@ CONTAINS
   read(2,*) dumchar
   read(2,*) chGausstype,chGBcase
   read(2,*) chLNmode,chxsvartype
-  read(2,*) GBsigsave,GBsigaave
-  read(2,*) GBsigsvar,GBsigavar
-  read(2,*) GBlamc
+  read(2,*) GBaves1,GBvars1,GBlamcs1
+  read(2,*) GBavea1,GBvara1,GBlamca1
+  read(2,*) GBaves2,GBvars2,GBlamcs2
+  read(2,*) GBavea2,GBvara2,GBlamca2
   read(2,*) GBs
 
   !--- Geometry - 'Markov' type problem ---!
@@ -386,8 +388,9 @@ CONTAINS
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamc, sig, sigscatave, sigabsave, scatrat, &
                           numPosRealz, numNegRealz, atmixscatrat, &
-                          scatvar, absvar, atmixsig, chgeomtype, GBs, GBlamc, &
-                          GBsigavar, GBsigaave, GBsigsvar, GBsigsave
+                          scatvar, absvar, atmixsig, chgeomtype, GBs, &
+                          GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, &
+                          GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2
   use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
                     Eigs1, Eiga1, Eigs2, Eiga2, chLNmode, &
@@ -416,22 +419,22 @@ CONTAINS
   numPosRealz= 0
   numNegRealz= 0
   if(chgeomtype=='contin') then  !Gauss-based input
-    lamc         = GBlamc
+    lamc         = GBlamcs1
     s            = GBs
     if(chGausstype=='Gaus') then
-      sigscatave = GBsigsave
-      sigabsave  = GBsigaave
+      sigscatave = GBaves1
+      sigabsave  = GBavea1
 
-      scatvar    = GBsigsvar
-      absvar     = GBsigavar
+      scatvar    = GBvars1
+      absvar     = GBvara1
     elseif(chGausstype=='LogN') then
-      sigscatave = log( GBsigsave**2 / sqrt( GBsigsvar + GBsigsave**2 ) )
-      sigabsave  = log( GBsigaave**2 / sqrt( GBsigavar + GBsigaave**2 ) )
+      sigscatave = log( GBaves1**2 / sqrt( GBvars1 + GBaves1**2 ) )
+      sigabsave  = log( GBavea1**2 / sqrt( GBvara1 + GBavea1**2 ) )
 
-      scatvar    = log( GBsigsvar    / GBsigsave**2 + 1d0 )
-      absvar     = log( GBsigavar    / GBsigaave**2 + 1d0 )
+      scatvar    = log( GBvars1    / GBaves1**2 + 1d0 )
+      absvar     = log( GBvara1    / GBavea1**2 + 1d0 )
 
-      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBsigsvar/GBsigsave**2,lamc) !!!!need to do this for each process
+      if(chLNmode=='fitlamc') lamc = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamc) !!!!need to do this for each process
     endif
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
@@ -583,24 +586,24 @@ CONTAINS
   subroutine GBcase_load
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
-  use genRealzvars, only: GBsigaave, GBsigavar, GBsigsave, GBsigsvar, GBlamc, GBs
+  use genRealzvars, only: GBavea1, GBvara1, GBaves1, GBvars1, GBlamcs1, GBlamca1, GBlamcs2, GBlamca2, GBs
   use KLvars, only: chGBcase, numEigs, chxsvartype, numEigss1, numEigsa1
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
     if(chGBcase=='f1') then
-      GBsigaave    = 2.5d0  
-      GBsigavar    = 0.5d0
-      GBsigsave    = 2.5d0
-      GBsigsvar    = 0.5d0
+      GBavea1    = 2.5d0  
+      GBvara1    = 0.5d0
+      GBaves1    = 2.5d0
+      GBvars1    = 0.5d0
     elseif(chGBcase=='f2') then
-      GBsigaave    = 0.5d0  
-      GBsigavar    = 0.02d0
-      GBsigsave    = 4.5d0
-      GBsigsvar    = 1.62d0
+      GBavea1    = 0.5d0  
+      GBvara1    = 0.02d0
+      GBaves1    = 4.5d0
+      GBvars1    = 1.62d0
     endif
 
-    GBlamc      = 1.0d0
+    GBlamcs1      = 1.0d0
     GBs         = 5.0d0
 
     numEigs     = 5
@@ -612,219 +615,219 @@ CONTAINS
   endif
 
   if(chGBcase=='A1.1') then
-    GBsigaave   = 0.0909090909091d0
-    GBsigsave   = 0.909090909091d0
-    GBsigavar   = 0.000918273645546d0
-    GBsigsvar   = 7.43801652893d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.0909090909091d0
+    GBaves1   = 0.909090909091d0
+    GBvara1   = 0.000918273645546d0
+    GBvars1   = 7.43801652893d0
+    GBlamcs1      = 0.099d0
     GBs         = 0.1d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A1.2') then
-    GBsigaave   = 0.0909090909091d0
-    GBsigsave   = 0.909090909091d0
-    GBsigavar   = 0.000918273645546d0
-    GBsigsvar   = 7.43801652893d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.0909090909091d0
+    GBaves1   = 0.909090909091d0
+    GBvara1   = 0.000918273645546d0
+    GBvars1   = 7.43801652893d0
+    GBlamcs1      = 0.099d0
     GBs         = 1.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A1.3') then
-    GBsigaave   = 0.0909090909091d0
-    GBsigsave   = 0.909090909091d0
-    GBsigavar   = 0.000918273645546d0
-    GBsigsvar   = 7.43801652893d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.0909090909091d0
+    GBaves1   = 0.909090909091d0
+    GBvara1   = 0.000918273645546d0
+    GBvars1   = 7.43801652893d0
+    GBlamcs1      = 0.099d0
     GBs         = 10.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A2.1') then
-    GBsigaave   = 0.909090909091d0
-    GBsigsave   = 0.0909090909091d0
-    GBsigavar   = 7.43801652893d0
-    GBsigsvar   = 0.000918273645546d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.909090909091d0
+    GBaves1   = 0.0909090909091d0
+    GBvara1   = 7.43801652893d0
+    GBvars1   = 0.000918273645546d0
+    GBlamcs1      = 0.099d0
     GBs         = 0.1d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A2.2') then
-    GBsigaave   = 0.909090909091d0
-    GBsigsave   = 0.0909090909091d0
-    GBsigavar   = 7.43801652893d0
-    GBsigsvar   = 0.000918273645546d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.909090909091d0
+    GBaves1   = 0.0909090909091d0
+    GBvara1   = 7.43801652893d0
+    GBvars1   = 0.000918273645546d0
+    GBlamcs1      = 0.099d0
     GBs         = 1.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A2.3') then
-    GBsigaave   = 0.909090909091d0
-    GBsigsave   = 0.0909090909091d0
-    GBsigavar   = 7.43801652893d0
-    GBsigsvar   = 0.000918273645546d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.909090909091d0
+    GBaves1   = 0.0909090909091d0
+    GBvara1   = 7.43801652893d0
+    GBvars1   = 0.000918273645546d0
+    GBlamcs1      = 0.099d0
     GBs         = 10.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A3.1') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.0727364554637d0
-    GBsigsvar   = 5.89165289256d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.0727364554637d0
+    GBvars1   = 5.89165289256d0
+    GBlamcs1      = 0.099d0
     GBs         = 0.1d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A3.2') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.0727364554637d0
-    GBsigsvar   = 5.89165289256d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.0727364554637d0
+    GBvars1   = 5.89165289256d0
+    GBlamcs1      = 0.099d0
     GBs         = 1.0d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A3.3') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.0727364554637d0
-    GBsigsvar   = 5.89165289256d0
-    GBlamc      = 0.099d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.0727364554637d0
+    GBvars1   = 5.89165289256d0
+    GBlamcs1      = 0.099d0
     GBs         = 10.0d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A4.1') then
-    GBsigaave   = 0.0909090909091d0
-    GBsigsave   = 0.909090909091d0
-    GBsigavar   = 0.000918273645546d0
-    GBsigsvar   = 7.43801652893d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.0909090909091d0
+    GBaves1   = 0.909090909091d0
+    GBvara1   = 0.000918273645546d0
+    GBvars1   = 7.43801652893d0
+    GBlamcs1      = 0.99d0
     GBs         = 0.1d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A4.2') then
-    GBsigaave   = 0.0909090909091d0
-    GBsigsave   = 0.909090909091d0
-    GBsigavar   = 0.000918273645546d0
-    GBsigsvar   = 7.43801652893d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.0909090909091d0
+    GBaves1   = 0.909090909091d0
+    GBvara1   = 0.000918273645546d0
+    GBvars1   = 7.43801652893d0
+    GBlamcs1      = 0.99d0
     GBs         = 1.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A4.3') then
-    GBsigaave   = 0.0909090909091d0
-    GBsigsave   = 0.909090909091d0
-    GBsigavar   = 0.000918273645546d0
-    GBsigsvar   = 7.43801652893d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.0909090909091d0
+    GBaves1   = 0.909090909091d0
+    GBvara1   = 0.000918273645546d0
+    GBvars1   = 7.43801652893d0
+    GBlamcs1      = 0.99d0
     GBs         = 10.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A5.1') then
-    GBsigaave   = 0.909090909091d0
-    GBsigsave   = 0.0909090909091d0
-    GBsigavar   = 7.43801652893d0
-    GBsigsvar   = 0.000918273645546d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.909090909091d0
+    GBaves1   = 0.0909090909091d0
+    GBvara1   = 7.43801652893d0
+    GBvars1   = 0.000918273645546d0
+    GBlamcs1      = 0.99d0
     GBs         = 0.1d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A5.2') then
-    GBsigaave   = 0.909090909091d0
-    GBsigsave   = 0.0909090909091d0
-    GBsigavar   = 7.43801652893d0
-    GBsigsvar   = 0.000918273645546d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.909090909091d0
+    GBaves1   = 0.0909090909091d0
+    GBvara1   = 7.43801652893d0
+    GBvars1   = 0.000918273645546d0
+    GBlamcs1      = 0.99d0
     GBs         = 1.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A5.3') then
-    GBsigaave   = 0.909090909091d0
-    GBsigsave   = 0.0909090909091d0
-    GBsigavar   = 7.43801652893d0
-    GBsigsvar   = 0.000918273645546d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.909090909091d0
+    GBaves1   = 0.0909090909091d0
+    GBvara1   = 7.43801652893d0
+    GBvars1   = 0.000918273645546d0
+    GBlamcs1      = 0.99d0
     GBs         = 10.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A6.1') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.0727364554637d0
-    GBsigsvar   = 5.89165289256d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.0727364554637d0
+    GBvars1   = 5.89165289256d0
+    GBlamcs1      = 0.99d0
     GBs         = 0.1d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A6.2') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.0727364554637d0
-    GBsigsvar   = 5.89165289256d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.0727364554637d0
+    GBvars1   = 5.89165289256d0
+    GBlamcs1      = 0.99d0
     GBs         = 1.0d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A6.3') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.0727364554637d0
-    GBsigsvar   = 5.89165289256d0
-    GBlamc      = 0.99d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.0727364554637d0
+    GBvars1   = 5.89165289256d0
+    GBlamcs1      = 0.99d0
     GBs         = 10.0d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A7.1') then
-    GBsigaave   = 0.00990099009901d0
-    GBsigsave   = 0.990099009901d0
-    GBsigavar   = 0.0000980296049407d0
-    GBsigsvar   = 0.980296049407d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.00990099009901d0
+    GBaves1   = 0.990099009901d0
+    GBvara1   = 0.0000980296049407d0
+    GBvars1   = 0.980296049407d0
+    GBlamcs1      = 2.525d0
     GBs         = 0.1d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A7.2') then
-    GBsigaave   = 0.00990099009901d0
-    GBsigsave   = 0.990099009901d0
-    GBsigavar   = 0.0000980296049407d0
-    GBsigsvar   = 0.980296049407d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.00990099009901d0
+    GBaves1   = 0.990099009901d0
+    GBvara1   = 0.0000980296049407d0
+    GBvars1   = 0.980296049407d0
+    GBlamcs1      = 2.525d0
     GBs         = 1.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A7.3') then
-    GBsigaave   = 0.00990099009901d0
-    GBsigsave   = 0.990099009901d0
-    GBsigavar   = 0.0000980296049407d0
-    GBsigsvar   = 0.980296049407d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.00990099009901d0
+    GBaves1   = 0.990099009901d0
+    GBvara1   = 0.0000980296049407d0
+    GBvars1   = 0.980296049407d0
+    GBlamcs1      = 2.525d0
     GBs         = 10.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A8.1') then
-    GBsigaave   = 0.990099009901d0
-    GBsigsave   = 0.00990099009901d0
-    GBsigavar   = 0.980296049407d0
-    GBsigsvar   = 0.0000980296049407d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.990099009901d0
+    GBaves1   = 0.00990099009901d0
+    GBvara1   = 0.980296049407d0
+    GBvars1   = 0.0000980296049407d0
+    GBlamcs1      = 2.525d0
     GBs         = 0.1d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A8.2') then
-    GBsigaave   = 0.990099009901d0
-    GBsigsave   = 0.00990099009901d0
-    GBsigavar   = 0.980296049407d0
-    GBsigsvar   = 0.0000980296049407d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.990099009901d0
+    GBaves1   = 0.00990099009901d0
+    GBvara1   = 0.980296049407d0
+    GBvars1   = 0.0000980296049407d0
+    GBlamcs1      = 2.525d0
     GBs         = 1.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A8.3') then
-    GBsigaave   = 0.990099009901d0
-    GBsigsave   = 0.00990099009901d0
-    GBsigavar   = 0.980296049407d0
-    GBsigsvar   = 0.0000980296049407d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.990099009901d0
+    GBaves1   = 0.00990099009901d0
+    GBvara1   = 0.980296049407d0
+    GBvars1   = 0.0000980296049407d0
+    GBlamcs1      = 2.525d0
     GBs         = 10.0d0
     chxsvartype = 'anticorrelated'
   elseif(chGBcase=='A9.1') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.00960788158024d0
-    GBsigsvar   = 0.778238407999d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.00960788158024d0
+    GBvars1   = 0.778238407999d0
+    GBlamcs1      = 2.525d0
     GBs         = 0.1d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A9.2') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.00960788158024d0
-    GBsigsvar   = 0.778238407999d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.00960788158024d0
+    GBvars1   = 0.778238407999d0
+    GBlamcs1      = 2.525d0
     GBs         = 1.0d0
     chxsvartype = 'correlated'
   elseif(chGBcase=='A9.3') then
-    GBsigaave   = 0.1d0
-    GBsigsave   = 0.9d0
-    GBsigavar   = 0.00960788158024d0
-    GBsigsvar   = 0.778238407999d0
-    GBlamc      = 2.525d0
+    GBavea1   = 0.1d0
+    GBaves1   = 0.9d0
+    GBvara1   = 0.00960788158024d0
+    GBvars1   = 0.778238407999d0
+    GBlamcs1      = 2.525d0
     GBs         = 10.0d0
     chxsvartype = 'correlated'
   endif
@@ -1484,47 +1487,5 @@ CONTAINS
     endif
 
   end subroutine Acase_load
-
-
-
-  subroutine geominput_print
-  use genRealzvars, only: Adamscase, sig, lam, scatrat, s, lamc,&
-                          chgeomtype, GBsigaave, GBsigavar, GBsigsave, GBsigsvar
-
-  100 format("  Values loaded for special Adamscase :",f5.1)
-  105 format("  Values used in problem:")
-  106 format("    sigaave   :",f10.6,"   sigaave   :",f10.6)
-  107 format("    sigavar   :",f10.6,"   sigsvar   :",f10.6)
-  101 format("    sig(1)    :",f10.6,"   sig(2)    :",f10.6)
-  102 format("    scatrat(1):",f6.2,"       scatrat(2):",f6.2)
-  103 format("    lam(1)    :",f6.2,"       lam(2)    :",f6.2)
-  104 format("    s         :",f6.2,"       lamc      :",f10.6)
-
-  open(unit=100,file="geominput.out")
-  write(100,*)
-  if(chgeomtype=='contin') then
-    write(100,105)
-    write(100,106) GBsigaave,GBsigsave
-    write(100,107) GBsigavar,GBsigsvar
-
-  elseif(chgeomtype=='binary') then
-    if(Adamscase/=0) then
-      write(100,100) Adamscase
-    else
-      write(100,105)
-    endif
-    write(100,101) sig(1),sig(2)
-    write(100,102) scatrat(1),scatrat(2)
-    write(100,103) lam(1),lam(2)
-  endif
-  write(100,104) s,lamc
-  write(100,*)
-
-  close(unit=100)
-  call system("mv geominput.out texts")
-
-  end subroutine geominput_print
-
-
 
 end module Loadcase

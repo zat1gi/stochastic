@@ -35,7 +35,7 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
+  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
   use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice
   use KLconstruct, only: Eigfunc
 
@@ -132,7 +132,7 @@ CONTAINS
   if(chgeomtype=='binary') then
     tc = sigscatave/(sigscatave+sigabsave)
   elseif(chgeomtype=='contin') then
-    tc = GBsigsave/(GBsigsave+GBsigaave)
+    tc = GBaves1/(GBaves1+GBavea1)
   endif
 !  do curEig=1,numEigs
 !    write(*,426) curEig,Eig(curEig),sqrt(Eig(curEig)),&
@@ -371,7 +371,7 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBsigsave, GBsigaave, chgeomtype
+  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
   use KLvars, only: alphas1, Aks1, Eigs1, numEigs, Corrnumpoints, Corropts, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
@@ -391,7 +391,7 @@ CONTAINS
   if(chgeomtype=='binary') then
     tc = sigscatave/(sigscatave+sigabsave)
   elseif(chgeomtype=='contin') then
-    tc = GBsigsave/(GBsigsave+GBsigaave)
+    tc = GBaves1/(GBaves1+GBavea1)
   endif
 
   do x=1,Corrnumpoints  !cycle through x and y
@@ -464,7 +464,7 @@ CONTAINS
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
   use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
-                          GBsigsave, GBsigaave
+                          GBaves1, GBavea1
   use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numEigs, numSlice, &
                           pltCo, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
@@ -499,7 +499,7 @@ CONTAINS
   if(chgeomtype=='binary') then
     tc = sigscatave/(sigscatave+sigabsave)
   elseif(chgeomtype=='contin') then
-    tc = GBsigsave/(GBsigsave+GBsigaave)
+    tc = GBaves1/(GBaves1+GBavea1)
   endif
 
   do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
