@@ -209,9 +209,12 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: pltKLrealznumof      ! number or realizations to plot
   integer, allocatable :: pltKLrealzwhich(:,:) ! realization number and num of eigenmodes to plot
 
-  integer              :: corrinds1,corrinda1,corrinds2,corrinda2 ! corrind code for mat xss
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN'
+  logical              :: fls1,fla1,fls2,fla2  ! Enable this material?
+  integer              :: corrinds1,corrinda1,corrinds2,corrinda2 ! corrind code for mat xss
   character(7)         :: lamctypes1,lamctypea1,lamctypes2,lamctypea2 ! 'Glamc''fitlamc'-expfit,'numeric'
+  integer              :: numNystroms1, numNystroma1, numNystroms2, numNystroma2 ! num cells in numeric cov
+  character(10)        :: cheftypes1, cheftypea1, cheftypes2, cheftypea2 ! 'discrete''linearint''Nystromint'
   character(7)         :: chLNxschecktype      ! type of cross section to analyze
   integer              :: numLNxspts           ! number of x-values to perform checks at
   integer              :: numLNxsbins          ! number of bins to use in creating pdf of values
@@ -289,6 +292,18 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(corrinda1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(corrinds2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(corrinda2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numNystroms1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numNystroma1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numNystroms2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numNystroma2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fls1, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fla1, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fls2, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fla2, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(cheftypes1, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(cheftypea1, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(cheftypes2, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(cheftypea2, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chGausstype, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(lamctypes1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(lamctypea1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)

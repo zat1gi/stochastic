@@ -18,7 +18,9 @@ CONTAINS
                                   flmeanadjust, meanadjust_tol, chGBcase, &
                                   Gaussrandtype, numrefinesameiter, corrinds1, corrinda1, corrinds2, &
                                   corrinda2, chGausstype, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
-                                  numLNxspts, numLNxsbins, chLNxschecktype, chLNxsplottype
+                                  numLNxspts, numLNxsbins, chLNxschecktype, chLNxsplottype, &
+                                  fls1, fla1, fls2, fla2, numNystroms1, numNystroma1, numNystroms2, numNystroma2, &
+                                  cheftypes1, cheftypea1, cheftypes2, cheftypea2
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
@@ -47,10 +49,10 @@ CONTAINS
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
   read(2,*) chGausstype,chGBcase
-  read(2,*) GBaves1,GBvars1,GBlamcs1,numEigss1,lamctypes1,corrinds1
-  read(2,*) GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1,corrinda1
-  read(2,*) GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2,corrinds2
-  read(2,*) GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2,corrinda2
+  read(2,*) fls1,GBaves1,GBvars1,GBlamcs1,numEigss1,lamctypes1,corrinds1,numNystroms1,cheftypes1
+  read(2,*) fla1,GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1,corrinda1,numNystroma1,cheftypea1
+  read(2,*) fls2,GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2,corrinds2,numNystroms2,cheftypes2
+  read(2,*) fla2,GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2,corrinda2,numNystroma2,cheftypea2
   read(2,*) GBs
   if(.not. (numEigss1==numEigsa1 .and. numEigsa1==numEigss2 .and. numEigss2==numEigsa2)) then
     print *,"for now, need all KLords to be the same"

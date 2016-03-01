@@ -9,13 +9,12 @@
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,        GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.2',etc. for Ficthl/Adams cases
-  1.0, 0.5, 2.525,3,Glamc,1,         aves1,vars1,lamcs1,KLords1,lamctype ,corrind,
-  2.0, 0.7, 2.525,3,Glamc,-1,         avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,
-  1.0, 0.5, 2.525,3,Glamc,-1,        aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,
-  2.0, 0.7, 2.525,3,Glamc,-1,        avea2,vara2,lamca2,KLorda2,'numeric',corrind,
+  .true.,1.0, 0.5, 2.525,3,Glamc,1,30, fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
+  .true.,2.0, 0.7, 2.525,3,Glamc,-1,30, fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
+  .false.,1.0, 0.5, 2.525,3,Glamc,-1,30, fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
+  .false.,2.0, 0.7, 2.525,3,Glamc,-1,30, fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
   10.0,        Slab thickness, s
   4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,      SC order, if==0, revert to orders after first number
-
 
   !--- Geometry - 'Markov' type problem ---!
   1.1,           Adamscase option, if==0, then user input for next three parameters
