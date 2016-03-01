@@ -12,7 +12,7 @@ CONTAINS
                                   GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, GBs, chgeomtype
   use KLvars,               only: pltEigfwhich, pltxiBinswhich, numEigss1, numEigsa1, numEigss2, numEigsa2,&
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
-                                  numEigs, numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
+                                  numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
                                   flmeanadjust, meanadjust_tol, chGBcase, &
@@ -42,27 +42,23 @@ CONTAINS
   read(2,*) chTrantype
   read(2,*) chUQtype
   read(2,*) numRealz,trannprt
-  read(2,*) numEigs,numEigss1,numEigsa1,numEigss2,numEigsa2
-  if(numEigs==0) then !set number of KL eigenmodes and allocate Qtemp
-    numEigs = max(numEigss1,numEigsa1)
-    allocate(Qtemp(numEigss1+numEigsa1+1))
-  else
-    numEigss1 = numEigs
-    numEigsa1 = numEigs
-    allocate(Qtemp(numEigs*2+1))
-  endif
-  read(2,*) (Qtemp(i),i=1,size(Qtemp))
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
   read(2,*) chGausstype,chGBcase
   read(2,*) chLNmode,chxsvartype
-  read(2,*) GBaves1,GBvars1,GBlamcs1
-  read(2,*) GBavea1,GBvara1,GBlamca1
-  read(2,*) GBaves2,GBvars2,GBlamcs2
-  read(2,*) GBavea2,GBvara2,GBlamca2
+  read(2,*) GBaves1,GBvars1,GBlamcs1,numEigss1
+  read(2,*) GBavea1,GBvara1,GBlamca1,numEigsa1
+  read(2,*) GBaves2,GBvars2,GBlamcs2,numEigss2
+  read(2,*) GBavea2,GBvara2,GBlamca2,numEigsa2
   read(2,*) GBs
+  if(.not. (numEigss1==numEigsa1 .and. numEigsa1==numEigss2 .and. numEigss2==numEigsa2)) then
+    print *,"for now, need all KLords to be the same"
+    stop
+  endif
+  allocate(Qtemp(numEigss1+numEigsa1+1))
+  read(2,*) (Qtemp(i),i=1,size(Qtemp))
 
   !--- Geometry - 'Markov' type problem ---!
   read(2,*) dumchar
@@ -201,7 +197,7 @@ CONTAINS
       Qs(1:numEigsa1) = Qtemp(2:numEigsa1+1)
       Qs(numEigsa1+1:numEigsa1+numEigss1) = Qtemp(numEigsa1+2:numEigsa1+numEigss1+1)
     elseif(chxsvartype=='correlated' .or. chxsvartype=='anticorrelated') then
-      Qs = Qtemp(2:numEigs+1)
+      Qs = Qtemp(2:numEigss1+1)
     endif
   endif
   deallocate(Qtemp)
@@ -259,14 +255,14 @@ CONTAINS
 
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
-    if( pltEigfwhich(i)>numEigs .AND. pltEigf(1) .NE. 'noplot' ) then
+    if( pltEigfwhich(i)>numEigss1 .AND. pltEigf(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot Eigenfunction of higher order than Eigenvalues calculated"
       flstopstatus = .true.
     endif
   enddo
 
   do i=1,pltxiBinsnumof  !Test xiBins plotting order of Eigs and num of bins
-    if( pltxiBinswhich(1,i)>numEigs .AND. pltxiBins(1) .NE. 'noplot' ) then
+    if( pltxiBinswhich(1,i)>numEigss1 .AND. pltxiBins(1) .NE. 'noplot' ) then
       print *,"--User attempting to plot xiBins for Eigenvalue of higher order than calculated"
       flstopstatus = .true.
     endif
@@ -322,7 +318,7 @@ CONTAINS
   enddo
 
   do i=1,pltConumof          !Test plotCo for Eig choice and CoEffExp or CoEffAct option
-    if( pltCowhich(i)>numEigs .and. pltCo(1) .ne. 'noplot' ) then
+    if( pltCowhich(i)>numEigss1 .and. pltCo(1) .ne. 'noplot' ) then
       print *,"--User attempting to plot CoEff values for eigenvalues not calculated"
       flstopstatus = .true.
     endif
@@ -391,7 +387,7 @@ CONTAINS
                           scatvar, absvar, atmixsig, chgeomtype, GBs, &
                           GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, &
                           GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2
-  use KLvars, only: KLrnumpoints, numEigs, pltKLrealznumof, chGausstype, Corropts, &
+  use KLvars, only: KLrnumpoints, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
                     Eigs1, Eiga1, Eigs2, Eiga2, chLNmode, &
                     pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, &
@@ -484,7 +480,7 @@ CONTAINS
     allocate(Eiga1(numEigsa1))
     allocate(Eigs2(numEigss2))
     allocate(Eiga2(numEigsa2))
-    allocate(xi(numRealz,numEigs))
+    allocate(xi(numRealz,numEigss1))
   endif
 
 
@@ -587,7 +583,7 @@ CONTAINS
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
   use genRealzvars, only: GBavea1, GBvara1, GBaves1, GBvars1, GBlamcs1, GBlamca1, GBlamcs2, GBlamca2, GBs
-  use KLvars, only: chGBcase, numEigs, chxsvartype, numEigss1, numEigsa1
+  use KLvars, only: chGBcase, chxsvartype, numEigss1, numEigsa1
   use MCvars, only: sourceType
 
   if(chGBcase=='f1' .or. chGBcase=='f2') then
@@ -606,7 +602,6 @@ CONTAINS
     GBlamcs1      = 1.0d0
     GBs         = 5.0d0
 
-    numEigs     = 5
     numEigss1    = 5
     numEigsa1    = 5
 

@@ -339,7 +339,7 @@ CONTAINS
   !This subroutine searches for negative values in KL realizations.
   !If negative value found, set flrealzneg=.true., otherwise remain .false..
   use genRealzvars, only: s
-  use KLvars, only: numEigs
+  use KLvars, only: numEigss1
   integer :: j
   character(*) :: chxstype
   logical :: flrealzneg
@@ -350,11 +350,11 @@ CONTAINS
   real(8) :: innerstep,outerstep,refinestep
   real(8) :: minsig,minpos,xsig,xpos,minpos_o,minsig_o
 
-  outerstep  = s/numEigs
-  innerstep  = s/numEigs/nminnersteps
+  outerstep  = s/numEigss1
+  innerstep  = s/numEigss1/nminnersteps
   refinestep =innerstep*0.24d0
 
-  do i=1,numEigs
+  do i=1,numEigss1
     minpos=(outerstep*(i-1))
     minsig=KLr_point(j,minpos,chxstype)
     do k=2,nminnersteps
@@ -400,7 +400,7 @@ CONTAINS
   !first sighting of negativity.  Otherwise it will then cycle through each set of bounds on
   !a zero and find and store the zeros.
   use genRealzvars, only: s, numRealz
-  use KLvars, only: KLzerosabs, KLzerosscat, KLzerostotn, numEigs, numrefinesameiter, KLrmaxnumzeros
+  use KLvars, only: KLzerosabs, KLzerosscat, KLzerostotn, numEigss1, numrefinesameiter, KLrmaxnumzeros
   use utilities, only: arithmaticsum, geometricsum
   integer :: j
   character(*) :: chxstype
@@ -420,7 +420,7 @@ CONTAINS
   KLrmaxnumzeros = 0
 
   !find bounds on zeros, if only care if negative abort when negative sampled
-  arsum = arithmaticsum(1,numEigs,numEigs)
+  arsum = arithmaticsum(1,numEigss1,numEigss1)
   arsum = merge(arsum,60,arsum>60)           !limit max # estimated pts per slab
   secpts = ceiling(real(arsum,8)/real(numslabsecs))
   secpts = merge(secpts,3,secpts<3)          !limit min # pts per segment
@@ -912,7 +912,7 @@ CONTAINS
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
   use genRealzvars, only: s, sigscatave, sigabsave, numRealz
-  use KLvars, only: numEigs, meanadjust_tol, sigsmeanadjust, &
+  use KLvars, only: numEigss1, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLconstruct, only: KLr_point, KLrxi_integral
 
@@ -939,7 +939,7 @@ CONTAINS
 
 
   !meanadjust solver
-  step = s/(numEigs*32d0) !hard parameter, relative step size
+  step = s/(numEigss1*32d0) !hard parameter, relative step size
 
   adjustiter=0
   do

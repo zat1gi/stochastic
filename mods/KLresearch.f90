@@ -179,7 +179,7 @@ CONTAINS
   !properties so that it can later be used for any cross section material property.
   use rngvars, only: rngappnum, rngstride
   use genRealzvars, only: sig, numRealz, nummatSegs, lamc, matType, matLength, P
-  use KLvars, only: alphas1, Aks1, Eigs1, xi, numEigs
+  use KLvars, only: alphas1, Aks1, Eigs1, xi, numEigss1
   use MCvars, only: trannprt
   use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
@@ -199,7 +199,7 @@ CONTAINS
 
   do j=1,numRealz
     call genbinaryReal( j )
-    do curEig=1,numEigs
+    do curEig=1,numEigss1
       xl       =0d0
       xiterm   =0d0
       xitermtot=0d0
@@ -235,19 +235,19 @@ CONTAINS
   !each Eigenvalue calculated.
   use genRealzvars, only: numRealz
   use KLvars, only: xi, binPDF, binBounds, pltxiBinswhich, pltxiBinsnumof, binNumof, &
-                    numEigs, mostinBin, binSmallBound, binLargeBound, binSize, pltxiBins, &
+                    numEigss1, mostinBin, binSmallBound, binLargeBound, binSize, pltxiBins, &
                     pltxiBinsgauss
   real(8),allocatable :: binper(:,:)
 
-  integer :: k,j,i,binCounts(binNumof,numEigs+1),curEig,tnumRealz
+  integer :: k,j,i,binCounts(binNumof,numEigss1+1),curEig,tnumRealz
   real(8) :: smallestxi,largestxi,xiOneD(numRealz)
   integer :: binCountsplotarray(binNumof,10),binCountsOneD(binNumof)
   real(8) :: probsum,meanxi,varxi
   real(8) :: pi=3.14159265358979d0
   real(8),allocatable :: binPDFplotarray(:,:)
 
-  allocate(binPDF(binNumof,numEigs+1))
-  allocate(binper(binNumof,numEigs+1))
+  allocate(binPDF(binNumof,numEigss1+1))
+  allocate(binper(binNumof,numEigss1+1))
   allocate(binPDFplotarray(binNumof,pltxiBinsnumof+1))
   allocate(binBounds(binNumof+1))
 
@@ -313,7 +313,7 @@ CONTAINS
 
   !This section prints for all Eigs, not only those to plot
   write(*,*)
-  do curEig=1,numEigs
+  do curEig=1,numEigss1
     do j=1,numRealz   !prepare xi and binCounts for binner
       xiOneD(j) = xi(j,curEig)
     enddo
@@ -349,7 +349,7 @@ CONTAINS
     485 format(f11.5," %    ")
     write(1,484,advance="no") binPDF(i,1)
     write(2,484,advance="no") binper(i,1)
-    do j=2,numEigs+1
+    do j=2,numEigss1+1
       write(1,484,advance="no") binPDF(i,j)
       write(2,485,advance="no") binper(i,j)
     enddo
@@ -372,7 +372,7 @@ CONTAINS
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
   use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
-  use KLvars, only: alphas1, Aks1, Eigs1, numEigs, Corrnumpoints, Corropts, numEigss1, numEigsa1
+  use KLvars, only: alphas1, Aks1, Eigs1, Corrnumpoints, Corropts, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
   integer :: x,y,curEig
@@ -403,7 +403,7 @@ CONTAINS
       Correxpect(x,y) = exp( - abs(curx-cury)/lamc )
 
       !sum Eigs to calc Corryield
-      do curEig=1,numEigs
+      do curEig=1,numEigss1
         Eigfx = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,curx)
         Eigfy = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,cury)
         Corryield(x,y) = Corryield(x,y) + &
@@ -465,12 +465,12 @@ CONTAINS
   !The closer to 1 the ratio is, the more efficient that approximation is.
   use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
                           GBaves1, GBavea1
-  use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numEigs, numSlice, &
+  use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numSlice, &
                           pltCo, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
   integer :: curCS,curEig,check
-  real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigs,numSlice)
+  real(8) :: slicesize,cumCo,sliceval(numSlice),CoEff(numEigss1,numSlice)
   real(8) :: totLPer(2),tottotLength
   real(8) :: x,phi,tc
   real(8),allocatable :: Coplotarray(:,:)
@@ -505,7 +505,7 @@ CONTAINS
   do curCS=1,numSlice      !calculate Co(ours)/Co; for slices
     cumCo=0
     x=sliceval(curCS)
-    do curEig=1,numEigs
+    do curEig=1,numEigss1
       phi=Eigfunc(Aks1(curEig),alphas1(curEig),lamc,x)
       cumCo=cumCo+ merge(   tc   *Eigs1(curEig)*phi**2,0d0,curEig<=numEigsa1) &
                  + merge((1d0-tc)*Eigs1(curEig)*phi**2,0d0,curEig<=numEigss1)
@@ -521,13 +521,13 @@ CONTAINS
 
   open(unit=14, file="CoEff.txt")
   write(14,440,advance="no")
-  do curEig=1,numEigs
+  do curEig=1,numEigss1
     write(14,441,advance="no") curEig
   enddo
   do curCS=1,numSlice       !print CoEff results to file
     write(14,*)
     write(14,442,advance="no") curCS,sliceval(curCS)
-    do curEig=1,numEigs
+    do curEig=1,numEigss1
       write(14,443,advance="no") CoEff(curEig,curCS)
     enddo
   enddo

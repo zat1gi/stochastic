@@ -182,7 +182,6 @@ module KLvars  !"KLresearch" and "KLconstruct"
   integer              :: numEigss2            ! number of KL eigenmodes for scattering xs, mat 2
   integer              :: numEigsa2            ! number of KL eigenmodes for absorption xs, mat 2
 
-  integer              :: numEigs              ! number of KL eigenmodes, if==0, defer to next two
   integer              :: binNumof             ! number of bins (for xi?)
   integer              :: numSlice             ! number of points to plot eigenfunction at
   integer              :: levsrefEig           !
@@ -265,7 +264,6 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(pltKLrealz, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(binNumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numEigs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numEigss1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numEigsa1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numEigss2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -331,60 +329,60 @@ subroutine bcast_KLvars_alloc()
   endif
 
   if(.not.allocated(alphas1)) then
-    allocate(alphas1(numEigs))
+    allocate(alphas1(numEigss1))
     alphas1 = 0d0
   endif
   if(.not.allocated(alphaa1)) then
-    allocate(alphaa1(numEigs))
+    allocate(alphaa1(numEigsa1))
     alphaa1 = 0d0
   endif
   if(.not.allocated(alphas2)) then
-    allocate(alphas2(numEigs))
+    allocate(alphas2(numEigss2))
     alphas2 = 0d0
   endif
   if(.not.allocated(alphaa2)) then
-    allocate(alphaa2(numEigs))
+    allocate(alphaa2(numEigsa2))
     alphaa2 = 0d0
   endif
   if(.not.allocated(Aks1)) then
-    allocate(Aks1(numEigs))
+    allocate(Aks1(numEigss1))
     Aks1 = 0d0
   endif
   if(.not.allocated(Aka1)) then
-    allocate(Aka1(numEigs))
+    allocate(Aka1(numEigsa1))
     Aka1 = 0d0
   endif
   if(.not.allocated(Aks2)) then
-    allocate(Aks2(numEigs))
+    allocate(Aks2(numEigss2))
     Aks2 = 0d0
   endif
   if(.not.allocated(Aka2)) then
-    allocate(Aka2(numEigs))
+    allocate(Aka2(numEigsa2))
     Aka2 = 0d0
   endif
   if(.not.allocated(Eigs1)) then
-    allocate(Eigs1(numEigs))
+    allocate(Eigs1(numEigss1))
     Eigs1 = 0d0
   endif
   if(.not.allocated(Eiga1)) then
-    allocate(Eiga1(numEigs))
+    allocate(Eiga1(numEigsa1))
     Eiga1 = 0d0
   endif
   if(.not.allocated(Eigs2)) then
-    allocate(Eigs2(numEigs))
+    allocate(Eigs2(numEigss2))
     Eigs2 = 0d0
   endif
   if(.not.allocated(Eiga2)) then
-    allocate(Eiga2(numEigs))
+    allocate(Eiga2(numEigsa2))
     Eiga2 = 0d0
   endif
   if(.not.allocated(xi)) then
-    allocate(xi(numRealz,numEigs))
+    allocate(xi(numRealz,numEigss1))
     xi = 0d0
   endif
 
   if(.not.allocated(binPDF)) then
-    allocate(binPDF(binNumof,numEigs+1))
+    allocate(binPDF(binNumof,numEigss1+1))
     binPDF = 0d0
   endif
   if(.not.allocated(binBounds)) then
