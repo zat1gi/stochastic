@@ -59,7 +59,7 @@ module genRealzvars
   integer, allocatable :: pltgenrealzwhich(:)  !
   !non inputs
   real(8)              :: P(2)                 ! probability of mat1 or 2 for binary mixtures
-  real(8)              :: lamc                 ! "correlation length" for binary mixtures  
+  real(8)              :: lamcs1,lamca1,lamcs2,lamca2  ! "correlation length"s  
   integer, allocatable :: matType(:)           ! material type in cell
   real(8), allocatable :: matLength(:)         ! material boundaries
   real(8)              :: atmixsig             ! atomically mixed cross section value
@@ -119,7 +119,10 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(chgeomtype, 6, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(pltgenrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamc, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamcs1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamca1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamcs2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(lamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixsig, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(scatvar, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)

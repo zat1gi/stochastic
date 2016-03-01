@@ -663,7 +663,7 @@ CONTAINS
   !This function integrates on KL reconstructed realizations from xl to xr.
   !Integration is on either total, scattering, or absorbing cross section.
   !Routine included mean adjust for any of these.
-  use genRealzvars, only: lamc, scatvar, absvar, sigscatave, sigabsave
+  use genRealzvars, only: lamcs1, scatvar, absvar, sigscatave, sigabsave
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, &
                     sigsmeanadjust, sigameanadjust, xis1
   use utilities, only: Heavi
@@ -682,7 +682,7 @@ CONTAINS
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
     do curEig=1,tnumEigsa1
-      Eigfintterm = Eigfuncint(Aks1(curEig),alphas1(curEig),lamc,xl,xr)
+      Eigfintterm = Eigfuncint(Aks1(curEig),alphas1(curEig),lamcs1,xl,xr)
       KL_suma   = KL_suma + sqrt(Eigs1(curEig)) * Eigfintterm * xia1(j,curEig)
     enddo
   endif
@@ -690,7 +690,7 @@ CONTAINS
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigss1
-      Eigfintterm = Eigfuncint(Aks1(curEig),alphas1(curEig),lamc,xl,xr)
+      Eigfintterm = Eigfuncint(Aks1(curEig),alphas1(curEig),lamcs1,xl,xr)
       KL_sums   = KL_sums + sqrt(Eigs1(curEig)) * Eigfintterm * xis1(j,curEig)
     enddo
   endif
@@ -735,7 +735,7 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamc, scatvar, absvar, chgeomtype
+  use genRealzvars, only: lamcs1, scatvar, absvar, chgeomtype
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
                     corrinds1, corrinda1, corrinds2, corrinda2
 
@@ -759,7 +759,7 @@ CONTAINS
   if(.not.chxstype=='scatter') then
     KL_suma = 0d0
     do curEig=1,tnumEigsa1
-      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,xpos,order)
+      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,xpos,order)
       KL_suma  = KL_suma + sqrt(Eigs1(curEig)) * Eigfterm * xia1(j,curEig)
     enddo
   endif
@@ -767,7 +767,7 @@ CONTAINS
   if(.not.chxstype=='absorb') then
     KL_sums = 0d0
     do curEig=1,tnumEigss1
-      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,xpos,order)
+      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,xpos,order)
       KL_sums  = KL_sums + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
     enddo
     if(corrinds1/=corrinda1) KL_sums = -KL_sums

@@ -379,8 +379,8 @@ CONTAINS
   !This subroutine allocates and initializes all global variables
   use rngvars, only: rngappnum, rngseed
   use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
-                          totLength, lamc, sig, sigscatave, sigabsave, scatrat, &
-                          numPosRealz, numNegRealz, atmixscatrat, &
+                          totLength, lamcs1, lamca1, lamcs2, lamca2, sig, sigscatave, &
+                          sigabsave, scatrat, numPosRealz, numNegRealz, atmixscatrat, &
                           scatvar, absvar, atmixsig, chgeomtype, GBs, &
                           GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, &
                           GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2
@@ -413,7 +413,10 @@ CONTAINS
   numPosRealz= 0
   numNegRealz= 0
   if(chgeomtype=='contin') then  !Gauss-based input
-    lamc         = GBlamcs1
+    lamcs1         = GBlamcs1
+    lamca1         = GBlamca1
+    lamcs2         = GBlamcs2
+    lamca2         = GBlamca2
     s            = GBs
     if(chGausstype=='Gaus') then
       sigscatave = GBaves1
@@ -428,7 +431,10 @@ CONTAINS
       scatvar    = log( GBvars1    / GBaves1**2 + 1d0 )
       absvar     = log( GBvara1    / GBavea1**2 + 1d0 )
 
-      if(lamctypes1=='fitlamc') lamc = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamc) !!!!need to do this for each process
+      if(lamctypes1=='fitlamc') lamcs1 = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamcs1)
+      if(lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
+      if(lamctypes2=='fitlamc') lamcs2 = exponentialfit(s,1d0+GBvars2/GBaves2**2,lamcs2)
+      if(lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
     endif
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
@@ -438,7 +444,7 @@ CONTAINS
     totLength  = 0d0
     P(1)       = lam(1)/(lam(1)+lam(2)) !calc probabilities
     P(2)       = lam(2)/(lam(1)+lam(2))
-    lamc       = (lam(1)*lam(2))/(lam(1)+lam(2))
+    lamcs1     = (lam(1)*lam(2))/(lam(1)+lam(2))
     sigscatave = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
     sigabsave  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
     scatvar    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2

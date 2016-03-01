@@ -11,35 +11,35 @@ CONTAINS
   !it by reference.
   use KLvars, only: alphas1,Aks1,Eigs1,numEigss1, alphaa1,Aka1,Eiga1,numEigsa1,&
                     alphas2,Aks2,Eigs2,numEigss2, alphaa2,Aka2,Eiga2,numEigsa2
+  use genRealzvars, only: lamcs1,lamca1,lamcs2,lamca2
 
-  call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1)
-  call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1)
-  call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2)
-  call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2)
+  call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
+  call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
+  call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
+  call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
 
   end subroutine KL_eigenvaluemain
 
 
-  function Eigenvalue( gam )
+  function Eigenvalue( gam,lamc )
   !Solves value of eigenvalues based on transcendental solution gamma.
-  use genRealzvars, only: lamc
-  real(8) :: gam, Eigenvalue
+  real(8) :: gam, lamc, Eigenvalue
   Eigenvalue = 2d0 * lamc / (gam**2 + 1d0)
   end function Eigenvalue
 
 
 
-  subroutine KL_eigenvalue(alpha,Ak,Eig,numEigs)
+  subroutine KL_eigenvalue(alpha,Ak,Eig,numEigs,lamc)
   !This subroutine: 1) calculates some initial values used here
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
+  use genRealzvars, only: s, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
   use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice
   use KLconstruct, only: Eigfunc
 
-  real(8) :: alpha(:),Ak(:),Eig(:)
+  real(8) :: alpha(:),Ak(:),Eig(:),lamc
   integer :: numEigs
 
   real(8) :: stepGam=0 !if 0 code chooses
@@ -102,7 +102,7 @@ CONTAINS
         curGam=curGam+refstepGam
       enddo
     enddo
-    Eig(curEig) = Eigenvalue( gam(curEig) )
+    Eig(curEig) = Eigenvalue( gam(curEig),lamc )
   enddo
 
 
@@ -178,7 +178,7 @@ CONTAINS
   !this by integrating over a variable related only to geometry-based material
   !properties so that it can later be used for any cross section material property.
   use rngvars, only: rngappnum, rngstride
-  use genRealzvars, only: sig, numRealz, nummatSegs, lamc, matType, matLength, P
+  use genRealzvars, only: sig, numRealz, nummatSegs, lamcs1, matType, matLength, P
   use KLvars, only: alphas1, Aks1, Eigs1, xi, numEigss1
   use MCvars, only: trannprt
   use genRealz, only: genbinaryReal
@@ -211,8 +211,8 @@ CONTAINS
         aveterm   = 0d0
 
         xiterm= (hilowterm-aveterm)*&                                  !actual calculation
-                (lamc*sin(alphas1(curEig)*xr)-cos(alphas1(curEig)*xr)/alphas1(curEig) &
-                -lamc*sin(alphas1(curEig)*xl)+cos(alphas1(curEig)*xl)/alphas1(curEig))
+                (lamcs1*sin(alphas1(curEig)*xr)-cos(alphas1(curEig)*xr)/alphas1(curEig) &
+                -lamcs1*sin(alphas1(curEig)*xl)+cos(alphas1(curEig)*xl)/alphas1(curEig))
 
         xitermtot = xitermtot + xiterm
       enddo
@@ -371,7 +371,7 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamc, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
+  use genRealzvars, only: s, lamcs1, sigscatave, sigabsave, GBaves1, GBavea1, chgeomtype
   use KLvars, only: alphas1, Aks1, Eigs1, Corrnumpoints, Corropts, numEigss1, numEigsa1
   use KLconstruct, only: Eigfunc
 
@@ -400,12 +400,12 @@ CONTAINS
       if(y==1) cury=stepsize/2
 
       !calc Correxpect
-      Correxpect(x,y) = exp( - abs(curx-cury)/lamc )
+      Correxpect(x,y) = exp( - abs(curx-cury)/lamcs1 )
 
       !sum Eigs to calc Corryield
       do curEig=1,numEigss1
-        Eigfx = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,curx)
-        Eigfy = Eigfunc(Aks1(curEig),alphas1(curEig),lamc,cury)
+        Eigfx = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,curx)
+        Eigfy = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,cury)
         Corryield(x,y) = Corryield(x,y) + &
                          merge(    tc   *(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigss1 ) + &
                          merge( (1d0-tc)*(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigsa1 )
@@ -463,7 +463,7 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: s, numRealz, P, lamc, totLength, chgeomtype, sigscatave, sigabsave, &
+  use genRealzvars, only: s, numRealz, P, lamcs1, totLength, chgeomtype, sigscatave, sigabsave, &
                           GBaves1, GBavea1
   use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numSlice, &
                           pltCo, numEigss1, numEigsa1
@@ -506,7 +506,7 @@ CONTAINS
     cumCo=0
     x=sliceval(curCS)
     do curEig=1,numEigss1
-      phi=Eigfunc(Aks1(curEig),alphas1(curEig),lamc,x)
+      phi=Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,x)
       cumCo=cumCo+ merge(   tc   *Eigs1(curEig)*phi**2,0d0,curEig<=numEigsa1) &
                  + merge((1d0-tc)*Eigs1(curEig)*phi**2,0d0,curEig<=numEigss1)
       CoEff(curEig,curCS)=cumCo

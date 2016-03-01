@@ -612,7 +612,7 @@ CONTAINS
   subroutine MCWood_setceils( j )
   !This subroutine sets up ceiling values for Woodcock Monte Carlo.
   !These ceilings of course need to be recalculated for each new realization
-  use genRealzvars, only: s, lamc, nummatSegs
+  use genRealzvars, only: s, lamcs1, nummatSegs
   use KLvars, only: numEigss1
   use MCvars, only: chTrantype, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
   integer :: j
@@ -622,7 +622,7 @@ CONTAINS
     !select local bin maxes
     select case (chTrantype)
       case ("radWood")
-        nceilbin = ceiling(s/lamc)
+        nceilbin = ceiling(s/lamcs1)
         if(nceilbin>6) nceilbin = 6
       case ("KLWood")
         nceilbin = numEigss1
