@@ -161,8 +161,9 @@ CONTAINS
   use rngvars, only: rngappnum, rngstride, setrngappnum
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
-  use KLvars,       only: binPDF, binNumof, numEigsa1, numEigss1, KLrnumpoints, KLrxmesh, xis1, &
-                          xia1, xis2, xia2, KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, &
+  use KLvars,       only: binPDF, binNumof, numEigss1, numEigsa1, numEigss2, numEigsa2, &
+                          KLrnumpoints, KLrxmesh, xis1, xia1, xis2, xia2, fls1, fla1, fls2, fla2, &
+                          KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, &
                           Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
@@ -236,13 +237,59 @@ CONTAINS
         endif
         if(curEig<=numEigss1) xis1(realj,curEig) = xiterm
       enddo
-      if(corrinds1==abs(corrinda1)) then
-        do j=1,numRealz
-          do i=1,min(numEigsa1,numEigss1)
-            xis1(j,i) = xia1(j,i)
-          enddo
-        enddo
-      endif
+
+      do curEig=1,numEigsa2 + mod(numEigsa2,2)  !select xi values for xia2
+          rand = rang()
+          if((chTrantype=='KLWood') .and. curEig<=numEigsa2) then
+            call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+            if(mod(curEig,2)==1) rand1 = rand
+            if(mod(curEig,2)==0) then
+              call TwoGaussrandnums(rand1,rand,xiterms)
+              xia2(realj,curEig-1) = xiterms(1)
+              xiterm = xiterms(2)
+            endif
+          elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+            xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+          endif
+        if(curEig<=numEigsa2) xia2(realj,curEig) = xiterm
+      enddo
+
+      do curEig=1,numEigss2 + mod(numEigss2,2)  !select xi values for xis2
+        rand = rang()
+        if((chTrantype=='KLWood') .and. curEig<=numEigss2) then
+          call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+          if(mod(curEig,2)==1) rand1 = rand
+          if(mod(curEig,2)==0) then
+            call TwoGaussrandnums(rand1,rand,xiterms)
+            xis2(realj,curEig-1) = xiterms(1)
+            xiterm = xiterms(2)
+          endif
+        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+          xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+        endif
+        if(curEig<=numEigss2) xis2(realj,curEig) = xiterm
+      enddo
+
+!      if(corrinds1==abs(corrinda1)) then
+!        do j=1,numRealz
+!          do i=1,min(numEigsa1,numEigss1)
+!            xis1(j,i) = xia1(j,i)
+!          enddo
+!        enddo
+!      endif
+      !Set correlated and anticorrelated random variable samples as the same.
+      !Logic assumes same number of KL eigs in any correlation.  Generalize later.
+      if(fls1 .and. fla1 .and. abs(corrinds1)==abs(corrinda1)) xia1=xis1
+      if(fls1 .and. fls2 .and. abs(corrinds1)==abs(corrinds2)) xis2=xis1
+      if(fls1 .and. fla2 .and. abs(corrinds1)==abs(corrinda2)) xia2=xis1
+
+      if(fla1 .and. fls2 .and. abs(corrinda1)==abs(corrinds2)) xis2=xia1
+      if(fla1 .and. fla2 .and. abs(corrinda1)==abs(corrinda2)) xia2=xia1
+
+      if(fls2 .and. fla2 .and. abs(corrinds2)==abs(corrinda2)) xia2=xis2
+
     elseif(chUQtype=='SC') then
       do curEig=1,numEigsa1
         xia1(realj,curEig) = nodes(realj,curEig)
@@ -255,9 +302,6 @@ CONTAINS
         endif
       enddo
     endif
-    xis1 = xia1
-    xis2 = xia1
-    xia2 = xia1
 
     !count num of realz w/ neg xs, set flag to accept or reject realz
     flrealzneg=.false.
