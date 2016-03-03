@@ -772,112 +772,126 @@ CONTAINS
 
 
 
-  function KLr_point(j,xpos,chxstype,tnumEigss1in,tnumEigsa1in,orderin) result(KL_point)
+  function KLr_point(j,xpos,chxstype,tnumEigss1in,tnumEigsa1in,tnumEigss2in,tnumEigsa2in,orderin) result(KL_point)
   !Evaluates KL reconstructed realizations at a given point.
   !It has options for total, scattering only, absorption only, or scattering ratio.
   !It has an option to solve for less than the available number of eigenvalues.
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamcs1, vars1, vara1, chgeomtype
-  use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, numEigsa1, xia1, xis1, chGausstype, &
-                    corrinds1, corrinda1, corrinds2, corrinda2
+  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype
+  use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, xis1, corrinds1, fls1, &
+                    alphaa1, Aka1, Eiga1, numEigsa1, xia1, corrinda1, fla1, &
+                    alphas2, Aks2, Eigs2, numEigss2, xis2, corrinds2, fls2, &
+                    alphaa2, Aka2, Eiga2, numEigsa2, xia2, corrinda2, fla2, &
+                    chGausstype
 
   integer :: j
   real(8) :: xpos
   real(8) :: KL_point
   character(*) :: chxstype
-  integer, optional :: tnumEigss1in, tnumEigsa1in
+  integer, optional :: tnumEigss1in, tnumEigsa1in, tnumEigss2in, tnumEigsa2in
   integer, optional :: orderin
 
-  real(8) :: siga, sigs, KL_suma, KL_sums, Eigfterm
-  integer :: curEig,tnumEigss1,tnumEigsa1,order
-  real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1
+  real(8) :: siga1, sigs1, siga2, sigs2, KL_sums1, KL_suma1, KL_sums2, KL_suma2, Eigfterm
+  integer :: curEig,tnumEigss1,tnumEigsa1,tnumEigss2,tnumEigsa2,order
+  real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1,taves2,tavea2
 
   !load any optional values or their default
   tnumEigss1 = merge(tnumEigss1in,numEigss1,present(tnumEigss1in))
   tnumEigsa1 = merge(tnumEigsa1in,numEigsa1,present(tnumEigsa1in))
+  tnumEigss2 = merge(tnumEigss2in,numEigss2,present(tnumEigss2in))
+  tnumEigsa2 = merge(tnumEigsa2in,numEigsa2,present(tnumEigsa2in))
   order     = merge(orderin   ,0      ,present(orderin)   )
 
   !solve summation of KL terms to use below
   if(.not.chxstype=='scatter') then
-    KL_suma = 0d0
-    do curEig=1,tnumEigsa1
-      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,xpos,order)
-      KL_suma  = KL_suma + sqrt(Eigs1(curEig)) * Eigfterm * xia1(j,curEig)
-    enddo
+    if(fla1) then
+      KL_suma1 = 0d0
+      do curEig=1,tnumEigsa1
+        Eigfterm = Eigfunc(Aka1(curEig),alphaa1(curEig),lamca1,xpos,order)
+        KL_suma1  = KL_suma1 + sqrt(Eiga1(curEig)) * Eigfterm * xia1(j,curEig)
+      enddo
+      if(corrinda1<0) KL_suma1 = -KL_suma1
+    endif
+    if(fla2) then
+      KL_suma2 = 0d0
+      do curEig=1,tnumEigsa2
+        Eigfterm = Eigfunc(Aka2(curEig),alphaa2(curEig),lamca2,xpos,order)
+        KL_suma2  = KL_suma2 + sqrt(Eiga2(curEig)) * Eigfterm * xia2(j,curEig)
+      enddo
+      if(corrinda2<0) KL_suma2 = -KL_suma2
+    endif
+
   endif
   !solve other summation if needed
   if(.not.chxstype=='absorb') then
-    KL_sums = 0d0
-    do curEig=1,tnumEigss1
-      Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,xpos,order)
-      KL_sums  = KL_sums + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
-    enddo
-    if(corrinds1/=corrinda1) KL_sums = -KL_sums
+    if(fls1) then
+      KL_sums1 = 0d0
+      do curEig=1,tnumEigss1
+        Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,xpos,order)
+        KL_sums1  = KL_sums1 + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
+      enddo
+      if(corrinds1<0) KL_sums1 = -KL_sums1
+    endif
+    if(fls2) then
+      KL_sums2 = 0d0
+      do curEig=1,tnumEigss2
+        Eigfterm = Eigfunc(Aks2(curEig),alphas2(curEig),lamcs2,xpos,order)
+        KL_sums2  = KL_sums2 + sqrt(Eigs2(curEig)) * Eigfterm * xis2(j,curEig)
+      enddo
+      if(corrinds2<0) KL_sums2 = -KL_sums2
+    endif
   endif
 
   !set non-x-dependent values based order
-  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,taves1,tavea1)
+  call KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,taves1,tavea1,taves2,tavea2)
 
   !cross section values
-  if(chxstype .ne. 'scatter') &
-    siga = tavea1  + tsigameanadjust + sqrt(vara1)  * KL_suma
-  if(chxstype .ne. 'absorb') &
-    sigs = taves1 + tsigsmeanadjust + sqrt(vars1) * KL_sums
+  if(chxstype .ne. 'scatter') then
+    siga1 = merge( tavea1  + tsigameanadjust + sqrt(vara1)  * KL_suma1 , 0d0 , fla1)
+    siga2 = merge( tavea2  + tsigameanadjust + sqrt(vara2)  * KL_suma2 , 0d0 , fla2)
+  endif
+  if(chxstype .ne. 'absorb') then
+    sigs1 = merge( taves1  + tsigsmeanadjust + sqrt(vars1)  * KL_sums1 , 0d0 , fls1)
+    sigs2 = merge( taves2  + tsigsmeanadjust + sqrt(vars2)  * KL_sums2 , 0d0 , fls2)
+  endif
+
 
   if(chgeomtype=='contin' .and. chGausstype=='LogN') then
-    KL_point = KLr_LogNfinpoint(siga,sigs,chxstype)    
+    select case (chxstype)
+      case ("totale") !if deriv, no Heaviside
+        KL_point = exp(sigs1) + exp(siga1) + exp(sigs2) + exp(siga2)
+      case ("totaln")
+        KL_point = exp(sigs1) + exp(siga1) + exp(sigs2) + exp(siga2)
+      case ("scatter")
+        KL_point = exp(sigs1) + exp(sigs2)
+      case ("absorb")
+        KL_point = exp(siga1) + exp(siga2)
+      case ("scatrat")
+        KL_point = ( exp(sigs1) + exp(sigs2) ) / ( exp(sigs1) + exp(siga1) + exp(sigs2) + exp(siga2) )
+    end select
   elseif(chgeomtype=='binary' .or. (chgeomtype=='contin' .and. chGausstype=='Gaus')) then
-    KL_point = KLr_basicfinpoint(siga,sigs,chxstype,order)
+    select case (chxstype)
+      case ("totale") !if deriv, no Heaviside
+        KL_point = merge(Heavi(sigs1)*sigs1 + Heavi(siga1)*siga1 + Heavi(sigs2)*sigs2 + Heavi(siga2)*siga2,&
+                         sigs1+siga1+sigs2+siga2, order==0)
+      case ("totaln")
+        KL_point = sigs1 + siga1 + sigs2 + siga2
+      case ("scatter")
+        KL_point = sigs1 + sigs2
+      case ("absorb")
+        KL_point = siga1 + siga2
+      case ("scatrat")
+        KL_point = ( Heavi(sigs1)*sigs1 + Heavi(sigs2)*sigs2 ) / &
+                   ( Heavi(sigs1)*sigs1 + Heavi(siga1)*siga1 + Heavi(sigs2)*sigs2 + Heavi(siga2)*siga2 )
+    end select
   endif
   end function KLr_point
 
 
 
-  function KLr_basicfinpoint(siga,sigs,chxstype,order) result(KL_point)
-  !This function finishes determination of point values for Gaussian random
-  !geometries and binary media KL reconstructions.
-  use utilities, only: Heavi
-  integer :: order
-  real(8) :: siga, sigs, KL_point
-  character(*) :: chxstype
 
-  select case (chxstype)
-    case ("totale") !if deriv, no Heaviside
-      KL_point = merge(Heavi(sigs)*sigs + Heavi(siga)*siga, sigs+siga, order==0)
-    case ("totaln")
-      KL_point = sigs + siga
-    case ("scatter")
-      KL_point = sigs
-    case ("absorb")
-      KL_point = siga
-    case ("scatrat")
-      KL_point = Heavi(sigs)*sigs / ( Heavi(sigs)*sigs + Heavi(siga)*siga )
-  end select
-  end function KLr_basicfinpoint
-
-
-
-  function KLr_LogNfinpoint(siga,sigs,chxstype) result(KL_point)
-  !This function finished determination of point values for Log-Normal random
-  !geometries.
-  real(8) :: siga, sigs, KL_point
-  character(*) :: chxstype
-
-  select case (chxstype)
-    case ("totale") !if deriv, no Heaviside
-      KL_point = exp(sigs) + exp(siga)
-    case ("totaln")
-      KL_point = exp(sigs) + exp(siga)
-    case ("scatter")
-      KL_point = exp(sigs)
-    case ("absorb")
-      KL_point = exp(siga)
-    case ("scatrat")
-      KL_point = exp(sigs) / ( exp(sigs) + exp(siga) )
-  end select
-  end function KLr_LogNfinpoint
 
 
 
@@ -904,23 +918,27 @@ CONTAINS
 
 
 
-  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,taves1,tavea1)
+  subroutine KLr_setmeans(order,tsigsmeanadjust,tsigameanadjust,taves1,tavea1,taves2,tavea2)
   !This subroutine sets values for non-x-dependent terms based on derivative order
-  use genRealzvars, only: aves1, avea1
+  use genRealzvars, only: aves1, avea1, aves2, avea2
   use KLvars, only: sigsmeanadjust, sigameanadjust
 
   integer :: order
-  real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1
+  real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1,taves2,tavea2
   if(order==0) then
     tsigsmeanadjust = sigsmeanadjust
     tsigameanadjust = sigameanadjust
     taves1     = aves1
-    tavea1      = avea1
+    tavea1     = avea1
+    taves2     = aves2
+    tavea2     = avea2
   else
     tsigsmeanadjust = 0.0d0
     tsigameanadjust = 0.0d0
     taves1     = 0.0d0
-    tavea1      = 0.0d0
+    tavea1     = 0.0d0
+    taves2     = 0.0d0
+    tavea2     = 0.0d0
   endif
 
   end subroutine KLr_setmeans
