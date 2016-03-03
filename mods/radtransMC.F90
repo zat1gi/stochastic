@@ -86,9 +86,9 @@ CONTAINS
   implicit none
   integer :: ierr
 
+  call bcast_KLvars_vars !must be first, contains flags which affect others
   call bcast_rngvars_vars
   call bcast_genRealzvars_vars
-  call bcast_KLvars_vars
   call bcast_MCvars_vars
   call bcast_UQvars_vars
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
@@ -103,7 +103,6 @@ CONTAINS
   use MCvars
   use UQvars
   implicit none
-
   call bcast_genRealzvars_alloc()
   call bcast_KLvars_alloc()
   call bcast_MCvars_alloc()

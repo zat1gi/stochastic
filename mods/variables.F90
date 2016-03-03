@@ -82,6 +82,7 @@ contains
 #ifdef USE_MPI
 subroutine bcast_genRealzvars_vars
   use mpi
+  use KLvars, only: fls1, fla1, fls2, fla2
   implicit none
   integer :: ierr
 
@@ -101,36 +102,36 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(Adamscase, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(s, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBavea1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBaves1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBavea2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBaves2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBvara1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBvars1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBvara2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBvars2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBlamcs1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBlamca1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBlamcs2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBlamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(GBavea1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(GBaves1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(GBavea2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(GBaves2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(GBvara1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(GBvars1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(GBvara2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(GBvars2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(GBlamcs1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(GBlamca1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(GBlamcs2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(GBlamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(GBs, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chgeomtype, 6, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(pltgenrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamcs1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamca1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamcs2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(lamcs1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(lamca1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(lamcs2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(lamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixsig, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(atmixscatrat, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(aves1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(avea1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(aves2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(avea2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(vars1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(vara1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(vars2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(vara2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(aves1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(avea1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(aves2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(avea2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(vars1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(vara1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(vars2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(vara2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(largesti, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(nummatSegs, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -265,6 +266,11 @@ subroutine bcast_KLvars_vars
   implicit none
   integer :: ierr
 
+  call MPI_Bcast(fls1, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fla1, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fls2, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fla2, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+
   call MPI_Bcast(pltxiBins, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltEigf, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltCo, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
@@ -272,10 +278,10 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(pltKLrealz, 28, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(binNumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numEigss1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numEigsa1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numEigss2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numEigsa2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(numEigss1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(numEigsa1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(numEigss2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(numEigsa2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numSlice, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(levsrefEig, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(binSmallBound, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -293,27 +299,23 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(KLrnumpoints, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltKLrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
-  call MPI_Bcast(corrinds1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(corrinda1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(corrinds2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(corrinda2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numNystroms1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numNystroma1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numNystroms2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(numNystroma2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(fls1, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(fla1, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(fls2, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(fla2, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(cheftypes1, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(cheftypea1, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(cheftypes2, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(cheftypea2, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(corrinds1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(corrinda1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(corrinds2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(corrinda2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(numNystroms1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(numNystroma1, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(numNystroms2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(numNystroma2, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(cheftypes1, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(cheftypea1, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(cheftypes2, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(cheftypea2, 10, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chGausstype, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamctypes1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamctypea1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamctypes2, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(lamctypea2, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fls1) call MPI_Bcast(lamctypes1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fla1) call MPI_Bcast(lamctypea1, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fls2) call MPI_Bcast(lamctypes2, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  if(fla2) call MPI_Bcast(lamctypea2, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chLNxschecktype, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numLNxspts, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numLNxsbins, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -354,51 +356,51 @@ subroutine bcast_KLvars_alloc()
     pltKLrealzwhich = 0
   endif
 
-  if(.not.allocated(alphas1)) then
+  if(.not.allocated(alphas1) .and. fls1) then
     allocate(alphas1(numEigss1))
     alphas1 = 0d0
   endif
-  if(.not.allocated(alphaa1)) then
+  if(.not.allocated(alphaa1) .and. fla1) then
     allocate(alphaa1(numEigsa1))
     alphaa1 = 0d0
   endif
-  if(.not.allocated(alphas2)) then
+  if(.not.allocated(alphas2) .and. fls2) then
     allocate(alphas2(numEigss2))
     alphas2 = 0d0
   endif
-  if(.not.allocated(alphaa2)) then
+  if(.not.allocated(alphaa2) .and. fla2) then
     allocate(alphaa2(numEigsa2))
     alphaa2 = 0d0
   endif
-  if(.not.allocated(Aks1)) then
+  if(.not.allocated(Aks1) .and. fls1) then
     allocate(Aks1(numEigss1))
     Aks1 = 0d0
   endif
-  if(.not.allocated(Aka1)) then
+  if(.not.allocated(Aka1) .and. fla1) then
     allocate(Aka1(numEigsa1))
     Aka1 = 0d0
   endif
-  if(.not.allocated(Aks2)) then
+  if(.not.allocated(Aks2) .and. fls2) then
     allocate(Aks2(numEigss2))
     Aks2 = 0d0
   endif
-  if(.not.allocated(Aka2)) then
+  if(.not.allocated(Aka2) .and. fla2) then
     allocate(Aka2(numEigsa2))
     Aka2 = 0d0
   endif
-  if(.not.allocated(Eigs1)) then
+  if(.not.allocated(Eigs1) .and. fls1) then
     allocate(Eigs1(numEigss1))
     Eigs1 = 0d0
   endif
-  if(.not.allocated(Eiga1)) then
+  if(.not.allocated(Eiga1) .and. fla1) then
     allocate(Eiga1(numEigsa1))
     Eiga1 = 0d0
   endif
-  if(.not.allocated(Eigs2)) then
+  if(.not.allocated(Eigs2) .and. fls2) then
     allocate(Eigs2(numEigss2))
     Eigs2 = 0d0
   endif
-  if(.not.allocated(Eiga2)) then
+  if(.not.allocated(Eiga2) .and. fla2) then
     allocate(Eiga2(numEigsa2))
     Eiga2 = 0d0
   endif
@@ -419,19 +421,19 @@ subroutine bcast_KLvars_alloc()
     allocate(KLrxmesh(KLrnumpoints))
     KLrxmesh = 0d0
   endif
-  if(.not.allocated(xis1)) then
+  if(.not.allocated(xis1) .and. fls1) then
     allocate(xis1(numRealz,numEigss1))
     xis1 = 0d0
   endif
-  if(.not.allocated(xia1)) then
+  if(.not.allocated(xia1) .and. fla1) then
     allocate(xia1(numRealz,numEigsa1))
     xia1 = 0d0
   endif
-  if(.not.allocated(xis2)) then
+  if(.not.allocated(xis2) .and. fls2) then
     allocate(xis2(numRealz,numEigss2))
     xis2 = 0d0
   endif
-  if(.not.allocated(xia2)) then
+  if(.not.allocated(xia2) .and. fla2) then
     allocate(xia2(numRealz,numEigsa2))
     xia2 = 0d0
   endif
@@ -512,32 +514,27 @@ subroutine bcast_KLvars_arrays
   if(allocated(pltxiBinswhich)) call MPI_Bcast(pltxiBinswhich, size(pltxiBinswhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltCowhich)) call MPI_Bcast(pltCowhich, size(pltCowhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltKLrealzwhich)) call MPI_Bcast(pltKLrealzwhich, size(pltKLrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(alphas1)) call MPI_Bcast(alphas1, size(alphas1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(alphaa1)) call MPI_Bcast(alphaa1, size(alphaa1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(alphas2)) call MPI_Bcast(alphas2, size(alphas2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(alphaa2)) call MPI_Bcast(alphaa2, size(alphaa2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Aks1)) call MPI_Bcast(Aks1, size(Aks1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Aka1)) call MPI_Bcast(Aka1, size(Aka1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Aks2)) call MPI_Bcast(Aks2, size(Aks2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Aka2)) call MPI_Bcast(Aka2, size(Aka2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Eigs1)) call MPI_Bcast(Eigs1, size(Eigs1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Eiga1)) call MPI_Bcast(Eiga1, size(Eiga1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Eigs2)) call MPI_Bcast(Eigs2, size(Eigs2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(Eiga2)) call MPI_Bcast(Eiga2, size(Eiga2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1 .and. allocated(alphas1)) call MPI_Bcast(alphas1, size(alphas1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1 .and. allocated(alphaa1)) call MPI_Bcast(alphaa1, size(alphaa1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2 .and. allocated(alphas2)) call MPI_Bcast(alphas2, size(alphas2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2 .and. allocated(alphaa2)) call MPI_Bcast(alphaa2, size(alphaa2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1 .and. allocated(Aks1)) call MPI_Bcast(Aks1, size(Aks1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1 .and. allocated(Aka1)) call MPI_Bcast(Aka1, size(Aka1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2 .and. allocated(Aks2)) call MPI_Bcast(Aks2, size(Aks2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2 .and. allocated(Aka2)) call MPI_Bcast(Aka2, size(Aka2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1 .and. allocated(Eigs1)) call MPI_Bcast(Eigs1, size(Eigs1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1 .and. allocated(Eiga1)) call MPI_Bcast(Eiga1, size(Eiga1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2 .and. allocated(Eigs2)) call MPI_Bcast(Eigs2, size(Eigs2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2 .and. allocated(Eiga2)) call MPI_Bcast(Eiga2, size(Eiga2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(xi)) call MPI_Bcast(xi, size(xi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
   if(allocated(binPDF)) call MPI_Bcast(binPDF, size(binPDF), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(binBounds)) call MPI_Bcast(binBounds, size(binBounds), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(KLrxmesh)) call MPI_Bcast(KLrxmesh, size(KLrxmesh), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(xis1)) call MPI_Bcast(xis1, size(xis1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  if(allocated(xia1)) call MPI_Bcast(xia1, size(xia1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-print *,"2"
-print *,"size(xis1):",size(xis1)
-print *,"size(xis2):",size(xis2)
-  if(allocated(xis2)) call MPI_Bcast(xis2, size(xis2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-print *,"3"
-  if(allocated(xia2)) call MPI_Bcast(xia2, size(xia2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-print *,"all"
+  if(fls1 .and. allocated(xis1)) call MPI_Bcast(xis1, size(xis1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1 .and. allocated(xia1)) call MPI_Bcast(xia1, size(xia1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2 .and. allocated(xis2)) call MPI_Bcast(xis2, size(xis2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2 .and. allocated(xia2)) call MPI_Bcast(xia2, size(xia2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
 
   if(allocated(pltKLrealzarray)) &

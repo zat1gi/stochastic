@@ -389,7 +389,7 @@ CONTAINS
                     Eigs1, Eiga1, Eigs2, Eiga2, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
                     pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, &
                     xi, xis1, xia1, xis2, xia2, pltKLrealzarray, corrinds1, corrinda1, corrinds2, &
-                    corrinda2, pltKLrealz
+                    corrinda2, pltKLrealz, fls1, fla1, fls2, fla2
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -413,40 +413,40 @@ CONTAINS
   numPosRealz= 0
   numNegRealz= 0
   if(chgeomtype=='contin') then  !Gauss-based input
-    lamcs1       = GBlamcs1
-    lamca1       = GBlamca1
-    lamcs2       = GBlamcs2
-    lamca2       = GBlamca2
+    if(fls1) lamcs1       = GBlamcs1
+    if(fla1) lamca1       = GBlamca1
+    if(fls2) lamcs2       = GBlamcs2
+    if(fla2) lamca2       = GBlamca2
     s            = GBs
     if(chGausstype=='Gaus') then
-      aves1 = GBaves1
-      vars1 = GBvars1
+      if(fls1) aves1 = GBaves1
+      if(fls1) vars1 = GBvars1
 
-      avea1 = GBavea1
-      vara1 = GBvara1
+      if(fla1) avea1 = GBavea1
+      if(fla1) vara1 = GBvara1
 
-      aves2 = GBaves2
-      vars2 = GBvars2
+      if(fls2) aves2 = GBaves2
+      if(fls2) vars2 = GBvars2
 
-      avea2 = GBavea2
-      vara2 = GBvara2
+      if(fla2) avea2 = GBavea2
+      if(fla2) vara2 = GBvara2
     elseif(chGausstype=='LogN') then
-      aves1 = log( GBaves1**2 / sqrt( GBvars1 + GBaves1**2 ) )
-      vars1 = log( GBvars1    / GBaves1**2 + 1d0 )
+      if(fls1) aves1 = log( GBaves1**2 / sqrt( GBvars1 + GBaves1**2 ) )
+      if(fls1) vars1 = log( GBvars1    / GBaves1**2 + 1d0 )
 
-      avea1 = log( GBavea1**2 / sqrt( GBvara1 + GBavea1**2 ) )
-      vara1 = log( GBvara1    / GBavea1**2 + 1d0 )
+      if(fla1) avea1 = log( GBavea1**2 / sqrt( GBvara1 + GBavea1**2 ) )
+      if(fla1) vara1 = log( GBvara1    / GBavea1**2 + 1d0 )
 
-      aves2 = log( GBaves2**2 / sqrt( GBvars2 + GBaves2**2 ) )
-      vars2 = log( GBvars2    / GBaves2**2 + 1d0 )
+      if(fls2) aves2 = log( GBaves2**2 / sqrt( GBvars2 + GBaves2**2 ) )
+      if(fls2) vars2 = log( GBvars2    / GBaves2**2 + 1d0 )
 
-      avea2 = log( GBavea2**2 / sqrt( GBvara2 + GBavea2**2 ) )
-      vara2 = log( GBvara2    / GBavea2**2 + 1d0 )
+      if(fla2) avea2 = log( GBavea2**2 / sqrt( GBvara2 + GBavea2**2 ) )
+      if(fla2) vara2 = log( GBvara2    / GBavea2**2 + 1d0 )
 
-      if(lamctypes1=='fitlamc') lamcs1 = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamcs1)
-      if(lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
-      if(lamctypes2=='fitlamc') lamcs2 = exponentialfit(s,1d0+GBvars2/GBaves2**2,lamcs2)
-      if(lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
+      if(fls1 .and. lamctypes1=='fitlamc') lamcs1 = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamcs1)
+      if(fla1 .and. lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
+      if(fls2 .and. lamctypes2=='fitlamc') lamcs2 = exponentialfit(s,1d0+GBvars2/GBaves2**2,lamcs2)
+      if(fla2 .and. lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
     endif
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies

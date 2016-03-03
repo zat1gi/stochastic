@@ -10,13 +10,14 @@ CONTAINS
   !This subroutine is the interface for 'KL_eigenvalue' so that values can be passed to
   !it by reference.
   use KLvars, only: alphas1,Aks1,Eigs1,numEigss1, alphaa1,Aka1,Eiga1,numEigsa1,&
-                    alphas2,Aks2,Eigs2,numEigss2, alphaa2,Aka2,Eiga2,numEigsa2
+                    alphas2,Aks2,Eigs2,numEigss2, alphaa2,Aka2,Eiga2,numEigsa2,&
+                    fls1, fla1, fls2, fla2
   use genRealzvars, only: lamcs1,lamca1,lamcs2,lamca2
 
-  call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
-  call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
-  call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
-  call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
+  if(fls1) call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
+  if(fla1) call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
+  if(fls2) call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
+  if(fla2) call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
 
   end subroutine KL_eigenvaluemain
 
