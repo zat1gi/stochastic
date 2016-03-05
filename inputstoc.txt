@@ -4,17 +4,17 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   MC,        Which UQ approach?: 'MC', 'SC', 'PCESC'
-  100,10,         Number of realizations/how often to print
-  1000, 1000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  1000,100,         Number of realizations/how often to print
+  10000, 10000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  LogN,none,        GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.2',etc. for Ficthl/Adams cases
-  .true.,1.0, 0.5, 2.525,3,Glamc,1,30,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
-  .true.,2.0, 0.7, 2.525,3,Glamc,1,30,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
-  .false.,1.0, 0.5, 2.525,3,Glamc,-1,30,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
-  .false.,2.0, 0.7, 2.525,3,Glamc,-1,30,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
-  10.0,        Slab thickness, s
-  4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,      SC order, if==0, revert to orders after first number
+  LogN,f2,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
+  .true.,0.75, 2.25, 1.5,16,fitlamc,1,30,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
+  .true.,0.75, 2.25, 1.5,16,fitlamc,2,30,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
+  .true.,1.0, 0.5, 2.525,16,fitlamc,-1,30,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
+  .true.,2.0, 0.7, 2.525,16,fitlamc,-1,30,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
+  5.0,        Slab thickness, s
+  4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,   SC order, if==0, revert to orders after first number
 
   !--- Geometry - 'Markov' type problem ---!
   1.1,           Adamscase option, if==0, then user input for next three parameters
@@ -36,7 +36,7 @@
   1000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number MC at each history across realizations?
   planar,         Choose 'rod' or 'planar' for geometry type
-  leftiso,       Choose 'leftbeam', 'leftiso',  or 'intern'
+  leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'
   yes,            Allow neg xss?(as 0? [or ignore realz])
   no, 0.000001,  Adjust mean of reconstruction?/Tolerance of adjustment
 
@@ -47,9 +47,9 @@
   !!--Plotting genRealz realizations  [in sub genReal and genReal_stats]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" - only option,x-axis, y-axis
   3,             Number of realizations to plot (up to 3)
-  11,             Which realizations to plot
-  19,
-  21
+  1,             Which realizations to plot
+  2,
+  3
 
   !!--Plotting Eigenfunctions                [in sub KL_eigenvalue]
   noplot,lines,#x,funcval,   "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
@@ -71,10 +71,10 @@
   !!--Plotting KLconstructed realizations  [in sub KLreval]
   noplot,lines,#x,Sigval,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   4,             Number of realizations to plot (up to 4)
-  1,10,1,           Which realz to plot/num of scattering Eigs to contribute/num of abs Eigs
-  1,10,4
-  1,10,7
-  1,10,10
+  9,16,16,           Which realz to plot/num of scattering Eigs to contribute/num of abs Eigs
+  10,16,16
+  11,16,16
+  12,16,16
 
   !!--Plotting local KL average and variance
   noplot,totaln,   'noplot','plot'.../xs type, chxstype'totaln'...
@@ -95,11 +95,11 @@
 
 
   !!--Plotting Leakage Profile PDFs
-  plot,      Plot Leakage profile?
+  noplot,      Plot Leakage profile?
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
   100,           Number of cells collect and plot flux over

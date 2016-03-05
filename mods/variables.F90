@@ -197,7 +197,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8)              :: meanadjust_tol       ! tolerance for new mean adjustment
   integer              :: numrefinesameiter    ! num of iters for extrema determ w/ no change to stop
   character(3)         :: Gaussrandtype        ! 'BM'-Box-Muller sampling or 'inv' inverse sampling
-  character(4)         :: chGBcase             ! special GB cases, 'none', 'f1', 'f2' (Fichtl 1, 2), 'AX.X' (Adamscases)
+  character(7)         :: chGBcase             ! special GB cases, 'none', 'f1', 'f2' (Fichtl 1, 2), 'AX.X' (Adamscases)
 
   character(7)         :: pltxiBins(4)         !
   character(7)         :: pltxiBinsgauss       !
@@ -290,7 +290,7 @@ subroutine bcast_KLvars_vars
   call MPI_Bcast(meanadjust_tol, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numrefinesameiter, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(Gaussrandtype, 3, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(chGBcase, 4, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(chGBcase, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(pltxiBinsgauss, 7, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(pltxiBinsnumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
@@ -405,12 +405,12 @@ subroutine bcast_KLvars_alloc()
     Eiga2 = 0d0
   endif
   if(.not.allocated(xi)) then
-    allocate(xi(numRealz,numEigss1))
+    allocate(xi(numRealz,max(numEigss1,numEigss2,numEigsa1,numEigsa2)))
     xi = 0d0
   endif
 
   if(.not.allocated(binPDF)) then
-    allocate(binPDF(binNumof,numEigss1+1))
+    allocate(binPDF(binNumof,max(numEigss1,numEigss2,numEigsa1,numEigsa2)+1))
     binPDF = 0d0
   endif
   if(.not.allocated(binBounds)) then
@@ -514,6 +514,7 @@ subroutine bcast_KLvars_arrays
   if(allocated(pltxiBinswhich)) call MPI_Bcast(pltxiBinswhich, size(pltxiBinswhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltCowhich)) call MPI_Bcast(pltCowhich, size(pltCowhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(pltKLrealzwhich)) call MPI_Bcast(pltKLrealzwhich, size(pltKLrealzwhich), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
   if(fls1 .and. allocated(alphas1)) call MPI_Bcast(alphas1, size(alphas1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fla1 .and. allocated(alphaa1)) call MPI_Bcast(alphaa1, size(alphaa1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fls2 .and. allocated(alphas2)) call MPI_Bcast(alphas2, size(alphas2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -535,7 +536,6 @@ subroutine bcast_KLvars_arrays
   if(fla1 .and. allocated(xia1)) call MPI_Bcast(xia1, size(xia1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fls2 .and. allocated(xis2)) call MPI_Bcast(xis2, size(xis2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fla2 .and. allocated(xia2)) call MPI_Bcast(xia2, size(xia2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-
 
   if(allocated(pltKLrealzarray)) &
                       call MPI_Bcast(pltKLrealzarray, size(pltKLrealzarray), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)

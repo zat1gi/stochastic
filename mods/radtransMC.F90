@@ -612,7 +612,7 @@ CONTAINS
   !This subroutine sets up ceiling values for Woodcock Monte Carlo.
   !These ceilings of course need to be recalculated for each new realization
   use genRealzvars, only: s, lamcs1, nummatSegs
-  use KLvars, only: numEigss1
+  use KLvars, only: numEigss1, numEigsa1, numEigss2, numEigsa2
   use MCvars, only: chTrantype, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
   integer :: j
 
@@ -626,15 +626,8 @@ CONTAINS
       case ("KLWood")
         nceilbin = numEigss1
       case ("GaussKL")
-        nceilbin = numEigss1
+        nceilbin = max(numEigss1,numEigsa1,numEigss2,numEigsa2)
     end select
-
-    if(j==1) then
-      if(allocated(binmaxind)) deallocate(binmaxind)
-      if(allocated(binmaxes)) deallocate(binmaxes)
-      if(allocated(fbinmax)) deallocate(fbinmax)
-      if(allocated(bbinmax)) deallocate(bbinmax)
-    endif
 
     if(.not. allocated(binmaxind)) allocate(binmaxind(nceilbin+1))
     if(.not. allocated(binmaxes))  allocate(binmaxes(nceilbin))
