@@ -243,6 +243,10 @@ module KLvars  !"KLresearch" and "KLconstruct"
   real(8), allocatable :: xis2(:,:)            ! scat psuedo-random numbers for KL media, mat 2
   real(8), allocatable :: xia2(:,:)            ! abs psuedo-random numbers for KL media, mat 2
   real(8), allocatable :: xi(:,:)              ! xi values collected from binary materials
+  real(8), allocatable :: eigvecss1(:,:)       ! eigenvectors for numerical covariance, scat mat 1
+  real(8), allocatable :: eigvecsa1(:,:)       ! eigenvectors for numerical covariance, abs mat 2
+  real(8), allocatable :: eigvecss2(:,:)       ! eigenvectors for numerical covariance, scat mat 1
+  real(8), allocatable :: eigvecsa2(:,:)       ! eigenvectors for numerical covariance, abs mat 2
 
   real(8)              :: sigsmeanadjust=0.0d0 ! positive translation of sigs mean xs (mat-based mode)
   real(8)              :: sigameanadjust=0.0d0 ! positive translation of siga mean xs (mat-based mode)
@@ -404,6 +408,22 @@ subroutine bcast_KLvars_alloc()
     allocate(Eiga2(numEigsa2))
     Eiga2 = 0d0
   endif
+  if(.not.allocated(eigvecss1) .and. fls1) then
+    allocate(eigvecss1(numEigss1,numNystroms1))
+    eigvecss1 = 0d0
+  endif
+  if(.not.allocated(eigvecsa1) .and. fla1) then
+    allocate(eigvecsa1(numEigsa1,numNystroma1))
+    eigvecsa1 = 0d0
+  endif
+  if(.not.allocated(eigvecss2) .and. fls2) then
+    allocate(eigvecss2(numEigss2,numNystroms2))
+    eigvecss2 = 0d0
+  endif
+  if(.not.allocated(eigvecsa2) .and. fla2) then
+    allocate(eigvecsa2(numEigsa2,numNystroma2))
+    eigvecsa2 = 0d0
+  endif
   if(.not.allocated(xi)) then
     allocate(xi(numRealz,max(numEigss1,numEigss2,numEigsa1,numEigsa2)))
     xi = 0d0
@@ -484,6 +504,10 @@ subroutine bcast_KLvars_dealloc()
   if(allocated(Eiga1)) deallocate(Eiga1)
   if(allocated(Eigs2)) deallocate(Eigs2)
   if(allocated(Eiga2)) deallocate(Eiga2)
+  if(allocated(eigvecss1)) deallocate(eigvecss1)
+  if(allocated(eigvecsa1)) deallocate(eigvecsa1)
+  if(allocated(eigvecss2)) deallocate(eigvecss2)
+  if(allocated(eigvecsa2)) deallocate(eigvecsa2)
   if(allocated(xi)) deallocate(xi)
 
   if(allocated(binPDF)) deallocate(binPDF)
@@ -527,6 +551,10 @@ subroutine bcast_KLvars_arrays
   if(fla1 .and. allocated(Eiga1)) call MPI_Bcast(Eiga1, size(Eiga1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fls2 .and. allocated(Eigs2)) call MPI_Bcast(Eigs2, size(Eigs2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fla2 .and. allocated(Eiga2)) call MPI_Bcast(Eiga2, size(Eiga2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls1 .and. allocated(eigvecss1)) call MPI_Bcast(eigvecss1, size(eigvecss1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla1 .and. allocated(eigvecsa1)) call MPI_Bcast(eigvecsa1, size(eigvecsa1), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fls2 .and. allocated(eigvecss2)) call MPI_Bcast(eigvecss2, size(eigvecss2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(fla2 .and. allocated(eigvecsa2)) call MPI_Bcast(eigvecsa2, size(eigvecsa2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(xi)) call MPI_Bcast(xi, size(xi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
   if(allocated(binPDF)) call MPI_Bcast(binPDF, size(binPDF), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
