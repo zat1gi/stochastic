@@ -204,73 +204,81 @@ CONTAINS
       call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
 
       KLrxisig = 0
-      do curEig=1,numEigsa1 + mod(numEigsa1,2)  !select xi values for xia1
+      if(fla1) then
+        do curEig=1,numEigsa1 + mod(numEigsa1,2)  !select xi values for xia1
+            rand = rang()
+            if((chTrantype=='KLWood') .and. curEig<=numEigsa1) then
+              call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+            elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+              if(mod(curEig,2)==1) rand1 = rand
+              if(mod(curEig,2)==0) then
+                call TwoGaussrandnums(rand1,rand,xiterms)
+                xia1(realj,curEig-1) = xiterms(1)
+                xiterm = xiterms(2)
+              endif
+            elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+              xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+            endif
+          if(curEig<=numEigsa1) xia1(realj,curEig) = xiterm
+        enddo
+      endif
+
+      if(fls1) then
+        do curEig=1,numEigss1 + mod(numEigss1,2)  !select xi values for xis1
           rand = rang()
-          if((chTrantype=='KLWood') .and. curEig<=numEigsa1) then
+          if((chTrantype=='KLWood') .and. curEig<=numEigss1) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
             if(mod(curEig,2)==1) rand1 = rand
             if(mod(curEig,2)==0) then
               call TwoGaussrandnums(rand1,rand,xiterms)
-              xia1(realj,curEig-1) = xiterms(1)
+              xis1(realj,curEig-1) = xiterms(1)
               xiterm = xiterms(2)
             endif
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
             xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
           endif
-        if(curEig<=numEigsa1) xia1(realj,curEig) = xiterm
-      enddo
+          if(curEig<=numEigss1) xis1(realj,curEig) = xiterm
+        enddo
+      endif
 
-      do curEig=1,numEigss1 + mod(numEigss1,2)  !select xi values for xis1
-        rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=numEigss1) then
-          call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
-          if(mod(curEig,2)==1) rand1 = rand
-          if(mod(curEig,2)==0) then
-            call TwoGaussrandnums(rand1,rand,xiterms)
-            xis1(realj,curEig-1) = xiterms(1)
-            xiterm = xiterms(2)
-          endif
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
-          xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
-        endif
-        if(curEig<=numEigss1) xis1(realj,curEig) = xiterm
-      enddo
+      if(fla2) then
+        do curEig=1,numEigsa2 + mod(numEigsa2,2)  !select xi values for xia2
+            rand = rang()
+            if((chTrantype=='KLWood') .and. curEig<=numEigsa2) then
+              call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
+            elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
+              if(mod(curEig,2)==1) rand1 = rand
+              if(mod(curEig,2)==0) then
+                call TwoGaussrandnums(rand1,rand,xiterms)
+                xia2(realj,curEig-1) = xiterms(1)
+                xiterm = xiterms(2)
+              endif
+            elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
+              xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
+            endif
+          if(curEig<=numEigsa2) xia2(realj,curEig) = xiterm
+        enddo
+      endif
 
-      do curEig=1,numEigsa2 + mod(numEigsa2,2)  !select xi values for xia2
+      if(fls2) then
+        do curEig=1,numEigss2 + mod(numEigss2,2)  !select xi values for xis2
           rand = rang()
-          if((chTrantype=='KLWood') .and. curEig<=numEigsa2) then
+          if((chTrantype=='KLWood') .and. curEig<=numEigss2) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
             if(mod(curEig,2)==1) rand1 = rand
             if(mod(curEig,2)==0) then
               call TwoGaussrandnums(rand1,rand,xiterms)
-              xia2(realj,curEig-1) = xiterms(1)
+              xis2(realj,curEig-1) = xiterms(1)
               xiterm = xiterms(2)
             endif
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
             xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
           endif
-        if(curEig<=numEigsa2) xia2(realj,curEig) = xiterm
-      enddo
-
-      do curEig=1,numEigss2 + mod(numEigss2,2)  !select xi values for xis2
-        rand = rang()
-        if((chTrantype=='KLWood') .and. curEig<=numEigss2) then
-          call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
-          if(mod(curEig,2)==1) rand1 = rand
-          if(mod(curEig,2)==0) then
-            call TwoGaussrandnums(rand1,rand,xiterms)
-            xis2(realj,curEig-1) = xiterms(1)
-            xiterm = xiterms(2)
-          endif
-        elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='inv') then
-          xiterm = sqrt(2.0d0)*erfi(2.0d0*rand-1.0d0)
-        endif
-        if(curEig<=numEigss2) xis2(realj,curEig) = xiterm
-      enddo
+          if(curEig<=numEigss2) xis2(realj,curEig) = xiterm
+        enddo
+      endif
 
 !      if(corrinds1==abs(corrinda1)) then
 !        do j=1,numRealz
@@ -849,15 +857,16 @@ CONTAINS
 
   !cross section values
   if(chxstype .ne. 'scatter') then
-    siga1 = merge( tavea1  + tsigameanadjust + sqrt(vara1)  * KL_suma1 , 0d0 , fla1)
-    siga2 = merge( tavea2  + tsigameanadjust + sqrt(vara2)  * KL_suma2 , 0d0 , fla2)
+    siga1 = merge( tavea1 + tsigameanadjust + sqrt(vara1) * KL_suma1 , merge(0d0,-100000000000d0,chGausstype=='Gaus') , fla1)
+    siga2 = merge( tavea2 + tsigameanadjust + sqrt(vara2) * KL_suma2 , merge(0d0,-100000000000d0,chGausstype=='Gaus') , fla2)
   endif
   if(chxstype .ne. 'absorb') then
-    sigs1 = merge( taves1  + tsigsmeanadjust + sqrt(vars1)  * KL_sums1 , 0d0 , fls1)
-    sigs2 = merge( taves2  + tsigsmeanadjust + sqrt(vars2)  * KL_sums2 , 0d0 , fls2)
+    sigs1 = merge( taves1 + tsigsmeanadjust + sqrt(vars1) * KL_sums1 , merge(0d0,-100000000000d0,chGausstype=='Gaus') , fls1)
+    sigs2 = merge( taves2 + tsigsmeanadjust + sqrt(vars2) * KL_sums2 , merge(0d0,-100000000000d0,chGausstype=='Gaus') , fls2)
   endif
-
-
+!print *
+!print *,"taves2,vars2,KL_sums2:",taves2,vars2,KL_sums2
+!print *,"sigs1,siga1,sigs2,siga2:",sigs1,siga1,sigs2,siga2
   if(chgeomtype=='contin' .and. chGausstype=='LogN') then
     select case (chxstype)
       case ("totale") !if deriv, no Heaviside
