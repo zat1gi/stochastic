@@ -485,9 +485,6 @@ CONTAINS
                                                        lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
       if(fla2 .and. lamctypea2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
                                                        lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
-print *,"Eigs2:",Eigs2
-print *,"eigvecss2:",eigvecss2
-stop
     endif
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies

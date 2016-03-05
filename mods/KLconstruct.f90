@@ -787,11 +787,15 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype
+  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype, GBs
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, xis1, corrinds1, fls1, &
                     alphaa1, Aka1, Eiga1, numEigsa1, xia1, corrinda1, fla1, &
                     alphas2, Aks2, Eigs2, numEigss2, xis2, corrinds2, fls2, &
                     alphaa2, Aka2, Eiga2, numEigsa2, xia2, corrinda2, fla2, &
+                    lamctypes1, cheftypes1, numNystroms1, eigvecss1, &
+                    lamctypea1, cheftypea1, numNystroma1, eigvecsa1, &
+                    lamctypes2, cheftypes2, numNystroms2, eigvecss2, &
+                    lamctypea2, cheftypea2, numNystroma2, eigvecsa2, &
                     chGausstype
 
   integer :: j
@@ -804,7 +808,7 @@ CONTAINS
   real(8) :: siga1, sigs1, siga2, sigs2, KL_sums1, KL_suma1, KL_sums2, KL_suma2, Eigfterm
   integer :: curEig,tnumEigss1,tnumEigsa1,tnumEigss2,tnumEigsa2,order
   real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1,taves2,tavea2
-
+!print *,"xpos:",xpos
   !load any optional values or their default
   tnumEigss1 = merge(tnumEigss1in,numEigss1,present(tnumEigss1in))
   tnumEigsa1 = merge(tnumEigsa1in,numEigsa1,present(tnumEigsa1in))
@@ -817,16 +821,18 @@ CONTAINS
     if(fla1) then
       KL_suma1 = 0d0
       do curEig=1,tnumEigsa1
-        Eigfterm = Eigfunc(Aka1(curEig),alphaa1(curEig),lamca1,xpos,order)
-        KL_suma1  = KL_suma1 + sqrt(Eiga1(curEig)) * Eigfterm * xia1(j,curEig)
+        Eigfterm = Eigfunc( Aka1(curEig),alphaa1(curEig),lamca1,xpos,order,            &
+                            lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:) )
+        KL_suma1 = KL_suma1 + sqrt(Eiga1(curEig)) * Eigfterm * xia1(j,curEig)
       enddo
       if(corrinda1<0) KL_suma1 = -KL_suma1
     endif
     if(fla2) then
       KL_suma2 = 0d0
       do curEig=1,tnumEigsa2
-        Eigfterm = Eigfunc(Aka2(curEig),alphaa2(curEig),lamca2,xpos,order)
-        KL_suma2  = KL_suma2 + sqrt(Eiga2(curEig)) * Eigfterm * xia2(j,curEig)
+        Eigfterm = Eigfunc( Aka2(curEig),alphaa2(curEig),lamca2,xpos,order,            &
+                            lamctypea2,cheftypea2,numNystroma2,GBs,eigvecsa2(curEig,:) )
+        KL_suma2 = KL_suma2 + sqrt(Eiga2(curEig)) * Eigfterm * xia2(j,curEig)
       enddo
       if(corrinda2<0) KL_suma2 = -KL_suma2
     endif
@@ -837,16 +843,18 @@ CONTAINS
     if(fls1) then
       KL_sums1 = 0d0
       do curEig=1,tnumEigss1
-        Eigfterm = Eigfunc(Aks1(curEig),alphas1(curEig),lamcs1,xpos,order)
-        KL_sums1  = KL_sums1 + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
+        Eigfterm = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,xpos,order,            &
+                            lamctypes1,cheftypes1,numNystroms1,GBs,eigvecss1(curEig,:) )
+        KL_sums1 = KL_sums1 + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
       enddo
       if(corrinds1<0) KL_sums1 = -KL_sums1
     endif
     if(fls2) then
       KL_sums2 = 0d0
       do curEig=1,tnumEigss2
-        Eigfterm = Eigfunc(Aks2(curEig),alphas2(curEig),lamcs2,xpos,order)
-        KL_sums2  = KL_sums2 + sqrt(Eigs2(curEig)) * Eigfterm * xis2(j,curEig)
+        Eigfterm = Eigfunc( Aks2(curEig),alphas2(curEig),lamcs2,xpos,order,            &
+                            lamctypes2,cheftypes2,numNystroms2,GBs,eigvecss2(curEig,:) )
+        KL_sums2 = KL_sums2 + sqrt(Eigs2(curEig)) * Eigfterm * xis2(j,curEig)
       enddo
       if(corrinds2<0) KL_sums2 = -KL_sums2
     endif
@@ -900,28 +908,33 @@ CONTAINS
 
 
 
-
-
-
-
-  function Eigfunc(Ak,alpha,lamc,xpos,orderin)
+  function Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,cheftype,numNystrom,s,eigvec)
   ! Evaluates Eigenfunction term for any order (0+) derivative of the eigenfunction
-  real(8) :: Ak,alpha,lamc,xpos,Eigfunc
+  real(8) :: Ak,alpha,lamc,xpos,Eigfunc,s,eigvec(:)
   integer, optional :: orderin
-  integer :: order
+  integer :: order, ibin,numNystrom
+  character(*) :: lamctype,cheftype
 
   order = merge(orderin,0,present(orderin))
-  select case (mod(order,4))
-    case (0)
-      Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
-    case (1)
-      Eigfunc = Ak * (-cos(alpha*xpos) + lamc*alpha*sin(alpha*xpos) )
-    case (2)
-      Eigfunc = Ak * (-sin(alpha*xpos) - lamc*alpha*cos(alpha*xpos) )
-    case (3)
-      Eigfunc = Ak * ( cos(alpha*xpos) - lamc*alpha*sin(alpha*xpos) )
-  end select
-  Eigfunc = Eigfunc/(alpha**order)
+  if(lamctype=='Glamc' .or. lamctype=='fitlamc') then
+    select case (mod(order,4))
+      case (0)
+        Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
+      case (1)
+        Eigfunc = Ak * (-cos(alpha*xpos) + lamc*alpha*sin(alpha*xpos) )
+      case (2)
+        Eigfunc = Ak * (-sin(alpha*xpos) - lamc*alpha*cos(alpha*xpos) )
+      case (3)
+        Eigfunc = Ak * ( cos(alpha*xpos) - lamc*alpha*sin(alpha*xpos) )
+    end select
+    Eigfunc = Eigfunc/(alpha**order)
+  elseif(lamctype=='numeric') then
+    if(cheftype=='discrete') then
+      ibin = int(xpos*numNystrom/s)+1
+      if(ibin==numNystrom+1) ibin = numNystrom
+      Eigfunc = eigvec(ibin)
+    endif
+  endif
 
   end function Eigfunc
 

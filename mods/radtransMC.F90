@@ -670,6 +670,7 @@ CONTAINS
 
 
   subroutine KLWood_binmaxes( j )
+  use genRealzvars, only: GBs
   use MCvars, only: binmaxind, binmaxes, nceilbin
   use KLconstruct, only: KLr_point
 
@@ -696,8 +697,10 @@ CONTAINS
     do k=1,numrefine     !refine
       innerstep=innerstep/2
       xpos1=maxpos-innerstep
+      if(xpos1<0d0) xpos1 = 0d0
       xsig1= KLr_point(j,xpos1,'totale')
       xpos2=maxpos+innerstep
+      if(xpos2>GBs) xpos2 = GBs
       xsig2= KLr_point(j,xpos2,'totale')
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
@@ -712,7 +715,6 @@ CONTAINS
     binmaxes(i)=maxsig*safetyfactor   !assign maxsig
 
   enddo
-
   end subroutine KLWood_binmaxes
 
 
