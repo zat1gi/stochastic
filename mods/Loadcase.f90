@@ -401,9 +401,10 @@ CONTAINS
   use KLvars, only: KLrnumpoints, pltKLrealznumof, chGausstype, Corropts, &
                     KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
                     Eigs1, Eiga1, Eigs2, Eiga2, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
-                    pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, &
+                    pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, fls1, fla1, fls2, fla2, &
                     xi, xis1, xia1, xis2, xia2, pltKLrealzarray, corrinds1, corrinda1, corrinds2, &
-                    corrinda2, pltKLrealz, fls1, fla1, fls2, fla2
+                    corrinda2, pltKLrealz, numNystroms1, numNystroma1, numNystroms2, numNystroma2, &
+                    eigvecss1, eigvecsa1, eigvecss2, eigvecsa2
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
@@ -412,7 +413,7 @@ CONTAINS
                     fluxall, numPartsperj
   use UQvars, only: UQwgts, Qs, chUQtype
   use mcnp_random, only: RN_init_problem
-  use utilities, only: exponentialfit
+  use utilities, only: exponentialfit, numerical_eigmodesolve
   integer :: i
   real(8) :: eps = 0.0000000000001d0
 
@@ -426,6 +427,20 @@ CONTAINS
   endif
   numPosRealz= 0
   numNegRealz= 0
+
+  !allocate  KLresearch variables
+  if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
+     Corropts(1).ne.'noplot' .or. pltCo(1).ne.'noplot' .or. pltKLrealz(1).ne.'noplot') then
+    allocate(Eigs1(numEigss1))
+    allocate(Eiga1(numEigsa1))
+    allocate(Eigs2(numEigss2))
+    allocate(Eiga2(numEigsa2))
+    allocate(eigvecss1(numEigss1,numNystroms1))
+    allocate(eigvecsa1(numEigsa1,numNystroma1))
+    allocate(eigvecss2(numEigss2,numNystroms2))
+    allocate(eigvecsa2(numEigsa2,numNystroma2))
+  endif
+
   if(chgeomtype=='contin') then  !Gauss-based input
     if(fls1) lamcs1       = GBlamcs1
     if(fla1) lamca1       = GBlamca1
@@ -461,6 +476,18 @@ CONTAINS
       if(fla1 .and. lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
       if(fls2 .and. lamctypes2=='fitlamc') lamcs2 = exponentialfit(s,1d0+GBvars2/GBaves2**2,lamcs2)
       if(fla2 .and. lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
+
+      if(fls1 .and. lamctypes1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves1,GBvars1,&
+                                                       lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
+      if(fla1 .and. lamctypea1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea1,GBvara1,&
+                                                       lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
+      if(fls2 .and. lamctypes2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves2,GBvars2,&
+                                                       lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
+      if(fla2 .and. lamctypea2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
+                                                       lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
+print *,"Eigs2:",Eigs2
+print *,"eigvecss2:",eigvecss2
+stop
     endif
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
@@ -508,12 +535,7 @@ CONTAINS
     allocate(Aka1(numEigsa1))
     allocate(Aks2(numEigss2))
     allocate(Aka2(numEigsa2))
-    allocate(Eigs1(numEigss1))
-    allocate(Eiga1(numEigsa1))
-    allocate(Eigs2(numEigss2))
-    allocate(Eiga2(numEigsa2))
     allocate(xi(numRealz,numEigss1))
-print *,"size(xi):",size(xi)
   endif
 
 

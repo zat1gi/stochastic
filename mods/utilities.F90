@@ -445,7 +445,7 @@ CONTAINS
   real(8), allocatable :: abms(:,:)
   integer :: numpts, numdims
   character(2) :: cubetype = 'GH' !setting to GH now (python code works with GL also)
-print *,"size(nodes(:,1)),size(nodes(1,:)):",size(nodes(:,1)),size(nodes(1,:))
+  print *,"size(nodes(:,1)),size(nodes(1,:)):",size(nodes(:,1)),size(nodes(1,:))
   numdims = size(Qs)
   allocate(abms(numdims,2))
 
@@ -484,7 +484,7 @@ print *,"size(nodes(:,1)),size(nodes(1,:)):",size(nodes(:,1)),size(nodes(1,:))
   do i=1,numpts
     read(101, *) wgts(i)
   enddo
-print *,"numdims:",numdims
+  print *,"numdims:",numdims
   do i=1,numpts
     do q=1,numdims
       read(101,*) nodes(i,q)
@@ -493,6 +493,52 @@ print *,"numdims:",numdims
   close(101)
 
   end subroutine create_cubature
+
+
+
+
+  subroutine numerical_eigmodesolve(chGausstype,s,procave,procvar,lamc,maxnumeigs,numNystrom,eigs,eigvecs)
+  !This subroutine prints values to, executes, and reads values from a python script which solves
+  !eigenvalues and eigenvectors for KL expansion.
+  character(*) :: chGausstype
+  real(8) :: s, procave, procvar, lamc
+  integer :: maxnumeigs, numNystrom
+  real(8) :: eigs(:),eigvecs(:,:)
+  character(3) :: dumchar
+
+  integer :: i,ix
+
+  open(unit = 102, file = "auxiliary/Nystrom/Nystrominp.txt")
+  if(chGausstype=='Gaus') then
+    write(102,*) 1
+  elseif(chGausstype=='LogN') then
+    write(102,*) 2
+  endif
+  write(102,*) s
+  write(102,*) procave
+  write(102,*) procvar
+  write(102,*) lamc
+  write(102,*) maxnumeigs
+  write(102,*) numNystrom
+  close(102)
+
+  call system("./auxiliary/Nystrom/Nystromsolve.py")
+
+  open(unit = 102, file = "auxiliary/Nystrom/Nystromout.txt")
+  read(102,*) dumchar
+  do i=1,maxnumeigs
+    read(102,*) eigs(i)
+  enddo
+  do i=1,maxnumeigs
+    read(102,*) dumchar
+    do ix=1,numNystrom
+      read(102,*) eigvecs(i,ix)
+    enddo
+  enddo
+  close(102)
+  end subroutine numerical_eigmodesolve
+
+
 
 
 
