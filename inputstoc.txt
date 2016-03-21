@@ -1,25 +1,25 @@
   923937587,         Random number seed
 
   !--- Biggest Problem Parameters ---!
-  contin,          Geometry type: 'contin'uous or 'binary'
-  GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
+  binary,          Geometry type: 'contin'uous or 'binary'
+  atmixMC,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   MC,        Which UQ approach?: 'MC', 'SC', 'PCESC'
-  2000,50,         Number of realizations/how often to print
-  2000, 2000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  72500,100,         Number of realizations/how often to print
+  10000, 10000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  LogN,ANS16l,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
-  .true.,1.0, 0.5, 1.5,16,numeric,1,100,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
-  .true.,0.5, 0.7, 1.5,16,numeric,2,100,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
-  .true.,1.0, 0.5, 1.5,16,numeric,3,100,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
-  .true.,0.5, 0.7, 1.5,16,numeric,4,100,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
+  LogN,f2,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
+  .true.,1.0, 0.5, 1.5,16,Glamc,1,100,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
+  .true.,0.5, 0.7, 1.5,16,Glamc,2,100,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
+  .true.,1.0, 0.5, 1.5,16,Glamc,3,100,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
+  .true.,0.5, 0.7, 1.5,16,Glamc,4,100,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
   1.0,        Slab thickness, s
   4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,   SC order, if==0, revert to orders after first number
 
   !--- Geometry - 'Markov' type problem ---!
-  1.1,           Adamscase option, if==0, then user input for next three parameters
-  1.5,1.5, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
-  0.5,0.5, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
+  0,           Adamscase option, if==0, then user input for next three parameters
+  5.0,5.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
+  0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
   5.0,                 slab thickness           #1.0
 
@@ -33,7 +33,7 @@
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Other MCtransport Options ---!
-  1000000,          Number of particles for LP or atomic mix calculations
+  100000000,          Number of particles for LP or atomic mix calculations
   no,             Correlated-Random number MC at each history across realizations?
   planar,         Choose 'rod' or 'planar' for geometry type
   leftbeam,       Choose 'leftbeam', 'leftiso',  or 'intern'
@@ -99,8 +99,8 @@
   100,             Numb of bins Leakage profiles
 
   !!--Plotting flux/matdxs (ensemble ave of mat type in bin)
-  preview,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  plot,lines,#x,flux,    "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
   noplot,          "preview" "plot" "noplot", for stochastic ensemble flux in material
   track,           "track" "point", type of flux binning, over whole track or a point on it 
-  100,           Number of cells collect and plot flux over
+  250,           Number of cells collect and plot flux over
 

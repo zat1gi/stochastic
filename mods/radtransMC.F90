@@ -1206,13 +1206,13 @@ CONTAINS
   call system("test -e plots/fluxplots/fluxmat.out   && rm plots/fluxplots/fluxmat.out")
 
   370 format("#cell center,       ave flux,        flux dev")
-  371 format(f15.7,f15.7,f15.7)
+  371 format(f20.14,f20.14,f20.14)
 
   372 format("#cell center,       ave mat1 flux,   flux mat1 dev,   ave mat2 flux,   flux mat2 dev")
-  373 format(f15.7,f15.7,f15.7,f15.7,f15.7)
+  373 format(f20.14,f20.14,f20.14,f20.14,f20.14)
 
   374 format("#cell center,       ave flux")
-  375 format(f15.7,f15.7)
+  375 format(f20.14,f20.14)
 
   376 format("#cell center,       ave mat1 flux,   ave mat2 flux")
 
