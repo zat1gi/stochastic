@@ -36,9 +36,9 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs
+  use genRealzvars, only: s, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs, GBvara1
   use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice, &
-                          lamctypea1,cheftypea1,numNystroma1,eigvecsa1
+                          lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
   use KLconstruct, only: Eigfunc
 
   real(8) :: alpha(:),Ak(:),Eig(:),lamc
@@ -158,7 +158,8 @@ CONTAINS
       do j=1,pltEigfnumof
         curEig=pltEigfwhich(j)
         Eigfplotarray(i,j+1) = Eigfunc( Ak(curEig),alpha(curEig),lamc,Eigfplotarray(i,1),0,        &
-                                        lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:) )
+                                        lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                                        GBavea1,GBvara1,Eiga1(curEig)  )
 
       enddo
     enddo
@@ -374,9 +375,9 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamcs1, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs
+  use genRealzvars, only: s, lamcs1, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs, GBvara1
   use KLvars, only: alphas1, Aks1, Eigs1, Corrnumpoints, Corropts, numEigss1, numEigsa1, & 
-                    lamctypea1,cheftypea1,numNystroma1,eigvecsa1
+                    lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
   use KLconstruct, only: Eigfunc
 
   integer :: x,y,curEig
@@ -409,9 +410,11 @@ CONTAINS
       !sum Eigs to calc Corryield
       do curEig=1,numEigss1
         Eigfx = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,curx,0,                &
-                         lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:) )
+                         lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                         GBavea1,GBvara1,Eiga1(curEig)  )
         Eigfy = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,cury,0,                &
-                         lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:) )
+                         lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                         GBavea1,GBvara1,Eiga1(curEig)  )
         Corryield(x,y) = Corryield(x,y) + &
                          merge(    tc   *(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigss1 ) + &
                          merge( (1d0-tc)*(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigsa1 )
@@ -470,9 +473,9 @@ CONTAINS
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
   use genRealzvars, only: s, numRealz, P, lamcs1, totLength, chgeomtype, aves1, avea1, &
-                          GBaves1, GBavea1, GBs
+                          GBaves1, GBavea1, GBs, GBvara1
   use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numSlice, &
-                          pltCo, numEigss1, numEigsa1, lamctypea1,cheftypea1,numNystroma1,eigvecsa1
+                          pltCo, numEigss1, numEigsa1, lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
   use KLconstruct, only: Eigfunc
 
   integer :: curCS,curEig,check
@@ -513,7 +516,8 @@ CONTAINS
     x=sliceval(curCS)
     do curEig=1,numEigss1
       phi=Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,x,0,                   &
-                   lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:) )
+                   lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                   GBavea1,GBvara1,Eiga1(curEig)  )
       cumCo=cumCo+ merge(   tc   *Eigs1(curEig)*phi**2,0d0,curEig<=numEigsa1) &
                  + merge((1d0-tc)*Eigs1(curEig)*phi**2,0d0,curEig<=numEigss1)
       CoEff(curEig,curCS)=cumCo

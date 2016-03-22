@@ -787,7 +787,8 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype, GBs
+  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype, GBs, &
+                          GBaves1, GBvars1, GBavea1, GBvara1, GBaves2, GBvars2, GBavea2, GBvara2
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, xis1, corrinds1, fls1, &
                     alphaa1, Aka1, Eiga1, numEigsa1, xia1, corrinda1, fla1, &
                     alphas2, Aks2, Eigs2, numEigss2, xis2, corrinds2, fls2, &
@@ -822,7 +823,8 @@ CONTAINS
       KL_suma1 = 0d0
       do curEig=1,tnumEigsa1
         Eigfterm = Eigfunc( Aka1(curEig),alphaa1(curEig),lamca1,xpos,order,            &
-                            lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:) )
+                            lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                            GBavea1,GBvara1,Eiga1(curEig)  )
         KL_suma1 = KL_suma1 + sqrt(Eiga1(curEig)) * Eigfterm * xia1(j,curEig)
       enddo
       if(corrinda1<0) KL_suma1 = -KL_suma1
@@ -831,7 +833,8 @@ CONTAINS
       KL_suma2 = 0d0
       do curEig=1,tnumEigsa2
         Eigfterm = Eigfunc( Aka2(curEig),alphaa2(curEig),lamca2,xpos,order,            &
-                            lamctypea2,cheftypea2,numNystroma2,GBs,eigvecsa2(curEig,:) )
+                            lamctypea2,cheftypea2,numNystroma2,GBs,eigvecsa2(curEig,:),&
+                            GBavea2,GBvara2,Eiga2(curEig)  )
         KL_suma2 = KL_suma2 + sqrt(Eiga2(curEig)) * Eigfterm * xia2(j,curEig)
       enddo
       if(corrinda2<0) KL_suma2 = -KL_suma2
@@ -844,7 +847,8 @@ CONTAINS
       KL_sums1 = 0d0
       do curEig=1,tnumEigss1
         Eigfterm = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,xpos,order,            &
-                            lamctypes1,cheftypes1,numNystroms1,GBs,eigvecss1(curEig,:) )
+                            lamctypes1,cheftypes1,numNystroms1,GBs,eigvecss1(curEig,:),&
+                            GBaves1,GBvars1,Eigs1(curEig)  )
         KL_sums1 = KL_sums1 + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
       enddo
       if(corrinds1<0) KL_sums1 = -KL_sums1
@@ -853,7 +857,8 @@ CONTAINS
       KL_sums2 = 0d0
       do curEig=1,tnumEigss2
         Eigfterm = Eigfunc( Aks2(curEig),alphas2(curEig),lamcs2,xpos,order,            &
-                            lamctypes2,cheftypes2,numNystroms2,GBs,eigvecss2(curEig,:) )
+                            lamctypes2,cheftypes2,numNystroms2,GBs,eigvecss2(curEig,:),&
+                            GBaves2,GBvars2,Eigs2(curEig) )
         KL_sums2 = KL_sums2 + sqrt(Eigs2(curEig)) * Eigfterm * xis2(j,curEig)
       enddo
       if(corrinds2<0) KL_sums2 = -KL_sums2
@@ -908,35 +913,100 @@ CONTAINS
 
 
 
-  function Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,cheftype,numNystrom,s,eigvec)
+  recursive function Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,cheftype,numNystrom,s,eigvec,GBave,GBvar,eig) result(ef)
   ! Evaluates Eigenfunction term for any order (0+) derivative of the eigenfunction
-  real(8) :: Ak,alpha,lamc,xpos,Eigfunc,s,eigvec(:)
+  use Klvars, only: chGausstype
+  real(8) :: Ak,alpha,lamc,xpos,s,eigvec(:),GBave,GBvar,eig,ef
   integer, optional :: orderin
-  integer :: order, ibin,numNystrom
+  integer :: order, ibin,numNystrom,j
   character(*) :: lamctype,cheftype
+  real(8) :: step,tot,x1,x2,ef1,ef2
 
   order = merge(orderin,0,present(orderin))
   if(lamctype=='Glamc' .or. lamctype=='fitlamc') then
     select case (mod(order,4))
       case (0)
-        Eigfunc = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
+        ef = Ak * ( sin(alpha*xpos) + lamc*alpha*cos(alpha*xpos) )
       case (1)
-        Eigfunc = Ak * (-cos(alpha*xpos) + lamc*alpha*sin(alpha*xpos) )
+        ef = Ak * (-cos(alpha*xpos) + lamc*alpha*sin(alpha*xpos) )
       case (2)
-        Eigfunc = Ak * (-sin(alpha*xpos) - lamc*alpha*cos(alpha*xpos) )
+        ef = Ak * (-sin(alpha*xpos) - lamc*alpha*cos(alpha*xpos) )
       case (3)
-        Eigfunc = Ak * ( cos(alpha*xpos) - lamc*alpha*sin(alpha*xpos) )
+        ef = Ak * ( cos(alpha*xpos) - lamc*alpha*sin(alpha*xpos) )
     end select
-    Eigfunc = Eigfunc/(alpha**order)
+    ef = ef/(alpha**order)
   elseif(lamctype=='numeric') then
     if(cheftype=='discrete') then
       ibin = int(xpos*numNystrom/s)+1
       if(ibin==numNystrom+1) ibin = numNystrom
-      Eigfunc = eigvec(ibin)
+      ef = eigvec(ibin)
+    elseif(cheftype=='linearint') then
+      ibin = int(xpos*numNystrom/s)+1
+      if(ibin==numNystrom+1) ibin = numNystrom
+      step = s/numNystrom
+      if(xNyst(step,ibin)>=xpos) then
+        if(ibin==1) then
+          ef = Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,'Nystromint',numNystrom,s,eigvec,GBave,GBvar,eig)
+        else
+          x1 = xNyst(step,ibin-1)
+          ef1= eigvec(ibin-1)
+          x2 = xNyst(step,ibin)
+          ef2= eigvec(ibin)
+          ef = ef1 + ((xpos-x1)/(x2-x1))*(ef2-ef1)
+        endif
+      elseif(xNyst(step,ibin)<xpos) then
+        if(ibin==numNystrom) then
+          ef = Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,'Nystromint',numNystrom,s,eigvec,GBave,GBvar,eig)
+        else
+          x1 = xNyst(step,ibin)
+          ef1= eigvec(ibin)
+          x2 = xNyst(step,ibin+1)
+          ef2= eigvec(ibin+1)
+          ef = ef1 + ((xpos-x1)/(x2-x1))*(ef2-ef1)
+        endif
+      endif
+    elseif(cheftype=='Nystromint') then
+      tot = 0d0
+      step = s/numNystrom
+      if(chGausstype=='Gaus') then
+        do j=1,numNystrom
+          tot = tot + s/numNystrom * expcov(xpos,xNyst(step,j),lamc) * eigvec(j)
+        enddo
+      elseif(chGausstype=='LogN') then
+        do j=1,numNystrom
+          tot = tot + s/numNystrom * GaussLNcov(xpos,xNyst(step,j),lamc,GBave,GBvar) * eigvec(j)
+        enddo
+      endif
+      ef = tot / eig
     endif
   endif
 
   end function Eigfunc
+
+
+  function xNyst(step,ibin)
+  !This function solves the x-value of eigenvector nodes
+  integer :: ibin
+  real(8) :: step,xNyst
+  xNyst = -step/2d0 + step*ibin
+  end function xNyst
+
+
+  function expcov(x1,x2,lamc)
+  !This function evaluates the exponential covariance function between x1 and x2
+  real(8) :: x1,x2,lamc,expcov
+  expcov = exp(-abs(x1-x2)/lamc)
+  end function expcov
+
+
+  function GaussLNcov(x1,x2,lamc,procave,procvar)
+  !This function evaluates the true covariance of the underlying Gaussian in the lognormal
+  !transformation approach.
+  real(8) :: x1,x2,lamc,GaussLNcov,procave,procvar,num,den
+  num = log(expcov(x1,x2,lamc)*procvar/procave**2+1d0)
+  den = log(procvar/procave**2+1d0)
+  GaussLNcov = num/den
+  end function GaussLNcov
 
 
 
