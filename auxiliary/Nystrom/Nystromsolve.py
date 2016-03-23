@@ -14,8 +14,8 @@ def expcov(x1,x2,lamc):                    #exponential covariance
     return np.exp(-abs(x1-x2)/lamc)
 
 def Gausscov(x1,x2,procave,procvar,lamc):  #Gaussian cov for LN translation
-    num = np.log(expcov(x1,x2,lamc)*procvar/procave+1.0)
-    den = np.log(procvar/procave+1.0)
+    num = np.log(expcov(x1,x2,lamc)*procvar/procave**2+1.0)
+    den = np.log(procvar/procave**2+1.0)
     return num/den
 
 #read input
