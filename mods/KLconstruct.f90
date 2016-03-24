@@ -980,7 +980,8 @@ CONTAINS
       ef = tot / eig
     endif
   endif
-
+print *,"ef:",ef
+print *,"eigvec:",eigvec
   end function Eigfunc
 
 
