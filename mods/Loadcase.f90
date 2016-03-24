@@ -263,8 +263,7 @@ CONTAINS
     print *,"--maxnumParts smaller than, so set equal to, LPamnumParts"
     maxnumParts = LPamnumParts
   endif
-print *,"fls:",fls1,fla1,fls2,fla2
-print *,"corrinds:",corrinds1,corrinda1,corrinds2,corrinda2
+
   if(fls1) then              !Test for approriate correlation indices (first==1, any other
     allocate(corrind(1))     !number preceded by positve counterpart or preceding integer.  
     corrind = corrinds1
@@ -302,8 +301,28 @@ print *,"corrinds:",corrinds1,corrinda1,corrinds2,corrinda2
     endif
     corrind(size(corrind)) = corrinda2
   endif
-print *,"corrind:",corrind
-stop
+
+  if(corrind(1)/=1) then
+    print *,"--First used correlation indice must be '1'"
+    flstopstatus = .true.
+  endif
+  do i=1,size(corrind)
+    if(i>1) then
+      if(corrind(i)<0) then
+        if(.not. any(corrind(:i)==abs(corrind(i)))) then
+          print *,"--Negative correlation indices must be preceded by positive counterpart"
+          flstopstatus = .true.
+        endif
+      endif
+      if(corrind(i)>1) then
+        if(.not. any(corrind(:i)==corrind(i)-1)) then
+          print *,"--Positive correlation indices must be preceded by previous integer"
+          flstopstatus = .true.
+        endif
+      endif
+    endif
+  enddo
+
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigss1 .AND. pltEigf(1) .NE. 'noplot' ) then
