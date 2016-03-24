@@ -31,7 +31,7 @@ CONTAINS
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
   integer         :: i
-  integer, allocatable :: Qtemp(:)
+  integer, allocatable :: Qtemp(:),corrind(:),tcorrind(:)
   logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")
@@ -263,7 +263,47 @@ CONTAINS
     print *,"--maxnumParts smaller than, so set equal to, LPamnumParts"
     maxnumParts = LPamnumParts
   endif
-
+print *,"fls:",fls1,fla1,fls2,fla2
+print *,"corrinds:",corrinds1,corrinda1,corrinds2,corrinda2
+  if(fls1) then              !Test for approriate correlation indices (first==1, any other
+    allocate(corrind(1))     !number preceded by positve counterpart or preceding integer.  
+    corrind = corrinds1
+  endif
+  if(fla1) then
+    if(allocated(corrind)) then
+      call move_alloc(corrind,tcorrind)
+      allocate(corrind(size(tcorrind)+1))
+      corrind(:size(tcorrind)) = tcorrind
+      deallocate(tcorrind)
+    else
+      allocate(corrind(1))
+    endif
+    corrind(size(corrind)) = corrinda1
+  endif
+  if(fls2) then
+    if(allocated(corrind)) then
+      call move_alloc(corrind,tcorrind)
+      allocate(corrind(size(tcorrind)+1))
+      corrind(:size(tcorrind)) = tcorrind
+      deallocate(tcorrind)
+    else
+      allocate(corrind(1))
+    endif
+    corrind(size(corrind)) = corrinds2
+  endif
+  if(fla2) then
+    if(allocated(corrind)) then
+      call move_alloc(corrind,tcorrind)
+      allocate(corrind(size(tcorrind)+1))
+      corrind(:size(tcorrind)) = tcorrind
+      deallocate(tcorrind)
+    else
+      allocate(corrind(1))
+    endif
+    corrind(size(corrind)) = corrinda2
+  endif
+print *,"corrind:",corrind
+stop
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
     if( pltEigfwhich(i)>numEigss1 .AND. pltEigf(1) .NE. 'noplot' ) then

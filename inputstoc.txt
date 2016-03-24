@@ -8,11 +8,11 @@
   1000, 1000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  LogN,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
-  .true.,1.0, 0.5, 1.5,2,numeric,1,4,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
-  .true.,0.5, 0.7, 1.5,2,numeric,2,4,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
-  .false.,1.0, 0.5, 1.5,2,numeric,3,40,linearint,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
-  .false.,0.5, 0.7, 1.5,2,numeric,4,40,linearint,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
+  Gaus,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
+  .false.,2.0, 5.1, 0.5,8,numeric,1,40,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
+  .true.,1.5, 5.05, 0.5,8,numeric,2,40,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
+  .true.,1.0, 0.5, 1.5,8,numeric,-3,40,linearint,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
+  .true.,0.5, 0.7, 1.5,8,numeric,4,40,linearint,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
   1.0,        Slab thickness, s
   4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,   SC order, if==0, revert to orders after first number
 
