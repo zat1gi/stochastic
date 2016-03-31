@@ -535,16 +535,16 @@ CONTAINS
       if(fla1 .and. lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
       if(fls2 .and. lamctypes2=='fitlamc') lamcs2 = exponentialfit(s,1d0+GBvars2/GBaves2**2,lamcs2)
       if(fla2 .and. lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
-
-      if(fls1 .and. lamctypes1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves1,GBvars1,&
-                                                       lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
-      if(fla1 .and. lamctypea1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea1,GBvara1,&
-                                                       lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
-      if(fls2 .and. lamctypes2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves2,GBvars2,&
-                                                       lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
-      if(fla2 .and. lamctypea2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
-                                                       lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
     endif
+
+    if(fls1 .and. lamctypes1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves1,GBvars1,&
+                                                     lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
+    if(fla1 .and. lamctypea1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea1,GBvara1,&
+                                                     lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
+    if(fls2 .and. lamctypes2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves2,GBvars2,&
+                                                     lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
+    if(fla2 .and. lamctypea2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
+                                                       lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
     sumPath    = 0d0
