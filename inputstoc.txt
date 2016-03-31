@@ -4,16 +4,16 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   MC,        Which UQ approach?: 'MC', 'SC', 'PCESC'
-  1000,25,         Number of realizations/how often to print
-  1000, 1000,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  100,25,         Number of realizations/how often to print
+  100, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
-  Gaus,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
-  .true.,2.0, 5.1, 0.5,8,numeric,1,40,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
-  .true.,1.5, 5.05, 0.5,8,numeric,2,40,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
-  .false.,1.0, 0.5, 1.5,8,numeric,3,40,linearint,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
-  .false.,0.5, 0.7, 1.5,8,numeric,4,40,linearint,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
-  1.0,        Slab thickness, s
+  LogN,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
+  .true.,0.5, 5.1, 0.5,3,numeric,1,10,linearint,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
+  .false.,1.2, 2.0, 0.5,3,fitlamc,2,40,Nystromint,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
+  .false.,1.0, 1.5, 1.5,3,fitlamc,3,40,Nystromint,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
+  .false.,0.5, 0.7, 1.5,3,numeric,4,40,linearint,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
+  4.0,        Slab thickness, s
   4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,   SC order, if==0, revert to orders after first number
 
   !--- Geometry - 'Markov' type problem ---!
@@ -29,7 +29,7 @@
   11,             Levels of refinement for eigenvalue solving
   6,              Num of iters used in extrema locating w/o change before stop, exp says use 6 or more
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
-  200,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
+  400,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Other MCtransport Options ---!
@@ -52,12 +52,11 @@
   3
 
   !!--Plotting Eigenfunctions                [in sub KL_eigenvalue]
-  noplot,lines,#x,funcval,   "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
-  4,             Number of Eigs to plot Eigenfunction for (up to 4)
+  preview,lines,#x,funcval,   "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis
+  3,             Number of Eigs to plot Eigenfunction for (up to 4)
   1,             Which Eigs to plot Eigenfunction for
   2,
-  3,
-  4
+  3
   
   !!--Plotting xiBins                        [in sub KL_binrandvarvals]
   noplot,hist,xiValue,PDF,  "preview" "plot" "noplot", "lines" "hist" "points",x-axis, y-axis

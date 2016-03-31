@@ -36,8 +36,9 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs, GBvara1
+  use genRealzvars, only: s, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs, GBvars1, GBvara1
   use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice, &
+                          lamctypes1,cheftypes1,numNystroms1,eigvecss1,Eigs1, &
                           lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
   use KLconstruct, only: Eigfunc
 
@@ -158,8 +159,8 @@ CONTAINS
       do j=1,pltEigfnumof
         curEig=pltEigfwhich(j)
         Eigfplotarray(i,j+1) = Eigfunc( Ak(curEig),alpha(curEig),lamc,Eigfplotarray(i,1),0,        &
-                                        lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
-                                        GBavea1,GBvara1,Eiga1(curEig)  )
+                                        lamctypes1,cheftypes1,numNystroms1,GBs,eigvecss1(curEig,:),&
+                                        GBaves1,GBvars1,Eigs1(curEig)  )
 
       enddo
     enddo
