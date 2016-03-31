@@ -198,6 +198,23 @@ CONTAINS
   endif
   deallocate(Qtemp)
 
+  !Test Nystrom options
+  if(fls1 .and. lamctypes1=='numeric' .and. numEigss1>numNystroms1) then
+    print *,"--User specified coarser Nymstrom discretization than number of eigenvalues, s1"
+    flstopstatus = .true.
+  endif
+  if(fla1 .and. lamctypea1=='numeric' .and. numEigsa1>numNystroma1) then
+    print *,"--User specified coarser Nymstrom discretization than number of eigenvalues, a1"
+    flstopstatus = .true.
+  endif
+  if(fls2 .and. lamctypes2=='numeric' .and. numEigss2>numNystroms2) then
+    print *,"--User specified coarser Nymstrom discretization than number of eigenvalues, s2"
+    flstopstatus = .true.
+  endif
+  if(fla2 .and. lamctypea2=='numeric' .and. numEigsa2>numNystroma2) then
+    print *,"--User specified coarser Nymstrom discretization than number of eigenvalues, a2"
+    flstopstatus = .true.
+  endif
 
   !Tests for problem type
   if(.not.chgeomtype=='contin' .and. .not.chgeomtype=='binary') then
@@ -545,6 +562,7 @@ CONTAINS
                                                      lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
     if(fla2 .and. lamctypea2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
                                                        lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
+stop
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
     sumPath    = 0d0
