@@ -169,7 +169,7 @@ CONTAINS
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig,j
+  integer :: i,tentj,realj,curEig
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   real(8), allocatable :: nodes(:,:)
@@ -980,8 +980,7 @@ CONTAINS
       ef = tot / eig
     endif
   endif
-print *,"ef:",ef
-print *,"eigvec:",eigvec
+
   end function Eigfunc
 
 

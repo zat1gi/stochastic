@@ -11,13 +11,42 @@ CONTAINS
   !it by reference.
   use KLvars, only: alphas1,Aks1,Eigs1,numEigss1, alphaa1,Aka1,Eiga1,numEigsa1,&
                     alphas2,Aks2,Eigs2,numEigss2, alphaa2,Aka2,Eiga2,numEigsa2,&
-                    fls1, fla1, fls2, fla2
-  use genRealzvars, only: lamcs1,lamca1,lamcs2,lamca2
+                    fls1, fla1, fls2, fla2, cheftypes1,cheftypea1,cheftypes2,cheftypea2, &
+                    eigvecss1,eigvecsa1,eigvecss2,eigvecsa2, lamctypes1,lamctypea1,lamctypes2,lamctypea2,&
+                    numNystroms1,numNystroma1,numNystroms2,numNystroma2, &
+                    pltEigf, chGausstype
+  use genRealzvars, only: lamcs1,lamca1,lamcs2,lamca2, GBaves1,GBavea1,GBaves2,GBavea2,&
+                    GBvars1,GBvara1,GBvars2,GBvara2, GBs
+  use utilities, only: numerical_eigmodesolve
 
-  if(fls1) call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
-  if(fla1) call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
-  if(fls2) call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
-  if(fla2) call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
+  if(fls1) then
+    if(lamctypes1=='analytic') call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
+    if(lamctypes1=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBaves1,GBvars1,&
+                                                   lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
+    if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aks1,alphas1,lamcs1,lamctypes1,cheftypes1,&
+                                                     numNystroms1,GBs,eigvecss1,GBaves1,GBvars1,Eigs1)
+  endif
+  if(fla1) then
+    if(lamctypea1=='analytic') call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
+    if(lamctypea1=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBavea1,GBvara1,&
+                                                   lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
+    if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aka1,alphaa1,lamca1,lamctypea1,cheftypea1,&
+                                                     numNystroma1,GBs,eigvecsa1,GBavea1,GBvara1,Eiga1)
+  endif
+  if(fls2) then
+    if(lamctypes2=='analytic') call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
+    if(lamctypes2=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBaves2,GBvars2,&
+                                                   lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
+    if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aks2,alphas2,lamcs2,lamctypes2,cheftypes2,&
+                                                     numNystroms2,GBs,eigvecss2,GBaves2,GBvars2,Eigs2)
+  endif
+  if(fla2) then
+    if(lamctypea2=='analytic') call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
+    if(lamctypea2=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
+                                                     lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
+    if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aka2,alphaa2,lamca2,lamctypea2,cheftypea2,&
+                                                     numNystroma2,GBs,eigvecsa2,GBavea2,GBvara2,Eiga2)
+  endif
 
   end subroutine KL_eigenvaluemain
 
@@ -30,32 +59,65 @@ CONTAINS
 
 
 
+  subroutine KL_eigenfunction_plot(Ak,alpha,lamc,lamctype,cheftype,numNystrom,s,eigvecs,ave,var,Eig)
+  !This subroutine plots for the eigenmode of choice according to options in the input file
+  use KLvars,       only: pltEigf, pltEigfwhich, pltEigfnumof, numSlice
+  use KLconstruct, only: Eigfunc
+  real(8) :: alpha(:),Ak(:),Eig(:),lamc,s,eigvecs(:,:),ave,var
+  character(*) :: lamctype,cheftype
+  integer :: numNystrom
+
+  integer :: i,j,curEig
+  real(8) :: sliceSize
+  real(8),allocatable :: Eigfplotarray(:,:)
+
+  allocate(Eigfplotarray(numSlice,numSlice+1))
+
+  sliceSize = s/numSlice
+  do i=1,numSlice
+    Eigfplotarray(i,1) = sliceSize*i-sliceSize/2
+    do j=1,pltEigfnumof
+      curEig=pltEigfwhich(j)
+      Eigfplotarray(i,j+1) = Eigfunc( Ak(curEig),alpha(curEig),lamc,Eigfplotarray(i,1),0,        &
+                                      lamctype,cheftype,numNystrom,s,eigvecs(curEig,:),&
+                                      ave,var,Eig(curEig)  )
+    enddo
+  enddo
+
+  call generic_plotter( numSlice,pltEigfnumof,Eigfplotarray,pltEigf )
+
+  call system("mv genericplot.txt plots/Eigfplot/Eigfplot.txt")
+  call system("mv genericplot.ps  plots/Eigfplot/Eigfplot.ps")
+  call system("mv genericplot.pdf plots/Eigfplot/Eigfplot.pdf")
+
+  end subroutine KL_eigenfunction_plot
+
+
+
+
   subroutine KL_eigenvalue(alpha,Ak,Eig,numEigs,lamc)
   !This subroutine: 1) calculates some initial values used here
   !2) Solves the transcendental equation which yields gamma
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs, GBvars1, GBvara1
-  use KLvars,       only: levsrefEig, pltEigf, pltEigfwhich, pltEigfnumof, numSlice, &
-                          lamctypes1,cheftypes1,numNystroms1,eigvecss1,Eigs1, &
-                          lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
+  use genRealzvars, only: s!, chgeomtype, GBaves1, GBavea1, aves1, avea1
+  use KLvars,       only: levsrefEig
   use KLconstruct, only: Eigfunc
 
   real(8) :: alpha(:),Ak(:),Eig(:),lamc
   integer :: numEigs
 
   real(8) :: stepGam=0 !if 0 code chooses
-  integer :: l,level,curEig,i,j
-  real(8) :: refstepGam,TT,curGam,tc
-  real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs),sliceSize
-  real(8),allocatable :: Eigfplotarray(:,:),gam(:)
+  integer :: l,level,curEig
+  real(8) :: refstepGam,TT,curGam!,tc
+  real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs)
+  real(8),allocatable :: gam(:)
 
   TT = s/lamc
   if( stepGam==0 ) stepGam  =1/TT/50
   allocate(gam(numEigs))
   gam = 0.0d0
-  allocate(Eigfplotarray(numSlice,numSlice+1))
 
   !Initial guesses for Gam
   420 format(i7,"     ",f15.9," ",f19.14)
@@ -131,7 +193,7 @@ CONTAINS
   write(*,*)
   write(*,*) "    Eigenvalues, their contributions, and KL maintained variance"
   write(*,*) "  Eigindx       Eig vals        sqrt(Eig)     [ differential / cumulative ] % mean sqr err maint"
-  426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
+!  426 format(i7,"     ",f15.9,"  ",f13.9,"     ",f13.9,"  ",f13.9)
 !  if(chgeomtype=='binary') then
 !    tc = aves1/(aves1+avea1)
 !  elseif(chgeomtype=='contin') then
@@ -151,29 +213,8 @@ CONTAINS
   write(*,429) TT
   write(*,*)
 
-  !This section plots the Eigenfunctions according to the options in the input file
-  if( pltEigf(1) .NE. 'noplot' ) then  !plot using generic plotter
-    sliceSize = s/numSlice
-    do i=1,numSlice
-      Eigfplotarray(i,1) = sliceSize*i-sliceSize/2
-      do j=1,pltEigfnumof
-        curEig=pltEigfwhich(j)
-        Eigfplotarray(i,j+1) = Eigfunc( Ak(curEig),alpha(curEig),lamc,Eigfplotarray(i,1),0,        &
-                                        lamctypes1,cheftypes1,numNystroms1,GBs,eigvecss1(curEig,:),&
-                                        GBaves1,GBvars1,Eigs1(curEig)  )
-
-      enddo
-    enddo
-
-    call generic_plotter( numSlice,pltEigfnumof,Eigfplotarray,pltEigf )
-
-    call system("mv genericplot.txt plots/Eigfplot/Eigfplot.txt")
-    call system("mv genericplot.ps  plots/Eigfplot/Eigfplot.ps")
-    call system("mv genericplot.pdf plots/Eigfplot/Eigfplot.pdf")
-  endif
-
-
   end subroutine KL_eigenvalue
+
 
 
 

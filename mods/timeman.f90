@@ -28,9 +28,9 @@ CONTAINS
   if(chtype=='radMC' .or. chtype=='radWood' .or. chtype=='KLWood' .or. chtype=='GaussKL') then
     1101 format(A9,"   ",f6.1,"% of ",i7,"   time/est:",f7.2,"/",f7.2," min     h/r-ave/max: ",f3.1,"E",i1,"/",f3.1,"E",i1)
     ave = real(sum(numPartsperj),8)/ndone+eps
-    orda= floor(log(ave)/log(10d0)*10.0)/10.0
+    orda= int(floor(log(ave)/log(10d0)*10.0)/10.0)
     maxv= real(maxval(numPartsperj),8)+eps 
-    ordm= floor(log(maxv)/log(10d0))
+    ordm= int(floor(log(maxv)/log(10d0)))
     write(*,1101) chtype,real(ndone,8)/ntotal*100d0,ntotal,(t2-t1)/60.0d0,(t2-t1)*ntotal/ndone/60.0d0, &
                   ave/(10.0**orda),orda,maxv/(10.0**ordm),ordm
   else

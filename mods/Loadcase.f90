@@ -478,8 +478,8 @@ CONTAINS
                     KLrxisig, alphas1, alphaa1, alphas2, alphaa2, Aks1, Aka1, Aks2, Aka2, &
                     Eigs1, Eiga1, Eigs2, Eiga2, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
                     pltCo, numEigss1, numEigsa1, numEigss2, numEigsa2, fls1, fla1, fls2, fla2, &
-                    xi, xis1, xia1, xis2, xia2, pltKLrealzarray, corrinds1, corrinda1, corrinds2, &
-                    corrinda2, pltKLrealz, numNystroms1, numNystroma1, numNystroms2, numNystroma2, &
+                    xi, xis1, xia1, xis2, xia2, corrinds1, corrinda1, &!corrinds2, corrinda2, &
+                    pltKLrealzarray, pltKLrealz, numNystroms1, numNystroma1, numNystroms2, numNystroma2, &
                     eigvecss1, eigvecsa1, eigvecss2, eigvecsa2
   use MCvars, only: fluxfaces, numParts, stocMC_reflection, stocMC_transmission, &
                     stocMC_absorption, LPamnumParts, stocMC_fluxall, chTrantype, &
@@ -489,9 +489,8 @@ CONTAINS
                     fluxall, numPartsperj
   use UQvars, only: UQwgts, Qs, chUQtype
   use mcnp_random, only: RN_init_problem
-  use utilities, only: exponentialfit, numerical_eigmodesolve
+  use utilities, only: exponentialfit
   integer :: i
-  real(8) :: eps = 0.0000000000001d0
 
   !initialize rngvars
   rngappnum  = 0
@@ -554,15 +553,6 @@ CONTAINS
       if(fla2 .and. lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
     endif
 
-    if(fls1 .and. lamctypes1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves1,GBvars1,&
-                                                     lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
-    if(fla1 .and. lamctypea1=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea1,GBvara1,&
-                                                     lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
-    if(fls2 .and. lamctypes2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBaves2,GBvars2,&
-                                                     lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
-    if(fla2 .and. lamctypea2=='numeric') call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
-                                                       lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
-stop
   elseif(chgeomtype=='binary') then
     numPath    = 0  !setup Markov material tallies
     sumPath    = 0d0
@@ -573,9 +563,9 @@ stop
     P(2)       = lam(2)/(lam(1)+lam(2))
     lamcs1     = (lam(1)*lam(2))/(lam(1)+lam(2))
     aves1 = P(1)*     scatrat(1) *sig(1) + P(2)*     scatrat(2) *sig(2)
-    avea1  = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
-    vars1    = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
-    vara1     = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
+    avea1 = P(1)*(1d0-scatrat(1))*sig(1) + P(2)*(1d0-scatrat(2))*sig(2)
+    vars1 = P(1)*P(2) * (sig(1)*     scatrat(1)  - sig(2)*     scatrat(2)) **2
+    vara1 = P(1)*P(2) * (sig(1)*(1d0-scatrat(1)) - sig(2)*(1d0-scatrat(2)))**2
     if(chTrantype=='KLWood') then
       if( (sig(1)*scatrat(1)-sig(2)*scatrat(2)>0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))>0d0) .or. &
           (sig(1)*scatrat(1)-sig(2)*scatrat(2)<0d0 .and. sig(1)*(1d0-scatrat(1))-sig(2)*(1d0-scatrat(2))<0d0) ) then
