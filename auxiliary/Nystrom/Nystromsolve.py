@@ -42,7 +42,7 @@ print 'starting Fredholm solve'
 tstart = time.time()
 #setup autocov matrix (K)
 K = [[0.0]*numNystrom for i in range(numNystrom)]
-step = s/(numNystrom+1)
+step = s/(numNystrom)
 Nyxvec = np.linspace(step/2.0,s-step/2.0,numNystrom)
 #print 'covtype:',covtype
 for i,x1 in enumerate(Nyxvec):
