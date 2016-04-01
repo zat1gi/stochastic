@@ -13,6 +13,7 @@ texts/inputlog/*
 **/*.ps
 plots/**/*.pdf
 plots/**/*.txt
+!/**/dummy.txt
   #output file for plotting KL transcendental 
 texts/absdiffGam.txt
 texts/CoEffExp.txt
