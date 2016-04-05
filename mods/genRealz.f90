@@ -11,7 +11,7 @@ CONTAINS
   !creates a binary material realization, plots if specified,
   !and collects tallies for realization stats
   use rngvars, only: rngappnum, rngstride, setrngappnum
-  use genRealzvars, only: sig, lam, s, largesti, numPath, pltgenrealznumof, &
+  use genRealzvars, only: sig, lam, slen, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, totLength
   use mcnp_random, only: RN_init_particle
@@ -42,7 +42,7 @@ CONTAINS
 
   matLength_temp(1)=0d0
   i=2
-  do while ( matLength_temp(i-1)<s )
+  do while ( matLength_temp(i-1)<slen )
 
     !decide total length at next segment
     matLength_temp(i)=matLength_temp(i-1)+lam(matType_temp(i-1))*log(1/(1-rang())) 
@@ -50,8 +50,8 @@ CONTAINS
     if(matType_temp(i-1)==1) matType_temp(i)=2    !change mat for next seg
     if(matType_temp(i-1)==2) matType_temp(i)=1
 
-    if(matLength_temp(i)>s) then !truncate if necessary
-      matLength_temp(i)=s
+    if(matLength_temp(i)>slen) then !truncate if necessary
+      matLength_temp(i)=slen
       nummatSegs = i-1
     endif
 

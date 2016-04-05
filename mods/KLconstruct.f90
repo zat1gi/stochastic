@@ -13,7 +13,7 @@ CONTAINS
   !the values of the points as pdfs.  These are checks that the average and variance of the log-normal
   !process are represented well.  The pdf further checks.
   use utilities, only: mean_and_var_s
-  use genRealzvars, only: numRealz, s
+  use genRealzvars, only: numRealz, slen
   use KLvars, only: chLNxschecktype, numLNxspts, numLNxsbins, chLNxsplottype, chGausstype
 
   integer :: j, ix, ibin
@@ -30,7 +30,7 @@ CONTAINS
   allocate(pdfLNxsBounds(numLNxsbins+1))
 
   !populate LNxsvals
-  step = s /(real(numLnxspts,8)-1d0)
+  step = slen /(real(numLnxspts,8)-1d0)
   do ix = 1,numLNxspts
     if(ix==1) then
       xvals(ix) = 0.0d0
@@ -136,7 +136,7 @@ CONTAINS
   subroutine KLrmeshgen
   !This subroutine creates a mesh based on selected frequency of 
   !sampling in x for plotting KL realizations.
-  use genRealzvars , only: s
+  use genRealzvars , only: slen
   use KLvars, only: KLrnumpoints, KLrxmesh
 
   integer :: i
@@ -145,7 +145,7 @@ CONTAINS
   if(allocated(KLrxmesh)) deallocate(KLrxmesh)
   allocate(KLrxmesh(KLrnumpoints))
   KLrxmesh = 0
-  KLrxstepsize = s / KLrnumpoints
+  KLrxstepsize = slen / KLrnumpoints
   do i=1,KLrnumpoints
     KLrxmesh(i) = KLrxstepsize*i - KLrxstepsize/2
   enddo
@@ -391,7 +391,7 @@ CONTAINS
   subroutine KLr_negsearch( j,chxstype,flrealzneg )
   !This subroutine searches for negative values in KL realizations.
   !If negative value found, set flrealzneg=.true., otherwise remain .false..
-  use genRealzvars, only: s
+  use genRealzvars, only: slen
   use KLvars, only: numEigss1
   integer :: j
   character(*) :: chxstype
@@ -403,8 +403,8 @@ CONTAINS
   real(8) :: innerstep,outerstep,refinestep
   real(8) :: minsig,minpos,xsig,xpos,minpos_o,minsig_o
 
-  outerstep  = s/numEigss1
-  innerstep  = s/numEigss1/nminnersteps
+  outerstep  = slen/numEigss1
+  innerstep  = slen/numEigss1/nminnersteps
   refinestep =innerstep*0.24d0
 
   do i=1,numEigss1
@@ -424,8 +424,8 @@ CONTAINS
     minsig_o=minsig
       do l=1,5
         xpos=minpos_o-2*refinestep+((k-1)*refinestep)
-        if(xpos<0) xpos=0.0d0
-        if(xpos>s) xpos=s
+        if(xpos<0)    xpos=0.0d0
+        if(xpos>slen) xpos=slen
         xsig= KLr_point(j,xpos,chxstype)
         if(xsig<minsig) then
           minsig=xsig
@@ -452,7 +452,7 @@ CONTAINS
   !only goal (flfindzeros==.false.), the subroutine will exit with this information at the
   !first sighting of negativity.  Otherwise it will then cycle through each set of bounds on
   !a zero and find and store the zeros.
-  use genRealzvars, only: s, numRealz
+  use genRealzvars, only: slen, numRealz
   use KLvars, only: KLzerosabs, KLzerosscat, KLzerostotn, numEigss1, numrefinesameiter, KLrmaxnumzeros
   use utilities, only: arithmaticsum, geometricsum
   integer :: j
@@ -488,8 +488,8 @@ CONTAINS
     allocate(zval(minfinalsize))
     zloc = 0.0d0
     zval = 0.0d0
-    zl = s/real(numslabsecs,8)*real(isec-1,8)
-    zr = s/real(numslabsecs,8)*real(isec  ,8)
+    zl = slen/real(numslabsecs,8)*real(isec-1,8)
+    zr = slen/real(numslabsecs,8)*real(isec  ,8)
     call KLr_refinezerogrid( j,zloc,zval,zl,zr,secpts,flrealzneg,flfindzeros,chxstype,order=0 ) !find zero bounds in seg
     if(.not.flfindzeros .and. flrealzneg) exit             !if only want whether realz is neg and is, exit
 !print *,"zval:",zval
@@ -787,7 +787,7 @@ CONTAINS
   !It can solve any derivative order of the KL process with optional argument 'orderin'.
   !It can function when adjusting mean or not adjusting mean.
   !'totaln', total-native is xs w/o setting to 0, 'totale', total-effective is w/ 0 setting.
-  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype, GBs, &
+  use genRealzvars, only: lamcs1, lamca1, lamcs2, lamca2, vars1, vara1, vars2, vara2, chgeomtype, slen, &
                           GBaves1, GBvars1, GBavea1, GBvara1, GBaves2, GBvars2, GBavea2, GBvara2
   use KLvars, only: alphas1, Aks1, Eigs1, numEigss1, xis1, corrinds1, fls1, &
                     alphaa1, Aka1, Eiga1, numEigsa1, xia1, corrinda1, fla1, &
@@ -823,7 +823,7 @@ CONTAINS
       KL_suma1 = 0d0
       do curEig=1,tnumEigsa1
         Eigfterm = Eigfunc( Aka1(curEig),alphaa1(curEig),lamca1,xpos,order,            &
-                            lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                            lamctypea1,cheftypea1,numNystroma1,slen,eigvecsa1(curEig,:),&
                             GBavea1,GBvara1,Eiga1(curEig)  )
         KL_suma1 = KL_suma1 + sqrt(Eiga1(curEig)) * Eigfterm * xia1(j,curEig)
       enddo
@@ -833,7 +833,7 @@ CONTAINS
       KL_suma2 = 0d0
       do curEig=1,tnumEigsa2
         Eigfterm = Eigfunc( Aka2(curEig),alphaa2(curEig),lamca2,xpos,order,            &
-                            lamctypea2,cheftypea2,numNystroma2,GBs,eigvecsa2(curEig,:),&
+                            lamctypea2,cheftypea2,numNystroma2,slen,eigvecsa2(curEig,:),&
                             GBavea2,GBvara2,Eiga2(curEig)  )
         KL_suma2 = KL_suma2 + sqrt(Eiga2(curEig)) * Eigfterm * xia2(j,curEig)
       enddo
@@ -847,7 +847,7 @@ CONTAINS
       KL_sums1 = 0d0
       do curEig=1,tnumEigss1
         Eigfterm = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,xpos,order,            &
-                            lamctypes1,cheftypes1,numNystroms1,GBs,eigvecss1(curEig,:),&
+                            lamctypes1,cheftypes1,numNystroms1,slen,eigvecss1(curEig,:),&
                             GBaves1,GBvars1,Eigs1(curEig)  )
         KL_sums1 = KL_sums1 + sqrt(Eigs1(curEig)) * Eigfterm * xis1(j,curEig)
       enddo
@@ -857,7 +857,7 @@ CONTAINS
       KL_sums2 = 0d0
       do curEig=1,tnumEigss2
         Eigfterm = Eigfunc( Aks2(curEig),alphas2(curEig),lamcs2,xpos,order,            &
-                            lamctypes2,cheftypes2,numNystroms2,GBs,eigvecss2(curEig,:),&
+                            lamctypes2,cheftypes2,numNystroms2,slen,eigvecss2(curEig,:),&
                             GBaves2,GBvars2,Eigs2(curEig) )
         KL_sums2 = KL_sums2 + sqrt(Eigs2(curEig)) * Eigfterm * xis2(j,curEig)
       enddo
@@ -913,10 +913,10 @@ CONTAINS
 
 
 
-  recursive function Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,cheftype,numNystrom,s,eigvec,GBave,GBvar,eig) result(ef)
+  recursive function Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,cheftype,numNystrom,slen,eigvec,GBave,GBvar,eig) result(ef)
   ! Evaluates Eigenfunction term for any order (0+) derivative of the eigenfunction
   use Klvars, only: chGausstype
-  real(8) :: Ak,alpha,lamc,xpos,s,eigvec(:),GBave,GBvar,eig,ef
+  real(8) :: Ak,alpha,lamc,xpos,slen,eigvec(:),GBave,GBvar,eig,ef
   integer, optional :: orderin
   integer :: order, ibin,numNystrom,j
   character(*) :: lamctype,cheftype
@@ -937,16 +937,16 @@ CONTAINS
     ef = ef/(alpha**order)
   elseif(lamctype=='numeric') then
     if(cheftype=='discrete') then
-      ibin = int(xpos*numNystrom/s)+1
+      ibin = int(xpos*numNystrom/slen)+1
       if(ibin==numNystrom+1) ibin = numNystrom
       ef = eigvec(ibin)
     elseif(cheftype=='linearint') then
-      ibin = int(xpos*numNystrom/s)+1
+      ibin = int(xpos*numNystrom/slen)+1
       if(ibin==numNystrom+1) ibin = numNystrom
-      step = s/numNystrom
+      step = slen/numNystrom
       if(xNyst(step,ibin)>=xpos) then
         if(ibin==1) then
-          ef = Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,'Nystromint',numNystrom,s,eigvec,GBave,GBvar,eig)
+          ef = Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,'Nystromint',numNystrom,slen,eigvec,GBave,GBvar,eig)
         else
           x1 = xNyst(step,ibin-1)
           ef1= eigvec(ibin-1)
@@ -956,7 +956,7 @@ CONTAINS
         endif
       elseif(xNyst(step,ibin)<xpos) then
         if(ibin==numNystrom) then
-          ef = Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,'Nystromint',numNystrom,s,eigvec,GBave,GBvar,eig)
+          ef = Eigfunc(Ak,alpha,lamc,xpos,orderin,lamctype,'Nystromint',numNystrom,slen,eigvec,GBave,GBvar,eig)
         else
           x1 = xNyst(step,ibin)
           ef1= eigvec(ibin)
@@ -967,14 +967,14 @@ CONTAINS
       endif
     elseif(cheftype=='Nystromint') then
       tot = 0d0
-      step = s/numNystrom
+      step = slen/numNystrom
       if(chGausstype=='Gaus') then
         do j=1,numNystrom
-          tot = tot + s/numNystrom * expcov(xpos,xNyst(step,j),lamc) * eigvec(j)
+          tot = tot + slen/numNystrom * expcov(xpos,xNyst(step,j),lamc) * eigvec(j)
         enddo
       elseif(chGausstype=='LogN') then
         do j=1,numNystrom
-          tot = tot + s/numNystrom * GaussLNcov(xpos,xNyst(step,j),lamc,GBave,GBvar) * eigvec(j)
+          tot = tot + slen/numNystrom * GaussLNcov(xpos,xNyst(step,j),lamc,GBave,GBvar) * eigvec(j)
         enddo
       endif
       ef = tot / eig
@@ -1066,7 +1066,7 @@ CONTAINS
   !This subroutine is the master for setting the value of "meanadjust", which will conserve
   !the mean of the reconstructions after ignoring negative values in transport within the 
   !chosen tolerance
-  use genRealzvars, only: s, aves1, avea1, numRealz
+  use genRealzvars, only: slen, aves1, avea1, numRealz
   use KLvars, only: numEigss1, meanadjust_tol, sigsmeanadjust, &
                     sigameanadjust
   use KLconstruct, only: KLr_point, KLrxi_integral
@@ -1085,7 +1085,7 @@ CONTAINS
   intsigave = 0d0
   do j=1,numRealz
     intsigave = intsigave + &
-                KLrxi_integral(j,0d0,s,chxstype='totaln')/numRealz/s
+                KLrxi_integral(j,0d0,slen,chxstype='totaln')/numRealz/slen
   enddo
   write(*,*)
   500 format("  Integrator/reconstruction check - sigave: ",f8.5,"  intsigave: ",f8.5,"  relerr: ",es10.2)
@@ -1094,7 +1094,7 @@ CONTAINS
 
 
   !meanadjust solver
-  step = s/(numEigss1*32d0) !hard parameter, relative step size
+  step = slen/(numEigss1*32d0) !hard parameter, relative step size
 
   adjustiter=0
   do
@@ -1111,21 +1111,21 @@ CONTAINS
       do
         !find next point and area between these two
         xr = findnextpoint(j,chxstype)
-        areacont = KLrxi_integral(j,xl,xr,chxstype=chxstype)/numRealz/s
+        areacont = KLrxi_integral(j,xl,xr,chxstype=chxstype)/numRealz/slen
 
         !calc aveposarea for tol check, also negstat tallies
         xmid = KLr_point(j,(xr+xl)/2d0,chxstype)
         if(xmid>0d0) then
           aveposarea   = aveposarea + areacont
-          perposdomain = perposdomain + (xr - xl)/numRealz/s * 100
+          perposdomain = perposdomain + (xr - xl)/numRealz/slen * 100
         else
           avenegarea   = avenegarea + areacont
-          pernegdomain = pernegdomain + (xr - xl)/numRealz/s * 100
+          pernegdomain = pernegdomain + (xr - xl)/numRealz/slen * 100
         endif
 
         !advance lagging point
         xl = xr
-        if(xr>=s) exit
+        if(xr>=slen) exit
       enddo !sum within realization
     enddo !loop over realizations
 
@@ -1148,7 +1148,7 @@ CONTAINS
   function findnextpoint(j,chxstype)
   !This function searches ahead and finds either 1) next time a reconstructed realization
   !changes signs, or 2) the end of the slab
-  use genRealzvars, only: s
+  use genRealzvars, only: slen
   use KLconstruct, only: KLr_point
   integer :: j
   character(*) :: chxstype
@@ -1167,8 +1167,8 @@ CONTAINS
     if(curs*olds<0d0) then
       curx = refinenextpoint(j,oldx,curx,chxstype)
       exit
-    elseif(curx>=s) then
-      curx = s
+    elseif(curx>=slen) then
+      curx = slen
       exit
     endif
 

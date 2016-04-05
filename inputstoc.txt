@@ -6,6 +6,7 @@
   MC,        Which UQ approach?: 'MC', 'SC', 'PCESC'
   1000,25,         Number of realizations/how often to print
   1000, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  2.0,             Slab thickness, slen
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
@@ -13,7 +14,6 @@
   .true.,1.0, 5.0, 0.5,3,numeric,2,10,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
   .false.,1.0, 1.5, 1.5,3,fitlamc,3,40,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
   .false.,0.5, 0.7, 1.5,3,numeric,4,40,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
-  2.0,        Slab thickness, s
   4,  4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,4,3,2,2,2,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,   SC order, if==0, revert to orders after first number
 
   !--- Geometry - 'Markov' type problem ---!
@@ -21,7 +21,6 @@
   5.0,5.0, Tot xs #0.79690,0.38149,3.4652,0.58742,0.34294(U,C,H2O,UO2,SiC)
   0.9,0.9, ScatRat #0.9071,0.53972,0.99359,0.99899,0.68387,0.9770355(U,C,H2O,UO2,SiC)
   1.0,1.0,             Lambda path length vals  #0.5,2.0
-  5.0,                 slab thickness           #1.0
 
   !--- Other KL Options ---!
   200,            Number of bins for xi

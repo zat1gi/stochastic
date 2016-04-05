@@ -16,36 +16,36 @@ CONTAINS
                     numNystroms1,numNystroma1,numNystroms2,numNystroma2, &
                     pltEigf, chGausstype
   use genRealzvars, only: lamcs1,lamca1,lamcs2,lamca2, GBaves1,GBavea1,GBaves2,GBavea2,&
-                    GBvars1,GBvara1,GBvars2,GBvara2, GBs
+                    GBvars1,GBvara1,GBvars2,GBvara2, slen
   use utilities, only: numerical_eigmodesolve
 
   if(fls1) then
     if(lamctypes1=='analytic') call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
-    if(lamctypes1=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBaves1,GBvars1,&
+    if(lamctypes1=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBaves1,GBvars1,&
                                                    lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aks1,alphas1,lamcs1,lamctypes1,cheftypes1,&
-                                                     numNystroms1,GBs,eigvecss1,GBaves1,GBvars1,Eigs1)
+                                                     numNystroms1,slen,eigvecss1,GBaves1,GBvars1,Eigs1)
   endif
   if(fla1) then
     if(lamctypea1=='analytic') call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
-    if(lamctypea1=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBavea1,GBvara1,&
+    if(lamctypea1=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBavea1,GBvara1,&
                                                    lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aka1,alphaa1,lamca1,lamctypea1,cheftypea1,&
-                                                     numNystroma1,GBs,eigvecsa1,GBavea1,GBvara1,Eiga1)
+                                                     numNystroma1,slen,eigvecsa1,GBavea1,GBvara1,Eiga1)
   endif
   if(fls2) then
     if(lamctypes2=='analytic') call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
-    if(lamctypes2=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBaves2,GBvars2,&
+    if(lamctypes2=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBaves2,GBvars2,&
                                                    lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aks2,alphas2,lamcs2,lamctypes2,cheftypes2,&
-                                                     numNystroms2,GBs,eigvecss2,GBaves2,GBvars2,Eigs2)
+                                                     numNystroms2,slen,eigvecss2,GBaves2,GBvars2,Eigs2)
   endif
   if(fla2) then
     if(lamctypea2=='analytic') call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
-    if(lamctypea2=='numeric')  call numerical_eigmodesolve(chGausstype,GBs,GBavea2,GBvara2,&
+    if(lamctypea2=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBavea2,GBvara2,&
                                                      lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aka2,alphaa2,lamca2,lamctypea2,cheftypea2,&
-                                                     numNystroma2,GBs,eigvecsa2,GBavea2,GBvara2,Eiga2)
+                                                     numNystroma2,slen,eigvecsa2,GBavea2,GBvara2,Eiga2)
   endif
 
   end subroutine KL_eigenvaluemain
@@ -101,7 +101,7 @@ CONTAINS
   !3) From gamma solves: alpha, lambda (Eigenvalue), & the normalization const A_k
   !4) Prints and plots Eigenfunctions if input specifies
   !5) Calculates the percent of mean standard error maintained
-  use genRealzvars, only: s!, chgeomtype, GBaves1, GBavea1, aves1, avea1
+  use genRealzvars, only: slen!, chgeomtype, GBaves1, GBavea1, aves1, avea1
   use KLvars,       only: levsrefEig
   use KLconstruct, only: Eigfunc
 
@@ -114,7 +114,7 @@ CONTAINS
   real(8) :: absdiff,absdiff_1=0,absdiff_2=0,testval(numEigs)
   real(8),allocatable :: gam(:)
 
-  TT = s/lamc
+  TT = slen/lamc
   if( stepGam==0 ) stepGam  =1/TT/50
   allocate(gam(numEigs))
   gam = 0.0d0
@@ -175,11 +175,11 @@ CONTAINS
   do curEig=1,numEigs
     !Calc other values like alpha, norm const (Ak), eigenvalue, etc.
     alpha(curEig)   =gam(curEig)/lamc
-    Ak(curEig)      =sqrt(1d0/(  s/2d0*(gam(curEig)**2+1d0)+lamc  ))
+    Ak(curEig)      =sqrt(1d0/(  slen/2d0*(gam(curEig)**2+1d0)+lamc  ))
     !integrate to 1 tests
     427 format("  ",f13.7,"   Ak:",f13.7)
-    testval(curEig)=Ak(curEig)**2*0.5d0*( s*(1+gam(curEig)**2)+&
-                    lamc*(2d0- (sin(alpha(curEig)*s))**2 ) )
+    testval(curEig)=Ak(curEig)**2*0.5d0*( slen*(1+gam(curEig)**2)+&
+                    lamc*(2d0- (sin(alpha(curEig)*slen))**2 ) )
     write(*,427) testval(curEig),Ak(curEig)
 
     !422 format("  curEig:",i4,"   gam:",f16.7,"   alpha:",f16.7)
@@ -417,7 +417,7 @@ CONTAINS
   !realization based upon the expected value, and the observed 
   !value (function of Eigenfunctions and values).
   !It then plots in 3D if user has specified.
-  use genRealzvars, only: s, lamcs1, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBs, GBvara1
+  use genRealzvars, only: slen, lamcs1, aves1, avea1, GBaves1, GBavea1, chgeomtype, GBvara1
   use KLvars, only: alphas1, Aks1, Eigs1, Corrnumpoints, Corropts, numEigss1, numEigsa1, & 
                     lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
   use KLconstruct, only: Eigfunc
@@ -433,7 +433,7 @@ CONTAINS
   Correxpect = 0  !initialize
   Corryield  = 0
 
-  stepsize = s/(Corrnumpoints)  !set up stepsize
+  stepsize = slen/(Corrnumpoints)  !set up stepsize
 
   if(chgeomtype=='binary') then
     tc = aves1/(aves1+avea1)
@@ -452,10 +452,10 @@ CONTAINS
       !sum Eigs to calc Corryield
       do curEig=1,numEigss1
         Eigfx = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,curx,0,                &
-                         lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                         lamctypea1,cheftypea1,numNystroma1,slen,eigvecsa1(curEig,:),&
                          GBavea1,GBvara1,Eiga1(curEig)  )
         Eigfy = Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,cury,0,                &
-                         lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                         lamctypea1,cheftypea1,numNystroma1,slen,eigvecsa1(curEig,:),&
                          GBavea1,GBvara1,Eiga1(curEig)  )
         Corryield(x,y) = Corryield(x,y) + &
                          merge(    tc   *(Eigs1(curEig) * Eigfx * Eigfy),0d0,curEig<=numEigss1 ) + &
@@ -514,8 +514,8 @@ CONTAINS
   subroutine KL_Cochart
   !This subroutine calculates the variance normalized to 1 at each point in the domain.
   !The closer to 1 the ratio is, the more efficient that approximation is.
-  use genRealzvars, only: s, numRealz, P, lamcs1, totLength, chgeomtype, aves1, avea1, &
-                          GBaves1, GBavea1, GBs, GBvara1
+  use genRealzvars, only: slen, numRealz, P, lamcs1, totLength, chgeomtype, aves1, avea1, &
+                          GBaves1, GBavea1, GBvara1
   use KLvars,       only: alphas1, Aks1, Eigs1, pltCowhich, pltConumof, numSlice, &
                           pltCo, numEigss1, numEigsa1, lamctypea1,cheftypea1,numNystroma1,eigvecsa1,Eiga1
   use KLconstruct, only: Eigfunc
@@ -538,10 +538,10 @@ CONTAINS
   tottotLength=totLength(1)+totLength(2)
   write(*,*)
   write(*,444) totLength(1),totLength(2),tottotLength
-  write(*,445) P(1)*s*numRealz,P(2)*s*numRealz,s*numRealz
+  write(*,445) P(1)*slen*numRealz,P(2)*slen*numRealz,slen*numRealz
 
 
-  slicesize=s/numSlice     !prepare the places to slice and measure
+  slicesize=slen/numSlice     !prepare the places to slice and measure
   sliceval(1)=slicesize/2
   do curCS=2,numSlice
     sliceval(curCS)=sliceval(curCS-1)+slicesize
@@ -558,7 +558,7 @@ CONTAINS
     x=sliceval(curCS)
     do curEig=1,numEigss1
       phi=Eigfunc( Aks1(curEig),alphas1(curEig),lamcs1,x,0,                   &
-                   lamctypea1,cheftypea1,numNystroma1,GBs,eigvecsa1(curEig,:),&
+                   lamctypea1,cheftypea1,numNystroma1,slen,eigvecsa1(curEig,:),&
                    GBavea1,GBvara1,Eiga1(curEig)  )
       cumCo=cumCo+ merge(   tc   *Eigs1(curEig)*phi**2,0d0,curEig<=numEigsa1) &
                  + merge((1d0-tc)*Eigs1(curEig)*phi**2,0d0,curEig<=numEigss1)

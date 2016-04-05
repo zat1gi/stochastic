@@ -158,7 +158,7 @@ CONTAINS
   !It can be used by a UQ_MC wrapper, and likely in the future by UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
   use rngvars, only: rngappnum, rngstride, setrngappnum
-  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, s, lam, &
+  use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, slen, lam, &
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, reflect, transmit, &
                     absorb, position, mu, areapnSamp, numpnSamp, numPartsperj, &
@@ -206,15 +206,15 @@ CONTAINS
         case ("radMC")
           db = merge(matLength(i+1)-position,position-matLength(i),mu>=0)/abs(mu)
         case ("radWood")
-          db = merge(s-position,position,mu>=0)/abs(mu)
+          db = merge(slen-position,position,mu>=0)/abs(mu)
         case ("KLWood")
-          db = merge(s-position,position,mu>=0)/abs(mu)
+          db = merge(slen-position,position,mu>=0)/abs(mu)
         case ("LPMC")
-          db = merge(s-position,position,mu>=0)/abs(mu)
+          db = merge(slen-position,position,mu>=0)/abs(mu)
         case ("atmixMC")
-          db = merge(s-position,position,mu>=0)/abs(mu)
+          db = merge(slen-position,position,mu>=0)/abs(mu)
         case ("GaussKL")
-          db = merge(s-position,position,mu>=0)/abs(mu)
+          db = merge(slen-position,position,mu>=0)/abs(mu)
       end select
 
       !calculate distance to collision
@@ -270,23 +270,23 @@ CONTAINS
               if(i==nummatSegs) transmit(j)=transmit(j) + 1.0d0
               if(i==nummatSegs) flExit='exit'
             case ("radWood")
-              newpos = s
+              newpos = slen
               transmit(j) = transmit(j) + 1.0d0
               flExit='exit'
             case ("KLWood")
-              newpos = s
+              newpos = slen
               transmit(j) = transmit(j) + 1.0d0
               flExit='exit'
             case ("LPMC")
-              newpos = s
+              newpos = slen
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
             case ("atmixMC")
-              newpos = s
+              newpos = slen
               LPamMCsums(2) = LPamMCsums(2) + 1.0d0
               flExit='exit'
             case ("GaussKL")
-              newpos = s
+              newpos = slen
               transmit(j) = transmit(j) + 1.0d0
               flExit='exit'
           end select
@@ -576,7 +576,7 @@ CONTAINS
   subroutine genSourcePart( i )
   !This subroutine generates a position and direction, and bin index if needed (radMC)
   !to specify a source particle.
-  use genRealzvars, only: s
+  use genRealzvars, only: slen
   use MCvars, only: position, mu, rodOrplanar, sourceType, chTrantype
   integer :: i
 
@@ -588,7 +588,7 @@ CONTAINS
     mu       = isoboundmu()
     if(rodOrplanar=='rod') mu = 1.0d0
   elseif( sourceType=='intern' ) then
-    position = s * rang()
+    position = slen * rang()
     mu       = newmu()
     if(rodOrplanar=='rod') mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
   endif
@@ -611,7 +611,7 @@ CONTAINS
   subroutine MCWood_setceils( j )
   !This subroutine sets up ceiling values for Woodcock Monte Carlo.
   !These ceilings of course need to be recalculated for each new realization
-  use genRealzvars, only: s, lamcs1, nummatSegs
+  use genRealzvars, only: slen, lamcs1, nummatSegs
   use KLvars, only: numEigss1, numEigsa1, numEigss2, numEigsa2
   use MCvars, only: chTrantype, binmaxind, binmaxes, fbinmax, bbinmax, nceilbin
   integer :: j
@@ -621,7 +621,7 @@ CONTAINS
     !select local bin maxes
     select case (chTrantype)
       case ("radWood")
-        nceilbin = ceiling(s/lamcs1)
+        nceilbin = ceiling(slen/lamcs1)
         if(nceilbin>6) nceilbin = 6
       case ("KLWood")
         nceilbin = numEigss1
@@ -639,7 +639,7 @@ CONTAINS
     bbinmax=0.0d0
 
     !set bin indices
-    binlength=s/nceilbin
+    binlength=slen/nceilbin
     binmaxind(1)=0.0d0
     do i=2,nceilbin+1
       binmaxind(i)=binmaxind(i-1)+binlength
@@ -670,7 +670,7 @@ CONTAINS
 
 
   subroutine KLWood_binmaxes( j )
-  use genRealzvars, only: GBs
+  use genRealzvars, only: slen
   use MCvars, only: binmaxind, binmaxes, nceilbin
   use KLconstruct, only: KLr_point
 
@@ -700,7 +700,7 @@ CONTAINS
       if(xpos1<0d0) xpos1 = 0d0
       xsig1= KLr_point(j,xpos1,'totale')
       xpos2=maxpos+innerstep
-      if(xpos2>GBs) xpos2 = GBs
+      if(xpos2>slen) xpos2 = slen
       xsig2= KLr_point(j,xpos2,'totale')
       if(xsig1>maxsig .AND. xsig1>xsig2) then
         maxsig=xsig1
@@ -781,12 +781,12 @@ CONTAINS
 
 
   function solvecurbin(position)
-  use genRealzvars, only: s
+  use genRealzvars, only: slen
   use MCvars, only: nceilbin
   integer :: solvecurbin
   real(8) :: position
 
-  solvecurbin = floor(position/s*nceilbin)+1
+  solvecurbin = floor(position/slen*nceilbin)+1
   end function solvecurbin
 
 

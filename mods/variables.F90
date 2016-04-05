@@ -46,12 +46,11 @@ module genRealzvars
   real(8),dimension(2) :: sig                  ! cross sections
   real(8),dimension(2) :: scatrat              ! scattering ratios
   real(8),dimension(2) :: lam                  ! ave path lengths
-  real(8)              :: s                    ! slab thickness
+  real(8)              :: slen                 ! slab thickness
   integer              :: numRealz             ! number of realz to create
   real(8)              :: GBavea1,GBaves1,GBaves2,GBavea2 ! Gauss-based abs and scat xs ave
   real(8)              :: GBvara1,GBvars1,GBvara2,GBvars2 ! Gauss-based abs and scat xs var
   real(8)              :: GBlamcs1,GBlamca1,GBlamcs2,GBlamca2 ! Gauss-based correlation lengths
-  real(8)              :: GBs                  ! Gauss-based slab thickness
   character(6)         :: chgeomtype           ! 'contin'uous or 'binary'
 
   integer              :: pltgenrealznumof     !
@@ -100,7 +99,6 @@ subroutine bcast_genRealzvars_vars
   call MPI_Bcast(sqrPath, 2, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(Adamscase, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(s, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(numRealz, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(fla1) call MPI_Bcast(GBavea1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fls1) call MPI_Bcast(GBaves1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -114,7 +112,7 @@ subroutine bcast_genRealzvars_vars
   if(fla1) call MPI_Bcast(GBlamca1, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fls2) call MPI_Bcast(GBlamcs2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fla2) call MPI_Bcast(GBlamca2, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
-  call MPI_Bcast(GBs, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(slen, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(chgeomtype, 6, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   call MPI_Bcast(pltgenrealznumof, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)

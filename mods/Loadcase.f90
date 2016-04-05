@@ -6,10 +6,10 @@ CONTAINS
 
   subroutine read_test_inputstoc
   use rngvars, only: rngseed
-  use genRealzvars,         only: Adamscase, sig, scatrat, lam, s, numRealz, pltgenrealznumof, &
+  use genRealzvars,         only: Adamscase, sig, scatrat, lam, slen, numRealz, pltgenrealznumof, &
                                   pltgenrealz, pltgenrealzwhich, GBaves1, GBavea1, GBaves2, GBavea2, &
                                   GBvars1, GBvara1, GBvars2, GBvara2, &
-                                  GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, GBs, chgeomtype
+                                  GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, chgeomtype
   use KLvars,               only: pltEigfwhich, pltxiBinswhich, numEigss1, numEigsa1, numEigss2, numEigsa2,&
                                   pltCowhich, pltxiBinsnumof, pltEigfnumof, pltConumof, binNumof,&
                                   numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
@@ -45,6 +45,7 @@ CONTAINS
   read(2,*) chUQtype
   read(2,*) numRealz,trannprt
   read(2,*) numParts,maxnumParts,reflrelSEMtol,tranrelSEMtol,mindatapts
+  read(2,*) slen
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   read(2,*) dumchar
@@ -53,7 +54,6 @@ CONTAINS
   read(2,*) fla1,GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1,corrinda1,numNystroma1,cheftypea1
   read(2,*) fls2,GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2,corrinds2,numNystroms2,cheftypes2
   read(2,*) fla2,GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2,corrinda2,numNystroma2,cheftypea2
-  read(2,*) GBs
   if(.not. (numEigss1==numEigsa1 .and. numEigsa1==numEigss2 .and. numEigss2==numEigsa2)) then
     print *,"for now, need all KLords to be the same"
     stop
@@ -67,7 +67,6 @@ CONTAINS
   read(2,*) sig(1),sig(2)
   read(2,*) scatrat(1),scatrat(2)
   read(2,*) lam(1),lam(2)
-  read(2,*) s
 
   !--- Other KL Options ---!
   read(2,*) dumchar
@@ -468,10 +467,10 @@ CONTAINS
   subroutine global_allocate
   !This subroutine allocates and initializes all global variables
   use rngvars, only: rngappnum, rngseed
-  use genRealzvars, only: lam, P, s, numRealz, numPath, sumPath, sqrPath, largesti, &
+  use genRealzvars, only: lam, P, slen, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamcs1, lamca1, lamcs2, lamca2, sig, aves1, &
                           avea1, aves2, avea2, scatrat, numPosRealz, numNegRealz, atmixscatrat, &
-                          vars1, vara1, vars2, vara2, atmixsig, chgeomtype, GBs, &
+                          vars1, vara1, vars2, vara2, atmixsig, chgeomtype, &
                           GBlamcs1,GBlamca1,GBlamcs2,GBlamca2, &
                           GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2
   use KLvars, only: KLrnumpoints, pltKLrealznumof, chGausstype, Corropts, &
@@ -521,7 +520,6 @@ CONTAINS
     if(fla1) lamca1       = GBlamca1
     if(fls2) lamcs2       = GBlamcs2
     if(fla2) lamca2       = GBlamca2
-    s            = GBs
     if(chGausstype=='Gaus') then
       if(fls1) aves1 = GBaves1
       if(fls1) vars1 = GBvars1
@@ -547,10 +545,10 @@ CONTAINS
       if(fla2) avea2 = log( GBavea2**2 / sqrt( GBvara2 + GBavea2**2 ) )
       if(fla2) vara2 = log( GBvara2    / GBavea2**2 + 1d0 )
 
-      if(fls1 .and. lamctypes1=='fitlamc') lamcs1 = exponentialfit(s,1d0+GBvars1/GBaves1**2,lamcs1)
-      if(fla1 .and. lamctypea1=='fitlamc') lamca1 = exponentialfit(s,1d0+GBvara1/GBavea1**2,lamca1)
-      if(fls2 .and. lamctypes2=='fitlamc') lamcs2 = exponentialfit(s,1d0+GBvars2/GBaves2**2,lamcs2)
-      if(fla2 .and. lamctypea2=='fitlamc') lamca2 = exponentialfit(s,1d0+GBvara2/GBavea2**2,lamca2)
+      if(fls1 .and. lamctypes1=='fitlamc') lamcs1 = exponentialfit(slen,1d0+GBvars1/GBaves1**2,lamcs1)
+      if(fla1 .and. lamctypea1=='fitlamc') lamca1 = exponentialfit(slen,1d0+GBvara1/GBavea1**2,lamca1)
+      if(fls2 .and. lamctypes2=='fitlamc') lamcs2 = exponentialfit(slen,1d0+GBvars2/GBaves2**2,lamcs2)
+      if(fla2 .and. lamctypea2=='fitlamc') lamca2 = exponentialfit(slen,1d0+GBvara2/GBavea2**2,lamca2)
     endif
 
   elseif(chgeomtype=='binary') then
@@ -645,7 +643,7 @@ CONTAINS
       allocate(fluxfaces(fluxnumcells+1))
       fluxfaces = 0.0d0
       do i=1,fluxnumcells+1
-        fluxfaces(i) = (s/fluxnumcells) * (i-1)
+        fluxfaces(i) = (slen/fluxnumcells) * (i-1)
       enddo
     endif
     if(.not.pltflux(1)=='noplot' .or. &!mat irrespective flux allocations
@@ -702,7 +700,7 @@ CONTAINS
   !load special cases; not take input from input file.
   !right now the only special cases are Fichtl 1 and Fichtl 2
   use genRealzvars, only: GBaves1, GBavea1, GBaves2, GBavea2, GBvars1, GBvara1, GBvars2, GBvara2, &
-                          GBlamcs1, GBlamca1, GBlamcs2, GBlamca2, GBs
+                          GBlamcs1, GBlamca1, GBlamcs2, GBlamca2, slen
   use KLvars, only: chGBcase, corrinds1, corrinda1, corrinds2, corrinda2, numEigss1, numEigsa1, numEigss2, numEigsa2, &
                     fls1, fla1, fls2, fla2
   use MCvars, only: sourceType
@@ -725,7 +723,7 @@ CONTAINS
 
     GBlamcs1  = 1.5d0
     GBlamca1  = 1.5d0
-    GBs       = 5.0d0
+    slen      = 5.0d0
 
     numEigss1 = 4
     numEigsa1 = 4
@@ -761,7 +759,7 @@ CONTAINS
 
     GBlamcs1  = 1.0d0
     GBlamca1  = 1.0d0
-    GBs       = 5.0d0
+    slen      = 5.0d0
 
     numEigss1 = 5
     numEigsa1 = 5
@@ -794,7 +792,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -817,7 +815,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -840,7 +838,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -863,7 +861,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -886,7 +884,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -909,7 +907,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -932,7 +930,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -955,7 +953,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -978,7 +976,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1001,7 +999,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -1024,7 +1022,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -1047,7 +1045,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1070,7 +1068,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -1093,7 +1091,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -1116,7 +1114,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1139,7 +1137,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -1162,7 +1160,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -1185,7 +1183,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1208,7 +1206,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -1231,7 +1229,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -1254,7 +1252,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -1277,7 +1275,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -1300,7 +1298,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -1323,7 +1321,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -1346,7 +1344,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -1369,7 +1367,7 @@ CONTAINS
     GBlamca2  = 0.09899999999999999d0
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0.09899999999999999d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -1392,7 +1390,7 @@ CONTAINS
     GBlamca1  = 0.09899999999999999d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -1415,7 +1413,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -1438,7 +1436,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -1461,7 +1459,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1484,7 +1482,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -1507,7 +1505,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -1530,7 +1528,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1553,7 +1551,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -1576,7 +1574,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -1599,7 +1597,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1622,7 +1620,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -1645,7 +1643,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -1668,7 +1666,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1691,7 +1689,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -1714,7 +1712,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -1737,7 +1735,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1760,7 +1758,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -1783,7 +1781,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -1806,7 +1804,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -1829,7 +1827,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -1852,7 +1850,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -1875,7 +1873,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -1898,7 +1896,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -1921,7 +1919,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -1944,7 +1942,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -1967,7 +1965,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -1990,7 +1988,7 @@ CONTAINS
     GBlamca2  = 0.99000000000000010d0
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0.99000000000000010d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -2013,7 +2011,7 @@ CONTAINS
     GBlamca1  = 0.99000000000000010d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -2036,7 +2034,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -2059,7 +2057,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -2082,7 +2080,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -2105,7 +2103,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -2128,7 +2126,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -2151,7 +2149,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -2174,7 +2172,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 0
     corrinda2 = 0
     corrinda1 = 1
@@ -2197,7 +2195,7 @@ CONTAINS
     GBlamca2  = 0d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinda1 = 1
     corrinds2 = 2
     corrinds1 = 0
@@ -2220,7 +2218,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -2243,7 +2241,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -2266,7 +2264,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -2289,7 +2287,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -2312,7 +2310,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -2335,7 +2333,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -2358,7 +2356,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -2381,7 +2379,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 0
@@ -2404,7 +2402,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 0d0
     GBlamcs2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = 2
     corrinda1 = 0
@@ -2427,7 +2425,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = -1
     corrinds2 = 0
@@ -2450,7 +2448,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -2473,7 +2471,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -2496,7 +2494,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 0.10000000000000001d0
+    slen      = 0.10000000000000001d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -2519,7 +2517,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -2542,7 +2540,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -2565,7 +2563,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 1.00000000000000000d0
+    slen      = 1.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -2588,7 +2586,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda2 = -1
     corrinda1 = 1
@@ -2611,7 +2609,7 @@ CONTAINS
     GBlamca2  = 2.52499999999999991d0
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 2.52499999999999991d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 2
     corrinds2 = 3
@@ -2634,7 +2632,7 @@ CONTAINS
     GBlamca1  = 2.52499999999999991d0
     GBlamcs2  = 0d0
     GBlamca2  = 0d0
-    GBs       = 10.00000000000000000d0
+    slen      = 10.00000000000000000d0
     corrinds1 = 1
     corrinda1 = 1
     corrinds2 = 0
@@ -2642,14 +2640,14 @@ CONTAINS
   endif
 print *,"chGBcase:",chGBcase
 print *,fls1,fla1,fls2,fla2,GBaves1,GBavea1,GBaves2,GBavea2,GBvars1,GBvara1,GBvars2,GBvara2
-print *,GBlamcs1,GBlamca1,GBlamcs2,GBlamca2,GBs,corrinds1,corrinda1,corrinds2,corrinda2
+print *,GBlamcs1,GBlamca1,GBlamcs2,GBlamca2,slen,corrinds1,corrinda1,corrinds2,corrinda2
 
   end subroutine GBcase_load
 
 
 
   subroutine Acase_load
-  use genRealzvars, only:   Adamscase, sig, lam, scatrat, s  
+  use genRealzvars, only:   Adamscase, sig, lam, scatrat, slen  
   use MCvars, only: rodOrplanar, ABreflection, ABtransmission, sourceType
   real(8) :: eps = 0.0001d0 !local var
     ! Loading specials cases from Adams and Pomraning Paper, 27 total cases
@@ -2685,11 +2683,11 @@ print *,GBlamcs1,GBlamca1,GBlamcs2,GBlamca2,GBs,corrinds1,corrinda1,corrinds2,co
       endif
       ! load s
       if( int((Adamscase*10+0.005d0-(int(Adamscase))*10))==1 ) then
-        s=0.1d0
+        slen=0.1d0
       elseif( int((Adamscase*10+0.005d0-(int(Adamscase))*10))==2 ) then
-        s=1.0d0
+        slen=1.0d0
       elseif( int((Adamscase*10+0.005d0-(int(Adamscase))*10))==3 ) then
-        s=10.0d0
+        slen=10.0d0
       endif
     endif
 
