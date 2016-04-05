@@ -20,28 +20,28 @@ CONTAINS
   use utilities, only: numerical_eigmodesolve
 
   if(fls1) then
-    if(lamctypes1=='analytic') call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
+    if(lamctypes1=='Glamc' .or. lamctypes1=='fitlamc') call KL_eigenvalue(alphas1,Aks1,Eigs1,numEigss1,lamcs1)
     if(lamctypes1=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBaves1,GBvars1,&
                                                    lamcs1,numEigss1,numNystroms1,Eigs1,eigvecss1)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aks1,alphas1,lamcs1,lamctypes1,cheftypes1,&
                                                      numNystroms1,slen,eigvecss1,GBaves1,GBvars1,Eigs1)
   endif
   if(fla1) then
-    if(lamctypea1=='analytic') call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
+    if(lamctypea1=='Glamc' .or. lamctypea1=='fitlamc') call KL_eigenvalue(alphaa1,Aka1,Eiga1,numEigsa1,lamca1)
     if(lamctypea1=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBavea1,GBvara1,&
                                                    lamca1,numEigsa1,numNystroma1,Eiga1,eigvecsa1)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aka1,alphaa1,lamca1,lamctypea1,cheftypea1,&
                                                      numNystroma1,slen,eigvecsa1,GBavea1,GBvara1,Eiga1)
   endif
   if(fls2) then
-    if(lamctypes2=='analytic') call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
+    if(lamctypes2=='Glamc' .or. lamctypes2=='fitlamc') call KL_eigenvalue(alphas2,Aks2,Eigs2,numEigss2,lamcs2)
     if(lamctypes2=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBaves2,GBvars2,&
                                                    lamcs2,numEigss2,numNystroms2,Eigs2,eigvecss2)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aks2,alphas2,lamcs2,lamctypes2,cheftypes2,&
                                                      numNystroms2,slen,eigvecss2,GBaves2,GBvars2,Eigs2)
   endif
   if(fla2) then
-    if(lamctypea2=='analytic') call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
+    if(lamctypea2=='Glamc' .or. lamctypea2=='fitlamc') call KL_eigenvalue(alphaa2,Aka2,Eiga2,numEigsa2,lamca2)
     if(lamctypea2=='numeric')  call numerical_eigmodesolve(chGausstype,slen,GBavea2,GBvara2,&
                                                      lamca2,numEigsa2,numNystroma2,Eiga2,eigvecsa2)
     if(pltEigf(1) .ne. 'noplot') call KL_eigenfunction_plot(Aka2,alphaa2,lamca2,lamctypea2,cheftypea2,&
@@ -126,7 +126,7 @@ CONTAINS
   write(*,*) "          Eigindx    Gam vals       Eig vals         tol check         tol "
 
   !solve gamma approximate values
-  curGam = 0d0
+  curGam = 0.000000001d0
   curEig = 1
   open(unit=11, file="absdiffGam.txt")
   do
@@ -167,9 +167,9 @@ CONTAINS
         curGam=curGam+refstepGam
       enddo
     enddo
+    if(gam(curEig)<0.0001d0) stop 'Very small Fredholm root found, investigate whether correct!'
     Eig(curEig) = Eigenvalue( gam(curEig),lamc )
   enddo
-
 
   write(*,*) "     Int test"
   do curEig=1,numEigs
