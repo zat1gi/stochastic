@@ -30,8 +30,8 @@ CONTAINS
 
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-  integer         :: i
-  integer, allocatable :: Qtemp(:),corrind(:),tcorrind(:)
+  integer         :: i, Qtempsize, valsused, maxnumeigs, totnumvals
+  integer, allocatable :: Qtemp(:),corrind(:),tcorrind(:),Qtemparray(:,:)
   logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")
@@ -54,12 +54,101 @@ CONTAINS
   read(2,*) fla1,GBavea1,GBvara1,GBlamca1,numEigsa1,lamctypea1,corrinda1,numNystroma1,cheftypea1
   read(2,*) fls2,GBaves2,GBvars2,GBlamcs2,numEigss2,lamctypes2,corrinds2,numNystroms2,cheftypes2
   read(2,*) fla2,GBavea2,GBvara2,GBlamca2,numEigsa2,lamctypea2,corrinda2,numNystroma2,cheftypea2
-  if(.not. (numEigss1==numEigsa1 .and. numEigsa1==numEigss2 .and. numEigss2==numEigsa2)) then
-    print *,"for now, need all KLords to be the same"
-    stop
+  if(chUQtype=="SC" .or. chUQtype=="PCE") then !test KL orders when using cubature
+    if(fls1 .and. fla1 .and. abs(corrinds1)==abs(corrinda1) .and. (numEigss1/=numEigsa1)) flstopstatus = .true.
+    if(fls1 .and. fls2 .and. abs(corrinds1)==abs(corrinds2) .and. (numEigss1/=numEigss2)) flstopstatus = .true.
+    if(fls1 .and. fla2 .and. abs(corrinds1)==abs(corrinda2) .and. (numEigss1/=numEigsa2)) flstopstatus = .true.
+    if(fla1 .and. fls2 .and. abs(corrinda1)==abs(corrinds2) .and. (numEigsa1/=numEigss2)) flstopstatus = .true.
+    if(fla1 .and. fla2 .and. abs(corrinda1)==abs(corrinda2) .and. (numEigsa1/=numEigsa2)) flstopstatus = .true.
+    if(fls2 .and. fla2 .and. abs(corrinds2)==abs(corrinda2) .and. (numEigss2/=numEigsa2)) flstopstatus = .true.
+    if(flstopstatus) print *,"--For corr or anticorr KL expansions with SC or PCE, order must be the same"
+    if(flstopstatus) stop
   endif
-  allocate(Qtemp(numEigss1+numEigsa1+1))
-  read(2,*) (Qtemp(i),i=1,size(Qtemp))
+
+  if(fls1) then              !Test for approriate correlation indices (first==1, any other
+    allocate(corrind(1))     !number preceded by positve counterpart or preceding integer.  
+    corrind = corrinds1
+  endif
+  if(fla1) then
+    if(allocated(corrind)) then
+      call move_alloc(corrind,tcorrind)
+      allocate(corrind(size(tcorrind)+1))
+      corrind(:size(tcorrind)) = tcorrind
+      deallocate(tcorrind)
+    else
+      allocate(corrind(1))
+    endif
+    corrind(size(corrind)) = corrinda1
+  endif
+  if(fls2) then
+    if(allocated(corrind)) then
+      call move_alloc(corrind,tcorrind)
+      allocate(corrind(size(tcorrind)+1))
+      corrind(:size(tcorrind)) = tcorrind
+      deallocate(tcorrind)
+    else
+      allocate(corrind(1))
+    endif
+    corrind(size(corrind)) = corrinds2
+  endif
+  if(fla2) then
+    if(allocated(corrind)) then
+      call move_alloc(corrind,tcorrind)
+      allocate(corrind(size(tcorrind)+1))
+      corrind(:size(tcorrind)) = tcorrind
+      deallocate(tcorrind)
+    else
+      allocate(corrind(1))
+    endif
+    corrind(size(corrind)) = corrinda2
+  endif
+
+  if(corrind(1)/=1) then
+    print *,"--First used correlation indice must be '1'"
+    flstopstatus = .true.
+  endif
+  do i=1,size(corrind)
+    if(i>1) then
+      if(corrind(i)<0) then
+        if(.not. any(corrind(:i)==abs(corrind(i)))) then
+          print *,"--Negative correlation indices must be preceded by positive counterpart"
+          flstopstatus = .true.
+        endif
+      endif
+      if(corrind(i)>1) then
+        if(.not. any(corrind(:i)==corrind(i)-1)) then
+          print *,"--Positive correlation indices must be preceded by previous integer"
+          flstopstatus = .true.
+        endif
+      endif
+    endif
+  enddo
+
+  if(chUQtype=="SC" .or. chUQtype=="PCE") then
+    totnumvals = 0 !cycle through correlations and count number of KL variables
+    do i=1,4
+      if(fls1 .and. i==abs(corrinds1)) then
+        totnumvals = totnumvals + numEigss1
+        cycle
+      endif
+      if(fla1 .and. i==abs(corrinda1)) then
+        totnumvals = totnumvals + numEigsa1
+        cycle
+      endif
+      if(fls2 .and. i==abs(corrinds2)) then
+        totnumvals = totnumvals + numEigss2
+        cycle
+      endif
+      if(fla2 .and. i==abs(corrinda2)) then
+        totnumvals = totnumvals + numEigsa2
+        cycle
+      endif
+    enddo
+  else
+    totnumvals = 1
+  endif
+  allocate(Qs(totnumvals)) !allocate and read quadrature orders according to correlations
+  read(2,*) (Qs(i),i=1,totnumvals)
 
   !--- Geometry - 'Markov' type problem ---!
   read(2,*) dumchar
@@ -179,24 +268,6 @@ CONTAINS
   print *,"  "
 
 
-  !Test for SC params, finish values of numEigs, and finish allocation of Qs
-  if(corrinds1/=corrinds1) then
-    allocate(Qs(numEigss1+numEigsa1))
-  else
-    allocate(Qs(numEigss1))
-  endif
-  if(Qtemp(1)/=0) then
-    Qs = Qtemp(1)
-!  else
-!    if(corrinds1=='independent') then
-!      Qs(1:numEigsa1) = Qtemp(2:numEigsa1+1)
-!      Qs(numEigsa1+1:numEigsa1+numEigss1) = Qtemp(numEigsa1+2:numEigsa1+numEigss1+1)
-!    elseif(corrinds1=='correlated' .or. corrinds1=='anticorrelated') then
-!      Qs = Qtemp(2:numEigss1+1)
-!    endif
-  endif
-  deallocate(Qtemp)
-
   !Test Nystrom options
   if(fls1 .and. lamctypes1=='numeric' .and. numEigss1>numNystroms1) then
     print *,"--User specified coarser Nymstrom discretization than number of eigenvalues, s1"
@@ -279,65 +350,6 @@ CONTAINS
     print *,"--maxnumParts smaller than, so set equal to, LPamnumParts"
     maxnumParts = LPamnumParts
   endif
-
-  if(fls1) then              !Test for approriate correlation indices (first==1, any other
-    allocate(corrind(1))     !number preceded by positve counterpart or preceding integer.  
-    corrind = corrinds1
-  endif
-  if(fla1) then
-    if(allocated(corrind)) then
-      call move_alloc(corrind,tcorrind)
-      allocate(corrind(size(tcorrind)+1))
-      corrind(:size(tcorrind)) = tcorrind
-      deallocate(tcorrind)
-    else
-      allocate(corrind(1))
-    endif
-    corrind(size(corrind)) = corrinda1
-  endif
-  if(fls2) then
-    if(allocated(corrind)) then
-      call move_alloc(corrind,tcorrind)
-      allocate(corrind(size(tcorrind)+1))
-      corrind(:size(tcorrind)) = tcorrind
-      deallocate(tcorrind)
-    else
-      allocate(corrind(1))
-    endif
-    corrind(size(corrind)) = corrinds2
-  endif
-  if(fla2) then
-    if(allocated(corrind)) then
-      call move_alloc(corrind,tcorrind)
-      allocate(corrind(size(tcorrind)+1))
-      corrind(:size(tcorrind)) = tcorrind
-      deallocate(tcorrind)
-    else
-      allocate(corrind(1))
-    endif
-    corrind(size(corrind)) = corrinda2
-  endif
-
-  if(corrind(1)/=1) then
-    print *,"--First used correlation indice must be '1'"
-    flstopstatus = .true.
-  endif
-  do i=1,size(corrind)
-    if(i>1) then
-      if(corrind(i)<0) then
-        if(.not. any(corrind(:i)==abs(corrind(i)))) then
-          print *,"--Negative correlation indices must be preceded by positive counterpart"
-          flstopstatus = .true.
-        endif
-      endif
-      if(corrind(i)>1) then
-        if(.not. any(corrind(:i)==corrind(i)-1)) then
-          print *,"--Positive correlation indices must be preceded by previous integer"
-          flstopstatus = .true.
-        endif
-      endif
-    endif
-  enddo
 
 
   do i=1,pltEigfnumof    !Test Eigenfunction plotting order of Eigs
