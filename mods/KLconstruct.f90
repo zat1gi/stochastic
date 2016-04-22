@@ -163,13 +163,13 @@ CONTAINS
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
   use KLvars,       only: binPDF, binNumof, numEigss1, numEigsa1, numEigss2, numEigsa2, &
                           KLrnumpoints, KLrxmesh, xis1, xia1, xis2, xia2, fls1, fla1, fls2, fla2, &
-                          KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, &
+                          KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, corrind, &
                           Gaussrandtype, flmeanadjust
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig
+  integer :: i,tentj,realj,curEig,ic
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   real(8), allocatable :: nodes(:,:)
@@ -289,6 +289,9 @@ CONTAINS
 !      endif
       !Set correlated and anticorrelated random variable samples as the same.
       !Logic assumes same number of KL eigs in any correlation.  Generalize later.
+      do ic=1,size(corrind)
+        print *,"in here"        
+      enddo
       if(fls1 .and. fla1 .and. abs(corrinds1)==abs(corrinda1)) xia1=xis1
       if(fls1 .and. fls2 .and. abs(corrinds1)==abs(corrinds2)) xis2=xis1
       if(fls1 .and. fla2 .and. abs(corrinds1)==abs(corrinda2)) xia2=xis1

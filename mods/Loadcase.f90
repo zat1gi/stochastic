@@ -15,7 +15,7 @@ CONTAINS
                                   numSlice, levsrefEig, Corrnumpoints, binSmallBound, &
                                   binLargeBound, pltxiBins, pltxiBinsgauss, pltEigf, pltCo, &
                                   Corropts, KLrnumpoints, pltKLrealz, pltKLrealznumof, pltKLrealzwhich, &
-                                  flmeanadjust, meanadjust_tol, chGBcase, &
+                                  flmeanadjust, meanadjust_tol, chGBcase, corrind, &
                                   Gaussrandtype, numrefinesameiter, corrinds1, corrinda1, corrinds2, &
                                   corrinda2, chGausstype, lamctypes1, lamctypea1, lamctypes2, lamctypea2, &
                                   numLNxspts, numLNxsbins, chLNxschecktype, chLNxsplottype, &
@@ -31,7 +31,7 @@ CONTAINS
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
   integer         :: i, Qtempsize, valsused, maxnumeigs, totnumvals
-  integer, allocatable :: Qtemp(:),corrind(:),tcorrind(:),Qtemparray(:,:)
+  integer, allocatable :: Qtemp(:),tcorrind(:),Qtemparray(:,:)
   logical         :: flstopstatus = .false., flsleep = .false.
 
   open(unit=2,file="inputstoc.txt")

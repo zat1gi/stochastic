@@ -3,7 +3,7 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  SC,        Which UQ approach?: 'MC', 'SC', 'PCE'
+  MC,        Which UQ approach?: 'MC', 'SC', 'PCE'
   1000,25,         Number of realizations/how often to print
   1000, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
   2.0,             Slab thickness, slen

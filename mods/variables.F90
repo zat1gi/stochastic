@@ -216,6 +216,7 @@ module KLvars  !"KLresearch" and "KLconstruct"
   character(4)         :: chGausstype          ! Gauss-Based mode: 'Gaus','LogN'
   logical              :: fls1,fla1,fls2,fla2  ! Enable this material?
   integer              :: corrinds1,corrinda1,corrinds2,corrinda2 ! corrind code for mat xss
+  integer, allocatable :: corrind(:)           ! array which lists used correlations indices in order
   character(7)         :: lamctypes1,lamctypea1,lamctypes2,lamctypea2 ! 'Glamc''fitlamc'-expfit,'numeric'
   integer              :: numNystroms1, numNystroma1, numNystroms2, numNystroma2 ! num cells in numeric cov
   character(10)        :: cheftypes1, cheftypea1, cheftypes2, cheftypea2 ! 'discrete''linearint''Nystromint'
@@ -426,6 +427,10 @@ subroutine bcast_KLvars_alloc()
     allocate(xi(numRealz,max(numEigss1,numEigss2,numEigsa1,numEigsa2)))
     xi = 0d0
   endif
+  if(.not.allocated(corrind)) then
+    allocate(corrind(4))
+    corrind = 0
+  endif
 
   if(.not.allocated(binPDF)) then
     allocate(binPDF(binNumof,max(numEigss1,numEigss2,numEigsa1,numEigsa2)+1))
@@ -507,6 +512,7 @@ subroutine bcast_KLvars_dealloc()
   if(allocated(eigvecss2)) deallocate(eigvecss2)
   if(allocated(eigvecsa2)) deallocate(eigvecsa2)
   if(allocated(xi)) deallocate(xi)
+  if(allocated(corrind)) deallocate(corrind)
 
   if(allocated(binPDF)) deallocate(binPDF)
   if(allocated(binBounds)) deallocate(binBounds)
@@ -554,6 +560,7 @@ subroutine bcast_KLvars_arrays
   if(fls2 .and. allocated(eigvecss2)) call MPI_Bcast(eigvecss2, size(eigvecss2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(fla2 .and. allocated(eigvecsa2)) call MPI_Bcast(eigvecsa2, size(eigvecsa2), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(xi)) call MPI_Bcast(xi, size(xi), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(corrind)) call MPI_Bcast(corrind, size(corrind), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 
   if(allocated(binPDF)) call MPI_Bcast(binPDF, size(binPDF), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
   if(allocated(binBounds)) call MPI_Bcast(binBounds, size(binBounds), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
@@ -621,7 +628,7 @@ module MCvars
   real(8), allocatable :: fluxmat1(:,:)        ! flux of a method, mat1, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmatnorm(:,:,:)   ! amount of material in bins, (fluxnumbins,numRealz,2) 
-  real(8), allocatable :: stocMC_fluxall(:,:)  ! flux in cells, (fluxnumbins,nummeths,2)
+  real(8), allocatable :: stocMC_fluxall(:,:)  ! flux in cells, (fluxnumbins,2)
   real(8), allocatable :: stocMC_fluxmat1(:,:) ! flux in mat1, '2' is mean and var
   real(8), allocatable :: stocMC_fluxmat2(:,:) ! flux in mat2
 
