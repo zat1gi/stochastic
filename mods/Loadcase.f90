@@ -609,7 +609,7 @@ CONTAINS
     allocate(Aka1(numEigsa1))
     allocate(Aks2(numEigss2))
     allocate(Aka2(numEigsa2))
-    allocate(xi(numRealz,numEigss1))
+    allocate(xi(numRealz,max(numEigss1,numEigsa1,numEigss2,numEigsa2)))
   endif
 
 
