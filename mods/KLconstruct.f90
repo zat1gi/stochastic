@@ -164,12 +164,12 @@ CONTAINS
   use KLvars,       only: binPDF, binNumof, numEigss1, numEigsa1, numEigss2, numEigsa2, &
                           KLrnumpoints, KLrxmesh, xis1, xia1, xis2, xia2, fls1, fla1, fls2, fla2, &
                           KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, corrind, &
-                          Gaussrandtype, flmeanadjust
+                          Gaussrandtype, flmeanadjust, numeigss1, numeigsa1, numeigss2, numeigsa2
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig,ic
+  integer :: i,tentj,realj,curEig,ic,maxnumeigs
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   real(8), allocatable :: nodes(:,:)
@@ -279,28 +279,33 @@ CONTAINS
           if(curEig<=numEigss2) xis2(realj,curEig) = xiterm
         enddo
       endif
-
-!      if(corrinds1==abs(corrinda1)) then
-!        do j=1,numRealz
-!          do i=1,min(numEigsa1,numEigss1)
-!            xis1(j,i) = xia1(j,i)
-!          enddo
-!        enddo
-!      endif
-      !Set correlated and anticorrelated random variable samples as the same.
-      !Logic assumes same number of KL eigs in any correlation.  Generalize later.
       do ic=1,size(corrind)
-        print *,"in here"        
+        maxnumeigs = 0
+        if(fls1 .and. abs(corrinds1)==ic) maxnumeigs = max(numeigss1,maxnumeigs) !determine the largest numeigs for correlation
+        if(fla1 .and. abs(corrinda1)==ic) maxnumeigs = max(numeigsa1,maxnumeigs)
+        if(fls2 .and. abs(corrinds2)==ic) maxnumeigs = max(numeigss2,maxnumeigs)
+        if(fla2 .and. abs(corrinda2)==ic) maxnumeigs = max(numeigsa2,maxnumeigs)
+        if(fls1 .and. abs(corrinds1)==ic .and. numeigss1==maxnumeigs) then       !set smaller numeigs of correlation equal
+          if(fla1 .and. abs(corrinda1)==ic) xia1 = xis1(:,1:size(xia1(1,:)))
+          if(fls2 .and. abs(corrinds2)==ic) xis2 = xis1(:,1:size(xis2(1,:)))
+          if(fla2 .and. abs(corrinda2)==ic) xia2 = xis1(:,1:size(xia2(1,:)))
+        endif
+        if(fla1 .and. abs(corrinda1)==ic .and. numeigsa1==maxnumeigs) then
+          if(fls1 .and. abs(corrinds1)==ic) xis1 = xia1(:,1:size(xis1(1,:)))
+          if(fls2 .and. abs(corrinds2)==ic) xis2 = xia1(:,1:size(xis2(1,:)))
+          if(fla2 .and. abs(corrinda2)==ic) xia2 = xia1(:,1:size(xia2(1,:)))
+        endif
+        if(fls2 .and. abs(corrinds2)==ic .and. numeigss2==maxnumeigs) then
+          if(fls1 .and. abs(corrinds1)==ic) xis1 = xis2(:,1:size(xis1(1,:)))
+          if(fla1 .and. abs(corrinda1)==ic) xia1 = xis2(:,1:size(xia1(1,:)))
+          if(fla2 .and. abs(corrinda2)==ic) xia2 = xis2(:,1:size(xia2(1,:)))
+        endif
+        if(fla2 .and. abs(corrinda2)==ic .and. numeigsa2==maxnumeigs) then
+          if(fls1 .and. abs(corrinds1)==ic) xis1 = xia2(:,1:size(xis1(1,:)))
+          if(fla1 .and. abs(corrinda1)==ic) xia1 = xia2(:,1:size(xia1(1,:)))
+          if(fls2 .and. abs(corrinds2)==ic) xis2 = xia2(:,1:size(xis2(1,:)))
+        endif
       enddo
-      if(fls1 .and. fla1 .and. abs(corrinds1)==abs(corrinda1)) xia1=xis1
-      if(fls1 .and. fls2 .and. abs(corrinds1)==abs(corrinds2)) xis2=xis1
-      if(fls1 .and. fla2 .and. abs(corrinds1)==abs(corrinda2)) xia2=xis1
-
-      if(fla1 .and. fls2 .and. abs(corrinda1)==abs(corrinds2)) xis2=xia1
-      if(fla1 .and. fla2 .and. abs(corrinda1)==abs(corrinda2)) xia2=xia1
-
-      if(fls2 .and. fla2 .and. abs(corrinds2)==abs(corrinda2)) xia2=xis2
-
     elseif(chUQtype=='SC') then
       do curEig=1,numEigsa1
         xia1(realj,curEig) = nodes(realj,curEig)
@@ -812,7 +817,7 @@ CONTAINS
   real(8) :: siga1, sigs1, siga2, sigs2, KL_sums1, KL_suma1, KL_sums2, KL_suma2, Eigfterm
   integer :: curEig,tnumEigss1,tnumEigsa1,tnumEigss2,tnumEigsa2,order
   real(8) :: tsigsmeanadjust,tsigameanadjust,taves1,tavea1,taves2,tavea2
-!print *,"xpos:",xpos
+
   !load any optional values or their default
   tnumEigss1 = merge(tnumEigss1in,numEigss1,present(tnumEigss1in))
   tnumEigsa1 = merge(tnumEigsa1in,numEigsa1,present(tnumEigsa1in))
