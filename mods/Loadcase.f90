@@ -24,7 +24,7 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
-  use UQvars,               only: Qs, chUQtype
+  use UQvars,               only: Qs, chUQtype, PCEorder, flPCErefl, flPCEtran
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -149,6 +149,7 @@ CONTAINS
   endif
   allocate(Qs(totnumvals)) !allocate and read quadrature orders according to correlations
   read(2,*) (Qs(i),i=1,totnumvals)
+  read(2,*) PCEorder
 
   !--- Geometry - 'Markov' type problem ---!
   read(2,*) dumchar
@@ -166,6 +167,10 @@ CONTAINS
   read(2,*) binSmallBound,binLargeBound
   read(2,*) numSlice
   read(2,*) Gaussrandtype
+
+  !--- Other PCE Options ---!
+  read(2,*) dumchar
+  read(2,*) flPCErefl,flPCEtran
 
   !--- Other MCtrans Options ---!
   read(2,*) dumchar 

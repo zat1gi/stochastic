@@ -12,9 +12,10 @@
   LogN,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
   .true.,1.5, 0.1, 0.5,4,Glamc,1,10,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
   .true.,1.0, 0.1, 0.5,4,Glamc,-1,10,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
-  .true.,1.0, 0.5, 1.5,3,Glamc,2,40,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
-  .true.,0.5, 0.7, 1.5,1,Glamc,3,40,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
+  .false.,1.0, 0.5, 1.5,3,Glamc,2,40,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
+  .false.,0.5, 0.7, 1.5,1,Glamc,3,40,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
   4,3,3,2,4,  3,2,4,4,  2,2,2,2,  2,2,2,2,2,   SC order of correlations
+  3,                                           PCE order
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
@@ -30,6 +31,9 @@
   0,0,            binSmallBound,binLargeBound for xi, if==0, code choose
   20,            Num of x-pos values, to plot Eigenfunction and in KL_Cochart
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
+
+  !--- Other PCE Options ---!
+  .true.,.true.,     PCE of reflection, of transmission?
 
   !--- Other MCtransport Options ---!
   100000000,          Number of particles for LP or atomic mix calculations

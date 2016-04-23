@@ -886,6 +886,8 @@ module UQvars
   !inputs
   character(5)         :: chUQtype             ! 'MC', 'SC', 'PCESC', UQ approach
   integer, allocatable :: Qs(:)                ! for SC, order in each dimension
+  integer              :: PCEorder             ! order of PCE surrogate model
+  logical              :: flPCErefl,flPCEtran  ! reflection and transmission flags - solve model for these?
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts
 contains
@@ -896,6 +898,9 @@ subroutine bcast_UQvars_vars
   integer :: ierr
 
   call MPI_Bcast(chUQtype, 5, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(PCEorder, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flPCErefl, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(flPCEtran, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_UQvars_vars
