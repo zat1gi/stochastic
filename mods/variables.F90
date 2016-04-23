@@ -667,7 +667,6 @@ subroutine reduceMCresults
   use mpiaccess
   implicit none
   integer :: ierr
-
   if(jobid==0) then
     if(allocated(fluxall)) &
     call MPI_Reduce(MPI_IN_PLACE, fluxall, size(fluxall), MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
@@ -905,17 +904,32 @@ end subroutine bcast_UQvars_vars
 subroutine bcast_UQvars_alloc()
   use mpi
   use genRealzvars, only: numRealz
-  use KLvars, only: numEigss1,numEigsa1,corrinds1,corrinda1,corrinds2,corrinda2
+  use KLvars, only: numEigss1,numEigsa1,numEigss2,numEigsa2,corrinds1,corrinda1,corrinds2,corrinda2, &
+                    fls1,fla1,fls2,fla2
   implicit none
+  integer :: totnumeigs, ic
 
-  if(.not.allocated(Qs)) then
-    if(corrinds1/=abs(corrinda1)) then
-      allocate(Qs(numEigss1+numEigsa1))
-    else
-      allocate(Qs(numEigss1))
+  totnumeigs = 0
+  do ic=1,4  !cycle through correlations
+    if(fls1 .and. abs(corrinds1)==ic) then
+      totnumeigs = totnumeigs + numEigss1
+      cycle
     endif
-    Qs = 0
-  endif
+    if(fla1 .and. abs(corrinda1)==ic) then
+      totnumeigs = totnumeigs + numEigsa1
+      cycle
+    endif
+    if(fls2 .and. abs(corrinds2)==ic) then
+      totnumeigs = totnumeigs + numEigss2
+      cycle
+    endif
+    if(fla2 .and. abs(corrinda2)==ic) then
+      totnumeigs = totnumeigs + numEigsa2
+      cycle
+    endif
+  enddo
+  if(.not. allocated(Qs)) allocate(Qs(totnumeigs))
+  Qs = 0
   if(.not.allocated(UQwgts)) then
     allocate(UQwgts(numRealz))
     UQwgts = 0d0

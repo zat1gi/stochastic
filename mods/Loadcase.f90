@@ -30,7 +30,7 @@ CONTAINS
 
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-  integer         :: i, Qtempsize, valsused, maxnumeigs, totnumvals
+  integer         :: i, ic, Qtempsize, valsused, maxnumeigs, totnumvals
   integer, allocatable :: Qtemp(:),tcorrind(:),Qtemparray(:,:)
   logical         :: flstopstatus = .false., flsleep = .false.
 
@@ -126,20 +126,20 @@ CONTAINS
 
   if(chUQtype=="SC" .or. chUQtype=="PCE") then
     totnumvals = 0 !cycle through correlations and count number of KL variables
-    do i=1,4
-      if(fls1 .and. i==abs(corrinds1)) then
+    do ic=1,4
+      if(fls1 .and. ic==abs(corrinds1)) then
         totnumvals = totnumvals + numEigss1
         cycle
       endif
-      if(fla1 .and. i==abs(corrinda1)) then
+      if(fla1 .and. ic==abs(corrinda1)) then
         totnumvals = totnumvals + numEigsa1
         cycle
       endif
-      if(fls2 .and. i==abs(corrinds2)) then
+      if(fls2 .and. ic==abs(corrinds2)) then
         totnumvals = totnumvals + numEigss2
         cycle
       endif
-      if(fla2 .and. i==abs(corrinda2)) then
+      if(fla2 .and. ic==abs(corrinda2)) then
         totnumvals = totnumvals + numEigsa2
         cycle
       endif
@@ -515,16 +515,20 @@ CONTAINS
   numNegRealz= 0
 
   !allocate  KLresearch variables
+  if(.not. fls1) numEigss1 = 0
+  if(.not. fla1) numEigsa1 = 0
+  if(.not. fls2) numEigss2 = 0
+  if(.not. fla2) numEigsa2 = 0
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &
      Corropts(1).ne.'noplot' .or. pltCo(1).ne.'noplot' .or. pltKLrealz(1).ne.'noplot') then
-    allocate(Eigs1(numEigss1))
-    allocate(Eiga1(numEigsa1))
-    allocate(Eigs2(numEigss2))
-    allocate(Eiga2(numEigsa2))
-    allocate(eigvecss1(numEigss1,numNystroms1))
-    allocate(eigvecsa1(numEigsa1,numNystroma1))
-    allocate(eigvecss2(numEigss2,numNystroms2))
-    allocate(eigvecsa2(numEigsa2,numNystroma2))
+    if(fls1) allocate(Eigs1(numEigss1))
+    if(fla1) allocate(Eiga1(numEigsa1))
+    if(fls2) allocate(Eigs2(numEigss2))
+    if(fla2) allocate(Eiga2(numEigsa2))
+    if(fls1) allocate(eigvecss1(numEigss1,numNystroms1))
+    if(fla1) allocate(eigvecsa1(numEigsa1,numNystroma1))
+    if(fls2) allocate(eigvecss2(numEigss2,numNystroms2))
+    if(fla2) allocate(eigvecsa2(numEigsa2,numNystroma2))
   endif
 
   if(chgeomtype=='contin') then  !Gauss-based input

@@ -169,18 +169,14 @@ CONTAINS
   use UQvars, only: chUQtype, Qs, UQwgts
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
-  integer :: i,tentj,realj,curEig,ic,maxnumeigs
+  integer :: i,tentj,realj,curEig,ic,maxnumeigs, numeigscounter
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
   real(8), allocatable :: nodes(:,:)
 
   !If using SC, solve weights and nodes to utilize later and sooner respectively
   if(chUQtype=='SC') then
-    if(corrinds1==abs(corrinda1)) then
-      allocate(nodes(numRealz,numEigss1))
-    elseif(corrinds1/=abs(corrinda1)) then
-      allocate(nodes(numRealz,numEigsa1+numEigss1))
-    endif
+    allocate(nodes(numRealz,size(Qs)))
     call create_cubature(Qs,UQwgts,nodes)
   endif
 
@@ -307,15 +303,19 @@ CONTAINS
         endif
       enddo
     elseif(chUQtype=='SC') then
-      do curEig=1,numEigsa1
-        xia1(realj,curEig) = nodes(realj,curEig)
-      enddo
-      do curEig=1,numEigss1
-        if(corrinds1==abs(corrinda1)) then
-          xis1(realj,curEig) = nodes(realj,curEig)
-        elseif(corrinds1/=abs(corrinda1)) then
-          xis1(realj,curEig) = nodes(realj,numEigsa1+curEig)
-        endif
+      numeigscounter = 0
+      do ic=1,4  !cycle through correlations
+        maxnumeigs = 0  !discern number of KL terms for this correlation
+        if(fls1 .and. abs(corrinds1)==ic) maxnumeigs = max(numEigss1,maxnumeigs)
+        if(fla1 .and. abs(corrinda1)==ic) maxnumeigs = max(numEigsa1,maxnumeigs)
+        if(fls2 .and. abs(corrinds2)==ic) maxnumeigs = max(numEigss2,maxnumeigs)
+        if(fla2 .and. abs(corrinda2)==ic) maxnumeigs = max(numEigsa2,maxnumeigs)
+        if(maxnumeigs==0) exit  !if 0, this correlation not used, exit loop
+        if(fls1 .and. abs(corrinds1)==ic) xis1 = nodes(:,1+numeigscounter:numEigss1+numeigscounter)
+        if(fla1 .and. abs(corrinda1)==ic) xia1 = nodes(:,1+numeigscounter:numEigsa1+numeigscounter)
+        if(fls2 .and. abs(corrinds2)==ic) xis2 = nodes(:,1+numeigscounter:numEigss2+numeigscounter)
+        if(fla2 .and. abs(corrinda2)==ic) xia2 = nodes(:,1+numeigscounter:numEigsa2+numeigscounter)
+        numeigscounter = numeigscounter + maxnumeigs !accumulate which variable on
       enddo
     endif
 
