@@ -24,13 +24,13 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
-  use UQvars,               only: Qs, chUQtype, PCEorder, flPCErefl, flPCEtran, PCEcells, numPCEcells
+  use UQvars,               only: Qs, numUQdims, chUQtype, PCEorder, flPCErefl, flPCEtran, PCEcells, numPCEcells
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
   character(4)  :: setflags(3)
   character(20) :: dumchar !use this to "skip" a line
-  integer         :: i, ic, Qtempsize, valsused, maxnumeigs, totnumvals
+  integer         :: i, ic, Qtempsize, valsused, maxnumeigs
   integer, allocatable :: Qtemp(:),tcorrind(:),Qtemparray(:,:)
   logical         :: flstopstatus = .false., flsleep = .false.
 
@@ -125,30 +125,30 @@ CONTAINS
   enddo
 
   if(chUQtype=="SC" .or. chUQtype=="PCE") then
-    totnumvals = 0 !cycle through correlations and count number of KL variables
+    numUQdims = 0 !cycle through correlations and count number of KL variables
     do ic=1,4
       if(fls1 .and. ic==abs(corrinds1)) then
-        totnumvals = totnumvals + numEigss1
+        numUQdims = numUQdims + numEigss1
         cycle
       endif
       if(fla1 .and. ic==abs(corrinda1)) then
-        totnumvals = totnumvals + numEigsa1
+        numUQdims = numUQdims + numEigsa1
         cycle
       endif
       if(fls2 .and. ic==abs(corrinds2)) then
-        totnumvals = totnumvals + numEigss2
+        numUQdims = numUQdims + numEigss2
         cycle
       endif
       if(fla2 .and. ic==abs(corrinda2)) then
-        totnumvals = totnumvals + numEigsa2
+        numUQdims = numUQdims + numEigsa2
         cycle
       endif
     enddo
   else
-    totnumvals = 1
+    numUQdims = 1
   endif
-  allocate(Qs(totnumvals)) !allocate and read quadrature orders according to correlations
-  read(2,*) (Qs(i),i=1,totnumvals)
+  allocate(Qs(numUQdims)) !allocate and read quadrature orders according to correlations
+  read(2,*) (Qs(i),i=1,numUQdims)
   read(2,*) PCEorder
 
   !--- Geometry - 'Markov' type problem ---!
@@ -533,9 +533,10 @@ CONTAINS
                     fluxnumcells, flfluxplot, LPamMCsums, transmit, reflect, absorb, &
                     numpnSamp, radtrans_int, Wood_rej, flfluxplotall, flfluxplotmat, &
                     fluxall, numPartsperj
-  use UQvars, only: UQwgts, Qs, chUQtype
+  use UQvars, only: UQwgts, Qs, chUQtype, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells, &
+                    PCEcells, numPCEcells, PCEorder, flPCErefl, flPCEtran, numUQdims
   use mcnp_random, only: RN_init_problem
-  use utilities, only: exponentialfit
+  use utilities, only: exponentialfit, nCr
   integer :: i
 
   !initialize rngvars
@@ -543,9 +544,7 @@ CONTAINS
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
 
   !allocate and initialize genRealzvars
-  if(chUQtype=='SC') then
-    numRealz = product(Qs)
-  endif
+  if(chUQtype=='SC' .or. chUQtype=='PCE') numRealz = product(Qs)
   numPosRealz= 0
   numNegRealz= 0
 
@@ -635,7 +634,21 @@ CONTAINS
   !allocate UQ variables
   allocate(UQwgts(numRealz))
   UQwgts = 0d0
-
+  if(chUQtype=='PCE') then
+    numPCEcoefs = nCr(PCEorder+numUQdims,PCEorder)
+    if(flPCErefl) then
+      allocate(PCEcoefsrefl(numPCEcoefs))
+      PCEcoefsrefl = 0d0
+    endif
+    if(flPCEtran) then
+      allocate(PCEcoefstran(numPCEcoefs))
+      PCEcoefstran = 0d0
+    endif
+    if(numPCEcells>0) then
+      allocate(PCEcoefscells(numPCEcells,numPCEcoefs))
+      PCEcoefscells = 0d0
+    endif
+  endif
 
   !allocate  KLresearch variables
   if(chTrantype=='KLWood' .or. chTrantype=='GaussKL' .or. &

@@ -885,6 +885,7 @@ module UQvars
   implicit none
   !inputs
   character(5)         :: chUQtype             ! 'MC', 'SC', 'PCESC', UQ approach
+  integer              :: numUQdims            ! total number of KL terms kept in all processes
   integer, allocatable :: Qs(:)                ! for SC, order in each dimension
   integer              :: PCEorder             ! order of PCE surrogate model
   logical              :: flPCErefl,flPCEtran  ! reflection and transmission flags - solve model for these?
@@ -892,6 +893,11 @@ module UQvars
   integer, allocatable :: PCEcells(:)          ! cells for which the PCE is applied
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts
+  integer              :: numPCEcoefs          ! number of PCE coefficients at x, PCEorder-nCr-numdimensions
+  real(8), allocatable :: PCEcoefsrefl(:)      ! PCE coefs for reflection values
+  real(8), allocatable :: PCEcoefstran(:)      ! PCE coefs for transmission values
+  real(8), allocatable :: PCEcoefscells(:,:)   ! PCE coefs for chosen cells
+
 contains
 #ifdef USE_MPI
 subroutine bcast_UQvars_vars
@@ -900,6 +906,7 @@ subroutine bcast_UQvars_vars
   integer :: ierr
 
   call MPI_Bcast(chUQtype, 5, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numUQdims, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(PCEorder, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(flPCErefl, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(flPCEtran, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
@@ -915,28 +922,8 @@ subroutine bcast_UQvars_alloc()
   use KLvars, only: numEigss1,numEigsa1,numEigss2,numEigsa2,corrinds1,corrinda1,corrinds2,corrinda2, &
                     fls1,fla1,fls2,fla2
   implicit none
-  integer :: totnumeigs, ic
 
-  totnumeigs = 0
-  do ic=1,4  !cycle through correlations
-    if(fls1 .and. abs(corrinds1)==ic) then
-      totnumeigs = totnumeigs + numEigss1
-      cycle
-    endif
-    if(fla1 .and. abs(corrinda1)==ic) then
-      totnumeigs = totnumeigs + numEigsa1
-      cycle
-    endif
-    if(fls2 .and. abs(corrinds2)==ic) then
-      totnumeigs = totnumeigs + numEigss2
-      cycle
-    endif
-    if(fla2 .and. abs(corrinda2)==ic) then
-      totnumeigs = totnumeigs + numEigsa2
-      cycle
-    endif
-  enddo
-  if(.not. allocated(Qs)) allocate(Qs(totnumeigs))
+  if(.not. allocated(Qs)) allocate(Qs(numUQdims))
   Qs = 0
   if(.not.allocated(UQwgts)) then
     allocate(UQwgts(numRealz))
@@ -945,6 +932,20 @@ subroutine bcast_UQvars_alloc()
   if(.not. allocated(PCEcells)) then
     allocate(PCEcells(numPCEcells))
     PCEcells = 0
+  endif
+  if(chUQtype=='PCE') then
+    if(.not. allocated(PCEcoefsrefl)) then
+      allocate(PCEcoefsrefl(numPCEcoefs))
+      PCEcoefsrefl = 0d0
+    endif
+    if(.not. allocated(PCEcoefstran)) then
+      allocate(PCEcoefstran(numPCEcoefs))
+      PCEcoefstran = 0d0
+    endif
+    if(.not. allocated(PCEcoefscells)) then
+      allocate(PCEcoefscells(numPCEcells,numPCEcoefs))
+      PCEcoefscells = 0d0
+    endif
   endif
   return
 end subroutine bcast_UQvars_alloc
@@ -956,6 +957,9 @@ subroutine bcast_UQvars_dealloc()
 
   if(allocated(Qs)) deallocate(Qs)
   if(allocated(PCEcells)) deallocate(PCEcells)
+  if(allocated(PCEcoefsrefl)) deallocate(PCEcoefsrefl)
+  if(allocated(PCEcoefstran)) deallocate(PCEcoefstran)
+  if(allocated(PCEcoefscells)) deallocate(PCEcoefscells)
   if(allocated(UQwgts)) deallocate(UQwgts)
   return
 end subroutine bcast_UQvars_dealloc
@@ -970,6 +974,9 @@ subroutine bcast_UQvars_arrays
 print *,"inn jobid-1:",jobid,"  size(Qs):",size(Qs)
   if(allocated(Qs)) call MPI_Bcast(Qs, size(Qs), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   if(allocated(PCEcells)) call MPI_Bcast(PCEcells, size(PCEcells), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(PCEcoefsrefl)) call MPI_Bcast(PCEcoefsrefl, size(PCEcoefsrefl), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(PCEcoefstran)) call MPI_Bcast(PCEcoefstran, size(PCEcoefstran), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(PCEcoefscells)) call MPI_Bcast(PCEcoefscells, size(PCEcoefscells), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 print *,"inn jobid-2:",jobid
   if(allocated(UQwgts)) call MPI_Bcast(UQwgts, size(UQwgts), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 print *,"inn jobid-3:",jobid

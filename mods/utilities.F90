@@ -356,6 +356,33 @@ CONTAINS
   end function dev_p
 
 
+  function factorial(n)
+  !This function takes the factorial of positive integer 'n'.
+  integer :: n,i,factorial
+  factorial = 1
+  do i=1,n
+    factorial = factorial * i
+  enddo
+  end function factorial
+
+
+  function nCr(n,r)
+  !This function find the binomial coefficient of 'r' and 'k' where n=r+k
+  integer :: n,r,i,nCr,numprod,denprod
+  numprod = 1
+  do i=max(n-r,r)+1,n
+    numprod = numprod * i
+  enddo
+  denprod = 1
+  do i=1,min(n-r,r)
+    denprod = denprod * i
+  enddo
+print *,"numprod:",numprod
+print *,"denprod:",denprod
+  nCr = numprod/denprod
+  end function nCr
+
+
   function arithmaticsum(nf,nl,N)
   !This function finds the sum of an arithmatic series of 'N' numbers whose
   !first number is nf and last number is nl.

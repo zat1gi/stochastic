@@ -166,7 +166,7 @@ CONTAINS
                           KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, corrind, &
                           Gaussrandtype, flmeanadjust, numeigss1, numeigsa1, numeigss2, numeigsa2
   use MCvars, only: chTrantype, flnegxs, trannprt
-  use UQvars, only: chUQtype, Qs, UQwgts
+  use UQvars, only: chUQtype, Qs, UQwgts, numUQdims
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,ic,maxnumeigs, numeigscounter
@@ -175,8 +175,8 @@ CONTAINS
   real(8), allocatable :: nodes(:,:)
 
   !If using SC, solve weights and nodes to utilize later and sooner respectively
-  if(chUQtype=='SC') then
-    allocate(nodes(numRealz,size(Qs)))
+  if(chUQtype=='SC' .or. chUQtype=='PCE') then
+    allocate(nodes(numRealz,numUQdims))
     call create_cubature(Qs,UQwgts,nodes)
   endif
 
