@@ -888,6 +888,8 @@ module UQvars
   integer, allocatable :: Qs(:)                ! for SC, order in each dimension
   integer              :: PCEorder             ! order of PCE surrogate model
   logical              :: flPCErefl,flPCEtran  ! reflection and transmission flags - solve model for these?
+  integer              :: numPCEcells          ! size of 'PCEcells', if -1 at start, set to num of flux cells
+  integer, allocatable :: PCEcells(:)          ! cells for which the PCE is applied
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts
 contains
@@ -901,6 +903,7 @@ subroutine bcast_UQvars_vars
   call MPI_Bcast(PCEorder, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(flPCErefl, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(flPCEtran, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(numPCEcells, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
   return
 end subroutine bcast_UQvars_vars
@@ -939,6 +942,10 @@ subroutine bcast_UQvars_alloc()
     allocate(UQwgts(numRealz))
     UQwgts = 0d0
   endif
+  if(.not. allocated(PCEcells)) then
+    allocate(PCEcells(numPCEcells))
+    PCEcells = 0
+  endif
   return
 end subroutine bcast_UQvars_alloc
 
@@ -948,6 +955,7 @@ subroutine bcast_UQvars_dealloc()
   implicit none
 
   if(allocated(Qs)) deallocate(Qs)
+  if(allocated(PCEcells)) deallocate(PCEcells)
   if(allocated(UQwgts)) deallocate(UQwgts)
   return
 end subroutine bcast_UQvars_dealloc
@@ -961,6 +969,7 @@ subroutine bcast_UQvars_arrays
   integer :: ierr
 print *,"inn jobid-1:",jobid,"  size(Qs):",size(Qs)
   if(allocated(Qs)) call MPI_Bcast(Qs, size(Qs), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  if(allocated(PCEcells)) call MPI_Bcast(PCEcells, size(PCEcells), MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 print *,"inn jobid-2:",jobid
   if(allocated(UQwgts)) call MPI_Bcast(UQwgts, size(UQwgts), MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 print *,"inn jobid-3:",jobid

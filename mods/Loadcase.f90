@@ -24,7 +24,7 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
-  use UQvars,               only: Qs, chUQtype, PCEorder, flPCErefl, flPCEtran
+  use UQvars,               only: Qs, chUQtype, PCEorder, flPCErefl, flPCEtran, PCEcells, numPCEcells
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -171,6 +171,12 @@ CONTAINS
   !--- Other PCE Options ---!
   read(2,*) dumchar
   read(2,*) flPCErefl,flPCEtran
+  read(2,*) numPCEcells
+  if(numPCEcells>=1) then
+    allocate(PCEcells(numPCEcells))
+    read(2,*) (PCEcells(i),i=1,numPCEcells)
+  endif
+  if(numPCEcells<1) read(2,*) dumchar !0 means no PCE cells, -1 is all, handle later
 
   !--- Other MCtrans Options ---!
   read(2,*) dumchar 
@@ -272,6 +278,30 @@ CONTAINS
   !begin tests of valid input
   print *,"  "
 
+  !Test PCEcells options, allocate PCEcells to all flux cells if necessary
+  if(numPCEcells/=0 .and. .not.(pltflux(1)=='plot' .or. pltflux(1)=='preview')) then
+    print *,"--User choosing PCE over cells without plotting flux"
+    flstopstatus = .true.
+  endif
+  if(numPCEcells==-1) then
+    allocate(PCEcells(fluxnumcells))
+    numPCEcells = fluxnumcells
+  elseif(numPCecells<-1) then
+    print *,"--User must enter an integer in [-1,infty) for number of PCE cells"
+    flstopstatus = .true.
+  endif
+  if(numPCEcells > fluxnumcells) then
+    print *,"--User attemping to apply PCE to more cells than plotting flux for"
+    flstopstatus = .true.
+  endif
+  if(numPCEcells>0) then
+    do i=1,numPCEcells
+      if(PCEcells(i)<1 .or. PCEcells(i)>fluxnumcells) then
+        print *,"--User attemping to apply PCE to cell number which is negative or greater than number of flux cells"
+        flstopstatus = .true.
+      endif
+    enddo
+  endif
 
   !Test Nystrom options
   if(fls1 .and. lamctypes1=='numeric' .and. numEigss1>numNystroms1) then
