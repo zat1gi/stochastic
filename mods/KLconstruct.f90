@@ -166,7 +166,7 @@ CONTAINS
                           KLrxisig, corrinds1, corrinda1, corrinds2, corrinda2, corrind, &
                           Gaussrandtype, flmeanadjust, numeigss1, numeigsa1, numeigss2, numeigsa2
   use MCvars, only: chTrantype, flnegxs, trannprt
-  use UQvars, only: chUQtype, Qs, UQwgts, numUQdims
+  use UQvars, only: chUQtype, Qs, UQwgts, numUQdims, UQnodes
   use timeman, only: initialize_t1, timeupdate
   use mcnp_random, only: RN_init_particle
   integer :: i,tentj,realj,curEig,ic,maxnumeigs, numeigscounter
@@ -178,6 +178,8 @@ CONTAINS
   if(chUQtype=='SC' .or. chUQtype=='PCE') then
     allocate(nodes(numRealz,numUQdims))
     call create_cubature(Qs,UQwgts,nodes)
+    allocate(UQnodes(numRealz,numUQdims))
+    UQnodes = nodes
   endif
 
   call initialize_t1
@@ -302,7 +304,7 @@ CONTAINS
           if(fls2 .and. abs(corrinds2)==ic) xis2 = xia2(:,1:size(xis2(1,:)))
         endif
       enddo
-    elseif(chUQtype=='SC') then
+    elseif(chUQtype=='SC' .or. chUQtype=='PCE') then
       numeigscounter = 0
       do ic=1,4  !cycle through correlations
         maxnumeigs = 0  !discern number of KL terms for this correlation

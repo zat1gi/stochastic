@@ -1109,6 +1109,7 @@ CONTAINS
       coefs(k) = coefs(k)! * acoef(PCEpt(d))
     enddo
   enddo
+  deallocate(PCEpt)
 
   end subroutine solve_PCEcoefs
 

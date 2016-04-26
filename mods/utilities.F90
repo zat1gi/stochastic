@@ -377,8 +377,6 @@ CONTAINS
   do i=1,min(n-r,r)
     denprod = denprod * i
   enddo
-print *,"numprod:",numprod
-print *,"denprod:",denprod
   nCr = numprod/denprod
   end function nCr
 
