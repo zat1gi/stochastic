@@ -1083,6 +1083,57 @@ CONTAINS
 
 
 
+  subroutine solve_PCEcoefs(solns,coefs)
+  ! Uses solutions passed to it to solve for PCE coefficients.  This can be transmission, reflection,
+  ! or cell flux values.
+  use genRealzvars, only: numRealz
+  use UQvars, only: numUQdims, numPCEcoefs, UQwgts!, UQnodes
+  real(8), intent(in) :: solns(:)
+  real(8), intent(out):: coefs(:)
+  integer :: k, i, d
+  real(8) :: polyprod
+  integer, allocatable :: PCEpt(:)
+
+  allocate(PCEpt(numUQdims))
+  PCEpt = 0
+  do k=1,numPCEcoefs
+    !call increment_PCEpt(PCEpt)
+    do i=1,numRealz
+      polyprod = 1d0
+      do d=1,numUQdims
+        polyprod = polyprod !* Hermite(PCEpt(d),UQnodes(i,d),d)*probspacesize(d)
+      enddo
+      coefs(k) = coefs(k) + UQwgts(i)*solns(i)*polyprod
+    enddo
+    do d=1,numUQdims
+      coefs(k) = coefs(k)! * acoef(PCEpt(d))
+    enddo
+  enddo
+
+  end subroutine solve_PCEcoefs
+
+
+
+
+  subroutine solve_allPCEcoefs()
+  ! Uses 'solve_PCEcoefs' to solve PCE coeficients for all locations in slab that PCE is
+  ! to be solved for.
+  use UQvars, only: numUQdims, Qs, PCEorder, flPCErefl, flPCEtran, numPCEcells, PCEcells, &
+                    UQwgts, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells
+  use MCvars, only: reflect, transmit, fluxall
+  integer :: i
+
+  if(flPCErefl) call solve_PCEcoefs( reflect , PCEcoefsrefl )
+  if(flPCEtran) call solve_PCEcoefs( transmit ,PCEcoefstran )
+  if(numPCEcells>0) then
+    do i=1,numPCEcells
+      call solve_PCEcoefs( fluxall(PCEcells(i),:) , PCEcoefscells(PCEcells(i),:) )
+    enddo
+  endif
+  end subroutine solve_allPCEcoefs
+
+
+
 
   subroutine stocMC_stats
   !This subroutine:
