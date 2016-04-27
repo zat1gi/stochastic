@@ -17,6 +17,8 @@ program stochastic
 #endif
   implicit none
 
+  integer :: PCEpt(3),i
+
 #ifdef USE_MPI 
   call initialize_mpi()
   print *,"Jobid:",jobid," of ",njobs," njobs."
@@ -25,6 +27,17 @@ program stochastic
 
   !!read parameters
   call read_test_inputstoc
+
+
+ PCEpt = (/ 0,0,0/)
+print *,"PCEpt:",PCEpt
+do i=1,19
+  call increment_PCEpt(PCEpt,1)
+  print *,"PCEpt:",PCEpt
+enddo
+stop
+
+
 
   !!allocate/prepare global parameters
   call global_allocate

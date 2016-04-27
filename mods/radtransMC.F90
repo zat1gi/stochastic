@@ -1082,6 +1082,18 @@ CONTAINS
   end subroutine MCfluxtallysetflag
 
 
+  recursive subroutine increment_PCEpt(PCEpt,n)
+  ! Steps PCEpt to the 'next' point, so that all can be cycled through
+  ! 'n' needs to be '1' (first dimension) when calling this function
+  use UQvars, only: PCEorder
+  integer :: PCEpt(:), n
+  PCEpt(n) = PCEpt(n) + 1
+  if(sum(PCEpt)>PCEorder) then
+    PCEpt(n) = 0
+    call increment_PCEpt(PCEpt,n+1)
+  endif
+  end subroutine increment_PCEpt
+
 
   subroutine solve_PCEcoefs(solns,coefs)
   ! Uses solutions passed to it to solve for PCE coefficients.  This can be transmission, reflection,

@@ -3,19 +3,19 @@
   !--- Biggest Problem Parameters ---!
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
-  PCE,        Which UQ approach?: 'MC', 'SC', 'PCE'
-  10000,25,         Number of realizations/how often to print
-  100, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  SC,        Which UQ approach?: 'MC', 'SC', 'PCE'
+  1000,25,         Number of realizations/how often to print
+  10000, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
   2.0,             Slab thickness, slen
 
   !--- Geometry - Gauss or Gauss-based type problem ---!
   LogN,none,    GB mode: 'Gaus','LogN'/'none','f1','f2','A1.1','A1.1two','A1.1ind','ANS16l','ANS16s',etc. for Ficthl/Adams/Aaron cases
-  .true.,1.5, 0.1, 0.5,6,Glamc,1,10,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
-  .true.,1.0, 0.1, 0.5,6,Glamc,1,10,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
+  .true.,1.5, 0.1, 0.5,3,Glamc,1,10,discrete,  fls1,aves1,vars1,lamcs1,KLords1,lamctype ,corrind,numNystrom,eftype
+  .true.,1.0, 0.1, 0.5,3,Glamc,1,10,discrete,  fla1,avea1,vara1,lamca1,KLorda1,'Glamc'  ,corrind,numNystrom,'discrete'
   .false.,1.0, 0.5, 1.5,3,Glamc,2,40,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
   .false.,0.5, 0.7, 1.5,1,Glamc,3,40,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
-  4,3,3,3,3,  3,2,4,4,  2,2,2,2,  2,2,2,2,2,   SC order of correlations
-  2,                                           PCE order
+  12,10,4,4,3,  3,2,4,4,  2,2,2,2,  2,2,2,2,2,   SC order of correlations
+  3,                                           PCE order
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
