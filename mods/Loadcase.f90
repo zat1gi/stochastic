@@ -279,28 +279,30 @@ CONTAINS
   print *,"  "
 
   !Test PCEcells options, allocate PCEcells to all flux cells if necessary
-  if(numPCEcells/=0 .and. .not.(pltflux(1)=='plot' .or. pltflux(1)=='preview')) then
-    print *,"--User choosing PCE over cells without plotting flux"
-    flstopstatus = .true.
-  endif
-  if(numPCEcells==-1) then
-    allocate(PCEcells(fluxnumcells))
-    numPCEcells = fluxnumcells
-  elseif(numPCecells<-1) then
-    print *,"--User must enter an integer in [-1,infty) for number of PCE cells"
-    flstopstatus = .true.
-  endif
-  if(numPCEcells > fluxnumcells) then
-    print *,"--User attemping to apply PCE to more cells than plotting flux for"
-    flstopstatus = .true.
-  endif
-  if(numPCEcells>0) then
-    do i=1,numPCEcells
-      if(PCEcells(i)<1 .or. PCEcells(i)>fluxnumcells) then
-        print *,"--User attemping to apply PCE to cell number which is negative or greater than number of flux cells"
-        flstopstatus = .true.
-      endif
-    enddo
+  if(chUQtype=='PCE') then
+    if(numPCEcells/=0 .and. .not.(pltflux(1)=='plot' .or. pltflux(1)=='preview')) then
+      print *,"--User choosing PCE over cells without plotting flux"
+      flstopstatus = .true.
+    endif
+    if(numPCEcells==-1) then
+      allocate(PCEcells(fluxnumcells))
+      numPCEcells = fluxnumcells
+    elseif(numPCecells<-1) then
+      print *,"--User must enter an integer in [-1,infty) for number of PCE cells"
+      flstopstatus = .true.
+    endif
+    if(numPCEcells > fluxnumcells) then
+      print *,"--User attemping to apply PCE to more cells than plotting flux for"
+      flstopstatus = .true.
+    endif
+    if(numPCEcells>0) then
+      do i=1,numPCEcells
+        if(PCEcells(i)<1 .or. PCEcells(i)>fluxnumcells) then
+          print *,"--User attemping to apply PCE to cell number which is negative or greater than number of flux cells"
+          flstopstatus = .true.
+        endif
+      enddo
+    endif
   endif
 
   !Test Nystrom options
