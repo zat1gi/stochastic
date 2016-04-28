@@ -1100,6 +1100,7 @@ CONTAINS
   ! or cell flux values.
   use genRealzvars, only: numRealz
   use UQvars, only: numUQdims, numPCEcoefs, UQwgts!, UQnodes
+  use utilities, only: factorial
   real(8), intent(in) :: solns(:)
   real(8), intent(out):: coefs(:)
   integer :: k, i, d
@@ -1113,12 +1114,12 @@ CONTAINS
     do i=1,numRealz
       polyprod = 1d0
       do d=1,numUQdims
-        polyprod = polyprod !* Hermite(PCEpt(d),UQnodes(i,d),d)*probspacesize(d)
+        polyprod = polyprod !* Hermite(PCEpt(d),UQnodes(i,d),d)
       enddo
       coefs(k) = coefs(k) + UQwgts(i)*solns(i)*polyprod
     enddo
     do d=1,numUQdims
-      coefs(k) = coefs(k)! * acoef(PCEpt(d))
+      coefs(k) = coefs(k) / (2d0**PCEpt(d) * factorial(PCEpt(d)) ) !coef 'a' and prob space size for GH aves
     enddo
   enddo
   deallocate(PCEpt)
