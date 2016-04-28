@@ -356,6 +356,42 @@ CONTAINS
   end function dev_p
 
 
+
+  recursive function Hermitepoly(n,x, oin,val_in,val__in) result(val)
+  ! This function samples from the physicists' version of the Hermite polynomials
+  ! of order 'n' at location 'x'.  A standard Gaussian is assumes as the basis.
+  ! 'o', 'val_', and 'val__' are internal recursion variables that need not be passed when
+  ! calling this function.
+  integer :: n,   o
+  real(8) :: x,val,   val_,val__
+  integer,optional :: oin
+  real(8),optional :: val_in, val__in
+
+print *,"check0"
+  if(present(oin)) then
+    o = oin
+  else
+    o = 0
+  endif
+  if(present(val_in))  val_  = val_in
+  if(present(val__in)) val__ = val__in
+print *,"check1"
+  if(o==0) then
+    val  = 1d0
+    val_ = 0d0
+    val__= 0d0
+  elseif(o==1) then
+    val  = 2d0 * x
+    val__= 0d0
+  else
+    val = 2d0*x*val_ - 2d0*(float(o)-1d0)*val__
+  endif
+print *,"check2"
+  if(o<n) val = Hermitepoly(n,x,o+1,val,val_)
+  end function Hermitepoly
+
+
+
   function factorial(n)
   !This function takes the factorial of positive integer 'n'.
   integer :: n,i,factorial

@@ -17,6 +17,9 @@ program stochastic
 #endif
   implicit none
 
+  integer :: n
+  real(8) :: x
+
 #ifdef USE_MPI 
   call initialize_mpi()
   print *,"Jobid:",jobid," of ",njobs," njobs."
@@ -25,6 +28,13 @@ program stochastic
 
   !!read parameters
   call read_test_inputstoc
+
+  n=3
+  x=2d0
+
+  print *,"Hermpoly, order",n," at ",x," :",Hermitepoly(n,x)
+stop
+
 
   !!allocate/prepare global parameters
   call global_allocate
