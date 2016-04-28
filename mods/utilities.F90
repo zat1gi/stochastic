@@ -367,7 +367,6 @@ CONTAINS
   integer,optional :: oin
   real(8),optional :: val_in, val__in
 
-print *,"check0"
   if(present(oin)) then
     o = oin
   else
@@ -375,7 +374,6 @@ print *,"check0"
   endif
   if(present(val_in))  val_  = val_in
   if(present(val__in)) val__ = val__in
-print *,"check1"
   if(o==0) then
     val  = 1d0
     val_ = 0d0
@@ -386,7 +384,7 @@ print *,"check1"
   else
     val = 2d0*x*val_ - 2d0*(float(o)-1d0)*val__
   endif
-print *,"check2"
+
   if(o<n) val = Hermitepoly(n,x,o+1,val,val_)
   end function Hermitepoly
 
