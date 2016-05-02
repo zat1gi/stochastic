@@ -16,6 +16,8 @@ subroutine setrngappnum( rngapp )
       rngappnum = 2
     case ("radtrans")      !allow reproducible transport/correlated transport
       rngappnum = 3
+    case ("PCEsamps")      !allow reproducible PCE surrogate model sampling
+      rngappnum = 4
   end select
 end subroutine setrngappnum
 #ifdef USE_MPI
@@ -895,6 +897,7 @@ module UQvars
   integer              :: numPCEcells          ! size of 'PCEcells', if -1 at start, set to num of flux cells
   integer, allocatable :: PCEcells(:)          ! cells for which the PCE is applied
   integer              :: numPCEQoIsamps       ! number of PCE model samples for moments and pdf
+  logical              :: flPCEsampscorrelated = .false. !correlate sampling at different locations?  
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts
   real(8), allocatable :: UQnodes(:,:)         ! all used xi values, useful in PCE implementation
@@ -902,6 +905,8 @@ module UQvars
   real(8), allocatable :: PCEcoefsrefl(:)      ! PCE coefs for reflection values
   real(8), allocatable :: PCEcoefstran(:)      ! PCE coefs for transmission values
   real(8), allocatable :: PCEcoefscells(:,:)   ! PCE coefs for chosen cells
+  real(8), allocatable :: samplePCExis(:,:,:)  ! nodes for surrogate model sampling (dimension,sample,cell)
+  integer              :: numPCElocations      ! number of cells plus number of leakage locations tracked
 
 contains
 #ifdef USE_MPI

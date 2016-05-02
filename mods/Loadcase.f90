@@ -24,7 +24,8 @@ CONTAINS
   use MCvars,               only: trprofile_binnum, binplot, numParts, trannprt, rodOrplanar, sourceType, &
                                   pltflux, flnegxs, LPamnumParts, fluxnumcells, pltmatflux, mindatapts, &
                                   pltfluxtype, flCR_MCSC, chTrantype, reflrelSEMtol, tranrelSEMtol, maxnumParts
-  use UQvars,               only: Qs, numUQdims, chUQtype, PCEorder, flPCErefl, flPCEtran, PCEcells, numPCEcells
+  use UQvars,               only: Qs, numUQdims, chUQtype, PCEorder, flPCErefl, flPCEtran, PCEcells, numPCEcells, &
+                                  flPCEsampscorrelated, numPCEQoIsamps
   use rngvars,              only: rngstride
   character(7) :: pltallopt                         !Plot all same opt
 
@@ -170,6 +171,8 @@ CONTAINS
 
   !--- Other PCE Options ---!
   read(2,*) dumchar
+  read(2,*) numPCEQoIsamps
+  read(2,*) flPCEsampscorrelated
   read(2,*) flPCErefl,flPCEtran
   read(2,*) numPCEcells
   if(numPCEcells>=1) then
@@ -537,7 +540,8 @@ CONTAINS
                     fluxall, numPartsperj, stocMC_reflectionPCE, stocMC_transmissionPCE, &
                     stocMC_fluxallPCE
   use UQvars, only: UQwgts, Qs, chUQtype, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells, &
-                    PCEcells, numPCEcells, PCEorder, flPCErefl, flPCEtran, numUQdims
+                    PCEcells, numPCEcells, PCEorder, flPCErefl, flPCEtran, numUQdims, samplePCExis, &
+                    numPCEQoIsamps, numPCElocations
   use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit, nCr
   integer :: i
@@ -647,9 +651,14 @@ CONTAINS
       allocate(PCEcoefstran(numPCEcoefs))
       PCEcoefstran = 0d0
     endif
+    numPCElocations = numPCEcells
+    if(flPCErefl) numPCElocations = numPCElocations + 1
+    if(flPCEtran) numPCElocations = numPCelocations + 1
     if(numPCEcells>0) then
       allocate(PCEcoefscells(numPCEcells,numPCEcoefs))
       PCEcoefscells = 0d0
+      allocate(samplePCExis(numUQdims,numPCEQoIsamps,numPCElocations))
+      samplePCExis = 0d0
     endif
   endif
 

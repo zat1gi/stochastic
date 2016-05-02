@@ -1164,29 +1164,60 @@ CONTAINS
   subroutine solve_allPCEQoIs()
   ! Uses 'solve_PCEQoIs' to solve PCE quantities of interest from coefficients
   ! for all locations in slab that PCE is to be solved for.
+  use KLvars, only: Gaussrandtype
   use MCvars, only: stocMC_reflectionPCE, stocMC_transmissionPCE, stocMC_fluxallPCE
   use UQvars, only: numUQdims, Qs, PCEorder, flPCErefl, flPCEtran, numPCEcells, PCEcells, &
-                    UQwgts, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells
-  integer :: i
+                    UQwgts, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells, samplePCExis, &
+                    flPCEsampscorrelated, numPCEQoIsamps, numPCElocations
+  use rngvars, only: rngappnum, rngstride, setrngappnum
+  use mcnp_random, only: RN_init_particle
+  use utilities, only: OneGaussrandnum,erfi
+  integer :: i,iloc,d,isamp
 
-  if(flPCErefl) call solve_PCEQoIs( PCEcoefsrefl, stocMC_reflectionPCE   )
-  if(flPCEtran) call solve_PCEQoIs( PCEcoefstran, stocMC_transmissionPCE )
+  call setrngappnum('PCEsamps') !set PCE model sampling random points 
+  do iloc=1,numPCElocations
+    do d=1,numUQdims
+      do isamp=1,numPCEQoIsamps
+        if(iloc==1 .or. .not.flPCEsampscorrelated) then
+          call RN_init_particle( int(rngappnum*rngstride+ 2*(iloc*numUQdims*numPCEQoIsamps+ d*numPCEQoIsamps+ isamp),8) )
+          if(Gaussrandtype=='BM') then
+            samplePCExis(d,isamp,iloc) = OneGaussrandnum(rang(),rang())
+          elseif(Gaussrandtype=='inv') then
+            samplePCExis(d,isamp,iloc) = sqrt(2d0)*erfi(2d0*rang()-1d0)
+          endif
+        else
+          samplePCExis(d,isamp,iloc) = samplePCExis(d,isamp,1) !if same samples at each 'cell'
+        endif
+      enddo
+    enddo
+  enddo
+
+  !Pass portion of random samples appropriate to 'solve_PCEQoIs'.  Peal reflection/transmission from end of 'samplePCExis'.
+  if(flPCErefl)                    call solve_PCEQoIs( PCEcoefsrefl, stocMC_reflectionPCE  , samplePCExis(:,:,numPCEcells+1))
+  if(flPCErefl.and. flPCEtran)     call solve_PCEQoIs( PCEcoefstran, stocMC_transmissionPCE, samplePCExis(:,:,numPCEcells+2))
+  if(flPCErefl.and..not.flPCEtran) call solve_PCEQoIs( PCEcoefstran, stocMC_transmissionPCE, samplePCExis(:,:,numPCEcells+1))
   if(numPCEcells>0) then
     do i=1,numPCEcells
-      call solve_PCEQoIs( PCEcoefscells(i,:), stocMC_fluxallPCE(i,:) )
+      call solve_PCEQoIs( PCEcoefscells(i,:), stocMC_fluxallPCE(i,:), samplePCExis(:,:,i) )
     enddo
   endif
+
+  do i=1,numPCElocations
+    print *,"xis:",samplePCExis(:,:,i)
+    print *
+  enddo
+stop
 
   end subroutine solve_allPCEQoIs
 
 
 
-  subroutine solve_PCEQoIs(coefs,moments)
+  subroutine solve_PCEQoIs(coefs,moments,samplexis)
   ! Samples PCE model and computes average, variances, and standard error of
   ! the means of response for PCE coefs passed.  A set of PCE coefs can be passed from anywhere in slab.
   use UQvars, only: numPCEQoIsamps
   use utilities, only: mean_var_and_SEM_s
-  real(8), intent(in) :: coefs(:)
+  real(8), intent(in) :: coefs(:),samplexis(:,:)
   real(8), intent(out):: moments(:)
   integer :: isamp
   real(8), allocatable :: samples(:)
