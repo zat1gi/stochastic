@@ -357,7 +357,7 @@ CONTAINS
 
 
 
-  recursive function Hermitepoly(n,x, oin,val_in,val__in) result(val)
+  recursive function HermitePhyspoly(n,x, oin,val_in,val__in) result(val)
   ! This function samples from the physicists' version of the Hermite polynomials
   ! of order 'n' at location 'x'.  A standard Gaussian is assumes as the basis.
   ! 'o', 'val_', and 'val__' are internal recursion variables that need not be passed when
@@ -385,8 +385,8 @@ CONTAINS
     val = 2d0*x*val_ - 2d0*(float(o)-1d0)*val__
   endif
 
-  if(o<n) val = Hermitepoly(n,x,o+1,val,val_)
-  end function Hermitepoly
+  if(o<n) val = HermitePhyspoly(n,x,o+1,val,val_)
+  end function HermitePhyspoly
 
 
 
