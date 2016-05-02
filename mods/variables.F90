@@ -907,6 +907,9 @@ module UQvars
   real(8), allocatable :: PCEcoefscells(:,:)   ! PCE coefs for chosen cells
   real(8), allocatable :: samplePCExis(:,:,:)  ! nodes for surrogate model sampling (dimension,sample,cell)
   integer              :: numPCElocations      ! number of cells plus number of leakage locations tracked
+  real(8), allocatable :: PCEreflsamples(:)    ! reflection samples taken from PCE model (for pdf)
+  real(8), allocatable :: PCEtransamples(:)    ! transmission samples taken from PCE model (for pdf)
+  real(8), allocatable :: PCEcellssamples(:,:)  ! flux samples taken from PCE model (for pdf)
 
 contains
 #ifdef USE_MPI

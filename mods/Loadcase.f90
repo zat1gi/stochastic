@@ -541,7 +541,7 @@ CONTAINS
                     stocMC_fluxallPCE
   use UQvars, only: UQwgts, Qs, chUQtype, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells, &
                     PCEcells, numPCEcells, PCEorder, flPCErefl, flPCEtran, numUQdims, samplePCExis, &
-                    numPCEQoIsamps, numPCElocations
+                    numPCEQoIsamps, numPCElocations, PCEreflsamples, PCEtransamples, PCEcellssamples
   use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit, nCr
   integer :: i
@@ -659,6 +659,18 @@ CONTAINS
       PCEcoefscells = 0d0
       allocate(samplePCExis(numUQdims,numPCEQoIsamps,numPCElocations))
       samplePCExis = 0d0
+    endif
+    if(flPCErefl) then
+      allocate(PCEreflsamples(numPCEQoIsamps))
+      PCEreflsamples = 0d0
+    endif
+    if(flPCEtran) then
+      allocate(PCEtransamples(numPCEQoIsamps))
+      PCEtransamples = 0d0
+    endif
+    if(numPCEcells>0) then
+      allocate(PCEcellssamples(numPCEcells,numPCEQoIsamps))
+      PCEcellssamples = 0d0
     endif
   endif
 
