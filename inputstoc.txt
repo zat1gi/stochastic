@@ -15,7 +15,7 @@
   .false.,1.0, 0.5, 1.5,3,Glamc,2,40,discrete,  fls2,aves2,vars2,lamcs2,KLords2,'fitlamc',corrind,numNystrom,'linearint'
   .false.,0.5, 0.7, 1.5,1,Glamc,3,40,discrete,  fla2,avea2,vara2,lamca2,KLorda2,'numeric',corrind,numNystrom,'Nystromint'
   8,7,4,3,3,  3,2,4,4,  2,2,2,2,  2,2,2,2,2,   SC order of correlations
-  2,                                           PCE order
+  10,                                           PCE order
 
   !--- Geometry - 'Markov' type problem ---!
   0,           Adamscase option, if==0, then user input for next three parameters
@@ -33,7 +33,7 @@
   BM,             Gaussian Sampling type, 'BM' for Box-Muller, 'inv' for inverse sampling
 
   !--- Other PCE Options ---!
-  3,              Number of samples to take at each location when sampling from PCE model
+  1000000,              Number of samples to take at each location when sampling from PCE model
   .false.,            Correlate PCE model samples accross different locations in slab?
   .true.,.true.,     PCE of reflection, of transmission?
   3,            number of cells to apply PCE to, '-1' denotes all cells for which flux is collected

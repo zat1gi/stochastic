@@ -1219,7 +1219,7 @@ CONTAINS
   allocate(samples(numPCEQoIsamps))
   samples = 0d0
   do isamp=1,numPCEQoIsamps
-    !samples(isamp) = samplePCE(isamp)  !can use correlated sampling here or not
+    samples(isamp) = samplePCE(coefs,samplexis(:,isamp))  !can use correlated sampling here or not
   enddo
   call mean_var_and_SEM_s( samples,numPCEQoIsamps,moments(1),moments(2),moments(3) )
   deallocate(samples)
@@ -1227,11 +1227,11 @@ CONTAINS
 
 
 
-  function samplePCE(PCEcoefs,PCExi)
+  function samplePCE(coefs,xis)
   ! Samples from PCE model.  Coefficients and location in each dimension required.
   use UQvars, only: numPCEcoefs, numUQdims
   real(8) :: samplePCE, polyprod
-  real(8), intent(in)  :: PCEcoefs(:), PCExi(:)
+  real(8), intent(in)  :: coefs(:), xis(:)
   integer, allocatable :: PCEpt(:)
   integer :: k,d
 
@@ -1242,9 +1242,9 @@ CONTAINS
     if(k/=1) call increment_PCEpt(PCEpt)
     polyprod = 1d0
     do d=1,numUQdims
-      polyprod = polyprod * HermiteProbpoly(PCEpt(d),PCExi(d))
+      polyprod = polyprod * HermiteProbpoly(PCEpt(d),xis(d))
     enddo
-    samplePCE = samplePCE + PCEcoefs(k) * polyprod
+    samplePCE = samplePCE + coefs(k) * polyprod
   enddo
   deallocate(PCEpt)
   end function samplePCE
