@@ -70,7 +70,7 @@ CONTAINS
 #endif
 
   if(chUQtype=='PCE') call solve_allPCEcoefs
-  call solve_allPCEQoIs
+  if(chUQtype=='PCE') call solve_allPCEQoIs
   call stocMC_stats
 
   end subroutine UQ_MC
@@ -1182,7 +1182,7 @@ CONTAINS
 
 
   subroutine solve_PCEQoIs(coefs,moments)
-  ! Samples PCE model and computes average, standard deviations, and standard error of
+  ! Samples PCE model and computes average, variances, and standard error of
   ! the means of response for PCE coefs passed.  A set of PCE coefs can be passed from anywhere in slab.
   use UQvars, only: numPCEQoIsamps
   use utilities, only: mean_var_and_SEM_s
@@ -1922,7 +1922,8 @@ CONTAINS
   use utilities, only: mean_and_var_p
   use genRealzvars, only: Adamscase, chgeomtype, numRealz
   use MCvars, only: ABreflection, ABtransmission, rodOrplanar, stocMC_reflection, &
-                    stocMC_transmission, chTrantype, numPartsperj
+                    stocMC_transmission, chTrantype, numPartsperj, stocMC_reflectionPCE, &
+                    stocMC_transmissionPCE
   use KLvars, only: chGausstype
   use UQvars, only: chUQtype
   real(8) :: meanPperj,varPperj,eps = 0.001d0
@@ -1938,7 +1939,11 @@ CONTAINS
   327 format(" |radWood:  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
   328 format(" |KLWood :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
   332 format(" |Gauss  :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  372 format(" |Gauss  :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"| SC")
+  371 format(" |Gauss  :  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"| PCE")
   333 format(" |LogNorm:  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"|")
+  373 format(" |LogNorm:  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"| SC")
+  374 format(" |LogNorm:  |",f8.5,"  +-",f9.5,"   | ",f8.5,"  +-",f9.5,"| PCE")
   329 format(" |LPMC   :  |",f8.5,"                | ",f8.5,"             |")
   330 format(" |atmixMC:  |",f8.5,"                | ",f8.5,"             |")
 
@@ -2012,11 +2017,25 @@ CONTAINS
     if(chTrantype=='KLWood')  write(100,328) stocMC_reflection(1),&
     sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
 
-    if(chTrantype=='GaussKL' .and. chGausstype=='Gaus')  write(100,332) stocMC_reflection(1),&
-    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+    if(chTrantype=='GaussKL' .and. chGausstype=='Gaus') then
+      if(chUQtype/='PCE') then
+        write(100,332) stocMC_reflection(1),sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+      elseif(chUQtype=='PCE') then
+        write(100,372) stocMC_reflection(1),sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+        write(100,371) stocMC_reflectionPCE(1),sqrt(stocMC_reflectionPCE(2)),&
+                       stocMC_transmissionPCE(1),sqrt(stocMC_transmissionPCE(2))
+      endif
+    endif
 
-    if(chTrantype=='GaussKL' .and. chGausstype=='LogN')  write(100,333) stocMC_reflection(1),&
-    sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+    if(chTrantype=='GaussKL' .and. chGausstype=='LogN') then
+      if(chUQtype/='PCE') then
+        write(100,333) stocMC_reflection(1),sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+      elseif(chUQtype=='PCE') then
+        write(100,373) stocMC_reflection(1),sqrt(stocMC_reflection(2)),stocMC_transmission(1),sqrt(stocMC_transmission(2))
+        write(100,374) stocMC_reflectionPCE(1),sqrt(stocMC_reflectionPCE(2)),&
+                       stocMC_transmissionPCE(1),sqrt(stocMC_transmissionPCE(2))
+      endif
+    endif
 
     !print SEM
     if( (chTrantype=='radMC' .or. chTrantype=='radWood' .or. chTrantype=='KLWood' .or. chTrantype=='GaussKL') &
