@@ -1128,12 +1128,9 @@ CONTAINS
       enddo
       coefs(k) = coefs(k) + UQwgts(i)*solns(i)*polyprod
     enddo
-print *,"coefs(k):",coefs(k)
     do d=1,numUQdims
       coefs(k) = coefs(k) / factorial(PCEpt(d)) !coef 'a' for prob Herm polys, prob space size==1
     enddo
-print *,"coefs(k):",coefs(k),"PCEpt:",PCEpt
-print *
   enddo
   deallocate(PCEpt)
 
@@ -1149,7 +1146,6 @@ print *
                     UQwgts, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells
   use MCvars, only: reflect, transmit, fluxall
   integer :: i
-  integer, allocatable :: PCEpt(:)
 
   if(flPCErefl) call solve_PCEcoefs( reflect , PCEcoefsrefl )
   if(flPCEtran) call solve_PCEcoefs( transmit ,PCEcoefstran )
@@ -1158,38 +1154,6 @@ print *
       call solve_PCEcoefs( fluxall(PCEcells(i),:) , PCEcoefscells(i,:) )
     enddo
   endif
-
-  allocate(PCEpt(numUQdims))
-  PCEpt = 0 
-  do i=1,numPCEcoefs
-    if(i/=1) call increment_PCEpt(PCEpt)
-    print *,"PCEcoefsrefl(",i,"):",PCEcoefsrefl(i),PCEpt
-  enddo
-  print *
-  PCEpt = 0 
-  do i=1,numPCEcoefs
-    if(i/=1) call increment_PCEpt(PCEpt)
-    print *,"PCEcoefstran(",i,"):",PCEcoefstran(i),PCEpt
-  enddo
-  print *
-  PCEpt = 0 
-  do i=1,numPCEcoefs
-    if(i/=1) call increment_PCEpt(PCEpt)
-    print *,"PCEcoefscells(1,",i,"):",PCEcoefscells(1,i),PCEpt
-  enddo
-  PCEpt = 0 
-  print *
-  do i=1,numPCEcoefs
-    if(i/=1) call increment_PCEpt(PCEpt)
-    print *,"PCEcoefscells(2,",i,"):",PCEcoefscells(2,i),PCEpt
-  enddo
-  PCEpt = 0 
-  print *
-  do i=1,numPCEcoefs
-    if(i/=1) call increment_PCEpt(PCEpt)
-    print *,"PCEcoefscells(3,",i,"):",PCEcoefscells(3,i),PCEpt
-  enddo
-  deallocate(PCEpt)
 
   end subroutine solve_allPCEcoefs
 
@@ -1220,7 +1184,7 @@ print *
       call mean_var_and_SEM_s( reflect,numRealz,stocMC_reflection(1),stocMC_reflection(2),stocMC_reflection(3) )
       call mean_var_and_SEM_s( transmit,numRealz,stocMC_transmission(1),stocMC_transmission(2),stocMC_transmission(3) )
       call mean_var_and_SEM_s( absorb,numRealz,stocMC_absorption(1),stocMC_absorption(2),stocMC_absorption(3) )
-    elseif(chUQtype=='SC') then
+    elseif(chUQtype=='SC' .or. chUQtype=='PCE') then
       call mean_and_var_wgt( UQwgts,reflect,stocMC_reflection(1),stocMC_reflection(2) )
       call mean_and_var_wgt( UQwgts,transmit,stocMC_transmission(1),stocMC_transmission(2) )
       call mean_and_var_wgt( UQwgts,absorb,stocMC_absorption(1),stocMC_absorption(2) )
