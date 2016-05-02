@@ -1119,7 +1119,7 @@ CONTAINS
       coefs(k) = coefs(k) + UQwgts(i)*solns(i)*polyprod
     enddo
     do d=1,numUQdims
-      coefs(k) = coefs(k) / (2d0**PCEpt(d) * factorial(PCEpt(d)) ) !coef 'a' and prob space size for GH aves
+      coefs(k) = coefs(k) / factorial(PCEpt(d)) !coef 'a' for prob Herm polys, prob space size==1
     enddo
   enddo
   deallocate(PCEpt)
