@@ -629,6 +629,7 @@ module MCvars
   real(8), allocatable :: fluxmat2(:,:)        ! flux of a method, mat2, (fluxnumbins,numRealz)
   real(8), allocatable :: fluxmatnorm(:,:,:)   ! amount of material in bins, (fluxnumbins,numRealz,2) 
   real(8), allocatable :: stocMC_fluxall(:,:)  ! flux in cells, (fluxnumbins,2)
+  real(8), allocatable :: stocMC_fluxallPCE(:,:) ! flux in cells, (fluxnumbins,2), sampled from PCE model
   real(8), allocatable :: stocMC_fluxmat1(:,:) ! flux in mat1, '2' is mean and var
   real(8), allocatable :: stocMC_fluxmat2(:,:) ! flux in mat2
 
@@ -642,6 +643,8 @@ module MCvars
                                                ! MC means for MC transport solves in spatial domain
   real(8), allocatable :: stocMC_reflection(:) ! reflection, mean & var in stoc space
   real(8), allocatable :: stocMC_transmission(:)! trans, mean & var in stoc space
+  real(8), allocatable :: stocMC_reflectionPCE(:)  ! reflection, mean & var in stoc space, sampled from PCE model
+  real(8), allocatable :: stocMC_transmissionPCE(:)! trans, mean & var in stoc space, sampled from PCE model
   real(8), allocatable :: stocMC_absorption(:) ! absorption, mean & var in stoc space
 
 
@@ -891,6 +894,7 @@ module UQvars
   logical              :: flPCErefl,flPCEtran  ! reflection and transmission flags - solve model for these?
   integer              :: numPCEcells          ! size of 'PCEcells', if -1 at start, set to num of flux cells
   integer, allocatable :: PCEcells(:)          ! cells for which the PCE is applied
+  integer              :: numPCEQoIsamps       ! number of PCE model samples for moments and pdf
   !non inputs
   real(8), allocatable :: UQwgts(:)            ! for 'MC', 1/numRealz, for 'xxxSC', cubature wgts
   real(8), allocatable :: UQnodes(:,:)         ! all used xi values, useful in PCE implementation

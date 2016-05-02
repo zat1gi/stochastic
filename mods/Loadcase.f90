@@ -534,7 +534,8 @@ CONTAINS
                     stocMC_fluxmat1, stocMC_fluxmat2, pltflux, pltmatflux, areapnsamp, &
                     fluxnumcells, flfluxplot, LPamMCsums, transmit, reflect, absorb, &
                     numpnSamp, radtrans_int, Wood_rej, flfluxplotall, flfluxplotmat, &
-                    fluxall, numPartsperj
+                    fluxall, numPartsperj, stocMC_reflectionPCE, stocMC_transmissionPCE, &
+                    stocMC_fluxallPCE
   use UQvars, only: UQwgts, Qs, chUQtype, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells, &
                     PCEcells, numPCEcells, PCEorder, flPCErefl, flPCEtran, numUQdims
   use mcnp_random, only: RN_init_problem
@@ -697,6 +698,12 @@ CONTAINS
     stocMC_reflection   = 0.0d0
     stocMC_transmission = 0.0d0
     stocMC_absorption   = 0.0d0
+    if(chUQtype=='PCE') then
+      allocate(stocMC_reflectionPCE(3))
+      allocate(stocMC_transmissionPCE(3))
+      stocMC_reflectionPCE   = 0d0
+      stocMC_transmissionPCE = 0d0
+    endif      
     if(.not.allocated(transmit)) allocate(transmit(numRealz)) !leakage tallies
     if(.not.allocated(reflect))  allocate(reflect(numRealz))
     if(.not.allocated(absorb))   allocate(absorb(numRealz))
@@ -716,6 +723,10 @@ CONTAINS
       (flfluxplot .and. (chTrantype=='LPMC' .or. chTrantype=='atmixMC')) ) then
       allocate(stocMC_fluxall(fluxnumcells,2))
       stocMC_fluxall = 0.0d0
+      if(chUQtype=='PCE' .and. numPCEcells>0) then
+        allocate(stocMC_fluxallPCE(numPCEcells,3))
+        stocMC_fluxallPCE = 0d0
+      endif
     endif
     if(.not.pltmatflux=='noplot') then !mat respective flux allocations
       allocate(stocMC_fluxmat1(fluxnumcells,2))
