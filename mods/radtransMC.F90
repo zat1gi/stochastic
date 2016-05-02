@@ -1202,12 +1202,6 @@ CONTAINS
     enddo
   endif
 
-  do i=1,numPCElocations
-    print *,"xis:",samplePCExis(:,:,i)
-    print *
-  enddo
-stop
-
   end subroutine solve_allPCEQoIs
 
 
