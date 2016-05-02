@@ -70,6 +70,7 @@ CONTAINS
 #endif
 
   if(chUQtype=='PCE') call solve_allPCEcoefs
+  call solve_allPCEQoIs
   call stocMC_stats
 
   end subroutine UQ_MC
@@ -1157,6 +1158,48 @@ CONTAINS
 
   end subroutine solve_allPCEcoefs
 
+
+
+
+  subroutine solve_allPCEQoIs()
+  ! Uses 'solve_PCEQoIs' to solve PCE quantities of interest from coefficients
+  ! for all locations in slab that PCE is to be solved for.
+  use MCvars, only: stocMC_reflectionPCE, stocMC_transmissionPCE, stocMC_fluxallPCE
+  use UQvars, only: numUQdims, Qs, PCEorder, flPCErefl, flPCEtran, numPCEcells, PCEcells, &
+                    UQwgts, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells
+  integer :: i
+
+  if(flPCErefl) call solve_PCEQoIs( PCEcoefsrefl, stocMC_reflectionPCE   )
+  if(flPCEtran) call solve_PCEQoIs( PCEcoefstran, stocMC_transmissionPCE )
+  if(numPCEcells>0) then
+    do i=1,numPCEcells
+      call solve_PCEQoIs( PCEcoefscells(i,:), stocMC_fluxallPCE(i,:) )
+    enddo
+  endif
+
+  end subroutine solve_allPCEQoIs
+
+
+
+  subroutine solve_PCEQoIs(coefs,moments)
+  ! Samples PCE model and computes average, standard deviations, and standard error of
+  ! the means of response for PCE coefs passed.  A set of PCE coefs can be passed from anywhere in slab.
+  use UQvars, only: numPCEQoIsamps
+  use utilities, only: mean_var_and_SEM_s
+  real(8), intent(in) :: coefs(:)
+  real(8), intent(out):: moments(:)
+  integer :: isamp
+  real(8), allocatable :: samples(:)
+
+  allocate(samples(numPCEQoIsamps))
+  numPCEQoIsamps = 0d0
+  samples = 1d0
+  do isamp=1,numPCEQoIsamps
+    !samples(isamp) = samplePCE(isamp)  !can use correlated sampling here or not
+  enddo
+  call mean_var_and_SEM_s( samples,numPCEQoIsamps,moments(1),moments(2),moments(3) )
+  deallocate(samples)
+  end subroutine solve_PCEQoIs
 
 
 
