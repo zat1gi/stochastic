@@ -12,6 +12,7 @@ CONTAINS
   !in UQ space.
   use genRealzvars, only: numRealz
   use MCvars, only: trannprt, flfluxplotmat, chTrantype
+  use UQvars, only: chUQtype
   use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
   use rngvars, only: rngseed, rngappnum
@@ -68,6 +69,7 @@ CONTAINS
   if(jobid/=0) stop
 #endif
 
+  if(chUQtype=='PCE') call solve_allPCEcoefs
   call stocMC_stats
 
   end subroutine UQ_MC
@@ -1082,11 +1084,19 @@ CONTAINS
   end subroutine MCfluxtallysetflag
 
 
-  recursive subroutine increment_PCEpt(PCEpt,n)
-  ! Steps PCEpt to the 'next' point, so that all can be cycled through
-  ! 'n' needs to be '1' (first dimension) when calling this function
+  recursive subroutine increment_PCEpt(PCEpt, nin)
+  ! Steps PCEpt to the 'next' point, so that all can be cycled through.
+  ! To take a step of one point, the user should not specify 'nin' or 
+  ! provide a value of '1' (first dimension).  Other values will increment
+  ! in another dimension.
   use UQvars, only: PCEorder
   integer :: PCEpt(:), n
+  integer, optional :: nin
+  if(present(nin)) then
+    n = nin
+  else
+    n = 1
+  endif 
   PCEpt(n) = PCEpt(n) + 1
   if(sum(PCEpt)>PCEorder) then
     PCEpt(n) = 0
@@ -1099,8 +1109,8 @@ CONTAINS
   ! Uses solutions passed to it to solve for PCE coefficients.  This can be transmission, reflection,
   ! or cell flux values.
   use genRealzvars, only: numRealz
-  use UQvars, only: numUQdims, numPCEcoefs, UQwgts!, UQnodes
-  use utilities, only: factorial
+  use UQvars, only: numUQdims, numPCEcoefs, UQwgts, UQnodes
+  use utilities, only: factorial, HermiteProbpoly
   real(8), intent(in) :: solns(:)
   real(8), intent(out):: coefs(:)
   integer :: k, i, d
@@ -1110,17 +1120,20 @@ CONTAINS
   allocate(PCEpt(numUQdims))
   PCEpt = 0
   do k=1,numPCEcoefs
-    !call increment_PCEpt(PCEpt)
+    if(k/=1) call increment_PCEpt(PCEpt)
     do i=1,numRealz
       polyprod = 1d0
       do d=1,numUQdims
-        polyprod = polyprod !* Hermite(PCEpt(d),UQnodes(i,d),d)
+        polyprod = polyprod * HermiteProbpoly(PCEpt(d),UQnodes(i,d))
       enddo
       coefs(k) = coefs(k) + UQwgts(i)*solns(i)*polyprod
     enddo
+print *,"coefs(k):",coefs(k)
     do d=1,numUQdims
       coefs(k) = coefs(k) / factorial(PCEpt(d)) !coef 'a' for prob Herm polys, prob space size==1
     enddo
+print *,"coefs(k):",coefs(k),"PCEpt:",PCEpt
+print *
   enddo
   deallocate(PCEpt)
 
@@ -1136,14 +1149,48 @@ CONTAINS
                     UQwgts, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells
   use MCvars, only: reflect, transmit, fluxall
   integer :: i
+  integer, allocatable :: PCEpt(:)
 
   if(flPCErefl) call solve_PCEcoefs( reflect , PCEcoefsrefl )
   if(flPCEtran) call solve_PCEcoefs( transmit ,PCEcoefstran )
   if(numPCEcells>0) then
     do i=1,numPCEcells
-      call solve_PCEcoefs( fluxall(PCEcells(i),:) , PCEcoefscells(PCEcells(i),:) )
+      call solve_PCEcoefs( fluxall(PCEcells(i),:) , PCEcoefscells(i,:) )
     enddo
   endif
+
+  allocate(PCEpt(numUQdims))
+  PCEpt = 0 
+  do i=1,numPCEcoefs
+    if(i/=1) call increment_PCEpt(PCEpt)
+    print *,"PCEcoefsrefl(",i,"):",PCEcoefsrefl(i),PCEpt
+  enddo
+  print *
+  PCEpt = 0 
+  do i=1,numPCEcoefs
+    if(i/=1) call increment_PCEpt(PCEpt)
+    print *,"PCEcoefstran(",i,"):",PCEcoefstran(i),PCEpt
+  enddo
+  print *
+  PCEpt = 0 
+  do i=1,numPCEcoefs
+    if(i/=1) call increment_PCEpt(PCEpt)
+    print *,"PCEcoefscells(1,",i,"):",PCEcoefscells(1,i),PCEpt
+  enddo
+  PCEpt = 0 
+  print *
+  do i=1,numPCEcoefs
+    if(i/=1) call increment_PCEpt(PCEpt)
+    print *,"PCEcoefscells(2,",i,"):",PCEcoefscells(2,i),PCEpt
+  enddo
+  PCEpt = 0 
+  print *
+  do i=1,numPCEcoefs
+    if(i/=1) call increment_PCEpt(PCEpt)
+    print *,"PCEcoefscells(3,",i,"):",PCEcoefscells(3,i),PCEpt
+  enddo
+  deallocate(PCEpt)
+
   end subroutine solve_allPCEcoefs
 
 
