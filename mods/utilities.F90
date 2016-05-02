@@ -357,9 +357,43 @@ CONTAINS
 
 
 
+  recursive function HermiteProbpoly(n,x, oin,val_in,val__in) result(val)
+  ! This function samples from the probabalists' version of the Hermite polynomials
+  ! of order 'n' at location 'x'.  A standard Gaussian is assumed as the basis.
+  ! 'o', 'val_', and 'val__' are internal recursion variables that need not be passed when
+  ! calling this function.
+  integer :: n,   o
+  real(8) :: x,val,   val_,val__
+  integer,optional :: oin
+  real(8),optional :: val_in, val__in
+
+  if(present(oin)) then
+    o = oin
+  else
+    o = 0
+  endif
+  if(present(val_in))  val_  = val_in
+  if(present(val__in)) val__ = val__in
+  if(o==0) then
+    val  = 1d0
+    val_ = 0d0
+    val__= 0d0
+  elseif(o==1) then
+    val  = x
+    val__= 0d0
+  else
+    val = x*val_ - (float(o)-1d0)*val__
+  endif
+
+  if(o<n) val = HermiteProbpoly(n,x,o+1,val,val_)
+  end function HermiteProbpoly
+
+
+
+
   recursive function HermitePhyspoly(n,x, oin,val_in,val__in) result(val)
   ! This function samples from the physicists' version of the Hermite polynomials
-  ! of order 'n' at location 'x'.  A standard Gaussian is assumes as the basis.
+  ! of order 'n' at location 'x'.  exp(-x^2) is assumed as the basis.
   ! 'o', 'val_', and 'val__' are internal recursion variables that need not be passed when
   ! calling this function.
   integer :: n,   o

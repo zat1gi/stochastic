@@ -17,11 +17,19 @@ program stochastic
 #endif
   implicit none
 
+real(8) :: x
+integer :: n
+
 #ifdef USE_MPI 
   call initialize_mpi()
   print *,"Jobid:",jobid," of ",njobs," njobs."
   if(jobid==0) then
 #endif
+
+ n = 4
+ x = 3d0
+print *,"HermiteProbpoly(n,x):",HermiteProbpoly(n,x)
+stop
 
   !!read parameters
   call read_test_inputstoc
