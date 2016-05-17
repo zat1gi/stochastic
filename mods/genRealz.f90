@@ -10,11 +10,11 @@ CONTAINS
   subroutine genbinaryReal( j )
   !creates a binary material realization, plots if specified,
   !and collects tallies for realization stats
-  use rngvars, only: rngappnum, rngstride, setrngappnum
+  use rngvars, only: rngappnum, rngstride, setrngappnum, mts
   use genRealzvars, only: sig, lam, slen, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, totLength
-  use mcnp_random, only: RN_init_particle
+  use mt_stream, only: init, mt_state, genrand_double3
 
   integer :: j
 
@@ -27,12 +27,12 @@ CONTAINS
 
   !allows reproducable realizations for same rngseed
   call setrngappnum('genRealz')
-  call RN_init_particle( int(rngappnum*rngstride+j,8) )
+  call init( mts , int(rngappnum*rngstride+j,4) )
 
   matLength_temp=0d0
   matType_temp=0
 
-  if( rang() < P(1) ) then  !choose which material first and tally
+  if( genrand_double3(mts) < P(1) ) then  !choose which material first and tally
     matType_temp(1) = 1
     matFirstTally(1) = matFirstTally(1)+1
   else
@@ -45,7 +45,7 @@ CONTAINS
   do while ( matLength_temp(i-1)<slen )
 
     !decide total length at next segment
-    matLength_temp(i)=matLength_temp(i-1)+lam(matType_temp(i-1))*log(1/(1-rang())) 
+    matLength_temp(i)=matLength_temp(i-1)+lam(matType_temp(i-1))*log(1/(1-genrand_double3(mts))) 
 
     if(matType_temp(i-1)==1) matType_temp(i)=2    !change mat for next seg
     if(matType_temp(i-1)==2) matType_temp(i)=1
@@ -116,10 +116,11 @@ CONTAINS
   subroutine genLPReal
   !chooses material to come next for Levermore-Pomraning transport
   use genRealzvars, only: P, matType
-  use mcnp_random, only: RN_init_particle
+  use rngvars, only: mts
+  use mt_stream, only: genrand_double3
 
   if(.not.allocated(matType)) allocate(matType(1))
-  matType(1) = merge(1,2,rang()<P(1))
+  matType(1) = merge(1,2,genrand_double3(mts)<P(1))
 
   end subroutine genLPReal
 

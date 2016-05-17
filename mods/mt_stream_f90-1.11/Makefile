@@ -27,7 +27,7 @@ NTL_INCLUDES := -I$(HOME)/include
 NTL_LIBS :=  -L$(HOME)/lib -lntl -lgf2x -lstdc++
 
 # linker flag (use fortran)
-LDFLAGS := -static
+LDFLAGS := 
 
 export FC
 export FFLAGS
@@ -70,13 +70,13 @@ check_stream_3.out : check_stream_3
 	@sh ./check_3.sh $@
 
 check_stream_1 : check_stream_1.o mt_stream_debug.o $(JUMPOBJ)
-	$(FC) $(LDFLAGS) -static $^ -o $@ $(LIBS)
+	$(FC) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 check_stream_2 : check_stream_2.o mt_stream.o $(JUMPOBJ)
-	$(FC) $(LDFLAGS) -static $^ -o $@ $(LIBS)
+	$(FC) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 check_stream_3 : check_stream_3.o mt_stream_debug.o $(JUMPOBJ)
-	$(FC) $(LDFLAGS) -static $^ -o $@ $(LIBS)
+	$(FC) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 check_stream_1.o : check_stream.F90 mt_stream_debug.o
 	$(FC) $(FFLAGS) -D_DEBUG_ -D_CHECK_STREAM_ $(INCLUDES) -c $< -o $@

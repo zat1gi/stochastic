@@ -4,8 +4,8 @@
   contin,          Geometry type: 'contin'uous or 'binary'
   GaussKL,      Which Transport?: radMC/radWood/KLWood/LPMC/atmixMC/GaussKL/None subroutines?
   PCE,        Which UQ approach?: 'MC', 'SC', 'PCE'
-  100,25,         Number of realizations/how often to print
-  100, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
+  4000,25,         Number of realizations/how often to print
+  4000, 100,0.01,0.01,10,  Min/max part to sim per realz/ refl/tran rel SEM tol/min pts for stats
   2.0,             Slab thickness, slen
 
   !--- Geometry - Gauss or Gauss-based type problem ---!

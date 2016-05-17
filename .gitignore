@@ -1,6 +1,7 @@
 #### current and mod folder binaries ####
 astochastic
-mods/*.mod
+**/*.mod
+mods/**/*.o
 *.sh
 !modifyfile.sh  #do track this .sh file
 

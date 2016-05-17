@@ -1,9 +1,11 @@
 module rngvars
+  use mt_stream, only: mt_state
   implicit none
   integer(8)           :: rngseed              ! user input which seeds rng stream
 
   integer              :: rngappnum            ! application number
   integer(8)           :: rngstride=1668163541 ! num of 'part histories' to skip between apps
+  type(mt_state), save :: mts                  ! Mersenne Twister state
 contains
 subroutine setrngappnum( rngapp )
   !this subroutine sets rngappnum according to what application, to standardize

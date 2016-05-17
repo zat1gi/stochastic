@@ -518,7 +518,8 @@ CONTAINS
 
   subroutine global_allocate
   !This subroutine allocates and initializes all global variables
-  use rngvars, only: rngappnum, rngseed
+  use rngvars, only: rngappnum, rngseed, mts
+  use mt_stream, only: set_mt19937, new
   use genRealzvars, only: lam, P, slen, numRealz, numPath, sumPath, sqrPath, largesti, &
                           totLength, lamcs1, lamca1, lamcs2, lamca2, sig, aves1, &
                           avea1, aves2, avea2, scatrat, numPosRealz, numNegRealz, atmixscatrat, &
@@ -549,6 +550,9 @@ CONTAINS
   !initialize rngvars
   rngappnum  = 0
   call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
+  !initialize Mersenne Twister rngvars
+  call set_mt19937
+  call new(mts)
 
   !allocate and initialize genRealzvars
   if(chUQtype=='SC' .or. chUQtype=='PCE') numRealz = product(Qs)
