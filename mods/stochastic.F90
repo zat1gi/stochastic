@@ -1,5 +1,4 @@
 program stochastic
-  use mcnp_random
   use utilities
   use Loadcase
   use genRealz

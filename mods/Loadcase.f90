@@ -543,13 +543,11 @@ CONTAINS
   use UQvars, only: UQwgts, Qs, chUQtype, numPCEcoefs, PCEcoefsrefl, PCEcoefstran, PCEcoefscells, &
                     PCEcells, numPCEcells, PCEorder, flPCErefl, flPCEtran, numUQdims, samplePCExis, &
                     numPCEQoIsamps, numPCElocations, PCEreflsamples, PCEtransamples, PCEcellssamples
-  use mcnp_random, only: RN_init_problem
   use utilities, only: exponentialfit, nCr
   integer :: i
 
   !initialize rngvars
   rngappnum  = 0
-  call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
   !initialize Mersenne Twister rngvars
   call set_mt19937
   call new(mts)

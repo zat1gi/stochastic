@@ -1,5 +1,4 @@
 module genRealz
-  use mcnp_random
   use utilities
   implicit none
 
@@ -14,7 +13,7 @@ CONTAINS
   use genRealzvars, only: sig, lam, slen, largesti, numPath, pltgenrealznumof, &
                           nummatSegs, P, matFirstTally, sumPath, sqrPath, &
                           pltgenrealz, matType, matLength, pltgenrealzwhich, totLength
-  use mt_stream, only: init, mt_state, genrand_double3
+  use mt_stream, only: init, genrand_double3
 
   integer :: j
 

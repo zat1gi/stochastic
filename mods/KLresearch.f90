@@ -223,13 +223,13 @@ CONTAINS
   !This subroutine calculates xi values from binary Markov realizations.  It does 
   !this by integrating over a variable related only to geometry-based material
   !properties so that it can later be used for any cross section material property.
-  use rngvars, only: rngappnum, rngstride
+  use rngvars, only: rngappnum, rngstride, mts
   use genRealzvars, only: sig, numRealz, nummatSegs, lamcs1, matType, matLength, P
   use KLvars, only: alphas1, Aks1, Eigs1, xi, numEigss1
   use MCvars, only: trannprt
   use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
-  use mcnp_random, only: RN_init_particle
+  use mt_stream, only: init
   integer :: i,j,curEig,lsig,ssig
   real(8) :: xitermtot,xl,xr,xiterm,  hilowterm,aveterm
   character(5) :: flKLtype = 'KLcol'
@@ -240,7 +240,7 @@ CONTAINS
   lsig = merge(1,2,sig(1)>sig(2))
   ssig = merge(1,2,sig(1)<sig(2))
   !advance rng
-  call RN_init_particle( int(rngappnum*rngstride,8) )
+  call init( mts , int(rngappnum*rngstride,4) )
   rngappnum = rngappnum + 1
 
   do j=1,numRealz

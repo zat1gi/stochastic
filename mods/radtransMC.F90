@@ -1,5 +1,6 @@
 module radtransMC
-  use mcnp_random
+  use rngvars, only: mts
+  use mt_stream, only: genrand_double3 
   use utilities
   implicit none
 
@@ -15,7 +16,8 @@ CONTAINS
   use UQvars, only: chUQtype
   use genRealz, only: genbinaryReal
   use timeman, only: initialize_t1, timeupdate
-  use rngvars, only: rngseed, rngappnum
+  use rngvars, only: rngseed, rngappnum, mts
+  use mt_stream, only: new, set_mt19937
 #ifdef USE_MPI
   use mpiaccess
   use MCvars, only: reduceMCresults
@@ -39,7 +41,8 @@ CONTAINS
 #endif
 
   rngappnum  = 0
-  call RN_init_problem( 1, rngseed, int(0,8), int(0,8), 0)
+  call set_mt19937
+  call new(mts)
   call initialize_t1
 
   write(*,*) "Starting method: ",chTrantype  
@@ -160,7 +163,7 @@ CONTAINS
   !This subroutine performs MC transport over a specified geometry and method.
   !It can be used by a UQ_MC wrapper, and likely in the future by UQ_SC.
   !'j' denotes which realization over which the MC transport is performed.
-  use rngvars, only: rngappnum, rngstride, setrngappnum
+  use rngvars, only: rngappnum, rngstride, setrngappnum, mts
   use genRealzvars, only: sig, scatrat, nummatSegs, matType, matLength, slen, lam, &
                           atmixsig, atmixscatrat
   use MCvars, only: radtrans_int, rodOrplanar, reflect, transmit, &
@@ -169,7 +172,7 @@ CONTAINS
                     bbinmax, LPamMCsums, flfluxplot, maxnumParts
   use genRealz, only: genLPReal
   use KLconstruct, only: KLr_point
-  use mcnp_random, only: RN_init_particle
+  use mt_stream, only: init, genrand_double3
 
   integer :: j !realz number
 
@@ -186,10 +189,10 @@ CONTAINS
     call setrngappnum('radtrans')
     if(flCR_MCSC) then
       !correlate same particle history in each realization (CR-MC/CR-SC)
-      call RN_init_particle( int(rngstride*rngappnum+              o,8) )
+      call init( mts , int(rngappnum*rngstride+               o,4) )
     else
       !reproducible and only correlation implicitly across method types--no correlation within one run
-      call RN_init_particle( int(rngstride*rngappnum+j*maxnumParts+o,8) )
+      call init( mts , int(rngappnum*rngstride+j*maxnumParts+o,4) )
     endif
 
 
@@ -223,30 +226,30 @@ CONTAINS
       !calculate distance to collision
       select case (chTrantype)
         case ("radMC")
-          dc = -log(rang())/sig(matType(i))
+          dc = -log(genrand_double3(mts))/sig(matType(i))
         case ("radWood")
 !          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
 !                        ceilsigfunc(position,bbinmax),mu>=0)
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
-          dc = -log(rang())/ceilsig                   !calc dc
+          dc = -log(genrand_double3(mts))/ceilsig                   !calc dc
         case ("KLWood")
 !          ceilsig=merge(ceilsigfunc(position,fbinmax),& !sel max sig
 !                        ceilsigfunc(position,bbinmax),mu>=0)
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
-          dc = -log(rang())/ceilsig                   !calc dc
+          dc = -log(genrand_double3(mts))/ceilsig                   !calc dc
         case ("LPMC")
-          dc = -log(rang())/sig(matType(1))
+          dc = -log(genrand_double3(mts))/sig(matType(1))
         case ("atmixMC")
-          dc = -log(rang())/atmixsig
+          dc = -log(genrand_double3(mts))/atmixsig
         case ("GaussKL")
           curbin =solvecurbin(position)
           ceilsig=merge(fbinmax(curbin),bbinmax(curbin),mu>=0)
-          dc = -log(rang())/ceilsig                   !calc dc
+          dc = -log(genrand_double3(mts))/ceilsig                   !calc dc
       end select
       !calculate distance to interface
-      if(chTrantype=='LPMC') di = -log(rang())*lam(matType(1))/abs(mu)
+      if(chTrantype=='LPMC') di = -log(genrand_double3(mts))*lam(matType(1))/abs(mu)
 
       !select distance limiter
       dist   = min(db,dc)
@@ -335,15 +338,15 @@ CONTAINS
         !Choose scatter, absorb, or reject (Woodcock) interaction
         select case (chTrantype)
           case ("radMC")
-            flIntType = merge('scatter','absorb ',rang()<scatrat(matType(i)))
+            flIntType = merge('scatter','absorb ',genrand_double3(mts)<scatrat(matType(i)))
           case ("radWood")
             woodrat = radWood_actsig(newpos,sig)/ceilsig
             if(woodrat>1.0d0) then
               stop 'Higher sig samples in radWood than ceiling, exiting program'
             endif
-            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(woodrat<genrand_double3(mts)) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
-              if(radWood_actscatrat(newpos,scatrat)>rang()) then
+              if(radWood_actscatrat(newpos,scatrat)>genrand_double3(mts)) then
                 flIntType = 'scatter'
               else
                 flIntType = 'absorb'
@@ -370,15 +373,15 @@ CONTAINS
               endif
             endif
             !decide fate of particle
-            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(woodrat<genrand_double3(mts)) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
               tempscatrat = KLr_point(j,newpos,'scatrat')
-              flIntType = merge('scatter','absorb ',tempscatrat>rang())
+              flIntType = merge('scatter','absorb ',tempscatrat>genrand_double3(mts))
             endif
           case ("LPMC")
-              flIntType = merge('scatter','absorb ',rang()<scatrat(matType(1)))
+              flIntType = merge('scatter','absorb ',genrand_double3(mts)<scatrat(matType(1)))
           case ("atmixMC")
-              flIntType = merge('scatter','absorb ',rang()<atmixscatrat)
+              flIntType = merge('scatter','absorb ',genrand_double3(mts)<atmixscatrat)
           case ("GaussKL")
             !load woodcock ratio for this position and ceiling
             woodrat = KLr_point(j,newpos,'totale')/ceilsig
@@ -400,10 +403,10 @@ CONTAINS
               endif
             endif
             !decide fate of particle
-            if(woodrat<rang()) flIntType = 'reject'    !reject interaction
+            if(woodrat<genrand_double3(mts)) flIntType = 'reject'    !reject interaction
             if(flIntType=='clean') then                !accept interaction
               tempscatrat = KLr_point(j,newpos,'scatrat')
-              flIntType = merge('scatter','absorb ',tempscatrat>rang())
+              flIntType = merge('scatter','absorb ',tempscatrat>genrand_double3(mts))
             endif
         end select
 
@@ -448,7 +451,7 @@ CONTAINS
 
       !Evaluate scatter
       if(flIntType=='scatter') then     !scatter
-        if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,rang()>=0.5d0) !all currently do same
+        if(rodOrplanar=='rod')    mu = merge(1.0d0,-1.0d0,genrand_double3(mts)>=0.5d0) !all currently do same
         if(rodOrplanar=='planar') mu = newmu()
       endif
 
@@ -591,9 +594,9 @@ CONTAINS
     mu       = isoboundmu()
     if(rodOrplanar=='rod') mu = 1.0d0
   elseif( sourceType=='intern' ) then
-    position = slen * rang()
+    position = slen * genrand_double3(mts)
     mu       = newmu()
-    if(rodOrplanar=='rod') mu = merge(1.0d0,-1.0d0,rang()>=0.5d0)
+    if(rodOrplanar=='rod') mu = merge(1.0d0,-1.0d0,genrand_double3(mts)>=0.5d0)
   endif
 
   i = 0  !why is this here?  test if I can get rid of it...
@@ -930,7 +933,7 @@ CONTAINS
   !material irrespective
   if( flfluxtallytype=='irrespective' ) then
     if( pltfluxtype=='point' ) then       !point selection
-      point  = rang()*(maxpos-minpos) + minpos
+      point  = genrand_double3(mts)*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
       ibin   = ceiling(point/dx)
       if(ibin==0) ibin=1  !adjust if at ends
@@ -959,7 +962,7 @@ CONTAINS
   !material respective
   if( flfluxtallytype=='respective') then
     if( pltfluxtype=='point' ) then       !point selection
-      point  = rang()*(maxpos-minpos) + minpos
+      point  = genrand_double3(mts)*(maxpos-minpos) + minpos
       length = (maxpos-minpos) / absmu
       ibin   = ceiling(point/dx)
       if(ibin==0) ibin=1  !adjust if at ends
@@ -1022,7 +1025,7 @@ CONTAINS
   character(7) :: flcontribtype
 
   if( pltfluxtype=='point' ) then       !point selection
-    point  = rang()*(maxpos-minpos) + minpos
+    point  = genrand_double3(mts)*(maxpos-minpos) + minpos
     length = (maxpos-minpos)
     ibin   = ceiling(point/dx)
     if(ibin==0) ibin=1  !adjust if at ends
@@ -1171,7 +1174,7 @@ CONTAINS
                     flPCEsampscorrelated, numPCEQoIsamps, numPCElocations, PCEreflsamples, &
                     PCEtransamples, PCEcellssamples
   use rngvars, only: rngappnum, rngstride, setrngappnum
-  use mcnp_random, only: RN_init_particle
+  use mt_stream, only: init
   use utilities, only: OneGaussrandnum,erfi
   integer :: i,iloc,d,isamp
 
@@ -1180,11 +1183,11 @@ CONTAINS
     do d=1,numUQdims
       do isamp=1,numPCEQoIsamps
         if(iloc==1 .or. .not.flPCEsampscorrelated) then
-          call RN_init_particle( int(rngappnum*rngstride+ 2*(iloc*numUQdims*numPCEQoIsamps+ d*numPCEQoIsamps+ isamp),8) )
+          call init( mts , int(rngappnum*rngstride+ 2*(iloc*numUQdims*numPCEQoIsamps+ d*numPCEQoIsamps+ isamp),4) )
           if(Gaussrandtype=='BM') then
-            samplePCExis(d,isamp,iloc) = OneGaussrandnum(rang(),rang())
+            samplePCExis(d,isamp,iloc) = OneGaussrandnum(genrand_double3(mts),genrand_double3(mts))
           elseif(Gaussrandtype=='inv') then
-            samplePCExis(d,isamp,iloc) = sqrt(2d0)*erfi(2d0*rang()-1d0)
+            samplePCExis(d,isamp,iloc) = sqrt(2d0)*erfi(2d0*genrand_double3(mts)-1d0)
           endif
         else
           samplePCExis(d,isamp,iloc) = samplePCExis(d,isamp,1) !if same samples at each 'cell'
@@ -1913,7 +1916,7 @@ CONTAINS
   !use this for sampling a new mu within a slab
   real(8) :: newmu
  
-  newmu = 2*rang() - 1 
+  newmu = 2*genrand_double3(mts) - 1 
 
   end function newmu
 
@@ -1923,7 +1926,7 @@ CONTAINS
   !use this for an isotropic source incident on left boundary
   real(8) :: isoboundmu
 
-  isoboundmu = sqrt(rang())
+  isoboundmu = sqrt(genrand_double3(mts))
 
   end function isoboundmu
 

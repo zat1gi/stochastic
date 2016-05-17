@@ -1,6 +1,5 @@
 module KLconstruct
   use utilities
-  use mcnp_random
   implicit none
 
 CONTAINS
@@ -158,7 +157,7 @@ CONTAINS
   !This subroutine constructs material realizations based upon the KL expansion.
   !It tests for negativity in realizations, rejecting and replacing them if specified.
   !It also passes an array of selected random variables xi to be plotted in KLreval.
-  use rngvars, only: rngappnum, rngstride, setrngappnum
+  use rngvars, only: rngappnum, rngstride, setrngappnum, mts
   use utilities, only: TwoGaussrandnums, erfi
   use genRealzvars, only: numPosRealz, numNegRealz, numRealz
   use KLvars,       only: binPDF, binNumof, numEigss1, numEigsa1, numEigss2, numEigsa2, &
@@ -168,7 +167,7 @@ CONTAINS
   use MCvars, only: chTrantype, flnegxs, trannprt
   use UQvars, only: chUQtype, Qs, UQwgts, numUQdims, UQnodes
   use timeman, only: initialize_t1, timeupdate
-  use mcnp_random, only: RN_init_particle
+  use mt_stream, only: init, genrand_double3
   integer :: i,tentj,realj,curEig,ic,maxnumeigs, numeigscounter
   real(8) :: xiterm,rand,rand1,xiterms(2)
   logical :: flrealzneg, flacceptrealz, flfindzeros
@@ -199,12 +198,12 @@ CONTAINS
       !correlated for same rngseed between binary and contin when using same rng for abs and scat
       !when using different, abs correlated with binary/both with same
       call setrngappnum('KLRealz')
-      call RN_init_particle( int(rngappnum*rngstride+tentj,8) )
+      call init( mts , int(rngappnum*rngstride+tentj,4) )
 
       KLrxisig = 0
       if(fla1) then
         do curEig=1,numEigsa1 + mod(numEigsa1,2)  !select xi values for xia1
-            rand = rang()
+            rand = genrand_double3(mts)
             if((chTrantype=='KLWood') .and. curEig<=numEigsa1) then
               call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
             elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
@@ -223,7 +222,7 @@ CONTAINS
 
       if(fls1) then
         do curEig=1,numEigss1 + mod(numEigss1,2)  !select xi values for xis1
-          rand = rang()
+          rand = genrand_double3(mts)
           if((chTrantype=='KLWood') .and. curEig<=numEigss1) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
@@ -242,7 +241,7 @@ CONTAINS
 
       if(fla2) then
         do curEig=1,numEigsa2 + mod(numEigsa2,2)  !select xi values for xia2
-            rand = rang()
+            rand = genrand_double3(mts)
             if((chTrantype=='KLWood') .and. curEig<=numEigsa2) then
               call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
             elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
@@ -261,7 +260,7 @@ CONTAINS
 
       if(fls2) then
         do curEig=1,numEigss2 + mod(numEigss2,2)  !select xi values for xis2
-          rand = rang()
+          rand = genrand_double3(mts)
           if((chTrantype=='KLWood') .and. curEig<=numEigss2) then
             call select_from_PDF( binPDF,binNumof,curEig,xiterm,rand )
           elseif(chTrantype=='GaussKL' .and. Gaussrandtype=='BM') then
